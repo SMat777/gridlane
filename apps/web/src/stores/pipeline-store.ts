@@ -16,6 +16,7 @@ import {
   type PipelineNodeData,
   type PipelineValidationError,
   type PipelineDefinition,
+  type PipelineRun,
   type NodeConfig,
 } from "@gridlane/shared";
 
@@ -35,6 +36,10 @@ interface PipelineState {
   selectedNodeId: string | null;
   isDirty: boolean;
 
+  // Execution state
+  isRunning: boolean;
+  currentRun: PipelineRun | null;
+
   // React Flow callbacks — these wire directly to <ReactFlow> props
   onNodesChange: OnNodesChange<CanvasNode>;
   onEdgesChange: OnEdgesChange<CanvasEdge>;
@@ -50,6 +55,10 @@ interface PipelineState {
   runValidation: () => PipelineValidationError[];
   toSerializable: () => PipelineDefinition;
   loadPipeline: (pipeline: PipelineDefinition) => void;
+
+  // Execution actions
+  setRunning: (running: boolean) => void;
+  setCurrentRun: (run: PipelineRun | null) => void;
 }
 
 /** Counter for unique node IDs within a session */
@@ -62,6 +71,8 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
   pipelineName: "Untitled Pipeline",
   selectedNodeId: null,
   isDirty: false,
+  isRunning: false,
+  currentRun: null,
 
   onNodesChange: (changes) => {
     const updatedNodes = applyNodeChanges(changes, get().nodes);
@@ -252,4 +263,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       isDirty: false,
     });
   },
+
+  setRunning: (running) => set({ isRunning: running }),
+  setCurrentRun: (run) => set({ currentRun: run }),
 }));

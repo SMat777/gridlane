@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { usePipelineStore } from "../pipeline-store";
-import type { PipelineNodeType } from "@gridlane/shared";
+import type { PipelineNodeType, PipelineRun } from "@gridlane/shared";
 
 /**
  * Pipeline store tests — pure state logic, no React needed.
@@ -22,6 +22,8 @@ describe("pipeline-store", () => {
       pipelineName: "Untitled Pipeline",
       selectedNodeId: null,
       isDirty: false,
+      isRunning: false,
+      currentRun: null,
     });
   });
 
@@ -194,6 +196,41 @@ describe("pipeline-store", () => {
       usePipelineStore.getState().loadPipeline(serialized);
 
       expect(usePipelineStore.getState().isDirty).toBe(false);
+    });
+  });
+
+  describe("execution state", () => {
+    it("starts with isRunning false and currentRun null", () => {
+      const state = usePipelineStore.getState();
+      expect(state.isRunning).toBe(false);
+      expect(state.currentRun).toBeNull();
+    });
+
+    it("setRunning updates isRunning", () => {
+      usePipelineStore.getState().setRunning(true);
+      expect(usePipelineStore.getState().isRunning).toBe(true);
+
+      usePipelineStore.getState().setRunning(false);
+      expect(usePipelineStore.getState().isRunning).toBe(false);
+    });
+
+    it("setCurrentRun stores and clears run result", () => {
+      const mockRun: PipelineRun = {
+        id: "run-1",
+        pipelineId: "pipe-1",
+        pipelineName: "Test",
+        status: "completed",
+        steps: [],
+        totalDurationMs: 100,
+        startedAt: new Date().toISOString(),
+        completedAt: new Date().toISOString(),
+      };
+
+      usePipelineStore.getState().setCurrentRun(mockRun);
+      expect(usePipelineStore.getState().currentRun).toEqual(mockRun);
+
+      usePipelineStore.getState().setCurrentRun(null);
+      expect(usePipelineStore.getState().currentRun).toBeNull();
     });
   });
 
