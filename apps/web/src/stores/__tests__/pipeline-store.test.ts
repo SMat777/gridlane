@@ -20,6 +20,8 @@ describe("pipeline-store", () => {
       nodes: [],
       edges: [],
       pipelineName: "Untitled Pipeline",
+      selectedNodeId: null,
+      isDirty: false,
     });
   });
 
@@ -142,6 +144,56 @@ describe("pipeline-store", () => {
       const after = usePipelineStore.getState();
       expect(after.nodes).toHaveLength(1);
       expect(after.edges).toHaveLength(0);
+    });
+  });
+
+  describe("isDirty", () => {
+    it("starts as false", () => {
+      expect(usePipelineStore.getState().isDirty).toBe(false);
+    });
+
+    it("becomes true when a node is added", () => {
+      usePipelineStore.getState().addNode("datasource", { x: 0, y: 0 });
+      expect(usePipelineStore.getState().isDirty).toBe(true);
+    });
+
+    it("becomes true when nodes are connected", () => {
+      const store = usePipelineStore.getState();
+      store.addNode("datasource", { x: 0, y: 0 });
+      store.addNode("ai", { x: 200, y: 0 });
+
+      // Reset dirty to test onConnect specifically
+      usePipelineStore.setState({ isDirty: false });
+
+      const nodes = usePipelineStore.getState().nodes;
+      usePipelineStore.getState().onConnect({
+        source: nodes[0].id,
+        target: nodes[1].id,
+        sourceHandle: null,
+        targetHandle: null,
+      });
+
+      expect(usePipelineStore.getState().isDirty).toBe(true);
+    });
+
+    it("becomes true when node config is updated", () => {
+      usePipelineStore.getState().addNode("datasource", { x: 0, y: 0 });
+      usePipelineStore.setState({ isDirty: false });
+
+      const nodeId = usePipelineStore.getState().nodes[0].id;
+      usePipelineStore.getState().updateNodeConfig(nodeId, { url: "test" });
+
+      expect(usePipelineStore.getState().isDirty).toBe(true);
+    });
+
+    it("resets to false when pipeline is loaded", () => {
+      usePipelineStore.getState().addNode("datasource", { x: 0, y: 0 });
+      expect(usePipelineStore.getState().isDirty).toBe(true);
+
+      const serialized = usePipelineStore.getState().toSerializable();
+      usePipelineStore.getState().loadPipeline(serialized);
+
+      expect(usePipelineStore.getState().isDirty).toBe(false);
     });
   });
 

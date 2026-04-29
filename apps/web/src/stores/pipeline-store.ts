@@ -33,6 +33,7 @@ interface PipelineState {
   edges: CanvasEdge[];
   pipelineName: string;
   selectedNodeId: string | null;
+  isDirty: boolean;
 
   // React Flow callbacks — these wire directly to <ReactFlow> props
   onNodesChange: OnNodesChange<CanvasNode>;
@@ -60,6 +61,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
   edges: [],
   pipelineName: "Untitled Pipeline",
   selectedNodeId: null,
+  isDirty: false,
 
   onNodesChange: (changes) => {
     const updatedNodes = applyNodeChanges(changes, get().nodes);
@@ -73,18 +75,18 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       const updatedEdges = get().edges.filter(
         (e) => !removedIds.includes(e.source) && !removedIds.includes(e.target),
       );
-      set({ nodes: updatedNodes, edges: updatedEdges });
+      set({ nodes: updatedNodes, edges: updatedEdges, isDirty: true });
     } else {
-      set({ nodes: updatedNodes });
+      set({ nodes: updatedNodes, isDirty: true });
     }
   },
 
   onEdgesChange: (changes) => {
-    set({ edges: applyEdgeChanges(changes, get().edges) });
+    set({ edges: applyEdgeChanges(changes, get().edges), isDirty: true });
   },
 
   onConnect: (connection) => {
-    set({ edges: addEdge(connection, get().edges) });
+    set({ edges: addEdge(connection, get().edges), isDirty: true });
   },
 
   addNode: (type, position) => {
@@ -99,7 +101,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
         config: { ...DEFAULT_NODE_CONFIGS[type] },
       },
     };
-    set({ nodes: [...get().nodes, newNode] });
+    set({ nodes: [...get().nodes, newNode], isDirty: true });
   },
 
   deleteNode: (id) => {
@@ -108,7 +110,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       (e) => e.source !== id && e.target !== id,
     );
     const selectedNodeId = get().selectedNodeId === id ? null : get().selectedNodeId;
-    set({ nodes, edges, selectedNodeId });
+    set({ nodes, edges, selectedNodeId, isDirty: true });
   },
 
   selectNode: (id) => {
@@ -129,7 +131,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
         config: { ...node.data.config, ...partialConfig } as NodeConfig,
       },
     };
-    set({ nodes: updatedNodes });
+    set({ nodes: updatedNodes, isDirty: true });
   },
 
   updateNodeLabel: (id, label) => {
@@ -143,7 +145,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       ...node,
       data: { ...node.data, label },
     };
-    set({ nodes: updatedNodes });
+    set({ nodes: updatedNodes, isDirty: true });
   },
 
   validate: () => {
@@ -247,6 +249,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       nodes: canvasNodes,
       edges: canvasEdges,
       pipelineName: pipeline.name,
+      isDirty: false,
     });
   },
 }));
