@@ -93,8 +93,15 @@ pydantic: discriminated unions, custom validators
 - `verification-before-completion` — always on
 - `test-driven-development` — default workflow
 - `systematic-debugging` — when something breaks
-- `ripple` — after engine features, before merge
-- `spec-first` — for Gear 3 features
+- `ripple` — Gear 3 VERIFY step (auto, obligatorisk)
+- `pr-review` — Gear 3 REVIEW step (auto, fuld 5-lags analyse)
+- `security-review` — REVIEW step ved auth/API/persistence/RLS features
+- `owasp-llm-audit` — REVIEW step ved AI-node features (prompt injection, data leakage)
+- `spec-first` — DESIGN step for Gear 3 features >1 dag
+- `diagram` — DESIGN step ved komplekse flows (>3 komponenter)
+- `mem-search` — UNDERSTAND step (auto, "har vi løst dette før?")
+- `smart-explore` — UNDERSTAND step (AST-baseret kode-navigation, token-effektiv)
+- `ship` — SHIP step pre-merge checklist (auto)
 
 ## Foundation Sprint — Definition of Done
 
