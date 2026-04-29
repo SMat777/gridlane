@@ -2,20 +2,20 @@
 
 import { useState } from "react";
 import { Save, FolderOpen, Plus, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
 
 /**
- * Pipeline toolbar — save, load, and new pipeline actions.
+ * Pipeline toolbar — save, load, validate, and new pipeline actions.
  *
- * Sits at the top of the canvas. Communicates with Supabase
- * through pipeline-api.ts and updates the Zustand store.
+ * Sits at the top of the canvas. Uses Sonner toast for user feedback
+ * instead of inline status text — gives richer, dismissable messages.
  */
 export function PipelineToolbar() {
   const { pipelineName, toSerializable, runValidation } = usePipelineStore();
   const loadPipelineToStore = usePipelineStore((s) => s.loadPipeline);
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState<string | null>(null);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
   const [pipelines, setPipelines] = useState<
     Array<{ id: string; name: string; updatedAt: string }>
@@ -24,16 +24,16 @@ export function PipelineToolbar() {
 
   const handleSave = async () => {
     setSaving(true);
-    setStatus(null);
 
     const pipeline = toSerializable();
     const result = await savePipeline(pipeline);
 
     if ("error" in result) {
-      setStatus(`Error: ${result.error}`);
+      toast.error("Failed to save pipeline", {
+        description: result.error,
+      });
     } else {
-      setStatus("Saved ✓");
-      setTimeout(() => setStatus(null), 2000);
+      toast.success("Pipeline saved");
     }
     setSaving(false);
   };
@@ -43,7 +43,9 @@ export function PipelineToolbar() {
     const result = await listPipelines();
 
     if ("error" in result) {
-      setStatus(`Error: ${result.error}`);
+      toast.error("Failed to load pipelines", {
+        description: result.error,
+      });
       setLoading(false);
       return;
     }
@@ -58,11 +60,12 @@ export function PipelineToolbar() {
     const result = await loadPipeline(id);
 
     if ("error" in result) {
-      setStatus(`Error: ${result.error}`);
+      toast.error("Failed to load pipeline", {
+        description: result.error,
+      });
     } else {
       loadPipelineToStore(result);
-      setStatus("Loaded ✓");
-      setTimeout(() => setStatus(null), 2000);
+      toast.success("Pipeline loaded");
     }
     setShowLoadDialog(false);
     setLoading(false);
@@ -71,10 +74,11 @@ export function PipelineToolbar() {
   const handleValidate = () => {
     const errors = runValidation();
     if (errors.length === 0) {
-      setStatus("Valid ✓");
-      setTimeout(() => setStatus(null), 2000);
+      toast.success("Pipeline is valid");
     } else {
-      setStatus(`${errors.length} issue${errors.length > 1 ? "s" : ""} found`);
+      toast.warning(`${errors.length} issue${errors.length > 1 ? "s" : ""} found`, {
+        description: errors.map((e) => e.message).join("\n"),
+      });
     }
   };
 
@@ -83,8 +87,8 @@ export function PipelineToolbar() {
       nodes: [],
       edges: [],
       pipelineName: "Untitled Pipeline",
+      selectedNodeId: null,
     });
-    setStatus(null);
   };
 
   return (
@@ -95,14 +99,6 @@ export function PipelineToolbar() {
         </h1>
 
         <div className="ml-auto flex items-center gap-2">
-          {status && (
-            <span
-              className={`text-xs ${status.startsWith("Error") ? "text-red-500" : "text-green-600"}`}
-            >
-              {status}
-            </span>
-          )}
-
           <button
             onClick={handleNew}
             className="flex items-center gap-1 rounded-md border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
