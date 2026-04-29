@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, Database, Sparkles, Zap, User } from "lucide-react";
+import { X, Trash2, Database, Sparkles, Zap, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import {
   DataSourceConfigForm,
@@ -51,7 +52,7 @@ const TYPE_LABELS: Record<PipelineNodeType, string> = {
 };
 
 export function NodeConfigPanel() {
-  const { nodes, selectedNodeId, selectNode, updateNodeConfig, updateNodeLabel } =
+  const { nodes, selectedNodeId, selectNode, deleteNode, updateNodeConfig, updateNodeLabel } =
     usePipelineStore();
 
   // Close panel on Escape key
@@ -75,6 +76,12 @@ export function NodeConfigPanel() {
 
   const handleConfigUpdate = (changes: Partial<NodeConfig>) => {
     updateNodeConfig(selectedNodeId, changes);
+  };
+
+  const handleDelete = () => {
+    const label = selectedNode.data.label;
+    deleteNode(selectedNodeId);
+    toast.success(`Deleted "${label}"`);
   };
 
   return (
@@ -142,6 +149,18 @@ export function NodeConfigPanel() {
             onUpdate={handleConfigUpdate}
           />
         )}
+      </div>
+
+      {/* Delete node */}
+      <div className="border-t border-gray-200 p-4 dark:border-gray-800">
+        <button
+          onClick={handleDelete}
+          className="flex w-full items-center justify-center gap-2 rounded-md border border-red-200 px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950"
+          aria-label={`Delete ${selectedNode.data.label} node`}
+        >
+          <Trash2 className="h-4 w-4" />
+          Delete Node
+        </button>
       </div>
     </aside>
   );

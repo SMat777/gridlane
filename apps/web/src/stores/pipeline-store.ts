@@ -41,6 +41,7 @@ interface PipelineState {
 
   // Actions
   addNode: (type: PipelineNodeType, position: { x: number; y: number }) => void;
+  deleteNode: (id: string) => void;
   selectNode: (id: string | null) => void;
   updateNodeConfig: (id: string, config: Partial<NodeConfig>) => void;
   updateNodeLabel: (id: string, label: string) => void;
@@ -99,6 +100,15 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       },
     };
     set({ nodes: [...get().nodes, newNode] });
+  },
+
+  deleteNode: (id) => {
+    const nodes = get().nodes.filter((n) => n.id !== id);
+    const edges = get().edges.filter(
+      (e) => e.source !== id && e.target !== id,
+    );
+    const selectedNodeId = get().selectedNodeId === id ? null : get().selectedNodeId;
+    set({ nodes, edges, selectedNodeId });
   },
 
   selectNode: (id) => {
