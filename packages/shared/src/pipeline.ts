@@ -15,6 +15,82 @@ export const PIPELINE_NODE_TYPES = [
 
 export type PipelineNodeType = (typeof PIPELINE_NODE_TYPES)[number];
 
+// ── Node Configuration Types ─────────────────────────────────────────
+// Each node type has its own config shape. These are what the user
+// fills in when clicking a node on the canvas.
+
+export type DataSourceType = "rest" | "sql" | "file";
+export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+export type AuthType = "none" | "bearer" | "basic";
+
+export interface DataSourceConfig {
+  sourceType: DataSourceType;
+  url: string;
+  method: HttpMethod;
+  headers: Record<string, string>;
+  authType: AuthType;
+}
+
+export type AIProvider = "anthropic" | "openai";
+
+export interface AIConfig {
+  provider: AIProvider;
+  model: string;
+  prompt: string;
+  temperature: number;
+  maxTokens: number;
+}
+
+export type ActionType = "transform" | "output";
+export type OutputFormat = "json" | "csv" | "text";
+
+export interface ActionConfig {
+  actionType: ActionType;
+  outputFormat: OutputFormat;
+}
+
+export interface HumanConfig {
+  instructions: string;
+  requireComment: boolean;
+}
+
+/** Maps each node type to its config shape */
+export interface NodeConfigMap {
+  datasource: DataSourceConfig;
+  ai: AIConfig;
+  action: ActionConfig;
+  human: HumanConfig;
+}
+
+/** Union of all config types */
+export type NodeConfig = DataSourceConfig | AIConfig | ActionConfig | HumanConfig;
+
+/** Default configs — used when a new node is created */
+export const DEFAULT_NODE_CONFIGS: NodeConfigMap = {
+  datasource: {
+    sourceType: "rest",
+    url: "",
+    method: "GET",
+    headers: {},
+    authType: "none",
+  },
+  ai: {
+    provider: "anthropic",
+    model: "claude-sonnet-4-20250514",
+    prompt: "",
+    temperature: 0.7,
+    maxTokens: 1024,
+  },
+  action: {
+    actionType: "transform",
+    outputFormat: "json",
+  },
+  human: {
+    instructions: "",
+    requireComment: false,
+  },
+};
+
 /** Data carried by each node on the canvas.
  *
  * The index signature [key: string]: unknown is required by React Flow v12
@@ -23,8 +99,8 @@ export type PipelineNodeType = (typeof PIPELINE_NODE_TYPES)[number];
 export interface PipelineNodeData {
   label: string;
   nodeType: PipelineNodeType;
-  /** Configuration is intentionally minimal for US1.
-   *  US2/US3 will add connector config, prompt templates, etc. */
+  /** Node-specific configuration. Populated with defaults on creation. */
+  config?: NodeConfig;
   [key: string]: unknown;
 }
 
