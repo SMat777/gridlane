@@ -121,7 +121,7 @@ describe("pipeline-store", () => {
     });
   });
 
-  describe("deleteElements", () => {
+  describe("deleteElements (via onNodesChange)", () => {
     it("removes a node and its connected edges", () => {
       const { addNode } = usePipelineStore.getState();
       addNode("datasource", { x: 0, y: 0 });
@@ -142,6 +142,57 @@ describe("pipeline-store", () => {
       const after = usePipelineStore.getState();
       expect(after.nodes).toHaveLength(1);
       expect(after.edges).toHaveLength(0);
+    });
+  });
+
+  describe("deleteNode", () => {
+    it("removes the node and its connected edges", () => {
+      const { addNode } = usePipelineStore.getState();
+      addNode("datasource", { x: 0, y: 0 });
+      addNode("ai", { x: 200, y: 0 });
+
+      const { nodes, onConnect } = usePipelineStore.getState();
+      onConnect({
+        source: nodes[0].id,
+        target: nodes[1].id,
+        sourceHandle: null,
+        targetHandle: null,
+      });
+
+      usePipelineStore.getState().deleteNode(nodes[0].id);
+
+      const after = usePipelineStore.getState();
+      expect(after.nodes).toHaveLength(1);
+      expect(after.nodes[0].type).toBe("ai");
+      expect(after.edges).toHaveLength(0);
+    });
+
+    it("clears selectedNodeId when the selected node is deleted", () => {
+      const { addNode } = usePipelineStore.getState();
+      addNode("datasource", { x: 0, y: 0 });
+
+      const nodeId = usePipelineStore.getState().nodes[0].id;
+      usePipelineStore.getState().selectNode(nodeId);
+      expect(usePipelineStore.getState().selectedNodeId).toBe(nodeId);
+
+      usePipelineStore.getState().deleteNode(nodeId);
+
+      expect(usePipelineStore.getState().selectedNodeId).toBeNull();
+      expect(usePipelineStore.getState().nodes).toHaveLength(0);
+    });
+
+    it("does not affect selectedNodeId when a different node is deleted", () => {
+      const { addNode } = usePipelineStore.getState();
+      addNode("datasource", { x: 0, y: 0 });
+      addNode("ai", { x: 200, y: 0 });
+
+      const nodes = usePipelineStore.getState().nodes;
+      usePipelineStore.getState().selectNode(nodes[1].id);
+
+      usePipelineStore.getState().deleteNode(nodes[0].id);
+
+      expect(usePipelineStore.getState().selectedNodeId).toBe(nodes[1].id);
+      expect(usePipelineStore.getState().nodes).toHaveLength(1);
     });
   });
 });
