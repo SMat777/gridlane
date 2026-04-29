@@ -13,6 +13,7 @@ import {
   getOutgoers,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { MousePointerClick, ArrowLeft } from "lucide-react";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import type { CanvasNode } from "@/stores/pipeline-store";
 import { nodeTypes } from "./nodes";
@@ -110,7 +111,25 @@ function PipelineCanvasInner() {
       <NodePalette />
       <div className="relative flex flex-1 flex-col">
         <PipelineToolbar />
-        <div className="flex-1">
+        <div className="relative flex-1">
+        {nodes.length === 0 && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-200/80 dark:bg-gray-800/80">
+                <MousePointerClick className="h-8 w-8 text-gray-400" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
+                  Start building your pipeline
+                </h2>
+                <p className="mt-1 flex items-center justify-center gap-1 text-sm text-gray-400">
+                  <ArrowLeft className="h-4 w-4" />
+                  Drag nodes from the palette to get started
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         <ReactFlow
           nodes={nodes}
           edges={edges}
