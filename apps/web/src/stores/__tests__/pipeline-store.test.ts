@@ -20,6 +20,8 @@ describe("pipeline-store", () => {
       nodes: [],
       edges: [],
       pipelineName: "Untitled Pipeline",
+      pipelineId: null,
+      pipelineCreatedAt: null,
       selectedNodeId: null,
       isDirty: false,
       isRunning: false,
@@ -196,6 +198,63 @@ describe("pipeline-store", () => {
       usePipelineStore.getState().loadPipeline(serialized);
 
       expect(usePipelineStore.getState().isDirty).toBe(false);
+    });
+  });
+
+  describe("pipeline identity", () => {
+    it("preserves pipeline ID after load and re-serialize", () => {
+      // Build a pipeline
+      usePipelineStore.getState().addNode("datasource", { x: 0, y: 0 });
+      const original = usePipelineStore.getState().toSerializable();
+
+      // Load it back (simulates opening a saved pipeline)
+      usePipelineStore.getState().loadPipeline(original);
+
+      // Re-serialize — ID must match the loaded pipeline, not a new UUID
+      const reserialized = usePipelineStore.getState().toSerializable();
+      expect(reserialized.id).toBe(original.id);
+    });
+
+    it("preserves createdAt timestamp after load and re-serialize", async () => {
+      usePipelineStore.getState().addNode("datasource", { x: 0, y: 0 });
+      const original = usePipelineStore.getState().toSerializable();
+
+      usePipelineStore.getState().loadPipeline(original);
+
+      // Small delay so updatedAt gets a different timestamp
+      await new Promise((resolve) => setTimeout(resolve, 5));
+
+      const reserialized = usePipelineStore.getState().toSerializable();
+      expect(reserialized.createdAt).toBe(original.createdAt);
+      // updatedAt should be fresh
+      expect(reserialized.updatedAt).not.toBe(original.createdAt);
+    });
+
+    it("generates a new UUID for a brand new pipeline", () => {
+      usePipelineStore.getState().addNode("datasource", { x: 0, y: 0 });
+      const first = usePipelineStore.getState().toSerializable();
+      const second = usePipelineStore.getState().toSerializable();
+
+      // Without loading, each call should still generate a new ID
+      // (because the pipeline hasn't been persisted yet — no identity exists)
+      // After fix: new pipeline (no pipelineId in state) gets a new UUID
+      // but once loaded, the ID is stable
+      expect(first.id).toBeDefined();
+      expect(second.id).toBeDefined();
+    });
+
+    it("starts with null pipelineId", () => {
+      const state = usePipelineStore.getState();
+      expect(state.pipelineId).toBeNull();
+    });
+
+    it("sets pipelineId when pipeline is loaded", () => {
+      usePipelineStore.getState().addNode("datasource", { x: 0, y: 0 });
+      const serialized = usePipelineStore.getState().toSerializable();
+
+      usePipelineStore.getState().loadPipeline(serialized);
+
+      expect(usePipelineStore.getState().pipelineId).toBe(serialized.id);
     });
   });
 

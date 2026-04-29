@@ -33,6 +33,8 @@ interface PipelineState {
   nodes: CanvasNode[];
   edges: CanvasEdge[];
   pipelineName: string;
+  pipelineId: string | null;
+  pipelineCreatedAt: string | null;
   selectedNodeId: string | null;
   isDirty: boolean;
 
@@ -69,6 +71,8 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
   nodes: [],
   edges: [],
   pipelineName: "Untitled Pipeline",
+  pipelineId: null,
+  pipelineCreatedAt: null,
   selectedNodeId: null,
   isDirty: false,
   isRunning: false,
@@ -213,10 +217,10 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
   },
 
   toSerializable: () => {
-    const { nodes, edges, pipelineName } = get();
+    const { nodes, edges, pipelineName, pipelineId, pipelineCreatedAt } = get();
     const now = new Date().toISOString();
     return {
-      id: crypto.randomUUID(),
+      id: pipelineId ?? crypto.randomUUID(),
       name: pipelineName,
       nodes: nodes.map((n) => ({
         id: n.id,
@@ -233,7 +237,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
         source: e.source,
         target: e.target,
       })),
-      createdAt: now,
+      createdAt: pipelineCreatedAt ?? now,
       updatedAt: now,
     };
   },
@@ -260,6 +264,8 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       nodes: canvasNodes,
       edges: canvasEdges,
       pipelineName: pipeline.name,
+      pipelineId: pipeline.id,
+      pipelineCreatedAt: pipeline.createdAt,
       isDirty: false,
     });
   },
