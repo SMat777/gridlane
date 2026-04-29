@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { X, Database, Sparkles, Zap, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,6 +53,18 @@ const TYPE_LABELS: Record<PipelineNodeType, string> = {
 export function NodeConfigPanel() {
   const { nodes, selectedNodeId, selectNode, updateNodeConfig, updateNodeLabel } =
     usePipelineStore();
+
+  // Close panel on Escape key
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        selectNode(null);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [selectNode]);
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId);
   if (!selectedNode || !selectedNodeId) return null;
