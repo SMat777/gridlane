@@ -39,6 +39,7 @@ interface PipelineState {
   // Actions
   addNode: (type: PipelineNodeType, position: { x: number; y: number }) => void;
   validate: () => PipelineValidationError[];
+  runValidation: () => PipelineValidationError[];
   toSerializable: () => PipelineDefinition;
   loadPipeline: (pipeline: PipelineDefinition) => void;
 }
@@ -122,6 +123,26 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       }
     }
 
+    return errors;
+  },
+
+  runValidation: () => {
+    const errors = get().validate();
+
+    // Mark invalid nodes visually by updating their data
+    const invalidNodeIds = new Set(
+      errors.filter((e) => e.nodeId).map((e) => e.nodeId!),
+    );
+
+    const updatedNodes = get().nodes.map((node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        isValid: !invalidNodeIds.has(node.id),
+      },
+    }));
+
+    set({ nodes: updatedNodes });
     return errors;
   },
 

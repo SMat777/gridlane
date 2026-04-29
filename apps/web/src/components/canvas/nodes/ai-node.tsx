@@ -12,7 +12,7 @@ import { BaseNode } from "./base-node";
  */
 export function AINode({ data, selected }: NodeProps<CanvasNode>) {
   return (
-    <BaseNode color="purple" selected={selected}>
+    <BaseNode color="purple" selected={selected} isValid={data.isValid !== false}>
       <Handle
         type="target"
         position={Position.Left}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Save, FolderOpen, Plus } from "lucide-react";
+import { Save, FolderOpen, Plus, CheckCircle } from "lucide-react";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
 import type { PipelineDefinition } from "@gridlane/shared";
@@ -13,7 +13,7 @@ import type { PipelineDefinition } from "@gridlane/shared";
  * through pipeline-api.ts and updates the Zustand store.
  */
 export function PipelineToolbar() {
-  const { pipelineName, toSerializable } = usePipelineStore();
+  const { pipelineName, toSerializable, runValidation } = usePipelineStore();
   const loadPipelineToStore = usePipelineStore((s) => s.loadPipeline);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
@@ -69,6 +69,16 @@ export function PipelineToolbar() {
     setLoading(false);
   };
 
+  const handleValidate = () => {
+    const errors = runValidation();
+    if (errors.length === 0) {
+      setStatus("Valid ✓");
+      setTimeout(() => setStatus(null), 2000);
+    } else {
+      setStatus(`${errors.length} issue${errors.length > 1 ? "s" : ""} found`);
+    }
+  };
+
   const handleNew = () => {
     usePipelineStore.setState({
       nodes: [],
@@ -111,6 +121,15 @@ export function PipelineToolbar() {
           >
             <FolderOpen className="h-3.5 w-3.5" />
             Load
+          </button>
+
+          <button
+            onClick={handleValidate}
+            className="flex items-center gap-1 rounded-md border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+            aria-label="Validate pipeline"
+          >
+            <CheckCircle className="h-3.5 w-3.5" />
+            Validate
           </button>
 
           <button
