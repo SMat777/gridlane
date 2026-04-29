@@ -31,13 +31,21 @@ def topological_sort(
 
     # Build adjacency list and in-degree count
     node_map = {n["id"]: n for n in nodes}
-    in_degree: dict[str, int] = defaultdict(int)
+    node_ids = set(node_map.keys())
+    in_degree: dict[str, int] = {node_id: 0 for node_id in node_ids}
     adjacency: dict[str, list[str]] = defaultdict(list)
 
-    for node in nodes:
-        in_degree.setdefault(node["id"], 0)
-
+    # Validate edges reference existing nodes before building the graph
     for edge in edges:
+        invalid_ids = []
+        if edge["source"] not in node_ids:
+            invalid_ids.append(edge["source"])
+        if edge["target"] not in node_ids:
+            invalid_ids.append(edge["target"])
+        if invalid_ids:
+            raise ValueError(
+                f"Edge references non-existent node(s): {', '.join(invalid_ids)}"
+            )
         adjacency[edge["source"]].append(edge["target"])
         in_degree[edge["target"]] += 1
 
@@ -55,6 +63,13 @@ def topological_sort(
             in_degree[neighbor] -= 1
             if in_degree[neighbor] == 0:
                 queue.append(neighbor)
+
+    # Cycle detection: if not all nodes were sorted, there's a cycle
+    if len(sorted_nodes) != len(nodes):
+        unsorted = node_ids - {n["id"] for n in sorted_nodes}
+        raise ValueError(
+            f"Pipeline contains a cycle involving node(s): {', '.join(sorted(unsorted))}"
+        )
 
     return sorted_nodes
 
