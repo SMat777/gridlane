@@ -14,6 +14,7 @@ import {
   type PipelineNodeType,
   type PipelineNodeData,
   type PipelineValidationError,
+  type PipelineDefinition,
 } from "@gridlane/shared";
 
 /**
@@ -38,6 +39,8 @@ interface PipelineState {
   // Actions
   addNode: (type: PipelineNodeType, position: { x: number; y: number }) => void;
   validate: () => PipelineValidationError[];
+  toSerializable: () => PipelineDefinition;
+  loadPipeline: (pipeline: PipelineDefinition) => void;
 }
 
 /** Counter for unique node IDs within a session */
@@ -120,5 +123,48 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
     }
 
     return errors;
+  },
+
+  toSerializable: () => {
+    const { nodes, edges, pipelineName } = get();
+    const now = new Date().toISOString();
+    return {
+      id: crypto.randomUUID(),
+      name: pipelineName,
+      nodes: nodes.map((n) => ({
+        id: n.id,
+        type: n.type as PipelineNodeType,
+        position: n.position,
+        data: { label: n.data.label, nodeType: n.data.nodeType },
+      })),
+      edges: edges.map((e) => ({
+        id: e.id,
+        source: e.source,
+        target: e.target,
+      })),
+      createdAt: now,
+      updatedAt: now,
+    };
+  },
+
+  loadPipeline: (pipeline) => {
+    const canvasNodes: CanvasNode[] = pipeline.nodes.map((n) => ({
+      id: n.id,
+      type: n.type,
+      position: n.position,
+      data: { label: n.data.label, nodeType: n.data.nodeType },
+    }));
+
+    const canvasEdges: CanvasEdge[] = pipeline.edges.map((e) => ({
+      id: e.id,
+      source: e.source,
+      target: e.target,
+    }));
+
+    set({
+      nodes: canvasNodes,
+      edges: canvasEdges,
+      pipelineName: pipeline.name,
+    });
   },
 }));
