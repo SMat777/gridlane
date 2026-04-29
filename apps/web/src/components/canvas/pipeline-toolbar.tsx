@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Save, FolderOpen, Plus, CheckCircle } from "lucide-react";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
-import type { PipelineDefinition } from "@gridlane/shared";
 
 /**
  * Pipeline toolbar — save, load, and new pipeline actions.
