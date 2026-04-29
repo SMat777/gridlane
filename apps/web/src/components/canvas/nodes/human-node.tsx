@@ -4,6 +4,7 @@ import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { User } from "lucide-react";
 import type { CanvasNode } from "@/stores/pipeline-store";
 import { BaseNode } from "./base-node";
+import type { HumanConfig } from "@gridlane/shared";
 
 /**
  * Human node — approval gate that pauses pipeline execution.
@@ -12,6 +13,9 @@ import { BaseNode } from "./base-node";
  * Visual distinction: orange color signals "human required here".
  */
 export function HumanNode({ data, selected }: NodeProps<CanvasNode>) {
+  const config = data.config as HumanConfig | undefined;
+  const summary = config?.requireComment ? "Comment required" : null;
+
   return (
     <BaseNode color="orange" selected={selected} isValid={data.isValid !== false}>
       <Handle
@@ -23,6 +27,11 @@ export function HumanNode({ data, selected }: NodeProps<CanvasNode>) {
         <User className="h-4 w-4 text-orange-600 dark:text-orange-400" />
         <span className="text-sm font-medium">{data.label}</span>
       </div>
+      {summary && (
+        <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          {summary}
+        </div>
+      )}
       <Handle
         type="source"
         position={Position.Right}

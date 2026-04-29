@@ -9,6 +9,7 @@ import {
   MiniMap,
   useReactFlow,
   type IsValidConnection,
+  type NodeMouseHandler,
   getOutgoers,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -17,6 +18,7 @@ import type { CanvasNode } from "@/stores/pipeline-store";
 import { nodeTypes } from "./nodes";
 import { NodePalette } from "./node-palette";
 import { PipelineToolbar } from "./pipeline-toolbar";
+import { NodeConfigPanel } from "./node-config-panel";
 import type { PipelineNodeType } from "@gridlane/shared";
 
 /**
@@ -35,7 +37,7 @@ import type { PipelineNodeType } from "@gridlane/shared";
  */
 
 function PipelineCanvasInner() {
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode } =
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode, selectNode, selectedNodeId } =
     usePipelineStore();
   const { screenToFlowPosition, getNodes, getEdges } = useReactFlow();
 
@@ -66,6 +68,19 @@ function PipelineCanvasInner() {
     },
     [getNodes, getEdges],
   );
+
+  // Open config panel when a node is clicked
+  const onNodeClick: NodeMouseHandler<CanvasNode> = useCallback(
+    (_event, node) => {
+      selectNode(node.id);
+    },
+    [selectNode],
+  );
+
+  // Close config panel when clicking on empty canvas
+  const onPaneClick = useCallback(() => {
+    selectNode(null);
+  }, [selectNode]);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
@@ -102,6 +117,8 @@ function PipelineCanvasInner() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          onNodeClick={onNodeClick}
+          onPaneClick={onPaneClick}
           onDrop={onDrop}
           onDragOver={onDragOver}
           nodeTypes={nodeTypes}
@@ -126,6 +143,7 @@ function PipelineCanvasInner() {
         </ReactFlow>
         </div>
       </div>
+      {selectedNodeId && <NodeConfigPanel />}
     </div>
   );
 }
