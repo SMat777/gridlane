@@ -27,6 +27,7 @@ coverage/
 htmlcov/
 .pytest_cache/
 .coverage
+test-results/
 
 # Docker
 docker-compose.override.yml
