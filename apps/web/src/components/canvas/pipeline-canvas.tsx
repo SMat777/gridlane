@@ -162,7 +162,7 @@ function PipelineCanvasInner() {
         </ReactFlow>
         </div>
       </div>
-      {selectedNodeId && <NodeConfigPanel />}
+      <NodeConfigPanel />
     </div>
   );
 }
