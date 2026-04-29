@@ -3,6 +3,16 @@
 import { useState } from "react";
 import { Save, FolderOpen, Plus, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
 
@@ -13,14 +23,24 @@ import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
  * instead of inline status text — gives richer, dismissable messages.
  */
 export function PipelineToolbar() {
-  const { pipelineName, toSerializable, runValidation } = usePipelineStore();
+  const { pipelineName, isDirty, toSerializable, runValidation } = usePipelineStore();
   const loadPipelineToStore = usePipelineStore((s) => s.loadPipeline);
   const [saving, setSaving] = useState(false);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
   const [pipelines, setPipelines] = useState<
     Array<{ id: string; name: string; updatedAt: string }>
   >([]);
   const [loading, setLoading] = useState(false);
+
+  /** Runs an action immediately if no unsaved changes, or shows confirmation dialog */
+  const guardUnsavedChanges = (action: () => void) => {
+    if (isDirty) {
+      setConfirmAction(() => action);
+    } else {
+      action();
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -34,11 +54,12 @@ export function PipelineToolbar() {
       });
     } else {
       toast.success("Pipeline saved");
+      usePipelineStore.setState({ isDirty: false });
     }
     setSaving(false);
   };
 
-  const handleLoadList = async () => {
+  const executeLoadList = async () => {
     setLoading(true);
     const result = await listPipelines();
 
@@ -54,6 +75,8 @@ export function PipelineToolbar() {
     setShowLoadDialog(true);
     setLoading(false);
   };
+
+  const handleLoadList = () => guardUnsavedChanges(() => { executeLoadList(); });
 
   const handleLoad = async (id: string) => {
     setLoading(true);
@@ -82,14 +105,17 @@ export function PipelineToolbar() {
     }
   };
 
-  const handleNew = () => {
+  const executeNew = () => {
     usePipelineStore.setState({
       nodes: [],
       edges: [],
       pipelineName: "Untitled Pipeline",
       selectedNodeId: null,
+      isDirty: false,
     });
   };
+
+  const handleNew = () => guardUnsavedChanges(executeNew);
 
   return (
     <>
@@ -138,6 +164,29 @@ export function PipelineToolbar() {
           </button>
         </div>
       </div>
+
+      {/* Unsaved changes confirmation */}
+      <AlertDialog open={confirmAction !== null} onOpenChange={(open) => { if (!open) setConfirmAction(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes that will be lost. Do you want to continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                confirmAction?.();
+                setConfirmAction(null);
+              }}
+            >
+              Discard changes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Simple load dialog */}
       {showLoadDialog && (
