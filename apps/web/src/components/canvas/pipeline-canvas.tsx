@@ -16,6 +16,7 @@ import { usePipelineStore } from "@/stores/pipeline-store";
 import type { CanvasNode } from "@/stores/pipeline-store";
 import { nodeTypes } from "./nodes";
 import { NodePalette } from "./node-palette";
+import { PipelineToolbar } from "./pipeline-toolbar";
 import type { PipelineNodeType } from "@gridlane/shared";
 
 /**
@@ -92,7 +93,9 @@ function PipelineCanvasInner() {
   return (
     <div className="flex h-full w-full">
       <NodePalette />
-      <div className="flex-1">
+      <div className="relative flex flex-1 flex-col">
+        <PipelineToolbar />
+        <div className="flex-1">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -121,6 +124,7 @@ function PipelineCanvasInner() {
             }}
           />
         </ReactFlow>
+        </div>
       </div>
     </div>
   );
