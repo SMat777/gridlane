@@ -15,12 +15,17 @@ export const PIPELINE_NODE_TYPES = [
 
 export type PipelineNodeType = (typeof PIPELINE_NODE_TYPES)[number];
 
-/** Data carried by each node on the canvas */
+/** Data carried by each node on the canvas.
+ *
+ * The index signature [key: string]: unknown is required by React Flow v12
+ * which expects node data to extend Record<string, unknown>.
+ */
 export interface PipelineNodeData {
   label: string;
   nodeType: PipelineNodeType;
   /** Configuration is intentionally minimal for US1.
    *  US2/US3 will add connector config, prompt templates, etc. */
+  [key: string]: unknown;
 }
 
 /** A positioned node on the canvas (matches React Flow's Node shape) */
