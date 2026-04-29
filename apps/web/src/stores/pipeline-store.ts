@@ -13,6 +13,7 @@ import {
   NODE_TYPE_META,
   type PipelineNodeType,
   type PipelineNodeData,
+  type PipelineValidationError,
 } from "@gridlane/shared";
 
 /**
@@ -36,6 +37,7 @@ interface PipelineState {
 
   // Actions
   addNode: (type: PipelineNodeType, position: { x: number; y: number }) => void;
+  validate: () => PipelineValidationError[];
 }
 
 /** Counter for unique node IDs within a session */
@@ -85,5 +87,38 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       },
     };
     set({ nodes: [...get().nodes, newNode] });
+  },
+
+  validate: () => {
+    const { nodes, edges } = get();
+    const errors: PipelineValidationError[] = [];
+
+    // Empty pipeline — nothing to validate
+    if (nodes.length === 0) {
+      errors.push({
+        type: "empty-pipeline",
+        message: "Pipeline has no nodes",
+      });
+      return errors;
+    }
+
+    // Find orphan nodes — nodes with no connections at all
+    const connectedNodeIds = new Set<string>();
+    for (const edge of edges) {
+      connectedNodeIds.add(edge.source);
+      connectedNodeIds.add(edge.target);
+    }
+
+    for (const node of nodes) {
+      if (!connectedNodeIds.has(node.id)) {
+        errors.push({
+          nodeId: node.id,
+          type: "orphan-node",
+          message: `Node "${node.data.label}" has no connections`,
+        });
+      }
+    }
+
+    return errors;
   },
 }));
