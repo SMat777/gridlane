@@ -11,10 +11,12 @@ import {
 } from "@xyflow/react";
 import {
   NODE_TYPE_META,
+  DEFAULT_NODE_CONFIGS,
   type PipelineNodeType,
   type PipelineNodeData,
   type PipelineValidationError,
   type PipelineDefinition,
+  type NodeConfig,
 } from "@gridlane/shared";
 
 /**
@@ -30,6 +32,7 @@ interface PipelineState {
   nodes: CanvasNode[];
   edges: CanvasEdge[];
   pipelineName: string;
+  selectedNodeId: string | null;
 
   // React Flow callbacks — these wire directly to <ReactFlow> props
   onNodesChange: OnNodesChange<CanvasNode>;
@@ -38,6 +41,9 @@ interface PipelineState {
 
   // Actions
   addNode: (type: PipelineNodeType, position: { x: number; y: number }) => void;
+  selectNode: (id: string | null) => void;
+  updateNodeConfig: (id: string, config: Partial<NodeConfig>) => void;
+  updateNodeLabel: (id: string, label: string) => void;
   validate: () => PipelineValidationError[];
   runValidation: () => PipelineValidationError[];
   toSerializable: () => PipelineDefinition;
@@ -52,6 +58,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
   nodes: [],
   edges: [],
   pipelineName: "Untitled Pipeline",
+  selectedNodeId: null,
 
   onNodesChange: (changes) => {
     const updatedNodes = applyNodeChanges(changes, get().nodes);
@@ -88,9 +95,45 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       data: {
         label: meta.label,
         nodeType: type,
+        config: { ...DEFAULT_NODE_CONFIGS[type] },
       },
     };
     set({ nodes: [...get().nodes, newNode] });
+  },
+
+  selectNode: (id) => {
+    set({ selectedNodeId: id });
+  },
+
+  updateNodeConfig: (id, partialConfig) => {
+    const nodes = get().nodes;
+    const nodeIndex = nodes.findIndex((n) => n.id === id);
+    if (nodeIndex === -1) return;
+
+    const node = nodes[nodeIndex];
+    const updatedNodes = [...nodes];
+    updatedNodes[nodeIndex] = {
+      ...node,
+      data: {
+        ...node.data,
+        config: { ...node.data.config, ...partialConfig } as NodeConfig,
+      },
+    };
+    set({ nodes: updatedNodes });
+  },
+
+  updateNodeLabel: (id, label) => {
+    const nodes = get().nodes;
+    const nodeIndex = nodes.findIndex((n) => n.id === id);
+    if (nodeIndex === -1) return;
+
+    const node = nodes[nodeIndex];
+    const updatedNodes = [...nodes];
+    updatedNodes[nodeIndex] = {
+      ...node,
+      data: { ...node.data, label },
+    };
+    set({ nodes: updatedNodes });
   },
 
   validate: () => {
@@ -156,7 +199,11 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
         id: n.id,
         type: n.type as PipelineNodeType,
         position: n.position,
-        data: { label: n.data.label, nodeType: n.data.nodeType },
+        data: {
+          label: n.data.label,
+          nodeType: n.data.nodeType,
+          ...(n.data.config ? { config: n.data.config } : {}),
+        },
       })),
       edges: edges.map((e) => ({
         id: e.id,
@@ -173,7 +220,11 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       id: n.id,
       type: n.type,
       position: n.position,
-      data: { label: n.data.label, nodeType: n.data.nodeType },
+      data: {
+        label: n.data.label,
+        nodeType: n.data.nodeType,
+        ...(n.data.config ? { config: n.data.config } : {}),
+      },
     }));
 
     const canvasEdges: CanvasEdge[] = pipeline.edges.map((e) => ({

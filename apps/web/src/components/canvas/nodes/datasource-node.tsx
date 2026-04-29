@@ -4,6 +4,7 @@ import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { Database } from "lucide-react";
 import type { CanvasNode } from "@/stores/pipeline-store";
 import { BaseNode } from "./base-node";
+import type { DataSourceConfig } from "@gridlane/shared";
 
 /**
  * DataSource node — entry point of a pipeline.
@@ -12,12 +13,25 @@ import { BaseNode } from "./base-node";
  * No target handle — nothing feeds into a data source.
  */
 export function DataSourceNode({ data, selected }: NodeProps<CanvasNode>) {
+  const config = data.config as DataSourceConfig | undefined;
+  const summary =
+    config?.sourceType === "rest" && config.url
+      ? `${config.method} • ${new URL(config.url).hostname}`
+      : config?.sourceType
+        ? config.sourceType.toUpperCase()
+        : null;
+
   return (
     <BaseNode color="blue" selected={selected} isValid={data.isValid !== false}>
       <div className="flex items-center gap-2">
         <Database className="h-4 w-4 text-blue-600 dark:text-blue-400" />
         <span className="text-sm font-medium">{data.label}</span>
       </div>
+      {summary && (
+        <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          {summary}
+        </div>
+      )}
       <Handle
         type="source"
         position={Position.Right}
