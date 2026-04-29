@@ -20,6 +20,7 @@ import { nodeTypes } from "./nodes";
 import { NodePalette } from "./node-palette";
 import { PipelineToolbar } from "./pipeline-toolbar";
 import { NodeConfigPanel } from "./node-config-panel";
+import { RunResultsPanel } from "./run-results-panel";
 import type { PipelineNodeType } from "@gridlane/shared";
 
 /**
@@ -38,7 +39,7 @@ import type { PipelineNodeType } from "@gridlane/shared";
  */
 
 function PipelineCanvasInner() {
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode, selectNode, selectedNodeId } =
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode, selectNode, selectedNodeId, currentRun } =
     usePipelineStore();
   const { screenToFlowPosition, getNodes, getEdges } = useReactFlow();
 
@@ -163,6 +164,7 @@ function PipelineCanvasInner() {
         </div>
       </div>
       <NodeConfigPanel />
+      {currentRun && !selectedNodeId && <RunResultsPanel />}
     </div>
   );
 }

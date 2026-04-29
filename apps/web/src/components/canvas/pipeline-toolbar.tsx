@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Save, FolderOpen, Plus, CheckCircle } from "lucide-react";
+import { Save, FolderOpen, Plus, CheckCircle, Play } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -16,6 +16,7 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
+import { runPipeline } from "@/lib/engine-api";
 
 /**
  * Pipeline toolbar — save, load, validate, and new pipeline actions.
@@ -24,7 +25,7 @@ import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
  * instead of inline status text — gives richer, dismissable messages.
  */
 export function PipelineToolbar() {
-  const { pipelineName, isDirty, toSerializable, runValidation } = usePipelineStore();
+  const { pipelineName, isDirty, isRunning, toSerializable, runValidation, setRunning, setCurrentRun } = usePipelineStore();
   const loadPipelineToStore = usePipelineStore((s) => s.loadPipeline);
   const [saving, setSaving] = useState(false);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
@@ -93,6 +94,47 @@ export function PipelineToolbar() {
     }
     setShowLoadDialog(false);
     setLoading(false);
+  };
+
+  const handleRun = async () => {
+    // Validate first
+    const errors = runValidation();
+    if (errors.length > 0) {
+      toast.warning("Fix pipeline issues before running", {
+        description: errors.map((e) => e.message).join("\n"),
+      });
+      return;
+    }
+
+    setRunning(true);
+    setCurrentRun(null);
+
+    const pipeline = toSerializable();
+    // Cast to engine API shape — config interfaces don't have index signatures
+    // but the runtime data is compatible
+    const result = await runPipeline({
+      pipeline: pipeline as unknown as Parameters<typeof runPipeline>[0]["pipeline"],
+    });
+
+    if ("error" in result) {
+      toast.error("Pipeline execution failed", {
+        description: result.error,
+      });
+    } else {
+      setCurrentRun(result.run);
+      if (result.run.status === "completed") {
+        toast.success(
+          `Pipeline completed in ${result.run.totalDurationMs}ms`,
+          { description: `${result.run.steps.length} steps executed` },
+        );
+      } else {
+        toast.error("Pipeline failed", {
+          description: result.run.steps.find((s) => s.status === "failed")?.error || "Unknown error",
+        });
+      }
+    }
+
+    setRunning(false);
   };
 
   const handleValidate = () => {
@@ -164,6 +206,16 @@ export function PipelineToolbar() {
           >
             <Save className="h-3.5 w-3.5" />
             {saving ? "Saving..." : "Save"}
+          </button>
+
+          <button
+            onClick={handleRun}
+            disabled={isRunning}
+            className="flex items-center gap-1 rounded-md bg-green-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-green-700 disabled:opacity-50"
+            aria-label="Run pipeline"
+          >
+            <Play className="h-3.5 w-3.5" />
+            {isRunning ? "Running..." : "Run"}
           </button>
         </div>
       </div>
