@@ -13,6 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
 
@@ -125,6 +126,8 @@ export function PipelineToolbar() {
         </h1>
 
         <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
+
           <button
             onClick={handleNew}
             className="flex items-center gap-1 rounded-md border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
