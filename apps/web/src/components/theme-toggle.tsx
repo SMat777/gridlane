@@ -14,7 +14,9 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- standard next-themes hydration guard
+  // Standard next-themes hydration guard — must set state after mount
+  // to avoid mismatch between server (no localStorage) and client.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
