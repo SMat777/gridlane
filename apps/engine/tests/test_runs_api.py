@@ -38,11 +38,14 @@ app.dependency_overrides[get_db] = mock_get_db
 client = TestClient(app)
 
 
+TEST_PIPELINE_ID = "22222222-2222-2222-2222-222222222222"
+
+
 def make_run_request(nodes, edges):
     """Helper to build a run request body."""
     return {
         "pipeline": {
-            "id": "test-pipeline-123",
+            "id": TEST_PIPELINE_ID,
             "name": "Test Pipeline",
             "nodes": [
                 {
@@ -86,7 +89,7 @@ class TestRunPipelineEndpoint:
         run = data["run"]
 
         assert run["status"] == "completed"
-        assert run["pipeline_id"] == "test-pipeline-123"
+        assert run["pipeline_id"] == TEST_PIPELINE_ID
         assert run["pipeline_name"] == "Test Pipeline"
         assert len(run["steps"]) == 3
         assert run["total_duration_ms"] >= 0

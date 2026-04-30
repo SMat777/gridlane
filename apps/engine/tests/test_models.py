@@ -1,6 +1,7 @@
 """Tests for SQLAlchemy models — pure unit tests, no DB needed."""
 
 import uuid
+from decimal import Decimal
 
 from app.models.run import PipelineRunModel, StepResultModel
 
@@ -9,15 +10,16 @@ class TestPipelineRunModel:
     """Test PipelineRunModel can be instantiated with expected fields."""
 
     def test_create_run_model(self):
+        pipe_id = uuid.uuid4()
         run = PipelineRunModel(
             id=uuid.uuid4(),
-            pipeline_id="test-pipeline-123",
+            pipeline_id=pipe_id,
             pipeline_name="Test Pipeline",
             status="pending",
             pipeline_snapshot={"nodes": [], "edges": []},
         )
 
-        assert run.pipeline_id == "test-pipeline-123"
+        assert run.pipeline_id == pipe_id
         assert run.pipeline_name == "Test Pipeline"
         assert run.status == "pending"
         assert run.pipeline_snapshot == {"nodes": [], "edges": []}
@@ -61,13 +63,13 @@ class TestStepResultModel:
             input_tokens=100,
             output_tokens=50,
             total_tokens=150,
-            cost_usd=0.004,
+            cost_usd=Decimal("0.004"),
         )
 
         assert step.input_tokens == 100
         assert step.output_tokens == 50
         assert step.total_tokens == 150
-        assert step.cost_usd == 0.004
+        assert step.cost_usd == Decimal("0.004")
 
     def test_step_with_error(self):
         step = StepResultModel(
