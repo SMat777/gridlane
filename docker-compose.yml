@@ -1,21 +1,22 @@
 services:
   web:
     build:
-      context: ./apps/web
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/web/Dockerfile
     ports:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000
     volumes:
-      - ./apps/web/src:/app/src
+      - ./apps/web/src:/app/apps/web/src
+      - ./packages/shared/src:/app/packages/shared/src
     depends_on:
       - engine
 
   engine:
     build:
-      context: ./apps/engine
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/engine/Dockerfile
     ports:
       - "8000:8000"
     environment:
