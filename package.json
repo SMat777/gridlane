@@ -1,0 +1,14 @@
+{
+  "name": "gridlane",
+  "private": true,
+  "description": "Visual AI pipeline builder with production observability",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint",
+    "typecheck": "pnpm --filter web exec tsc --noEmit",
+    "test:web": "pnpm --filter web test",
+    "test:engine": "cd apps/engine && uv run pytest tests/ -v",
+    "test": "pnpm test:web && pnpm test:engine"
+  }
+}
