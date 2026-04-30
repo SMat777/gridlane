@@ -380,3 +380,96 @@ class TestCancelRunEndpoint:
         """Path validation rejects non-UUID run_id."""
         response = client.post("/api/v1/runs/not-a-uuid/cancel")
         assert response.status_code == 422
+
+
+class TestStreamEndpoint:
+    """GET /api/v1/runs/{run_id}/stream — SSE event stream."""
+
+    def test_stream_returns_404_for_unknown_run(self):
+        """When the run doesn't exist anywhere, return 404 (not an SSE 200)."""
+        # Default mock returns None for get_run (no run_model), and bus has no channel
+        run_id = uuid.uuid4()
+        response = client.get(f"/api/v1/runs/{run_id}/stream")
+        assert response.status_code == 404
+        assert response.json()["error"]["code"] == "NOT_FOUND"
+
+    def test_stream_replays_finished_run_from_db(self):
+        """If a run already finished, replay events from the DB and close."""
+        run_id = uuid.uuid4()
+
+        # Mock run exists
+        mock_run = MagicMock()
+        mock_run.id = run_id
+
+        # Mock events to replay
+        mock_event_1 = MagicMock()
+        mock_event_1.sequence = 0
+        mock_event_1.event_type = "run_started"
+        mock_event_1.payload = {"total_steps": 1}
+
+        mock_event_2 = MagicMock()
+        mock_event_2.sequence = 1
+        mock_event_2.event_type = "run_completed"
+        mock_event_2.payload = {"status": "completed"}
+
+        with (
+            patch(
+                "app.api.v1.endpoints.runs.RunService.get_run",
+                new=AsyncMock(return_value=mock_run),
+            ),
+            patch(
+                "app.api.v1.endpoints.runs.RunService.list_events_after",
+                new=AsyncMock(return_value=[mock_event_1, mock_event_2]),
+            ),
+            patch(
+                "app.api.v1.endpoints.runs.bus.get_channel",
+                return_value=None,
+            ),
+        ):
+            response = client.get(f"/api/v1/runs/{run_id}/stream")
+
+        # SSE response is 200 + text/event-stream
+        assert response.status_code == 200
+        assert "text/event-stream" in response.headers["content-type"]
+        body = response.text
+        # Both events present in stream
+        assert "event: run_started" in body
+        assert "event: run_completed" in body
+        assert "id: 0" in body
+        assert "id: 1" in body
+
+    def test_stream_respects_last_event_id_header(self):
+        """Last-Event-ID skips events with sequence <= the header value."""
+        run_id = uuid.uuid4()
+
+        mock_run = MagicMock()
+        mock_event_2 = MagicMock()
+        mock_event_2.sequence = 2
+        mock_event_2.event_type = "run_completed"
+        mock_event_2.payload = {"status": "completed"}
+
+        list_events_mock = AsyncMock(return_value=[mock_event_2])
+
+        with (
+            patch(
+                "app.api.v1.endpoints.runs.RunService.get_run",
+                new=AsyncMock(return_value=mock_run),
+            ),
+            patch(
+                "app.api.v1.endpoints.runs.RunService.list_events_after",
+                new=list_events_mock,
+            ),
+            patch(
+                "app.api.v1.endpoints.runs.bus.get_channel",
+                return_value=None,
+            ),
+        ):
+            response = client.get(
+                f"/api/v1/runs/{run_id}/stream",
+                headers={"Last-Event-ID": "1"},
+            )
+
+        # list_events_after was called with after_sequence=1 (parsed from header)
+        call_kwargs = list_events_mock.call_args.kwargs
+        assert call_kwargs.get("after_sequence") == 1
+        assert response.status_code == 200
