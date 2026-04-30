@@ -14,6 +14,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { MousePointerClick, ArrowLeft } from "lucide-react";
+import { useShallow } from "zustand/react/shallow";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import type { CanvasNode } from "@/stores/pipeline-store";
 import { nodeTypes } from "./nodes";
@@ -39,8 +40,23 @@ import type { PipelineNodeType } from "@gridlane/shared";
  */
 
 function PipelineCanvasInner() {
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode, selectNode, selectedNodeId, currentRun } =
-    usePipelineStore();
+  // Granular selectors — only re-render when these specific values change.
+  // Without useShallow, destructuring subscribes to the ENTIRE store,
+  // causing canvas re-renders on unrelated state changes (e.g. isDirty).
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect } =
+    usePipelineStore(
+      useShallow((s) => ({
+        nodes: s.nodes,
+        edges: s.edges,
+        onNodesChange: s.onNodesChange,
+        onEdgesChange: s.onEdgesChange,
+        onConnect: s.onConnect,
+      })),
+    );
+  const addNode = usePipelineStore((s) => s.addNode);
+  const selectNode = usePipelineStore((s) => s.selectNode);
+  const selectedNodeId = usePipelineStore((s) => s.selectedNodeId);
+  const currentRun = usePipelineStore((s) => s.currentRun);
   const { screenToFlowPosition, getNodes, getEdges } = useReactFlow();
 
   // Prevent cycles — a pipeline is a DAG (Directed Acyclic Graph)
