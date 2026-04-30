@@ -92,3 +92,29 @@ class RunPipelineResponse(BaseModel):
     """Response wrapper for POST /runs."""
 
     run: PipelineRunResponse
+
+
+class RunListItem(BaseModel):
+    """Summary item for run history listing."""
+
+    id: str
+    pipeline_id: str
+    pipeline_name: str
+    status: str
+    total_duration_ms: int | None = None
+    total_cost_usd: float | None = None
+    started_at: str
+    completed_at: str | None = None
+    step_count: int = 0
+
+
+class RunHistoryResponse(BaseModel):
+    """Response wrapper for GET /runs."""
+
+    runs: list[RunListItem]
+
+
+class RunDetailResponse(BaseModel):
+    """Response wrapper for GET /runs/{run_id}."""
+
+    run: PipelineRunResponse

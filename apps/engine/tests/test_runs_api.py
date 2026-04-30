@@ -1,17 +1,40 @@
 """
 Tests for pipeline run API endpoints.
 
-Uses FastAPI TestClient — no real database or external services needed.
+Uses FastAPI TestClient with mocked DB session — no real database needed.
 """
 
 import time
-from unittest.mock import patch
+import uuid
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from fastapi.testclient import TestClient
 
+from app.core.database import get_db
 from app.main import app
 from app.services.executors import NodeExecutor, _EXECUTORS
 
+
+async def mock_get_db():
+    """Override DB dependency with a mock that accepts writes but returns nothing."""
+    session = AsyncMock()
+    session.add = MagicMock()
+    session.flush = AsyncMock()
+    session.commit = AsyncMock()
+    session.rollback = AsyncMock()
+
+    # For GET queries — return empty by default
+    mock_result = MagicMock()
+    mock_scalars = MagicMock()
+    mock_scalars.all.return_value = []
+    mock_scalars.first.return_value = None
+    mock_result.scalars.return_value = mock_scalars
+    session.execute = AsyncMock(return_value=mock_result)
+
+    yield session
+
+
+app.dependency_overrides[get_db] = mock_get_db
 client = TestClient(app)
 
 
@@ -160,3 +183,47 @@ class TestRunPipelineEndpoint:
             assert "timeout" in data["detail"].lower()
         finally:
             _EXECUTORS["datasource"] = original
+
+
+class TestListRunsEndpoint:
+    """GET /api/v1/runs — list run history."""
+
+    def test_list_runs_returns_empty(self):
+        """Returns empty list when no runs exist."""
+        response = client.get("/api/v1/runs")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["runs"] == []
+
+    def test_list_runs_accepts_pipeline_filter(self):
+        """Accepts pipeline_id query parameter."""
+        response = client.get("/api/v1/runs?pipeline_id=pipe-001")
+
+        assert response.status_code == 200
+        assert "runs" in response.json()
+
+    def test_list_runs_accepts_pagination(self):
+        """Accepts limit and offset query parameters."""
+        response = client.get("/api/v1/runs?limit=10&offset=0")
+
+        assert response.status_code == 200
+        assert "runs" in response.json()
+
+
+class TestGetRunEndpoint:
+    """GET /api/v1/runs/{run_id} — get a single run."""
+
+    def test_get_run_returns_404_when_not_found(self):
+        """Returns 404 for non-existent run ID."""
+        fake_id = str(uuid.uuid4())
+        response = client.get(f"/api/v1/runs/{fake_id}")
+
+        assert response.status_code == 404
+        assert "not found" in response.json()["detail"].lower()
+
+    def test_get_run_returns_422_for_invalid_uuid(self):
+        """Returns 422 for malformed UUID."""
+        response = client.get("/api/v1/runs/not-a-uuid")
+
+        assert response.status_code == 422
