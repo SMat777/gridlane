@@ -9,6 +9,10 @@ import type { PipelineRun } from "@gridlane/shared";
 
 const ENGINE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+/** Request timeout in milliseconds. Engine has a 120s execution timeout,
+ *  so 30s for the HTTP round-trip is generous for normal operations. */
+const REQUEST_TIMEOUT_MS = 30_000;
+
 interface RunPipelineParams {
   pipeline: {
     id: string;
@@ -40,11 +44,15 @@ interface RunPipelineParams {
 export async function runPipeline(
   params: RunPipelineParams,
 ): Promise<{ run: PipelineRun } | { error: string }> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
   try {
     const response = await fetch(`${ENGINE_URL}/api/v1/runs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(params),
+      signal: controller.signal,
     });
 
     if (!response.ok) {
@@ -91,8 +99,13 @@ export async function runPipeline(
 
     return { run };
   } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      return { error: "Request timeout — engine did not respond in time" };
+    }
     return {
       error: err instanceof Error ? err.message : "Failed to connect to engine",
     };
+  } finally {
+    clearTimeout(timeoutId);
   }
 }

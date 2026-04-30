@@ -158,6 +158,33 @@ class TestRunPipelineEndpoint:
 
         assert r1["run"]["id"] != r2["run"]["id"]
 
+    def test_run_rejects_too_many_nodes(self):
+        """Pipeline with more than 100 nodes is rejected."""
+        oversized_nodes = [{"id": f"n{i}", "type": "datasource"} for i in range(101)]
+        body = make_run_request(nodes=oversized_nodes, edges=[])
+
+        response = client.post("/api/v1/runs", json=body)
+        assert response.status_code == 422
+
+    def test_run_rejects_too_many_edges(self):
+        """Pipeline with more than 500 edges is rejected."""
+        nodes = [{"id": "a", "type": "datasource"}, {"id": "b", "type": "ai"}]
+        oversized_edges = [("a", "b")] * 501
+        body = make_run_request(nodes=nodes, edges=oversized_edges)
+
+        response = client.post("/api/v1/runs", json=body)
+        assert response.status_code == 422
+
+    def test_run_rejects_oversized_node_label(self):
+        """Node label longer than 200 chars is rejected."""
+        body = make_run_request(
+            nodes=[{"id": "n1", "type": "datasource", "label": "x" * 201}],
+            edges=[],
+        )
+
+        response = client.post("/api/v1/runs", json=body)
+        assert response.status_code == 422
+
     def test_run_timeout_returns_504(self):
         """Pipeline exceeding timeout returns 504 Gateway Timeout."""
 
