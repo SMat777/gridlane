@@ -160,5 +160,3 @@ class TestRunPipelineEndpoint:
             assert "timeout" in data["detail"].lower()
         finally:
             _EXECUTORS["datasource"] = original
-
-
