@@ -103,6 +103,47 @@ class TestTopologicalSort:
         order = topological_sort([], [])
         assert order == []
 
+    def test_cycle_raises_value_error(self):
+        """A → B → A is a cycle — should raise ValueError, not silently drop nodes."""
+        nodes = [
+            {"id": "a", "type": "datasource"},
+            {"id": "b", "type": "ai"},
+        ]
+        edges = [("a", "b"), ("b", "a")]
+        pipeline = make_pipeline(nodes, edges)
+
+        with pytest.raises(ValueError, match="cycle"):
+            topological_sort(pipeline["nodes"], pipeline["edges"])
+
+    def test_self_loop_raises_value_error(self):
+        """A → A is a cycle — should raise ValueError."""
+        nodes = [{"id": "a", "type": "datasource"}]
+        edges = [("a", "a")]
+        pipeline = make_pipeline(nodes, edges)
+
+        with pytest.raises(ValueError, match="cycle"):
+            topological_sort(pipeline["nodes"], pipeline["edges"])
+
+    def test_orphan_edge_source_raises_value_error(self):
+        """Edge from non-existent source should raise ValueError."""
+        nodes = [{"id": "a", "type": "datasource"}]
+        edges = [("ghost", "a")]
+        pipeline = make_pipeline(nodes, edges)
+        # Manually inject the invalid edge (make_pipeline creates valid edges)
+        pipeline["edges"] = [{"id": "e-ghost-a", "source": "ghost", "target": "a"}]
+
+        with pytest.raises(ValueError, match="ghost"):
+            topological_sort(pipeline["nodes"], pipeline["edges"])
+
+    def test_orphan_edge_target_raises_value_error(self):
+        """Edge to non-existent target should raise ValueError."""
+        nodes = [{"id": "a", "type": "datasource"}]
+        pipeline = make_pipeline(nodes, [])
+        pipeline["edges"] = [{"id": "e-a-ghost", "source": "a", "target": "ghost"}]
+
+        with pytest.raises(ValueError, match="ghost"):
+            topological_sort(pipeline["nodes"], pipeline["edges"])
+
 
 # ── Stub Executor Tests ───────────────────────────────────────────────
 
