@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Save, FolderOpen, Plus, CheckCircle, Play } from "lucide-react";
+import { useRef, useState } from "react";
+import { Save, FolderOpen, Plus, CheckCircle, Play, Square } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -16,7 +16,7 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
-import { runPipeline } from "@/lib/engine-api";
+import { runPipelineStreaming, cancelRun } from "@/lib/engine-api";
 
 /**
  * Pipeline toolbar — save, load, validate, and new pipeline actions.
@@ -29,10 +29,21 @@ export function PipelineToolbar() {
   const pipelineName = usePipelineStore((s) => s.pipelineName);
   const isDirty = usePipelineStore((s) => s.isDirty);
   const isRunning = usePipelineStore((s) => s.isRunning);
+  const activeRunId = usePipelineStore((s) => s.activeRunId);
 
   // Actions are stable references — safe to destructure from store directly
-  const { toSerializable, runValidation, setRunning, setCurrentRun, loadPipeline: loadPipelineToStore } = usePipelineStore.getState();
+  const {
+    toSerializable,
+    runValidation,
+    setRunning,
+    setCurrentRun,
+    loadPipeline: loadPipelineToStore,
+    initRun,
+    upsertStepResult,
+    finalizeRun,
+  } = usePipelineStore.getState();
   const [saving, setSaving] = useState(false);
+  const streamAbortRef = useRef<AbortController | null>(null);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
   const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
   const [pipelines, setPipelines] = useState<
@@ -114,32 +125,121 @@ export function PipelineToolbar() {
     setRunning(true);
     setCurrentRun(null);
 
+    const abortController = new AbortController();
+    streamAbortRef.current = abortController;
+
     const pipeline = toSerializable();
-    // Cast to engine API shape — config interfaces don't have index signatures
-    // but the runtime data is compatible
-    const result = await runPipeline({
-      pipeline: pipeline as unknown as Parameters<typeof runPipeline>[0]["pipeline"],
-    });
+    const result = await runPipelineStreaming(
+      {
+        pipeline: pipeline as unknown as Parameters<
+          typeof runPipelineStreaming
+        >[0]["pipeline"],
+      },
+      (event) => {
+        const payload = event.payload as Record<string, unknown>;
+        switch (event.type) {
+          case "run_started":
+            initRun({
+              runId: String(payload.run_id ?? ""),
+              pipelineId: String(payload.pipeline_id ?? ""),
+              pipelineName: String(payload.pipeline_name ?? pipeline.name),
+              startedAt: String(payload.started_at ?? new Date().toISOString()),
+            });
+            break;
+          case "step_started":
+          case "step_completed":
+          case "step_failed":
+            upsertStepResult({
+              nodeId: String(payload.node_id ?? ""),
+              nodeType: payload.node_type as
+                | "datasource"
+                | "ai"
+                | "action"
+                | "human"
+                | undefined,
+              nodeLabel:
+                typeof payload.node_label === "string" ? payload.node_label : undefined,
+              status:
+                event.type === "step_started"
+                  ? "running"
+                  : event.type === "step_completed"
+                    ? "completed"
+                    : "failed",
+              order:
+                typeof payload.order === "number" ? payload.order : undefined,
+              startedAt:
+                typeof payload.started_at === "string"
+                  ? payload.started_at
+                  : undefined,
+              completedAt:
+                typeof payload.completed_at === "string"
+                  ? payload.completed_at
+                  : undefined,
+              durationMs:
+                typeof payload.duration_ms === "number"
+                  ? payload.duration_ms
+                  : undefined,
+              output: "output" in payload ? payload.output : undefined,
+              error:
+                typeof payload.error === "string" ? payload.error : undefined,
+            });
+            break;
+          case "run_completed":
+          case "run_failed":
+          case "run_cancelled":
+            finalizeRun({
+              status:
+                event.type === "run_completed"
+                  ? "completed"
+                  : event.type === "run_failed"
+                    ? "failed"
+                    : "cancelled",
+              totalDurationMs:
+                typeof payload.total_duration_ms === "number"
+                  ? payload.total_duration_ms
+                  : undefined,
+              totalCostUsd:
+                typeof payload.total_cost_usd === "number"
+                  ? payload.total_cost_usd
+                  : undefined,
+              completedAt:
+                typeof payload.completed_at === "string"
+                  ? payload.completed_at
+                  : new Date().toISOString(),
+            });
+            if (event.type === "run_completed") {
+              toast.success("Pipeline completed");
+            } else if (event.type === "run_failed") {
+              toast.error("Pipeline failed", {
+                description:
+                  typeof payload.error === "string" ? payload.error : undefined,
+              });
+            } else {
+              toast.info("Pipeline cancelled");
+            }
+            break;
+        }
+      },
+      abortController.signal,
+    );
 
     if ("error" in result) {
-      toast.error("Pipeline execution failed", {
-        description: result.error,
-      });
-    } else {
-      setCurrentRun(result.run);
-      if (result.run.status === "completed") {
-        toast.success(
-          `Pipeline completed in ${result.run.totalDurationMs}ms`,
-          { description: `${result.run.steps.length} steps executed` },
-        );
-      } else {
-        toast.error("Pipeline failed", {
-          description: result.run.steps.find((s) => s.status === "failed")?.error || "Unknown error",
-        });
-      }
+      toast.error("Pipeline execution failed", { description: result.error });
+      setRunning(false);
+      streamAbortRef.current = null;
     }
+    // On success the stream callbacks drive state until a terminal event
+    // arrives, which calls finalizeRun() and resets isRunning + activeRunId.
+  };
 
-    setRunning(false);
+  const handleStop = async () => {
+    if (!activeRunId) return;
+    const result = await cancelRun(activeRunId);
+    if ("error" in result) {
+      toast.error("Cancel failed", { description: result.error });
+    } else {
+      toast.info("Cancellation requested — current step will finish first");
+    }
   };
 
   const handleValidate = () => {
@@ -213,15 +313,25 @@ export function PipelineToolbar() {
             {saving ? "Saving..." : "Save"}
           </button>
 
-          <button
-            onClick={handleRun}
-            disabled={isRunning}
-            className="flex items-center gap-1 rounded-md bg-green-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-green-700 disabled:opacity-50"
-            aria-label="Run pipeline"
-          >
-            <Play className="h-3.5 w-3.5" />
-            {isRunning ? "Running..." : "Run"}
-          </button>
+          {isRunning ? (
+            <button
+              onClick={handleStop}
+              className="flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-red-700"
+              aria-label="Stop pipeline"
+            >
+              <Square className="h-3.5 w-3.5" />
+              Stop
+            </button>
+          ) : (
+            <button
+              onClick={handleRun}
+              className="flex items-center gap-1 rounded-md bg-green-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-green-700"
+              aria-label="Run pipeline"
+            >
+              <Play className="h-3.5 w-3.5" />
+              Run
+            </button>
+          )}
         </div>
       </div>
 

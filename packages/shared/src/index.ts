@@ -47,4 +47,8 @@ export {
   type RunPipelineResponse,
   type RunHistoryResponse,
   type RunDetailResponse,
+  type RunEventType,
+  type RunStreamEvent,
+  type RunAsyncResponse,
+  type CancelRunResponse,
 } from "./execution";

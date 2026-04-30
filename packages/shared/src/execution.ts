@@ -128,3 +128,37 @@ export interface RunHistoryResponse {
 export interface RunDetailResponse {
   run: PipelineRun;
 }
+
+// ── SSE Event Types ──────────────────────────────────────────────────
+
+/** Event names emitted on the SSE stream */
+export type RunEventType =
+  | "run_started"
+  | "step_started"
+  | "step_completed"
+  | "step_failed"
+  | "run_completed"
+  | "run_failed"
+  | "run_cancelled";
+
+/** A single decoded SSE event from the run stream */
+export interface RunStreamEvent {
+  /** Per-run sequence id (used for Last-Event-ID resume) */
+  id: number;
+  type: RunEventType;
+  /** Type-specific JSON payload — see docs/specs/sse-progress.md */
+  payload: Record<string, unknown>;
+}
+
+/** Response body for POST /api/v1/runs/async */
+export interface RunAsyncResponse {
+  run_id: string;
+  status: RunStatus;
+  stream_url: string;
+}
+
+/** Response body for POST /api/v1/runs/:id/cancel */
+export interface CancelRunResponse {
+  run_id: string;
+  status: RunStatus | "cancelling";
+}
