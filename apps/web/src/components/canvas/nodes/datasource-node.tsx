@@ -14,12 +14,17 @@ import type { DataSourceConfig } from "@gridlane/shared";
  */
 export function DataSourceNode({ data, selected }: NodeProps<CanvasNode>) {
   const config = data.config as DataSourceConfig | undefined;
-  const summary =
-    config?.sourceType === "rest" && config.url
-      ? `${config.method} • ${new URL(config.url).hostname}`
-      : config?.sourceType
-        ? config.sourceType.toUpperCase()
-        : null;
+  const summary = (() => {
+    if (config?.sourceType === "rest" && config.url) {
+      try {
+        return `${config.method} • ${new URL(config.url).hostname}`;
+      } catch {
+        // URL is incomplete or invalid while user is typing — show raw value
+        return `${config.method} • ${config.url}`;
+      }
+    }
+    return config?.sourceType ? config.sourceType.toUpperCase() : null;
+  })();
 
   return (
     <BaseNode color="blue" selected={selected} isValid={data.isValid !== false}>
