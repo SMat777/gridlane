@@ -17,6 +17,8 @@ import {
   type PipelineValidationError,
   type PipelineDefinition,
   type PipelineRun,
+  type RunStatus,
+  type StepResult,
   type NodeConfig,
   validateNodeConfig,
 } from "@gridlane/shared";
@@ -42,6 +44,7 @@ interface PipelineState {
   // Execution state
   isRunning: boolean;
   currentRun: PipelineRun | null;
+  activeRunId: string | null;
 
   // React Flow callbacks — these wire directly to <ReactFlow> props
   onNodesChange: OnNodesChange<CanvasNode>;
@@ -62,6 +65,24 @@ interface PipelineState {
   // Execution actions
   setRunning: (running: boolean) => void;
   setCurrentRun: (run: PipelineRun | null) => void;
+  /** Track the in-flight run id so the Stop button can target it */
+  setActiveRunId: (id: string | null) => void;
+  /** Initialise currentRun from a run_started event (or pipeline + total) */
+  initRun: (init: {
+    runId: string;
+    pipelineId: string;
+    pipelineName: string;
+    startedAt: string;
+  }) => void;
+  /** Insert/update a step result by nodeId — called from each SSE event */
+  upsertStepResult: (step: Partial<StepResult> & { nodeId: string }) => void;
+  /** Finalise the run with a terminal status from a run_completed/failed/cancelled event */
+  finalizeRun: (final: {
+    status: RunStatus;
+    totalDurationMs?: number;
+    totalCostUsd?: number;
+    completedAt?: string;
+  }) => void;
 }
 
 /** Counter for unique node IDs within a session */
@@ -99,6 +120,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
   isDirty: false,
   isRunning: false,
   currentRun: null,
+  activeRunId: null,
 
   onNodesChange: (changes) => {
     const updatedNodes = applyNodeChanges(changes, get().nodes);
@@ -363,4 +385,67 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
 
   setRunning: (running) => set({ isRunning: running }),
   setCurrentRun: (run) => set({ currentRun: run }),
+  setActiveRunId: (id) => set({ activeRunId: id }),
+
+  initRun: ({ runId, pipelineId, pipelineName, startedAt }) =>
+    set({
+      activeRunId: runId,
+      currentRun: {
+        id: runId,
+        pipelineId,
+        pipelineName,
+        status: "running",
+        steps: [],
+        startedAt,
+      },
+    }),
+
+  upsertStepResult: (partial) => {
+    const current = get().currentRun;
+    if (!current) return;
+    const existing = current.steps.find((s) => s.nodeId === partial.nodeId);
+    let nextSteps: StepResult[];
+    if (existing) {
+      nextSteps = current.steps.map((s) =>
+        s.nodeId === partial.nodeId ? { ...s, ...partial } : s,
+      );
+    } else {
+      // First time seeing this step — fill defaults that aren't in the event
+      nextSteps = [
+        ...current.steps,
+        {
+          nodeId: partial.nodeId,
+          nodeType: (partial.nodeType ?? "datasource") as StepResult["nodeType"],
+          nodeLabel: partial.nodeLabel ?? "",
+          status: partial.status ?? "running",
+          order: partial.order ?? current.steps.length,
+          input: partial.input ?? null,
+          output: partial.output ?? null,
+          startedAt: partial.startedAt ?? new Date().toISOString(),
+          completedAt: partial.completedAt,
+          durationMs: partial.durationMs,
+          error: partial.error,
+          tokenUsage: partial.tokenUsage,
+          costUsd: partial.costUsd,
+        },
+      ];
+    }
+    set({ currentRun: { ...current, steps: nextSteps } });
+  },
+
+  finalizeRun: ({ status, totalDurationMs, totalCostUsd, completedAt }) => {
+    const current = get().currentRun;
+    if (!current) return;
+    set({
+      currentRun: {
+        ...current,
+        status,
+        totalDurationMs,
+        totalCostUsd,
+        completedAt,
+      },
+      isRunning: false,
+      activeRunId: null,
+    });
+  },
 }));
