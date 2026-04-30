@@ -120,7 +120,9 @@ function StepRow({ step }: { step: StepResult }) {
  * Each step is expandable to show input/output/error details.
  */
 export function RunResultsPanel() {
-  const { currentRun, setCurrentRun } = usePipelineStore();
+  // Individual selectors — functions are stable references, no useShallow needed
+  const currentRun = usePipelineStore((s) => s.currentRun);
+  const setCurrentRun = usePipelineStore((s) => s.setCurrentRun);
 
   if (!currentRun) return null;
 

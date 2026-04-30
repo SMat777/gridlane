@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { useShallow } from "zustand/react/shallow";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import {
   DataSourceConfigForm,
@@ -52,8 +53,15 @@ const TYPE_LABELS: Record<PipelineNodeType, string> = {
 };
 
 export function NodeConfigPanel() {
-  const { nodes, selectedNodeId, selectNode, deleteNode, updateNodeConfig, updateNodeLabel } =
-    usePipelineStore();
+  // Granular selectors — panel only re-renders when its own data changes,
+  // not on every canvas node drag or edge connection.
+  const { nodes, selectedNodeId } = usePipelineStore(
+    useShallow((s) => ({ nodes: s.nodes, selectedNodeId: s.selectedNodeId })),
+  );
+  const selectNode = usePipelineStore((s) => s.selectNode);
+  const deleteNode = usePipelineStore((s) => s.deleteNode);
+  const updateNodeConfig = usePipelineStore((s) => s.updateNodeConfig);
+  const updateNodeLabel = usePipelineStore((s) => s.updateNodeLabel);
 
   const isOpen = selectedNodeId !== null;
 
