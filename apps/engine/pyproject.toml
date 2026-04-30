@@ -5,7 +5,6 @@ description = "Gridlane pipeline execution engine — FastAPI backend with topol
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "alembic>=1.18.4",
     "asyncpg>=0.31.0",
     "fastapi>=0.136.1",
     "pydantic>=2.13.3",

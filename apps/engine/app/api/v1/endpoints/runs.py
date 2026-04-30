@@ -33,14 +33,21 @@ EXECUTION_TIMEOUT_SECONDS = 120
 
 
 def _model_to_run_response(run_model) -> dict:
-    """Convert a PipelineRunModel to the API response shape."""
+    """Convert a PipelineRunModel to the API response shape.
+
+    Handles Decimal → float and UUID → str conversions for JSON serialization.
+    """
     return {
         "id": str(run_model.id),
-        "pipeline_id": run_model.pipeline_id,
+        "pipeline_id": str(run_model.pipeline_id) if run_model.pipeline_id else "",
         "pipeline_name": run_model.pipeline_name,
         "status": run_model.status,
         "total_duration_ms": run_model.total_duration_ms,
-        "total_cost_usd": run_model.total_cost_usd,
+        "total_cost_usd": (
+            float(run_model.total_cost_usd)
+            if run_model.total_cost_usd is not None
+            else None
+        ),
         "started_at": run_model.started_at.isoformat() if run_model.started_at else "",
         "completed_at": (
             run_model.completed_at.isoformat() if run_model.completed_at else None
@@ -69,7 +76,7 @@ def _model_to_run_response(run_model) -> dict:
                     if s.input_tokens is not None
                     else None
                 ),
-                "cost_usd": s.cost_usd,
+                "cost_usd": float(s.cost_usd) if s.cost_usd is not None else None,
             }
             for s in sorted(run_model.steps, key=lambda s: s.order)
         ],
@@ -138,11 +145,13 @@ async def list_runs(
         "runs": [
             RunListItem(
                 id=str(r.id),
-                pipeline_id=r.pipeline_id,
+                pipeline_id=str(r.pipeline_id) if r.pipeline_id else "",
                 pipeline_name=r.pipeline_name,
                 status=r.status,
                 total_duration_ms=r.total_duration_ms,
-                total_cost_usd=r.total_cost_usd,
+                total_cost_usd=(
+                    float(r.total_cost_usd) if r.total_cost_usd is not None else None
+                ),
                 started_at=r.started_at.isoformat() if r.started_at else "",
                 completed_at=(r.completed_at.isoformat() if r.completed_at else None),
                 step_count=len(r.steps),
