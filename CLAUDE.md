@@ -16,7 +16,7 @@ Visual AI pipeline builder with production observability and human-in-the-loop g
 | Canvas | React Flow `@xyflow/react` v12 |
 | UI | shadcn/ui + Tailwind v4 |
 | Client state | Zustand |
-| Server state | TanStack Query |
+| Server state | (not yet needed — Zustand covers current needs) |
 | JS tooling | pnpm + ESLint + tsc |
 | Backend | FastAPI + Python 3.12 |
 | Py tooling | uv + Ruff + pytest |
@@ -106,8 +106,8 @@ pydantic: discriminated unions, custom validators
 ## Current Progress
 
 > Opdateres af dev-pipeline SHIP-step og ved session-start.
-> Sidste opdatering: 2025-07-18 (efter session 3 — Sprint 3 HIGH fixes)
-> 11 nye tests, 8 fixes shipped (PR #21-#23), CI pipeline fixed.
+> Sidste opdatering: 2025-07-19 (efter session 4 — Sprint 4 Hybrid C execution)
+> 100 tests total (50 frontend + 50 backend), CI grøn på main.
 
 ### Done
 - ✅ Monorepo scaffold + CI pipeline (lint, typecheck, test, build)
@@ -118,11 +118,11 @@ pydantic: discriminated unions, custom validators
 - ✅ Pipeline execution types (shared package)
 - ✅ SQLAlchemy models + Alembic migrations
 - ✅ Pipeline execution engine (topological sort, Kahn's algorithm)
-- ✅ Cycle detection + orphan edge validation
-- ✅ Run API endpoint (FastAPI)
+- ✅ Cycle detection + orphan edge validation (backend + frontend)
+- ✅ Run API endpoints: POST /runs, GET /runs, GET /runs/{id}
+- ✅ Run persistence to database (soft fail if DB unavailable)
 - ✅ Frontend run UI med engine API integration
 - ✅ 7 CRITICAL fixes: ID persistence, URL parse safety, error boundaries, async execution with thread pool + 120s timeout (PR #17-20)
-- ✅ 83 tests total (47 frontend + 36 backend)
 
 ### Done (Session 3 — Sprint 3 HIGH fixes)
 - ✅ H1: isDirty filtering — only meaningful changes mark dirty (PR #21)
@@ -134,6 +134,18 @@ pydantic: discriminated unions, custom validators
 - ✅ H9: Docker context → monorepo root with updated Dockerfiles (PR #23)
 - ✅ H10: transpilePackages for @gridlane/shared (PR #23)
 - ✅ CI pipeline fixed: lockfile path, working-directory, lint errors (PR #23)
+
+### Done (Session 4 — Sprint 4 Hybrid C execution)
+- ✅ CI fix: ESLint suppress for next-themes hydration guard, unused var rename, ruff format
+- ✅ Granular Zustand selectors in pipeline toolbar (was full-store subscription)
+- ✅ CORS restricted to specific methods and headers
+- ✅ Frontend cycle detection (Kahn's algorithm in validate())
+- ✅ Removed unused @tanstack/react-query dependency
+- ✅ Removed supabase + httpx from engine runtime deps (httpx stays in dev)
+- ✅ RunService: save_run(), list_runs(), get_run() with full test coverage
+- ✅ GET /runs and GET /runs/{id} endpoints with pagination
+- ✅ POST /runs now persists to DB (soft fail)
+- ✅ 100 tests total (50 FE + 50 BE), all green
 
 ### Parked (awaiting Supabase integration)
 - ⬜ H6: Health check validerer ikke DB/Redis
@@ -168,9 +180,11 @@ pydantic: discriminated unions, custom validators
 ```
 Frontend trigger:    run-results-panel.tsx (Run knap)
   → API call:        engine-api.ts (executePipeline)
-  → Backend route:   apps/engine/app/api/v1/endpoints/runs.py
-  → Service:         apps/engine/app/services/execution.py (topological sort + orchestration)
+  → Backend route:   apps/engine/app/api/v1/endpoints/runs.py (POST /runs)
+  → Engine:          apps/engine/app/services/execution.py (topological sort + orchestration)
   → Node executors:  apps/engine/app/services/executors.py (stub executors per node type)
+  → Persistence:     apps/engine/app/services/run_service.py (save_run → DB, soft fail)
+  → History:         GET /runs (list), GET /runs/{id} (detail)
 ```
 
 ### Pipeline State Management
@@ -192,8 +206,8 @@ Shared types:        packages/shared/src/pipeline.ts (NodeType, PipelineNode, et
 
 ### Test Locations
 ```
-Frontend tests:      apps/web/src/stores/__tests__/*.test.ts (47 tests)
-Backend tests:       apps/engine/tests/*.py (36 tests)
+Frontend tests:      apps/web/src/stores/__tests__/*.test.ts (50 tests)
+Backend tests:       apps/engine/tests/*.py (50 tests)
 CI pipeline:         .github/workflows/ci.yml
 ```
 
@@ -206,12 +220,9 @@ CI pipeline:         .github/workflows/ci.yml
 | Stub executors (no real execution) | HIGH | Connectors, AI node |
 | No auth (Supabase Auth not configured) | HIGH | Multi-user, deploy |
 | No RLS policies | HIGH | Data isolation |
-| Pipeline toolbar still uses full-store subscription | MEDIUM | Performance |
-| CORS allows all methods and headers | MEDIUM | Security |
-| Frontend validate() doesn't detect cycles in loaded pipelines | MEDIUM | Reliability |
-| Run results not persisted to database | HIGH | Run history |
-| @tanstack/react-query installed but unused | LOW | Bundle size |
 | No root package.json for pnpm scripts | LOW | DX convenience |
+| `_error` prop in global-error.tsx triggers ESLint warning (unused var) | LOW | Clean lint output |
+| Supabase config settings in engine config.py unused | LOW | Cleanup |
 
 ## Foundation Sprint — Definition of Done
 
