@@ -135,7 +135,7 @@ class ExecutionEngine:
 
             try:
                 executor = get_executor(node_type)
-                output = executor.execute(config, input_data)
+                result = executor.execute(config, input_data)
 
                 step_completed = datetime.now(timezone.utc)
                 duration_ms = int(
@@ -145,19 +145,19 @@ class ExecutionEngine:
                 step_result.update(
                     {
                         "status": "completed",
-                        "output": output,
+                        "output": result.output,
                         "completed_at": step_completed.isoformat(),
                         "duration_ms": duration_ms,
                     }
                 )
 
-                # Extract AI metrics if present
-                if "token_usage" in output:
-                    step_result["token_usage"] = output["token_usage"]
-                if "cost_usd" in output:
-                    step_result["cost_usd"] = output["cost_usd"]
+                # Extract metrics from ExecutorResult
+                if result.token_usage is not None:
+                    step_result["token_usage"] = result.token_usage
+                if result.cost_usd is not None:
+                    step_result["cost_usd"] = result.cost_usd
 
-                node_outputs[node_id] = output
+                node_outputs[node_id] = result.output
 
             except Exception as e:
                 step_completed = datetime.now(timezone.utc)

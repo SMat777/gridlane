@@ -12,6 +12,8 @@ from app.services.execution import (
     topological_sort,
 )
 from app.services.executors import (
+    ConnectorManifest,
+    ExecutorResult,
     NodeExecutor,
     StubDataSourceExecutor,
     StubAIExecutor,
@@ -156,33 +158,72 @@ class TestStubExecutors:
             config={"sourceType": "rest", "url": "https://api.example.com"},
             input_data=None,
         )
-        assert "data" in result
-        assert isinstance(result["data"], list)
+        assert isinstance(result, ExecutorResult)
+        assert "data" in result.output
+        assert isinstance(result.output["data"], list)
 
     def test_ai_executor(self):
         result = StubAIExecutor().execute(
             config={"provider": "anthropic", "prompt": "Analyze this"},
             input_data={"data": [1, 2, 3]},
         )
-        assert "analysis" in result
-        assert "token_usage" in result
-        assert result["token_usage"]["total_tokens"] > 0
+        assert isinstance(result, ExecutorResult)
+        assert "analysis" in result.output
+        assert result.token_usage is not None
+        assert result.token_usage["total_tokens"] > 0
+        assert result.cost_usd is not None
 
     def test_action_executor(self):
         result = StubActionExecutor().execute(
             config={"actionType": "transform", "outputFormat": "json"},
             input_data={"analysis": "test"},
         )
-        assert "output" in result
-        assert result["format"] == "json"
+        assert isinstance(result, ExecutorResult)
+        assert "output" in result.output
+        assert result.output["format"] == "json"
 
     def test_human_executor(self):
         result = StubHumanExecutor().execute(
             config={"instructions": "Review this", "requireComment": False},
             input_data={"data": "test"},
         )
-        assert result["approved"] is True
-        assert result["decision"] == "auto-approved"
+        assert isinstance(result, ExecutorResult)
+        assert result.output["approved"] is True
+        assert result.output["decision"] == "auto-approved"
+
+    def test_manifest_returns_metadata(self):
+        """Each executor should provide a ConnectorManifest."""
+        for executor_cls in [
+            StubDataSourceExecutor,
+            StubAIExecutor,
+            StubActionExecutor,
+            StubHumanExecutor,
+        ]:
+            manifest = executor_cls.manifest()
+            assert isinstance(manifest, ConnectorManifest)
+            assert manifest.name
+            assert manifest.node_type
+
+    def test_validate_config_catches_missing_required(self):
+        """validate_config should report missing required fields."""
+        executor = StubAIExecutor()
+        errors = executor.validate_config({})
+        field_names = [e.field for e in errors]
+        assert "provider" in field_names
+        assert "model" in field_names
+        assert "prompt" in field_names
+
+    def test_validate_config_passes_with_required_fields(self):
+        """validate_config should return empty list when all required fields present."""
+        executor = StubAIExecutor()
+        errors = executor.validate_config(
+            {
+                "provider": "anthropic",
+                "model": "claude-sonnet-4-20250514",
+                "prompt": "test",
+            }
+        )
+        assert errors == []
 
     def test_get_executor_returns_correct_type(self):
         assert isinstance(get_executor("datasource"), StubDataSourceExecutor)
@@ -300,6 +341,12 @@ class TestExecutionEngine:
         """When a step fails, remaining steps are marked cancelled."""
 
         class FailingExecutor(NodeExecutor):
+            @classmethod
+            def manifest(cls) -> ConnectorManifest:
+                return ConnectorManifest(
+                    name="Failing", description="Test", node_type="ai"
+                )
+
             def execute(self, config, input_data):
                 raise RuntimeError("Connection refused")
 

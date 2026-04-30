@@ -12,7 +12,12 @@ from fastapi.testclient import TestClient
 
 from app.core.database import get_db
 from app.main import app
-from app.services.executors import NodeExecutor, _EXECUTORS
+from app.services.executors import (
+    ConnectorManifest,
+    ExecutorResult,
+    NodeExecutor,
+    _EXECUTORS,
+)
 
 
 async def mock_get_db():
@@ -192,9 +197,15 @@ class TestRunPipelineEndpoint:
         """Pipeline exceeding timeout returns 504 Gateway Timeout."""
 
         class SlowExecutor(NodeExecutor):
+            @classmethod
+            def manifest(cls) -> ConnectorManifest:
+                return ConnectorManifest(
+                    name="Slow", description="Test", node_type="datasource"
+                )
+
             def execute(self, config, input_data):
                 time.sleep(5)
-                return {"data": "should not reach here"}
+                return ExecutorResult(output={"data": "should not reach here"})
 
         original = _EXECUTORS["datasource"]
         _EXECUTORS["datasource"] = SlowExecutor
