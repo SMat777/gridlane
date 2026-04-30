@@ -112,6 +112,8 @@ class NodeExecutor(ABC):
 class StubDataSourceExecutor(NodeExecutor):
     """Returns sample data as if fetched from an API or database."""
 
+    VALID_SOURCE_TYPES = {"rest", "sql", "file"}
+
     @classmethod
     def manifest(cls) -> ConnectorManifest:
         return ConnectorManifest(
@@ -120,6 +122,29 @@ class StubDataSourceExecutor(NodeExecutor):
             node_type="datasource",
             required_fields=["sourceType"],
         )
+
+    def validate_config(self, config: dict[str, Any]) -> list[ConfigError]:
+        errors = super().validate_config(config)
+
+        source_type = config.get("sourceType", "")
+        if source_type and source_type not in self.VALID_SOURCE_TYPES:
+            errors.append(
+                ConfigError(
+                    field="sourceType",
+                    message=f"sourceType must be one of: {', '.join(sorted(self.VALID_SOURCE_TYPES))}",
+                )
+            )
+
+        # URL is required for REST and SQL but not for file
+        if source_type in ("rest", "sql"):
+            url = config.get("url", "")
+            if not url or not str(url).strip():
+                label = "URL" if source_type == "rest" else "Connection string"
+                errors.append(
+                    ConfigError(field="url", message=f"{label} is required for {source_type} sources")
+                )
+
+        return errors
 
     def execute(self, config: dict[str, Any], input_data: Any) -> ExecutorResult:
         source_type = config.get("sourceType", "rest")
@@ -139,6 +164,8 @@ class StubDataSourceExecutor(NodeExecutor):
 class StubAIExecutor(NodeExecutor):
     """Returns a simulated AI analysis with token metrics."""
 
+    VALID_PROVIDERS = {"anthropic", "openai"}
+
     @classmethod
     def manifest(cls) -> ConnectorManifest:
         return ConnectorManifest(
@@ -147,6 +174,46 @@ class StubAIExecutor(NodeExecutor):
             node_type="ai",
             required_fields=["provider", "model", "prompt"],
         )
+
+    def validate_config(self, config: dict[str, Any]) -> list[ConfigError]:
+        errors = super().validate_config(config)
+
+        provider = config.get("provider", "")
+        if provider and provider not in self.VALID_PROVIDERS:
+            errors.append(
+                ConfigError(
+                    field="provider",
+                    message=f"provider must be one of: {', '.join(sorted(self.VALID_PROVIDERS))}",
+                )
+            )
+
+        temperature = config.get("temperature")
+        if temperature is not None:
+            try:
+                temp = float(temperature)
+                if temp < 0 or temp > 2:
+                    errors.append(
+                        ConfigError(field="temperature", message="temperature must be between 0 and 2")
+                    )
+            except (TypeError, ValueError):
+                errors.append(
+                    ConfigError(field="temperature", message="temperature must be a number")
+                )
+
+        max_tokens = config.get("maxTokens")
+        if max_tokens is not None:
+            try:
+                tokens = int(max_tokens)
+                if tokens < 1 or tokens > 100_000:
+                    errors.append(
+                        ConfigError(field="maxTokens", message="maxTokens must be between 1 and 100,000")
+                    )
+            except (TypeError, ValueError):
+                errors.append(
+                    ConfigError(field="maxTokens", message="maxTokens must be a whole number")
+                )
+
+        return errors
 
     def execute(self, config: dict[str, Any], input_data: Any) -> ExecutorResult:
         provider = config.get("provider", "anthropic")
@@ -174,6 +241,9 @@ class StubAIExecutor(NodeExecutor):
 class StubActionExecutor(NodeExecutor):
     """Returns formatted output based on action config."""
 
+    VALID_ACTION_TYPES = {"transform", "output"}
+    VALID_OUTPUT_FORMATS = {"json", "csv", "text"}
+
     @classmethod
     def manifest(cls) -> ConnectorManifest:
         return ConnectorManifest(
@@ -182,6 +252,29 @@ class StubActionExecutor(NodeExecutor):
             node_type="action",
             required_fields=["actionType"],
         )
+
+    def validate_config(self, config: dict[str, Any]) -> list[ConfigError]:
+        errors = super().validate_config(config)
+
+        action_type = config.get("actionType", "")
+        if action_type and action_type not in self.VALID_ACTION_TYPES:
+            errors.append(
+                ConfigError(
+                    field="actionType",
+                    message=f"actionType must be one of: {', '.join(sorted(self.VALID_ACTION_TYPES))}",
+                )
+            )
+
+        output_format = config.get("outputFormat")
+        if output_format and output_format not in self.VALID_OUTPUT_FORMATS:
+            errors.append(
+                ConfigError(
+                    field="outputFormat",
+                    message=f"outputFormat must be one of: {', '.join(sorted(self.VALID_OUTPUT_FORMATS))}",
+                )
+            )
+
+        return errors
 
     def execute(self, config: dict[str, Any], input_data: Any) -> ExecutorResult:
         output_format = config.get("outputFormat", "json")

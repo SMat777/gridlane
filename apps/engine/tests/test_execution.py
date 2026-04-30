@@ -26,6 +26,15 @@ from app.services.executors import (
 
 # ── Test Fixtures ─────────────────────────────────────────────────────
 
+# Valid default configs for each node type — used when tests don't
+# specify a config. Matches the minimum required by validate_config().
+VALID_DEFAULTS = {
+    "datasource": {"sourceType": "rest", "url": "https://api.example.com/data"},
+    "ai": {"provider": "anthropic", "model": "claude-sonnet-4-20250514", "prompt": "Analyze: {{ input }}"},
+    "action": {"actionType": "transform", "outputFormat": "json"},
+    "human": {},
+}
+
 
 def make_pipeline(nodes, edges):
     """Helper to build a pipeline definition dict."""
@@ -40,7 +49,7 @@ def make_pipeline(nodes, edges):
                 "data": {
                     "label": n.get("label", n["type"].title()),
                     "nodeType": n["type"],
-                    "config": n.get("config", {}),
+                    "config": n.get("config", VALID_DEFAULTS.get(n["type"], {})),
                 },
             }
             for n in nodes
@@ -225,6 +234,94 @@ class TestStubExecutors:
         )
         assert errors == []
 
+    # ── Enhanced validation (type/range/format checks) ─────────────
+
+    def test_datasource_validates_url_required_for_rest(self):
+        """REST source type requires a non-empty URL."""
+        executor = StubDataSourceExecutor()
+        errors = executor.validate_config({"sourceType": "rest", "url": ""})
+        field_names = [e.field for e in errors]
+        assert "url" in field_names
+
+    def test_datasource_validates_url_required_for_sql(self):
+        """SQL source type requires a non-empty connection string."""
+        executor = StubDataSourceExecutor()
+        errors = executor.validate_config({"sourceType": "sql", "url": ""})
+        field_names = [e.field for e in errors]
+        assert "url" in field_names
+
+    def test_datasource_accepts_file_without_url(self):
+        """File source type does not require URL."""
+        executor = StubDataSourceExecutor()
+        errors = executor.validate_config({"sourceType": "file"})
+        assert errors == []
+
+    def test_datasource_rejects_invalid_source_type(self):
+        """sourceType must be one of rest/sql/file."""
+        executor = StubDataSourceExecutor()
+        errors = executor.validate_config({"sourceType": "ftp"})
+        field_names = [e.field for e in errors]
+        assert "sourceType" in field_names
+
+    def test_ai_validates_temperature_range(self):
+        """Temperature must be between 0 and 2."""
+        executor = StubAIExecutor()
+        config = {"provider": "anthropic", "model": "claude-sonnet-4-20250514", "prompt": "test"}
+
+        # Too high
+        errors = executor.validate_config({**config, "temperature": 3.0})
+        assert any(e.field == "temperature" for e in errors)
+
+        # Too low
+        errors = executor.validate_config({**config, "temperature": -1.0})
+        assert any(e.field == "temperature" for e in errors)
+
+        # Valid boundary
+        errors = executor.validate_config({**config, "temperature": 0.0})
+        assert not any(e.field == "temperature" for e in errors)
+
+    def test_ai_validates_max_tokens_range(self):
+        """maxTokens must be 1-100000."""
+        executor = StubAIExecutor()
+        config = {"provider": "anthropic", "model": "claude-sonnet-4-20250514", "prompt": "test"}
+
+        errors = executor.validate_config({**config, "maxTokens": 0})
+        assert any(e.field == "maxTokens" for e in errors)
+
+        errors = executor.validate_config({**config, "maxTokens": 200000})
+        assert any(e.field == "maxTokens" for e in errors)
+
+    def test_ai_validates_provider_enum(self):
+        """Provider must be anthropic or openai."""
+        executor = StubAIExecutor()
+        errors = executor.validate_config({
+            "provider": "google",
+            "model": "gemini",
+            "prompt": "test",
+        })
+        assert any(e.field == "provider" for e in errors)
+
+    def test_action_validates_enums(self):
+        """actionType and outputFormat must be valid enum values."""
+        executor = StubActionExecutor()
+
+        errors = executor.validate_config({"actionType": "delete"})
+        assert any(e.field == "actionType" for e in errors)
+
+        errors = executor.validate_config({"actionType": "transform", "outputFormat": "xml"})
+        assert any(e.field == "outputFormat" for e in errors)
+
+    def test_action_accepts_valid_config(self):
+        executor = StubActionExecutor()
+        errors = executor.validate_config({"actionType": "transform", "outputFormat": "json"})
+        assert errors == []
+
+    def test_human_accepts_empty_config(self):
+        """Human step has no required fields."""
+        executor = StubHumanExecutor()
+        errors = executor.validate_config({})
+        assert errors == []
+
     def test_get_executor_returns_correct_type(self):
         assert isinstance(get_executor("datasource"), StubDataSourceExecutor)
         assert isinstance(get_executor("ai"), StubAIExecutor)
@@ -373,3 +470,38 @@ class TestExecutionEngine:
             assert run["steps"][2]["status"] == "cancelled"  # action never ran
         finally:
             _EXECUTORS["ai"] = original
+
+    def test_execute_preflight_catches_invalid_config(self):
+        """Engine should validate all configs before executing any step."""
+        from app.core.errors import PipelineError, ErrorCode
+
+        pipeline = make_pipeline(
+            nodes=[
+                {"id": "src", "type": "datasource", "config": {"sourceType": "rest", "url": ""}},
+                {"id": "analyze", "type": "ai", "config": {"provider": "anthropic", "model": "", "prompt": ""}},
+            ],
+            edges=[("src", "analyze")],
+        )
+
+        engine = ExecutionEngine()
+        with pytest.raises(PipelineError) as exc_info:
+            engine.execute(pipeline)
+
+        assert exc_info.value.code == ErrorCode.VALIDATION_ERROR
+        # Should contain details about which nodes/fields failed
+        assert exc_info.value.details is not None
+        assert len(exc_info.value.details.get("validation_errors", [])) > 0
+
+    def test_execute_preflight_passes_with_valid_config(self):
+        """Valid configs should not trigger preflight errors."""
+        pipeline = make_pipeline(
+            nodes=[
+                {"id": "src", "type": "datasource", "config": {"sourceType": "rest", "url": "https://example.com"}},
+                {"id": "out", "type": "action", "config": {"actionType": "transform", "outputFormat": "json"}},
+            ],
+            edges=[("src", "out")],
+        )
+
+        engine = ExecutionEngine()
+        run = engine.execute(pipeline)
+        assert run["status"] == "completed"
