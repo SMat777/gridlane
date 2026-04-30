@@ -103,11 +103,121 @@ pydantic: discriminated unions, custom validators
 - `smart-explore` — UNDERSTAND step (AST-baseret kode-navigation, token-effektiv)
 - `ship` — SHIP step pre-merge checklist (auto)
 
+## Current Progress
+
+> Opdateres af dev-pipeline SHIP-step og ved session-start.
+> Sidste opdatering: 2025-07-18 (efter session 3 — Sprint 3 HIGH fixes)
+> 11 nye tests, 8 fixes shipped (PR #21-#23), CI pipeline fixed.
+
+### Done
+- ✅ Monorepo scaffold + CI pipeline (lint, typecheck, test, build)
+- ✅ Pipeline canvas med drag-and-drop (React Flow v12 custom nodes)
+- ✅ 5 node-typer: datasource, AI, action, human, base
+- ✅ Node configuration panels med type-specifikke forms
+- ✅ UX polish: escape-closes-config, toast notifications, delete node, unsaved changes dialog, empty state, dark mode, config panel animation
+- ✅ Pipeline execution types (shared package)
+- ✅ SQLAlchemy models + Alembic migrations
+- ✅ Pipeline execution engine (topological sort, Kahn's algorithm)
+- ✅ Cycle detection + orphan edge validation
+- ✅ Run API endpoint (FastAPI)
+- ✅ Frontend run UI med engine API integration
+- ✅ 7 CRITICAL fixes: ID persistence, URL parse safety, error boundaries, async execution with thread pool + 120s timeout (PR #17-20)
+- ✅ 83 tests total (47 frontend + 36 backend)
+
+### Done (Session 3 — Sprint 3 HIGH fixes)
+- ✅ H1: isDirty filtering — only meaningful changes mark dirty (PR #21)
+- ✅ H2: Zustand granular selectors in canvas, config-panel, results-panel (PR #21)
+- ✅ H3: Node ID counter syncs with loaded pipeline IDs (PR #21)
+- ✅ H4: AbortController with 30s timeout on engine API calls (PR #22)
+- ✅ H5: Pydantic Field constraints — max 100 nodes, 500 edges, 200-char labels (PR #22)
+- ✅ H8: Removed duplicate pnpm-lock.yaml (PR #23)
+- ✅ H9: Docker context → monorepo root with updated Dockerfiles (PR #23)
+- ✅ H10: transpilePackages for @gridlane/shared (PR #23)
+- ✅ CI pipeline fixed: lockfile path, working-directory, lint errors (PR #23)
+
+### Parked (awaiting Supabase integration)
+- ⬜ H6: Health check validerer ikke DB/Redis
+- ⬜ H7: Database connection pool bruger defaults
+
+### Not Started (Foundation Sprint)
+- ⬜ 3 connectors: REST API, SQL (Supabase Postgres), File (CSV/JSON)
+- ⬜ AI node: provider-agnostic (Anthropic + OpenAI), BYOK, streaming, cost tracking
+- ⬜ HUMAN step: pause → approve/reject → resume
+- ⬜ Observability: per-step timing, tokens, cost, run history
+
+## Architecture Decisions
+
+> Beslutninger der er taget og HVORFOR — så vi ikke re-debatterer dem.
+
+| Decision | Valg | Alternativ | Hvorfor |
+|----------|------|-----------|---------|
+| Execution order | Kahn's algorithm (topological sort) | Simple queue, DFS | Håndterer DAG-struktur korrekt, O(V+E), fanger cycles |
+| Async execution | `asyncio.to_thread()` + 120s timeout | Celery, subprocess | Simpelt for foundation-phase, nok til single-user |
+| Client state | Zustand | Redux, Jotai | Minimal boilerplate, granulære selectors, React Flow kompatibel |
+| Node rendering | React Flow v12 custom nodes | Default nodes, Rete.js | Fuld kontrol over UI, shadcn-integration, god DX |
+| Node ID | Counter-baseret (`node_${n}`) + sync on load | UUID | Counter syncs with loaded IDs via `syncNodeIdCounter()` (H3 fixed) |
+| Pipeline ID | UUID (genbrug ved re-save) | Auto-increment | Idempotent saves, ingen server-roundtrip for ID |
+| Monorepo | pnpm workspaces | Turborepo, Nx | Simpelt, ingen build-orchestration overhead endnu |
+| Python tooling | uv + Ruff | pip + Black + isort | Hurtigere, single tool for format + lint |
+
+## Key File Navigation
+
+> Brug dette i stedet for at scanne hele kodebasen.
+
+### Pipeline Execution Flow
+```
+Frontend trigger:    run-results-panel.tsx (Run knap)
+  → API call:        engine-api.ts (executePipeline)
+  → Backend route:   apps/engine/app/api/v1/endpoints/runs.py
+  → Service:         apps/engine/app/services/execution.py (topological sort + orchestration)
+  → Node executors:  apps/engine/app/services/executors.py (stub executors per node type)
+```
+
+### Pipeline State Management
+```
+Store definition:    apps/web/src/stores/pipeline-store.ts (Zustand)
+  → Canvas binding:  apps/web/src/components/canvas/pipeline-canvas.tsx
+  → Config panel:    apps/web/src/components/canvas/node-config-panel.tsx
+  → Save/Load:       apps/web/src/lib/pipeline-api.ts
+```
+
+### Node Type System
+```
+Shared types:        packages/shared/src/pipeline.ts (NodeType, PipelineNode, etc.)
+  → Custom nodes:    apps/web/src/components/canvas/nodes/*.tsx (visual)
+  → Config forms:    apps/web/src/components/canvas/config-forms/*.tsx (per-type config)
+  → Backend models:  apps/engine/app/models/run.py (SQLAlchemy)
+  → API schemas:     apps/engine/app/api/v1/schemas.py (Pydantic)
+```
+
+### Test Locations
+```
+Frontend tests:      apps/web/src/stores/__tests__/*.test.ts (47 tests)
+Backend tests:       apps/engine/tests/*.py (36 tests)
+CI pipeline:         .github/workflows/ci.yml
+```
+
+## Known Technical Debt
+
+> Ting der bevidst er udskudt — ikke glemt.
+
+| Debt | Severity | Blocker for |
+|------|----------|-------------|
+| Stub executors (no real execution) | HIGH | Connectors, AI node |
+| No auth (Supabase Auth not configured) | HIGH | Multi-user, deploy |
+| No RLS policies | HIGH | Data isolation |
+| Pipeline toolbar still uses full-store subscription | MEDIUM | Performance |
+| CORS allows all methods and headers | MEDIUM | Security |
+| Frontend validate() doesn't detect cycles in loaded pipelines | MEDIUM | Reliability |
+| Run results not persisted to database | HIGH | Run history |
+| @tanstack/react-query installed but unused | LOW | Bundle size |
+| No root package.json for pnpm scripts | LOW | DX convenience |
+
 ## Foundation Sprint — Definition of Done
 
 See `~/Developer/ClaudePlans/gridlane-strategic-foundation.md` section 0.2 for full DOD.
 
-Key criteria:
+Key criteria (see Current Progress for status):
 - [ ] End-to-end pipeline: build → run → see trace
 - [ ] 3 connectors: REST API, SQL (Supabase Postgres), File (CSV/JSON)
 - [ ] AI node: provider-agnostic (Anthropic + OpenAI), BYOK, streaming, cost tracking
