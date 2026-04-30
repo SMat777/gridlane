@@ -12,7 +12,12 @@ from fastapi.testclient import TestClient
 
 from app.core.database import get_db
 from app.main import app
-from app.services.executors import NodeExecutor, _EXECUTORS
+from app.services.executors import (
+    ConnectorManifest,
+    ExecutorResult,
+    NodeExecutor,
+    _EXECUTORS,
+)
 
 
 async def mock_get_db():
@@ -38,11 +43,14 @@ app.dependency_overrides[get_db] = mock_get_db
 client = TestClient(app)
 
 
+TEST_PIPELINE_ID = "22222222-2222-2222-2222-222222222222"
+
+
 def make_run_request(nodes, edges):
     """Helper to build a run request body."""
     return {
         "pipeline": {
-            "id": "test-pipeline-123",
+            "id": TEST_PIPELINE_ID,
             "name": "Test Pipeline",
             "nodes": [
                 {
@@ -86,7 +94,7 @@ class TestRunPipelineEndpoint:
         run = data["run"]
 
         assert run["status"] == "completed"
-        assert run["pipeline_id"] == "test-pipeline-123"
+        assert run["pipeline_id"] == TEST_PIPELINE_ID
         assert run["pipeline_name"] == "Test Pipeline"
         assert len(run["steps"]) == 3
         assert run["total_duration_ms"] >= 0
@@ -189,9 +197,15 @@ class TestRunPipelineEndpoint:
         """Pipeline exceeding timeout returns 504 Gateway Timeout."""
 
         class SlowExecutor(NodeExecutor):
+            @classmethod
+            def manifest(cls) -> ConnectorManifest:
+                return ConnectorManifest(
+                    name="Slow", description="Test", node_type="datasource"
+                )
+
             def execute(self, config, input_data):
                 time.sleep(5)
-                return {"data": "should not reach here"}
+                return ExecutorResult(output={"data": "should not reach here"})
 
         original = _EXECUTORS["datasource"]
         _EXECUTORS["datasource"] = SlowExecutor
@@ -207,7 +221,8 @@ class TestRunPipelineEndpoint:
 
             assert response.status_code == 504
             data = response.json()
-            assert "timeout" in data["detail"].lower()
+            assert data["error"]["code"] == "EXECUTION_TIMEOUT"
+            assert "timed out" in data["error"]["message"].lower()
         finally:
             _EXECUTORS["datasource"] = original
 
@@ -242,12 +257,14 @@ class TestGetRunEndpoint:
     """GET /api/v1/runs/{run_id} — get a single run."""
 
     def test_get_run_returns_404_when_not_found(self):
-        """Returns 404 for non-existent run ID."""
+        """Returns 404 for non-existent run ID with structured error."""
         fake_id = str(uuid.uuid4())
         response = client.get(f"/api/v1/runs/{fake_id}")
 
         assert response.status_code == 404
-        assert "not found" in response.json()["detail"].lower()
+        data = response.json()
+        assert data["error"]["code"] == "NOT_FOUND"
+        assert "not found" in data["error"]["message"].lower()
 
     def test_get_run_returns_422_for_invalid_uuid(self):
         """Returns 422 for malformed UUID."""

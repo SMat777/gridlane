@@ -7,12 +7,17 @@ StepResultModel: what happened at one node during a run.
 These mirror the shared TypeScript types (execution.ts) but live
 in the database. The API layer converts between these and the
 shared response types.
+
+Schema is managed by Supabase CLI (supabase/migrations/).
+Models here MUST match the SQL schema — they're the ORM mapping,
+not the source of truth for DDL.
 """
 
 import uuid
 from datetime import datetime
+from decimal import Decimal
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, Integer, Numeric, String, Text, func
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -27,8 +32,13 @@ class PipelineRunModel(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    pipeline_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    pipeline_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("pipelines.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     pipeline_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    user_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending")
 
     # Timing
@@ -40,8 +50,10 @@ class PipelineRunModel(Base):
     )
     total_duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
-    # Cost
-    total_cost_usd: Mapped[float | None] = mapped_column(Float, nullable=True)
+    # Cost — NUMERIC(10,6) for financial precision (not float)
+    total_cost_usd: Mapped[Decimal | None] = mapped_column(
+        Numeric(10, 6), nullable=True
+    )
 
     # Store the pipeline definition snapshot at time of execution
     pipeline_snapshot: Mapped[dict] = mapped_column(JSONB, nullable=False)
@@ -54,6 +66,9 @@ class PipelineRunModel(Base):
     )
 
     created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
 
@@ -93,7 +108,7 @@ class StepResultModel(Base):
     input_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
     output_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
     total_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    cost_usd: Mapped[float | None] = mapped_column(Float, nullable=True)
+    cost_usd: Mapped[Decimal | None] = mapped_column(Numeric(10, 6), nullable=True)
 
     # Relationships
     run: Mapped["PipelineRunModel"] = relationship(back_populates="steps")

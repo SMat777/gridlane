@@ -21,9 +21,9 @@ Visual AI pipeline builder with production observability and human-in-the-loop g
 | Backend | FastAPI + Python 3.12 |
 | Py tooling | uv + Ruff + pytest |
 | ORM | SQLAlchemy 2.0 async + asyncpg |
-| Migrations | Alembic |
+| Migrations | Supabase CLI (`supabase/migrations/`) |
 | Validation | Pydantic v2 |
-| Database | Supabase Postgres (remote, RLS) |
+| Database | Supabase Postgres (local via CLI, remote in prod) |
 | Auth | Supabase Auth |
 | Realtime | Supabase Realtime |
 | Storage | Supabase Storage |
@@ -39,7 +39,12 @@ gridlane/
 │   └── engine/         — FastAPI backend (pipeline engine, API, connectors)
 ├── packages/
 │   └── shared/         — Shared types/contracts
-├── docker-compose.yml  — Local dev: frontend + backend + Redis
+├── supabase/
+│   ├── config.toml     — Supabase CLI project config
+│   ├── migrations/     — SQL schema (single source of truth for DDL)
+│   └── seed.sql        — Development seed data
+├── docker-compose.yml  — Local dev: web + engine + Redis (DB via supabase start)
+├── package.json        — Root workspace scripts
 ├── .github/workflows/  — CI pipeline
 └── CLAUDE.md           — This file
 ```
@@ -56,7 +61,11 @@ gridlane/
 ## Running
 
 ```bash
-# Full stack (Docker)
+# Database (Supabase CLI — run first)
+supabase start           # Postgres, Auth, Studio on localhost:54322/54321/54323
+supabase db reset         # Apply migrations + seed data
+
+# Full stack (Docker — after supabase start)
 docker compose up
 
 # Frontend only
@@ -66,7 +75,12 @@ cd apps/web && pnpm dev
 cd apps/engine && uv run uvicorn app.main:app --reload
 
 # Tests
-cd apps/engine && uv run pytest tests/ -v
+pnpm test                 # Runs both frontend and backend tests
+pnpm test:web             # Frontend only (vitest)
+pnpm test:engine          # Backend only (pytest)
+
+# Lint
+cd apps/engine && uv run ruff check . && uv run ruff format --check .
 cd apps/web && pnpm lint && pnpm exec tsc --noEmit
 ```
 
@@ -106,8 +120,8 @@ pydantic: discriminated unions, custom validators
 ## Current Progress
 
 > Opdateres af dev-pipeline SHIP-step og ved session-start.
-> Sidste opdatering: 2025-07-19 (efter session 4 — Sprint 4 Hybrid C execution)
-> 100 tests total (50 frontend + 50 backend), CI grøn på main.
+> Sidste opdatering: 2025-07-20 (session 5 — Foundation Hardening)
+> 114 tests total (58 frontend + 56 backend), CI grøn på feature branch.
 
 ### Done
 - ✅ Monorepo scaffold + CI pipeline (lint, typecheck, test, build)
@@ -147,7 +161,18 @@ pydantic: discriminated unions, custom validators
 - ✅ POST /runs now persists to DB (soft fail)
 - ✅ 100 tests total (50 FE + 50 BE), all green
 
-### Parked (awaiting Supabase integration)
+### Done (Session 5 — Foundation Hardening)
+- ✅ Supabase CLI consolidation: single database, SQL migrations, RLS policies, seed data
+- ✅ Removed Alembic — Supabase CLI manages all schema
+- ✅ Upgraded Supabase client to @supabase/ssr (browser + server + middleware)
+- ✅ Root package.json with workspace scripts (fixes Docker build)
+- ✅ Connector Interface Contract: manifest(), validate_config(), ExecutorResult
+- ✅ Structured error system: ErrorCode enum, PipelineError, global exception handler
+- ✅ Financial precision: cost fields use NUMERIC(10,6) instead of float
+- ✅ pipeline_id as UUID FK to pipelines table (was string)
+- ✅ 114 tests total (58 FE + 56 BE)
+
+### Parked
 - ⬜ H6: Health check validerer ikke DB/Redis
 - ⬜ H7: Database connection pool bruger defaults
 
@@ -171,6 +196,10 @@ pydantic: discriminated unions, custom validators
 | Pipeline ID | UUID (genbrug ved re-save) | Auto-increment | Idempotent saves, ingen server-roundtrip for ID |
 | Monorepo | pnpm workspaces | Turborepo, Nx | Simpelt, ingen build-orchestration overhead endnu |
 | Python tooling | uv + Ruff | pip + Black + isort | Hurtigere, single tool for format + lint |
+| Database mgmt | Supabase CLI | Alembic, Prisma | Single migration system, free Auth+RLS+Realtime |
+| Error handling | Structured ErrorCode + PipelineError | HTTPException | Machine-readable codes for frontend mapping |
+| Connector contract | NodeExecutor ABC (manifest+validate+execute) | Ad-hoc per connector | Uniform interface, pre-flight validation |
+| Cost precision | NUMERIC(10,6) | Float | Financial precision, no rounding drift |
 
 ## Key File Navigation
 
@@ -218,11 +247,11 @@ CI pipeline:         .github/workflows/ci.yml
 | Debt | Severity | Blocker for |
 |------|----------|-------------|
 | Stub executors (no real execution) | HIGH | Connectors, AI node |
-| No auth (Supabase Auth not configured) | HIGH | Multi-user, deploy |
-| No RLS policies | HIGH | Data isolation |
-| No root package.json for pnpm scripts | LOW | DX convenience |
+| No auth login flow (Supabase Auth infra ready, no UI) | HIGH | Multi-user, deploy |
+| RLS policies are permissive (user_id nullable) | MEDIUM | Production deploy |
+| TS/Python types manually duplicated | MEDIUM | Schema drift |
+| No config validation in frontend forms | MEDIUM | UX for real connectors |
 | `_error` prop in global-error.tsx triggers ESLint warning (unused var) | LOW | Clean lint output |
-| Supabase config settings in engine config.py unused | LOW | Cleanup |
 
 ## Foundation Sprint — Definition of Done
 

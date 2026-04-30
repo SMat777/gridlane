@@ -6,11 +6,16 @@ Provides mocked DB sessions and sample data for run persistence tests.
 
 import uuid
 from datetime import datetime, timezone
+from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from app.models.run import PipelineRunModel, StepResultModel
+
+# Stable UUIDs for test data (predictable, grep-friendly)
+PIPE_UUID = uuid.UUID("11111111-1111-1111-1111-111111111111")
+RUN_UUID = uuid.UUID("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")
 
 
 @pytest.fixture
@@ -32,7 +37,7 @@ def sample_run_result():
     """Sample execution result dict matching ExecutionEngine output."""
     return {
         "id": str(uuid.uuid4()),
-        "pipeline_id": "pipe-001",
+        "pipeline_id": str(PIPE_UUID),
         "pipeline_name": "Test Pipeline",
         "status": "completed",
         "steps": [
@@ -78,7 +83,7 @@ def sample_run_result():
 def sample_pipeline_dict():
     """Sample pipeline definition for execution requests."""
     return {
-        "id": "pipe-001",
+        "id": str(PIPE_UUID),
         "name": "Test Pipeline",
         "nodes": [
             {
@@ -110,15 +115,15 @@ def sample_pipeline_dict():
 def sample_run_model():
     """Sample PipelineRunModel for GET endpoint tests."""
     run = PipelineRunModel(
-        id=uuid.UUID("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
-        pipeline_id="pipe-001",
+        id=RUN_UUID,
+        pipeline_id=PIPE_UUID,
         pipeline_name="Test Pipeline",
         status="completed",
         started_at=datetime(2025, 1, 1, tzinfo=timezone.utc),
         completed_at=datetime(2025, 1, 1, 0, 0, 2, tzinfo=timezone.utc),
         total_duration_ms=2000,
-        total_cost_usd=0.002,
-        pipeline_snapshot={"id": "pipe-001", "name": "Test Pipeline"},
+        total_cost_usd=Decimal("0.002"),
+        pipeline_snapshot={"id": str(PIPE_UUID), "name": "Test Pipeline"},
     )
 
     step = StepResultModel(

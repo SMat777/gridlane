@@ -10,7 +10,7 @@ import asyncio
 import logging
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.schemas import (
@@ -21,6 +21,7 @@ from app.api.v1.schemas import (
     RunPipelineResponse,
 )
 from app.core.database import get_db
+from app.core.errors import ErrorCode, PipelineError
 from app.services.execution import ExecutionEngine
 from app.services.run_service import RunService
 
@@ -33,14 +34,21 @@ EXECUTION_TIMEOUT_SECONDS = 120
 
 
 def _model_to_run_response(run_model) -> dict:
-    """Convert a PipelineRunModel to the API response shape."""
+    """Convert a PipelineRunModel to the API response shape.
+
+    Handles Decimal → float and UUID → str conversions for JSON serialization.
+    """
     return {
         "id": str(run_model.id),
-        "pipeline_id": run_model.pipeline_id,
+        "pipeline_id": str(run_model.pipeline_id) if run_model.pipeline_id else "",
         "pipeline_name": run_model.pipeline_name,
         "status": run_model.status,
         "total_duration_ms": run_model.total_duration_ms,
-        "total_cost_usd": run_model.total_cost_usd,
+        "total_cost_usd": (
+            float(run_model.total_cost_usd)
+            if run_model.total_cost_usd is not None
+            else None
+        ),
         "started_at": run_model.started_at.isoformat() if run_model.started_at else "",
         "completed_at": (
             run_model.completed_at.isoformat() if run_model.completed_at else None
@@ -69,7 +77,7 @@ def _model_to_run_response(run_model) -> dict:
                     if s.input_tokens is not None
                     else None
                 ),
-                "cost_usd": s.cost_usd,
+                "cost_usd": float(s.cost_usd) if s.cost_usd is not None else None,
             }
             for s in sorted(run_model.steps, key=lambda s: s.order)
         ],
@@ -100,13 +108,20 @@ async def run_pipeline(
             timeout=EXECUTION_TIMEOUT_SECONDS,
         )
     except asyncio.TimeoutError:
-        raise HTTPException(
+        raise PipelineError(
+            code=ErrorCode.EXECUTION_TIMEOUT,
+            message=f"Pipeline execution timed out after {EXECUTION_TIMEOUT_SECONDS}s",
             status_code=504,
-            detail=f"Pipeline execution timeout after {EXECUTION_TIMEOUT_SECONDS} seconds",
         )
     except ValueError as e:
         # Validation errors from engine (cycle detection, orphan edges)
-        raise HTTPException(status_code=422, detail=str(e))
+        error_msg = str(e)
+        code = ErrorCode.VALIDATION_ERROR
+        if "cycle" in error_msg.lower():
+            code = ErrorCode.CYCLE_DETECTED
+        elif "non-existent" in error_msg.lower():
+            code = ErrorCode.ORPHAN_EDGE
+        raise PipelineError(code=code, message=error_msg, status_code=422)
 
     # Persist to DB — soft fail so the user always gets their result
     try:
@@ -138,11 +153,13 @@ async def list_runs(
         "runs": [
             RunListItem(
                 id=str(r.id),
-                pipeline_id=r.pipeline_id,
+                pipeline_id=str(r.pipeline_id) if r.pipeline_id else "",
                 pipeline_name=r.pipeline_name,
                 status=r.status,
                 total_duration_ms=r.total_duration_ms,
-                total_cost_usd=r.total_cost_usd,
+                total_cost_usd=(
+                    float(r.total_cost_usd) if r.total_cost_usd is not None else None
+                ),
                 started_at=r.started_at.isoformat() if r.started_at else "",
                 completed_at=(r.completed_at.isoformat() if r.completed_at else None),
                 step_count=len(r.steps),
@@ -162,6 +179,10 @@ async def get_run(
     run = await service.get_run(run_id)
 
     if run is None:
-        raise HTTPException(status_code=404, detail="Run not found")
+        raise PipelineError(
+            code=ErrorCode.NOT_FOUND,
+            message="Run not found",
+            status_code=404,
+        )
 
     return {"run": _model_to_run_response(run)}

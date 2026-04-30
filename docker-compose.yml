@@ -1,3 +1,12 @@
+# Gridlane Docker Compose — dev services
+#
+# Database is managed by Supabase CLI (`supabase start`), not Docker Compose.
+# Run `supabase start` BEFORE `docker compose up`.
+#
+# Stack:
+#   supabase start  → Postgres, Auth, Realtime, Studio (port 54322/54321/54323)
+#   docker compose  → web (3000), engine (8000), redis (6379)
+
 services:
   web:
     build:
@@ -20,34 +29,15 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/gridlane
+      # host.docker.internal lets the container reach Supabase CLI on the host
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@host.docker.internal:54322/postgres
       - REDIS_URL=redis://redis:6379/0
-      - SUPABASE_URL=${SUPABASE_URL:-}
-      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY:-}
       - ALLOWED_ORIGINS=["http://localhost:3000"]
     volumes:
       - ./apps/engine/app:/app/app
     depends_on:
-      db:
-        condition: service_healthy
       redis:
         condition: service_healthy
-
-  db:
-    image: postgres:16-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=gridlane
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -58,6 +48,3 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-
-volumes:
-  pgdata:

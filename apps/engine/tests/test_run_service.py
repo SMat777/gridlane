@@ -6,12 +6,14 @@ and provides CRUD operations for run history.
 """
 
 import uuid
+from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from app.models.run import PipelineRunModel, StepResultModel
 from app.services.run_service import RunService
+from tests.conftest import PIPE_UUID
 
 
 class TestSaveRun:
@@ -22,14 +24,14 @@ class TestSaveRun:
         """save_run should create a PipelineRunModel and add it to the session."""
         service = RunService(mock_session)
 
-        pipeline_snapshot = {"id": "pipe-001", "name": "Test Pipeline"}
+        pipeline_snapshot = {"id": str(PIPE_UUID), "name": "Test Pipeline"}
         await service.save_run(sample_run_result, pipeline_snapshot)
 
         # Should call session.add() with a PipelineRunModel
         mock_session.add.assert_called_once()
         added_model = mock_session.add.call_args[0][0]
         assert isinstance(added_model, PipelineRunModel)
-        assert added_model.pipeline_id == "pipe-001"
+        assert added_model.pipeline_id == PIPE_UUID
         assert added_model.pipeline_name == "Test Pipeline"
         assert added_model.status == "completed"
         assert added_model.total_duration_ms == 2000
@@ -39,7 +41,7 @@ class TestSaveRun:
         """save_run should create StepResultModel for each step."""
         service = RunService(mock_session)
 
-        pipeline_snapshot = {"id": "pipe-001", "name": "Test Pipeline"}
+        pipeline_snapshot = {"id": str(PIPE_UUID), "name": "Test Pipeline"}
         await service.save_run(sample_run_result, pipeline_snapshot)
 
         added_model = mock_session.add.call_args[0][0]
@@ -63,7 +65,7 @@ class TestSaveRun:
         assert ai_step.input_tokens == 100
         assert ai_step.output_tokens == 50
         assert ai_step.total_tokens == 150
-        assert ai_step.cost_usd == 0.002
+        assert ai_step.cost_usd == Decimal("0.002")
 
     @pytest.mark.asyncio
     async def test_save_run_flushes_session(self, mock_session, sample_run_result):
@@ -92,7 +94,7 @@ class TestListRuns:
         runs = await service.list_runs()
 
         assert len(runs) == 1
-        assert runs[0].pipeline_id == "pipe-001"
+        assert runs[0].pipeline_id == PIPE_UUID
 
     @pytest.mark.asyncio
     async def test_list_runs_with_pipeline_filter(self, mock_session, sample_run_model):
