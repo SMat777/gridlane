@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { usePipelineStore } from "../pipeline-store";
+import { usePipelineStore, _resetNodeIdCounter } from "../pipeline-store";
 import type { PipelineNodeType, PipelineRun } from "@gridlane/shared";
 
 /**
@@ -102,6 +102,60 @@ describe("pipeline-store", () => {
 
       const updated = usePipelineStore.getState().nodes;
       expect(updated[0].position).toEqual({ x: 150, y: 250 });
+    });
+  });
+
+  describe("onNodesChange — isDirty filtering", () => {
+    it("does NOT mark dirty on select changes", () => {
+      const { addNode } = usePipelineStore.getState();
+      addNode("datasource", { x: 0, y: 0 });
+      usePipelineStore.setState({ isDirty: false });
+
+      const { nodes, onNodesChange } = usePipelineStore.getState();
+      onNodesChange([{ type: "select", id: nodes[0].id, selected: true }]);
+
+      expect(usePipelineStore.getState().isDirty).toBe(false);
+    });
+
+    it("does NOT mark dirty on dimensions changes", () => {
+      const { addNode } = usePipelineStore.getState();
+      addNode("datasource", { x: 0, y: 0 });
+      usePipelineStore.setState({ isDirty: false });
+
+      const { nodes, onNodesChange } = usePipelineStore.getState();
+      onNodesChange([
+        {
+          type: "dimensions",
+          id: nodes[0].id,
+          dimensions: { width: 200, height: 100 },
+        },
+      ]);
+
+      expect(usePipelineStore.getState().isDirty).toBe(false);
+    });
+
+    it("DOES mark dirty on position changes", () => {
+      const { addNode } = usePipelineStore.getState();
+      addNode("datasource", { x: 0, y: 0 });
+      usePipelineStore.setState({ isDirty: false });
+
+      const { nodes, onNodesChange } = usePipelineStore.getState();
+      onNodesChange([
+        { type: "position", id: nodes[0].id, position: { x: 50, y: 50 } },
+      ]);
+
+      expect(usePipelineStore.getState().isDirty).toBe(true);
+    });
+
+    it("DOES mark dirty on remove changes", () => {
+      const { addNode } = usePipelineStore.getState();
+      addNode("datasource", { x: 0, y: 0 });
+      usePipelineStore.setState({ isDirty: false });
+
+      const { nodes, onNodesChange } = usePipelineStore.getState();
+      onNodesChange([{ type: "remove", id: nodes[0].id }]);
+
+      expect(usePipelineStore.getState().isDirty).toBe(true);
     });
   });
 
@@ -255,6 +309,59 @@ describe("pipeline-store", () => {
       usePipelineStore.getState().loadPipeline(serialized);
 
       expect(usePipelineStore.getState().pipelineId).toBe(serialized.id);
+    });
+  });
+
+  describe("node ID collision prevention", () => {
+    it("new nodes get unique IDs even after loading a pipeline", () => {
+      // Simulate a page reload — counter goes back to 0
+      _resetNodeIdCounter();
+
+      // Simulate loading a saved pipeline with node_1, node_2, node_3
+      const savedPipeline = {
+        id: "pipe-1",
+        name: "Saved Pipeline",
+        nodes: [
+          {
+            id: "node_1",
+            type: "datasource" as const,
+            position: { x: 0, y: 0 },
+            data: { label: "Source", nodeType: "datasource" as const },
+          },
+          {
+            id: "node_2",
+            type: "ai" as const,
+            position: { x: 200, y: 0 },
+            data: { label: "AI", nodeType: "ai" as const },
+          },
+          {
+            id: "node_3",
+            type: "action" as const,
+            position: { x: 400, y: 0 },
+            data: { label: "Action", nodeType: "action" as const },
+          },
+        ],
+        edges: [
+          { id: "e1", source: "node_1", target: "node_2" },
+          { id: "e2", source: "node_2", target: "node_3" },
+        ],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      usePipelineStore.getState().loadPipeline(savedPipeline);
+
+      // Add a new node — its ID must NOT collide with existing node_1/2/3
+      usePipelineStore.getState().addNode("human", { x: 600, y: 0 });
+
+      const nodes = usePipelineStore.getState().nodes;
+      const ids = nodes.map((n) => n.id);
+      const uniqueIds = new Set(ids);
+
+      expect(uniqueIds.size).toBe(ids.length); // No duplicates
+      expect(ids[3]).not.toBe("node_1");
+      expect(ids[3]).not.toBe("node_2");
+      expect(ids[3]).not.toBe("node_3");
     });
   });
 

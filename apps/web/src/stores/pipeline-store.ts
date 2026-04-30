@@ -67,6 +67,27 @@ interface PipelineState {
 let nodeIdCounter = 0;
 const nextNodeId = () => `node_${++nodeIdCounter}`;
 
+/**
+ * Sync the counter with existing node IDs to prevent collisions.
+ * Parses "node_N" IDs and sets counter to max(N) so the next
+ * generated ID is always higher than any existing one.
+ */
+const syncNodeIdCounter = (nodes: { id: string }[]) => {
+  let max = 0;
+  for (const node of nodes) {
+    const match = node.id.match(/^node_(\d+)$/);
+    if (match) {
+      max = Math.max(max, parseInt(match[1], 10));
+    }
+  }
+  nodeIdCounter = Math.max(nodeIdCounter, max);
+};
+
+/** @internal — exposed for testing only. Simulates a page reload. */
+export const _resetNodeIdCounter = () => {
+  nodeIdCounter = 0;
+};
+
 export const usePipelineStore = create<PipelineState>((set, get) => ({
   nodes: [],
   edges: [],
@@ -81,6 +102,11 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
   onNodesChange: (changes) => {
     const updatedNodes = applyNodeChanges(changes, get().nodes);
 
+    // Only mark dirty for changes that modify the pipeline.
+    // "select" and "dimensions" are React Flow internal — not user edits.
+    const DIRTY_TYPES = new Set(["position", "remove", "add", "replace"]);
+    const hasMeaningfulChange = changes.some((c) => DIRTY_TYPES.has(c.type));
+
     // When nodes are removed, also remove their connected edges
     const removedIds = changes
       .filter((c) => c.type === "remove")
@@ -92,7 +118,10 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       );
       set({ nodes: updatedNodes, edges: updatedEdges, isDirty: true });
     } else {
-      set({ nodes: updatedNodes, isDirty: true });
+      set({
+        nodes: updatedNodes,
+        ...(hasMeaningfulChange ? { isDirty: true } : {}),
+      });
     }
   },
 
@@ -299,6 +328,9 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       source: e.source,
       target: e.target,
     }));
+
+    // Sync ID counter so new nodes don't collide with loaded ones
+    syncNodeIdCounter(canvasNodes);
 
     set({
       nodes: canvasNodes,
