@@ -31,3 +31,7 @@ test-results/
 
 # Docker
 docker-compose.override.yml
+
+# Claude Code (local dev context, not project docs)
+CLAUDE.md
+CONTEXT.md
