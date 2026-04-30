@@ -11,16 +11,16 @@ from pydantic import BaseModel, Field
 class NodeData(BaseModel):
     """Data carried by a pipeline node."""
 
-    label: str
-    nodeType: str  # noqa: N815
+    label: str = Field(max_length=200)
+    nodeType: str = Field(max_length=50)  # noqa: N815
     config: dict | None = None
 
 
 class PipelineNode(BaseModel):
     """A node in the pipeline definition."""
 
-    id: str
-    type: str
+    id: str = Field(max_length=100)
+    type: str = Field(max_length=50)
     position: dict = Field(default_factory=lambda: {"x": 0, "y": 0})
     data: NodeData
 
@@ -34,12 +34,16 @@ class PipelineEdge(BaseModel):
 
 
 class PipelineDefinition(BaseModel):
-    """The pipeline to execute."""
+    """The pipeline to execute.
 
-    id: str
-    name: str
-    nodes: list[PipelineNode]
-    edges: list[PipelineEdge]
+    Size limits prevent memory exhaustion from oversized requests.
+    100 nodes and 500 edges are generous for any realistic pipeline.
+    """
+
+    id: str = Field(max_length=100)
+    name: str = Field(max_length=200)
+    nodes: list[PipelineNode] = Field(max_length=100)
+    edges: list[PipelineEdge] = Field(max_length=500)
 
 
 class RunPipelineRequest(BaseModel):
