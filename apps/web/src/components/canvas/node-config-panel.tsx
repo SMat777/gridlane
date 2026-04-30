@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { X, Trash2, Database, Sparkles, Zap, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,13 +14,14 @@ import {
   ActionConfigForm,
   HumanConfigForm,
 } from "./config-forms";
-import type {
-  PipelineNodeType,
-  DataSourceConfig,
-  AIConfig,
-  ActionConfig,
-  HumanConfig,
-  NodeConfig,
+import {
+  validateNodeConfig,
+  type PipelineNodeType,
+  type DataSourceConfig,
+  type AIConfig,
+  type ActionConfig,
+  type HumanConfig,
+  type NodeConfig,
 } from "@gridlane/shared";
 
 /**
@@ -106,6 +107,21 @@ export function NodeConfigPanel() {
         const config = selectedNode.data.config;
         const Icon = ICONS[nodeType];
 
+        // Compute field-level errors for the selected node's config.
+        // useMemo can't be used inside a callback, so we compute inline —
+        // validateNodeConfig is pure and fast (Zod safeParse).
+        const validation = validateNodeConfig(nodeType, config);
+        const fieldErrors: Record<string, string> = {};
+        if (!validation.valid) {
+          for (const err of validation.errors) {
+            // First error per field wins (avoid duplicate messages)
+            if (!fieldErrors[err.field]) {
+              fieldErrors[err.field] = err.message;
+            }
+          }
+        }
+        const hasErrors = !validation.valid;
+
         return (
           <>
             {/* Header */}
@@ -144,6 +160,7 @@ export function NodeConfigPanel() {
                 <DataSourceConfigForm
                   config={config as DataSourceConfig}
                   onUpdate={handleConfigUpdate}
+                  errors={fieldErrors}
                 />
               )}
 
@@ -151,6 +168,7 @@ export function NodeConfigPanel() {
                 <AIConfigForm
                   config={config as AIConfig}
                   onUpdate={handleConfigUpdate}
+                  errors={fieldErrors}
                 />
               )}
 
@@ -158,6 +176,7 @@ export function NodeConfigPanel() {
                 <ActionConfigForm
                   config={config as ActionConfig}
                   onUpdate={handleConfigUpdate}
+                  errors={fieldErrors}
                 />
               )}
 
@@ -165,6 +184,7 @@ export function NodeConfigPanel() {
                 <HumanConfigForm
                   config={config as HumanConfig}
                   onUpdate={handleConfigUpdate}
+                  errors={fieldErrors}
                 />
               )}
             </div>

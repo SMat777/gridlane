@@ -18,6 +18,7 @@ import {
   type PipelineDefinition,
   type PipelineRun,
   type NodeConfig,
+  validateNodeConfig,
 } from "@gridlane/shared";
 
 /**
@@ -259,6 +260,24 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
           type: "cycle-detected",
           message: "Pipeline contains a cycle — nodes cannot reference each other in a loop",
         });
+      }
+    }
+
+    // Config validation — check each node's config against its Zod schema
+    for (const node of nodes) {
+      const nodeType = node.data.nodeType;
+      const config = node.data.config;
+      const result = validateNodeConfig(nodeType, config);
+
+      if (!result.valid) {
+        for (const fieldError of result.errors) {
+          errors.push({
+            nodeId: node.id,
+            type: "invalid-config",
+            field: fieldError.field,
+            message: `${node.data.label}: ${fieldError.message}`,
+          });
+        }
       }
     }
 

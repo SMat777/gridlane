@@ -13,6 +13,7 @@ import type { ActionConfig, ActionType, OutputFormat } from "@gridlane/shared";
 interface ActionConfigFormProps {
   config: ActionConfig;
   onUpdate: (changes: Partial<ActionConfig>) => void;
+  errors?: Record<string, string>;
 }
 
 const ACTION_TYPES: { value: ActionType; label: string }[] = [
@@ -29,6 +30,7 @@ const OUTPUT_FORMATS: { value: OutputFormat; label: string }[] = [
 export function ActionConfigForm({
   config,
   onUpdate,
+  errors,
 }: ActionConfigFormProps) {
   return (
     <div className="flex flex-col gap-4">

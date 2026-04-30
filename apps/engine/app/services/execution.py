@@ -14,6 +14,7 @@ from collections import defaultdict, deque
 from datetime import datetime, timezone
 from typing import Any
 
+from app.core.errors import ErrorCode, PipelineError
 from app.services.executors import get_executor
 
 
@@ -100,6 +101,38 @@ class ExecutionEngine:
             pipeline.get("nodes", []),
             pipeline.get("edges", []),
         )
+
+        # ── Preflight: validate all configs before executing any step ──
+        # Fail fast with ALL errors at once so the user can fix everything
+        # in one pass, rather than discovering errors one step at a time.
+        all_validation_errors = []
+        for node in sorted_nodes:
+            node_id = node["id"]
+            node_type = node.get("type", node.get("data", {}).get("nodeType", ""))
+            config = node.get("data", {}).get("config", {})
+
+            try:
+                executor = get_executor(node_type)
+                errors = executor.validate_config(config)
+                for error in errors:
+                    all_validation_errors.append(
+                        {
+                            "node_id": node_id,
+                            "field": error.field,
+                            "message": error.message,
+                            "severity": error.severity,
+                        }
+                    )
+            except ValueError:
+                # Unknown node type — will fail during execution anyway
+                pass
+
+        if all_validation_errors:
+            raise PipelineError(
+                code=ErrorCode.VALIDATION_ERROR,
+                message=f"Config validation failed for {len(all_validation_errors)} field(s)",
+                details={"validation_errors": all_validation_errors},
+            )
 
         # Build a map of node outputs for data flow
         node_outputs: dict[str, Any] = {}

@@ -8,11 +8,13 @@ import type { HumanConfig } from "@gridlane/shared";
 interface HumanConfigFormProps {
   config: HumanConfig;
   onUpdate: (changes: Partial<HumanConfig>) => void;
+  errors?: Record<string, string>;
 }
 
 export function HumanConfigForm({
   config,
   onUpdate,
+  errors,
 }: HumanConfigFormProps) {
   return (
     <div className="flex flex-col gap-4">

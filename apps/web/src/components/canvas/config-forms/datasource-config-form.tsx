@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FieldError, fieldErrorClass } from "./field-error";
 import type {
   DataSourceConfig,
   DataSourceType,
@@ -19,6 +20,7 @@ import type {
 interface DataSourceConfigFormProps {
   config: DataSourceConfig;
   onUpdate: (changes: Partial<DataSourceConfig>) => void;
+  errors?: Record<string, string>;
 }
 
 const SOURCE_TYPES: { value: DataSourceType; label: string }[] = [
@@ -38,6 +40,7 @@ const AUTH_TYPES: { value: AuthType; label: string }[] = [
 export function DataSourceConfigForm({
   config,
   onUpdate,
+  errors,
 }: DataSourceConfigFormProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -65,13 +68,17 @@ export function DataSourceConfigForm({
       {config.sourceType === "rest" && (
         <>
           <div className="space-y-2">
-            <Label htmlFor="url">URL</Label>
+            <Label htmlFor="url">
+              URL <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="url"
               placeholder="https://api.example.com/data"
               value={config.url}
               onChange={(e) => onUpdate({ url: e.target.value })}
+              className={fieldErrorClass(errors, "url")}
             />
+            <FieldError errors={errors} field="url" />
           </div>
 
           <div className="space-y-2">
@@ -120,13 +127,17 @@ export function DataSourceConfigForm({
 
       {config.sourceType === "sql" && (
         <div className="space-y-2">
-          <Label htmlFor="url">Connection String</Label>
+          <Label htmlFor="url">
+            Connection String <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="url"
             placeholder="postgresql://user:pass@host:5432/db"
             value={config.url}
             onChange={(e) => onUpdate({ url: e.target.value })}
+            className={fieldErrorClass(errors, "url")}
           />
+          <FieldError errors={errors} field="url" />
         </div>
       )}
 

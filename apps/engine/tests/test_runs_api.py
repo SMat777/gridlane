@@ -45,6 +45,19 @@ client = TestClient(app)
 
 TEST_PIPELINE_ID = "22222222-2222-2222-2222-222222222222"
 
+# Valid default configs for each node type — used when tests don't
+# specify a config. Matches the minimum required by validate_config().
+VALID_DEFAULTS = {
+    "datasource": {"sourceType": "rest", "url": "https://api.example.com/data"},
+    "ai": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-20250514",
+        "prompt": "Analyze: {{ input }}",
+    },
+    "action": {"actionType": "transform", "outputFormat": "json"},
+    "human": {},
+}
+
 
 def make_run_request(nodes, edges):
     """Helper to build a run request body."""
@@ -60,7 +73,7 @@ def make_run_request(nodes, edges):
                     "data": {
                         "label": n.get("label", n["type"].title()),
                         "nodeType": n["type"],
-                        "config": n.get("config", {}),
+                        "config": n.get("config", VALID_DEFAULTS.get(n["type"], {})),
                     },
                 }
                 for n in nodes

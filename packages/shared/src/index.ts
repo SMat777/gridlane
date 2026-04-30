@@ -30,6 +30,16 @@ export {
 } from "./pipeline";
 
 export {
+  dataSourceConfigSchema,
+  aiConfigSchema,
+  actionConfigSchema,
+  humanConfigSchema,
+  validateNodeConfig,
+  type ConfigFieldError,
+  type ConfigValidationResult,
+} from "./validation";
+
+export {
   type RunStatus,
   type StepResult,
   type PipelineRun,
