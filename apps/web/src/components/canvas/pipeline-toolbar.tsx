@@ -25,8 +25,13 @@ import { runPipeline } from "@/lib/engine-api";
  * instead of inline status text — gives richer, dismissable messages.
  */
 export function PipelineToolbar() {
-  const { pipelineName, isDirty, isRunning, toSerializable, runValidation, setRunning, setCurrentRun } = usePipelineStore();
-  const loadPipelineToStore = usePipelineStore((s) => s.loadPipeline);
+  // Granular selectors for state — only re-render when these specific values change
+  const pipelineName = usePipelineStore((s) => s.pipelineName);
+  const isDirty = usePipelineStore((s) => s.isDirty);
+  const isRunning = usePipelineStore((s) => s.isRunning);
+
+  // Actions are stable references — safe to destructure from store directly
+  const { toSerializable, runValidation, setRunning, setCurrentRun, loadPipeline: loadPipelineToStore } = usePipelineStore.getState();
   const [saving, setSaving] = useState(false);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
   const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
