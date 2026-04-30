@@ -160,9 +160,7 @@ class TestRunPipelineEndpoint:
 
     def test_run_rejects_too_many_nodes(self):
         """Pipeline with more than 100 nodes is rejected."""
-        oversized_nodes = [
-            {"id": f"n{i}", "type": "datasource"} for i in range(101)
-        ]
+        oversized_nodes = [{"id": f"n{i}", "type": "datasource"} for i in range(101)]
         body = make_run_request(nodes=oversized_nodes, edges=[])
 
         response = client.post("/api/v1/runs", json=body)
