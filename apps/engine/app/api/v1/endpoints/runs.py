@@ -10,7 +10,7 @@ import asyncio
 import logging
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.schemas import (
@@ -21,6 +21,7 @@ from app.api.v1.schemas import (
     RunPipelineResponse,
 )
 from app.core.database import get_db
+from app.core.errors import ErrorCode, PipelineError
 from app.services.execution import ExecutionEngine
 from app.services.run_service import RunService
 
@@ -107,13 +108,20 @@ async def run_pipeline(
             timeout=EXECUTION_TIMEOUT_SECONDS,
         )
     except asyncio.TimeoutError:
-        raise HTTPException(
+        raise PipelineError(
+            code=ErrorCode.EXECUTION_TIMEOUT,
+            message=f"Pipeline execution timed out after {EXECUTION_TIMEOUT_SECONDS}s",
             status_code=504,
-            detail=f"Pipeline execution timeout after {EXECUTION_TIMEOUT_SECONDS} seconds",
         )
     except ValueError as e:
         # Validation errors from engine (cycle detection, orphan edges)
-        raise HTTPException(status_code=422, detail=str(e))
+        error_msg = str(e)
+        code = ErrorCode.VALIDATION_ERROR
+        if "cycle" in error_msg.lower():
+            code = ErrorCode.CYCLE_DETECTED
+        elif "non-existent" in error_msg.lower():
+            code = ErrorCode.ORPHAN_EDGE
+        raise PipelineError(code=code, message=error_msg, status_code=422)
 
     # Persist to DB — soft fail so the user always gets their result
     try:
@@ -171,6 +179,10 @@ async def get_run(
     run = await service.get_run(run_id)
 
     if run is None:
-        raise HTTPException(status_code=404, detail="Run not found")
+        raise PipelineError(
+            code=ErrorCode.NOT_FOUND,
+            message="Run not found",
+            status_code=404,
+        )
 
     return {"run": _model_to_run_response(run)}

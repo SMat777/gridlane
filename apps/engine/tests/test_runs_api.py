@@ -221,7 +221,8 @@ class TestRunPipelineEndpoint:
 
             assert response.status_code == 504
             data = response.json()
-            assert "timeout" in data["detail"].lower()
+            assert data["error"]["code"] == "EXECUTION_TIMEOUT"
+            assert "timed out" in data["error"]["message"].lower()
         finally:
             _EXECUTORS["datasource"] = original
 
@@ -256,12 +257,14 @@ class TestGetRunEndpoint:
     """GET /api/v1/runs/{run_id} — get a single run."""
 
     def test_get_run_returns_404_when_not_found(self):
-        """Returns 404 for non-existent run ID."""
+        """Returns 404 for non-existent run ID with structured error."""
         fake_id = str(uuid.uuid4())
         response = client.get(f"/api/v1/runs/{fake_id}")
 
         assert response.status_code == 404
-        assert "not found" in response.json()["detail"].lower()
+        data = response.json()
+        assert data["error"]["code"] == "NOT_FOUND"
+        assert "not found" in data["error"]["message"].lower()
 
     def test_get_run_returns_422_for_invalid_uuid(self):
         """Returns 422 for malformed UUID."""
