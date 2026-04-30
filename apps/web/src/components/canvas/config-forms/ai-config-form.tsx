@@ -10,11 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FieldError, fieldErrorClass } from "./field-error";
 import type { AIConfig, AIProvider } from "@gridlane/shared";
 
 interface AIConfigFormProps {
   config: AIConfig;
   onUpdate: (changes: Partial<AIConfig>) => void;
+  errors?: Record<string, string>;
 }
 
 const PROVIDERS: { value: AIProvider; label: string }[] = [
@@ -33,7 +35,7 @@ const MODELS: Record<AIProvider, { value: string; label: string }[]> = {
   ],
 };
 
-export function AIConfigForm({ config, onUpdate }: AIConfigFormProps) {
+export function AIConfigForm({ config, onUpdate, errors }: AIConfigFormProps) {
   const availableModels = MODELS[config.provider] ?? [];
 
   return (
@@ -81,15 +83,18 @@ export function AIConfigForm({ config, onUpdate }: AIConfigFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="prompt">Prompt Template</Label>
+        <Label htmlFor="prompt">
+          Prompt Template <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="prompt"
           placeholder="Analyze the following data: {{ input }}"
           value={config.prompt}
           onChange={(e) => onUpdate({ prompt: e.target.value })}
           rows={4}
-          className="font-mono text-sm"
+          className={`font-mono text-sm ${fieldErrorClass(errors, "prompt")}`}
         />
+        <FieldError errors={errors} field="prompt" />
         <p className="text-xs text-gray-500">
           Use <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">{"{{ input }}"}</code> to reference data from the previous step.
         </p>
@@ -108,7 +113,9 @@ export function AIConfigForm({ config, onUpdate }: AIConfigFormProps) {
             onChange={(e) =>
               onUpdate({ temperature: parseFloat(e.target.value) || 0 })
             }
+            className={fieldErrorClass(errors, "temperature")}
           />
+          <FieldError errors={errors} field="temperature" />
         </div>
 
         <div className="space-y-2">
@@ -123,7 +130,9 @@ export function AIConfigForm({ config, onUpdate }: AIConfigFormProps) {
             onChange={(e) =>
               onUpdate({ maxTokens: parseInt(e.target.value) || 1024 })
             }
+            className={fieldErrorClass(errors, "maxTokens")}
           />
+          <FieldError errors={errors} field="maxTokens" />
         </div>
       </div>
     </div>

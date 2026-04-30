@@ -132,7 +132,9 @@ export interface PipelineDefinition {
 /** Validation error for pipeline completeness checks */
 export interface PipelineValidationError {
   nodeId?: string;
-  type: "orphan-node" | "empty-pipeline" | "cycle-detected";
+  type: "orphan-node" | "empty-pipeline" | "cycle-detected" | "invalid-config";
+  /** The specific config field that failed (for invalid-config errors) */
+  field?: string;
   message: string;
 }
 
