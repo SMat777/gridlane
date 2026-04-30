@@ -4,9 +4,13 @@ Tests for pipeline run API endpoints.
 Uses FastAPI TestClient — no real database or external services needed.
 """
 
+import time
+from unittest.mock import patch
+
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.services.executors import NodeExecutor, _EXECUTORS
 
 client = TestClient(app)
 
@@ -130,3 +134,31 @@ class TestRunPipelineEndpoint:
         r2 = client.post("/api/v1/runs", json=body).json()
 
         assert r1["run"]["id"] != r2["run"]["id"]
+
+    def test_run_timeout_returns_504(self):
+        """Pipeline exceeding timeout returns 504 Gateway Timeout."""
+
+        class SlowExecutor(NodeExecutor):
+            def execute(self, config, input_data):
+                time.sleep(5)
+                return {"data": "should not reach here"}
+
+        original = _EXECUTORS["datasource"]
+        _EXECUTORS["datasource"] = SlowExecutor
+        try:
+            body = make_run_request(
+                nodes=[{"id": "src", "type": "datasource"}],
+                edges=[],
+            )
+
+            # Use a very short timeout for testing
+            with patch("app.api.v1.endpoints.runs.EXECUTION_TIMEOUT_SECONDS", 0.1):
+                response = client.post("/api/v1/runs", json=body)
+
+            assert response.status_code == 504
+            data = response.json()
+            assert "timeout" in data["detail"].lower()
+        finally:
+            _EXECUTORS["datasource"] = original
+
+
