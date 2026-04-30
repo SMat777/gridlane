@@ -49,7 +49,11 @@ TEST_PIPELINE_ID = "22222222-2222-2222-2222-222222222222"
 # specify a config. Matches the minimum required by validate_config().
 VALID_DEFAULTS = {
     "datasource": {"sourceType": "rest", "url": "https://api.example.com/data"},
-    "ai": {"provider": "anthropic", "model": "claude-sonnet-4-20250514", "prompt": "Analyze: {{ input }}"},
+    "ai": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-20250514",
+        "prompt": "Analyze: {{ input }}",
+    },
     "action": {"actionType": "transform", "outputFormat": "json"},
     "human": {},
 }

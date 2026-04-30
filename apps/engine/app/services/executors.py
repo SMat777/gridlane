@@ -141,7 +141,10 @@ class StubDataSourceExecutor(NodeExecutor):
             if not url or not str(url).strip():
                 label = "URL" if source_type == "rest" else "Connection string"
                 errors.append(
-                    ConfigError(field="url", message=f"{label} is required for {source_type} sources")
+                    ConfigError(
+                        field="url",
+                        message=f"{label} is required for {source_type} sources",
+                    )
                 )
 
         return errors
@@ -193,11 +196,16 @@ class StubAIExecutor(NodeExecutor):
                 temp = float(temperature)
                 if temp < 0 or temp > 2:
                     errors.append(
-                        ConfigError(field="temperature", message="temperature must be between 0 and 2")
+                        ConfigError(
+                            field="temperature",
+                            message="temperature must be between 0 and 2",
+                        )
                     )
             except (TypeError, ValueError):
                 errors.append(
-                    ConfigError(field="temperature", message="temperature must be a number")
+                    ConfigError(
+                        field="temperature", message="temperature must be a number"
+                    )
                 )
 
         max_tokens = config.get("maxTokens")
@@ -206,11 +214,16 @@ class StubAIExecutor(NodeExecutor):
                 tokens = int(max_tokens)
                 if tokens < 1 or tokens > 100_000:
                     errors.append(
-                        ConfigError(field="maxTokens", message="maxTokens must be between 1 and 100,000")
+                        ConfigError(
+                            field="maxTokens",
+                            message="maxTokens must be between 1 and 100,000",
+                        )
                     )
             except (TypeError, ValueError):
                 errors.append(
-                    ConfigError(field="maxTokens", message="maxTokens must be a whole number")
+                    ConfigError(
+                        field="maxTokens", message="maxTokens must be a whole number"
+                    )
                 )
 
         return errors

@@ -30,7 +30,11 @@ from app.services.executors import (
 # specify a config. Matches the minimum required by validate_config().
 VALID_DEFAULTS = {
     "datasource": {"sourceType": "rest", "url": "https://api.example.com/data"},
-    "ai": {"provider": "anthropic", "model": "claude-sonnet-4-20250514", "prompt": "Analyze: {{ input }}"},
+    "ai": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-20250514",
+        "prompt": "Analyze: {{ input }}",
+    },
     "action": {"actionType": "transform", "outputFormat": "json"},
     "human": {},
 }
@@ -266,7 +270,11 @@ class TestStubExecutors:
     def test_ai_validates_temperature_range(self):
         """Temperature must be between 0 and 2."""
         executor = StubAIExecutor()
-        config = {"provider": "anthropic", "model": "claude-sonnet-4-20250514", "prompt": "test"}
+        config = {
+            "provider": "anthropic",
+            "model": "claude-sonnet-4-20250514",
+            "prompt": "test",
+        }
 
         # Too high
         errors = executor.validate_config({**config, "temperature": 3.0})
@@ -283,7 +291,11 @@ class TestStubExecutors:
     def test_ai_validates_max_tokens_range(self):
         """maxTokens must be 1-100000."""
         executor = StubAIExecutor()
-        config = {"provider": "anthropic", "model": "claude-sonnet-4-20250514", "prompt": "test"}
+        config = {
+            "provider": "anthropic",
+            "model": "claude-sonnet-4-20250514",
+            "prompt": "test",
+        }
 
         errors = executor.validate_config({**config, "maxTokens": 0})
         assert any(e.field == "maxTokens" for e in errors)
@@ -294,11 +306,13 @@ class TestStubExecutors:
     def test_ai_validates_provider_enum(self):
         """Provider must be anthropic or openai."""
         executor = StubAIExecutor()
-        errors = executor.validate_config({
-            "provider": "google",
-            "model": "gemini",
-            "prompt": "test",
-        })
+        errors = executor.validate_config(
+            {
+                "provider": "google",
+                "model": "gemini",
+                "prompt": "test",
+            }
+        )
         assert any(e.field == "provider" for e in errors)
 
     def test_action_validates_enums(self):
@@ -308,12 +322,16 @@ class TestStubExecutors:
         errors = executor.validate_config({"actionType": "delete"})
         assert any(e.field == "actionType" for e in errors)
 
-        errors = executor.validate_config({"actionType": "transform", "outputFormat": "xml"})
+        errors = executor.validate_config(
+            {"actionType": "transform", "outputFormat": "xml"}
+        )
         assert any(e.field == "outputFormat" for e in errors)
 
     def test_action_accepts_valid_config(self):
         executor = StubActionExecutor()
-        errors = executor.validate_config({"actionType": "transform", "outputFormat": "json"})
+        errors = executor.validate_config(
+            {"actionType": "transform", "outputFormat": "json"}
+        )
         assert errors == []
 
     def test_human_accepts_empty_config(self):
@@ -477,8 +495,16 @@ class TestExecutionEngine:
 
         pipeline = make_pipeline(
             nodes=[
-                {"id": "src", "type": "datasource", "config": {"sourceType": "rest", "url": ""}},
-                {"id": "analyze", "type": "ai", "config": {"provider": "anthropic", "model": "", "prompt": ""}},
+                {
+                    "id": "src",
+                    "type": "datasource",
+                    "config": {"sourceType": "rest", "url": ""},
+                },
+                {
+                    "id": "analyze",
+                    "type": "ai",
+                    "config": {"provider": "anthropic", "model": "", "prompt": ""},
+                },
             ],
             edges=[("src", "analyze")],
         )
@@ -496,8 +522,16 @@ class TestExecutionEngine:
         """Valid configs should not trigger preflight errors."""
         pipeline = make_pipeline(
             nodes=[
-                {"id": "src", "type": "datasource", "config": {"sourceType": "rest", "url": "https://example.com"}},
-                {"id": "out", "type": "action", "config": {"actionType": "transform", "outputFormat": "json"}},
+                {
+                    "id": "src",
+                    "type": "datasource",
+                    "config": {"sourceType": "rest", "url": "https://example.com"},
+                },
+                {
+                    "id": "out",
+                    "type": "action",
+                    "config": {"actionType": "transform", "outputFormat": "json"},
+                },
             ],
             edges=[("src", "out")],
         )
