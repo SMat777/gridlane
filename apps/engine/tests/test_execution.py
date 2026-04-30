@@ -5,6 +5,8 @@ Pure unit tests — no database, no HTTP. Tests the execution logic
 in isolation: topological sort, step execution, stub executors.
 """
 
+import asyncio
+
 import pytest
 
 from app.services.execution import (
@@ -539,3 +541,103 @@ class TestExecutionEngine:
         engine = ExecutionEngine()
         run = engine.execute(pipeline)
         assert run["status"] == "completed"
+
+
+class TestCancellation:
+    """Tests for cooperative cancellation via cancel_event."""
+
+    def test_no_cancel_event_runs_to_completion(self):
+        """When no cancel_event is passed, behavior is unchanged."""
+        pipeline = make_pipeline(
+            nodes=[
+                {"id": "a", "type": "datasource"},
+                {"id": "b", "type": "action"},
+            ],
+            edges=[("a", "b")],
+        )
+        engine = ExecutionEngine()
+        run = engine.execute(pipeline)
+        assert run["status"] == "completed"
+        assert all(s["status"] == "completed" for s in run["steps"])
+
+    def test_cancel_set_before_run_cancels_all_steps(self):
+        """If cancel is set before execute starts, every step is cancelled."""
+        pipeline = make_pipeline(
+            nodes=[
+                {"id": "a", "type": "datasource"},
+                {"id": "b", "type": "action"},
+            ],
+            edges=[("a", "b")],
+        )
+        engine = ExecutionEngine()
+        cancel_event = asyncio.Event()
+        cancel_event.set()
+        run = engine.execute(pipeline, cancel_event=cancel_event)
+
+        assert run["status"] == "cancelled"
+        assert len(run["steps"]) == 2
+        assert all(s["status"] == "cancelled" for s in run["steps"])
+        assert run["completed_at"] is not None
+
+    def test_cancel_set_mid_run_finishes_current_then_cancels_rest(self):
+        """Cancel set during step 1 lets it finish, marks step 2+3 cancelled."""
+
+        # Custom executor that sets the cancel event during its execute()
+        class CancellingDataSource(NodeExecutor):
+            cancel_event_ref: asyncio.Event | None = None
+
+            @classmethod
+            def manifest(cls) -> ConnectorManifest:
+                return ConnectorManifest(
+                    type="datasource",
+                    name="Cancelling DS",
+                    description="",
+                    config_schema={},
+                )
+
+            def validate_config(self, config):
+                return []
+
+            def execute(self, config, input_data):
+                if self.cancel_event_ref is not None:
+                    self.cancel_event_ref.set()
+                return ExecutorResult(output={"data": "from-step-a"})
+
+        cancel_event = asyncio.Event()
+        CancellingDataSource.cancel_event_ref = cancel_event
+
+        # Swap the executor for this test, restore after
+        original = _EXECUTORS["datasource"]
+        _EXECUTORS["datasource"] = CancellingDataSource
+        try:
+            pipeline = make_pipeline(
+                nodes=[
+                    {"id": "a", "type": "datasource"},
+                    {"id": "b", "type": "action"},
+                    {"id": "c", "type": "action"},
+                ],
+                edges=[("a", "b"), ("b", "c")],
+            )
+            engine = ExecutionEngine()
+            run = engine.execute(pipeline, cancel_event=cancel_event)
+        finally:
+            _EXECUTORS["datasource"] = original
+            CancellingDataSource.cancel_event_ref = None
+
+        assert run["status"] == "cancelled"
+        # Step a completed (was already in flight when cancel arrived)
+        assert run["steps"][0]["node_id"] == "a"
+        assert run["steps"][0]["status"] == "completed"
+        # Steps b and c got cancelled
+        assert run["steps"][1]["status"] == "cancelled"
+        assert run["steps"][2]["status"] == "cancelled"
+
+    def test_explicit_run_id_is_preserved(self):
+        """When a run_id is supplied, it's used in the result instead of a new UUID."""
+        pipeline = make_pipeline(
+            nodes=[{"id": "a", "type": "datasource"}],
+            edges=[],
+        )
+        engine = ExecutionEngine()
+        run = engine.execute(pipeline, run_id="11111111-2222-3333-4444-555555555555")
+        assert run["id"] == "11111111-2222-3333-4444-555555555555"

@@ -11,10 +11,11 @@ Schema is managed by Supabase CLI (supabase/migrations/).
 """
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import select, update
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -106,6 +107,135 @@ class RunService:
         await self.session.flush()
 
         return run
+
+    async def create_pending_run(
+        self,
+        run_id: uuid.UUID,
+        pipeline_dict: dict,
+    ) -> PipelineRunModel:
+        """
+        Insert a run row in 'running' state before the engine starts.
+
+        Used by async launch flow: gives /runs/async a row to return a
+        run_id for, and a row that the engine + cancel endpoint can
+        coordinate around. Completion fields are filled in later via
+        update_run_status().
+        """
+        run = PipelineRunModel(
+            id=run_id,
+            pipeline_id=_parse_uuid(pipeline_dict.get("id")),
+            pipeline_name=pipeline_dict.get("name", "Untitled Pipeline"),
+            status="running",
+            cancel_requested=False,
+            started_at=datetime.now(timezone.utc),
+            pipeline_snapshot=pipeline_dict,
+        )
+        self.session.add(run)
+        await self.session.flush()
+        return run
+
+    async def update_run_status(
+        self,
+        run_id: uuid.UUID,
+        status: str,
+        total_duration_ms: int | None,
+        total_cost_usd: float | None,
+    ) -> None:
+        """
+        Transition a run to a terminal state.
+
+        Sets completed_at = now() and stores aggregate metrics. The engine
+        calls this once when a run finishes (completed/failed/cancelled).
+        """
+        await self.session.execute(
+            update(PipelineRunModel)
+            .where(PipelineRunModel.id == run_id)
+            .values(
+                status=status,
+                completed_at=datetime.now(timezone.utc),
+                total_duration_ms=total_duration_ms,
+                total_cost_usd=_to_decimal(total_cost_usd),
+            )
+        )
+
+    async def set_cancel_requested(self, run_id: uuid.UUID) -> str | None:
+        """
+        Signal cooperative cancellation to the running engine.
+
+        Returns the post-call status:
+          - "cancelling" if the run was running and the flag is now set
+          - "completed"/"failed"/"cancelled" if the run already finished
+          - None if the run does not exist (caller should 404)
+
+        We deliberately don't write the flag if the run is already terminal:
+        it would be a no-op and would muddy the audit trail.
+        """
+        result = await self.session.execute(
+            select(PipelineRunModel).where(PipelineRunModel.id == run_id)
+        )
+        run = result.scalars().first()
+        if run is None:
+            return None
+
+        if run.status in ("completed", "failed", "cancelled"):
+            return run.status
+
+        await self.session.execute(
+            update(PipelineRunModel)
+            .where(PipelineRunModel.id == run_id)
+            .values(cancel_requested=True)
+        )
+        return "cancelling"
+
+    async def upsert_step_result(
+        self,
+        run_id: uuid.UUID,
+        step_dict: dict,
+    ) -> None:
+        """
+        Insert or update a step result by (run_id, node_id, order).
+
+        The engine calls this twice per step: once at start (status='running',
+        only started_at filled in) and once at completion (status='completed'
+        or 'failed', with output/duration/metrics). This streams results to
+        the DB as the run progresses, so reconnecting clients see live state.
+
+        Uses Postgres ON CONFLICT for atomic upsert. The conflict target is
+        the unique constraint on (run_id, node_id) — added in this PR's
+        migration to support deterministic upserts.
+        """
+        token_usage = step_dict.get("token_usage") or {}
+
+        values = {
+            "run_id": run_id,
+            "node_id": step_dict["node_id"],
+            "node_type": step_dict["node_type"],
+            "node_label": step_dict["node_label"],
+            "status": step_dict["status"],
+            "order": step_dict["order"],
+            "input_data": step_dict.get("input"),
+            "output_data": step_dict.get("output"),
+            "error": step_dict.get("error"),
+            "started_at": _parse_iso(step_dict.get("started_at")),
+            "completed_at": _parse_iso(step_dict.get("completed_at")),
+            "duration_ms": step_dict.get("duration_ms"),
+            "input_tokens": token_usage.get("input_tokens"),
+            "output_tokens": token_usage.get("output_tokens"),
+            "total_tokens": token_usage.get("total_tokens"),
+            "cost_usd": _to_decimal(step_dict.get("cost_usd")),
+        }
+
+        stmt = pg_insert(StepResultModel).values(**values)
+        # On conflict, update everything except the natural key columns
+        stmt = stmt.on_conflict_do_update(
+            index_elements=["run_id", "node_id"],
+            set_={
+                k: v
+                for k, v in values.items()
+                if k not in ("run_id", "node_id", "node_type", "order")
+            },
+        )
+        await self.session.execute(stmt)
 
     async def list_runs(
         self,

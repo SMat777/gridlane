@@ -9,6 +9,7 @@ This is the core logic — no HTTP, no database. The API layer
 wraps this with persistence and request/response handling.
 """
 
+import asyncio
 import uuid
 from collections import defaultdict, deque
 from datetime import datetime, timezone
@@ -83,17 +84,30 @@ class ExecutionEngine:
     is passed as input to the next node in the chain.
     """
 
-    def execute(self, pipeline: dict[str, Any]) -> dict[str, Any]:
+    def execute(
+        self,
+        pipeline: dict[str, Any],
+        cancel_event: asyncio.Event | None = None,
+        run_id: str | None = None,
+    ) -> dict[str, Any]:
         """
         Execute a pipeline and return the run result.
 
         Args:
             pipeline: Pipeline definition with nodes and edges.
+            cancel_event: Optional event polled between steps. If set, the
+                current step finishes (so connector side-effects don't get
+                left half-applied), then remaining steps are marked
+                cancelled and the run finalizes with status='cancelled'.
+            run_id: Optional pre-assigned run ID. The async launch flow
+                creates a DB row first and passes the ID in so the engine
+                writes step results against the correct run.
 
         Returns:
             Run result dict matching the PipelineRun shape.
         """
-        run_id = str(uuid.uuid4())
+        if run_id is None:
+            run_id = str(uuid.uuid4())
         run_started = datetime.now(timezone.utc)
         steps: list[dict[str, Any]] = []
 
@@ -142,6 +156,48 @@ class ExecutionEngine:
             incoming[edge["target"]].append(edge["source"])
 
         for order, node in enumerate(sorted_nodes):
+            # ── Cooperative cancellation check ──────────────────────────
+            # We check BEFORE starting the step (not mid-step) so connectors
+            # don't get aborted halfway through writing to an external system.
+            # The current step gets to run to completion if it was already
+            # in flight; cancellation only stops what hasn't started yet.
+            if cancel_event is not None and cancel_event.is_set():
+                cancelled_at = datetime.now(timezone.utc)
+                for remaining in sorted_nodes[order:]:
+                    steps.append(
+                        {
+                            "node_id": remaining["id"],
+                            "node_type": remaining.get(
+                                "type",
+                                remaining.get("data", {}).get("nodeType", ""),
+                            ),
+                            "node_label": remaining.get("data", {}).get("label", ""),
+                            "order": sorted_nodes.index(remaining),
+                            "status": "cancelled",
+                            "input": None,
+                            "output": None,
+                            "started_at": cancelled_at.isoformat(),
+                            "completed_at": cancelled_at.isoformat(),
+                            "duration_ms": 0,
+                        }
+                    )
+                run_completed = cancelled_at
+                return {
+                    "id": run_id,
+                    "pipeline_id": pipeline.get("id", ""),
+                    "pipeline_name": pipeline.get("name", ""),
+                    "status": "cancelled",
+                    "steps": steps,
+                    "total_duration_ms": int(
+                        (run_completed - run_started).total_seconds() * 1000
+                    ),
+                    "total_cost_usd": sum(
+                        s.get("cost_usd", 0) for s in steps if s.get("cost_usd")
+                    ),
+                    "started_at": run_started.isoformat(),
+                    "completed_at": run_completed.isoformat(),
+                }
+
             node_id = node["id"]
             node_type = node.get("type", node.get("data", {}).get("nodeType", ""))
             node_label = node.get("data", {}).get("label", node_type)

@@ -284,3 +284,99 @@ class TestGetRunEndpoint:
         response = client.get("/api/v1/runs/not-a-uuid")
 
         assert response.status_code == 422
+
+
+class TestAsyncLaunchEndpoint:
+    """POST /api/v1/runs/async — launch a run in the background."""
+
+    def test_returns_202_with_run_id(self):
+        """Async launch returns 202 + run_id immediately."""
+        body = make_run_request(
+            nodes=[{"id": "a", "type": "datasource"}],
+            edges=[],
+        )
+        with patch(
+            "app.api.v1.endpoints.runs.coordinator.launch", new=AsyncMock()
+        ) as mock_launch:
+            response = client.post("/api/v1/runs/async", json=body)
+
+        assert response.status_code == 202
+        data = response.json()
+        assert "run_id" in data
+        assert data["status"] == "running"
+        assert data["stream_url"].startswith("/api/v1/runs/")
+        assert data["stream_url"].endswith("/stream")
+        # Coordinator was asked to launch the run
+        mock_launch.assert_awaited_once()
+
+    def test_returns_uuid_format(self):
+        """run_id should be a valid UUID string."""
+        body = make_run_request(
+            nodes=[{"id": "a", "type": "datasource"}],
+            edges=[],
+        )
+        with patch("app.api.v1.endpoints.runs.coordinator.launch", new=AsyncMock()):
+            response = client.post("/api/v1/runs/async", json=body)
+
+        # Will raise if not valid UUID
+        uuid.UUID(response.json()["run_id"])
+
+
+class TestCancelRunEndpoint:
+    """POST /api/v1/runs/{run_id}/cancel — request cancellation."""
+
+    def test_cancel_returns_cancelling_for_running_run(self):
+        """When the run is running, cancel returns status=cancelling."""
+        run_id = uuid.uuid4()
+
+        with (
+            patch(
+                "app.api.v1.endpoints.runs.RunService.set_cancel_requested",
+                new=AsyncMock(return_value="cancelling"),
+            ),
+            patch(
+                "app.api.v1.endpoints.runs.coordinator.cancel", new=AsyncMock()
+            ) as mock_cancel,
+        ):
+            response = client.post(f"/api/v1/runs/{run_id}/cancel")
+
+        assert response.status_code == 200
+        assert response.json() == {
+            "run_id": str(run_id),
+            "status": "cancelling",
+        }
+        mock_cancel.assert_awaited_once()
+
+    def test_cancel_returns_existing_status_when_already_terminal(self):
+        """Cancelling a finished run returns its current status (no-op)."""
+        run_id = uuid.uuid4()
+
+        with (
+            patch(
+                "app.api.v1.endpoints.runs.RunService.set_cancel_requested",
+                new=AsyncMock(return_value="completed"),
+            ),
+            patch("app.api.v1.endpoints.runs.coordinator.cancel", new=AsyncMock()),
+        ):
+            response = client.post(f"/api/v1/runs/{run_id}/cancel")
+
+        assert response.status_code == 200
+        assert response.json()["status"] == "completed"
+
+    def test_cancel_returns_404_for_unknown_run(self):
+        """Cancelling a non-existent run returns 404 with structured error."""
+        run_id = uuid.uuid4()
+
+        with patch(
+            "app.api.v1.endpoints.runs.RunService.set_cancel_requested",
+            new=AsyncMock(return_value=None),
+        ):
+            response = client.post(f"/api/v1/runs/{run_id}/cancel")
+
+        assert response.status_code == 404
+        assert response.json()["error"]["code"] == "NOT_FOUND"
+
+    def test_cancel_rejects_invalid_uuid(self):
+        """Path validation rejects non-UUID run_id."""
+        response = client.post("/api/v1/runs/not-a-uuid/cancel")
+        assert response.status_code == 422
