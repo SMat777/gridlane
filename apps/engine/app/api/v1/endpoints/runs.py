@@ -14,6 +14,8 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.schemas import (
+    CancelRunResponse,
+    RunAsyncResponse,
     RunDetailResponse,
     RunHistoryResponse,
     RunListItem,
@@ -23,6 +25,7 @@ from app.api.v1.schemas import (
 from app.core.database import get_db
 from app.core.errors import ErrorCode, PipelineError
 from app.services.execution import ExecutionEngine
+from app.services.run_coordinator import coordinator
 from app.services.run_service import RunService
 
 logger = logging.getLogger(__name__)
@@ -131,6 +134,71 @@ async def run_pipeline(
         logger.warning("Failed to persist run to database", exc_info=True)
 
     return {"run": run_result}
+
+
+@router.post("/runs/async", response_model=RunAsyncResponse, status_code=202)
+async def launch_run_async(
+    request: RunPipelineRequest,
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """
+    Launch a pipeline run in the background.
+
+    Returns immediately with the run_id. The caller subscribes to
+    GET /runs/{run_id}/stream for live progress (PR a2 wires this up)
+    or polls GET /runs/{run_id} for the eventual result.
+
+    The sync POST /runs is preserved for backward compatibility while
+    the frontend migrates.
+    """
+    pipeline_dict = request.pipeline.model_dump()
+    run_id = uuid.uuid4()
+
+    # Create the pending row first so cancel/status endpoints find it
+    service = RunService(db)
+    await service.create_pending_run(run_id, pipeline_dict)
+    await db.commit()
+
+    await coordinator.launch(run_id, pipeline_dict)
+
+    return {
+        "run_id": str(run_id),
+        "status": "running",
+        "stream_url": f"/api/v1/runs/{run_id}/stream",
+    }
+
+
+@router.post("/runs/{run_id}/cancel", response_model=CancelRunResponse)
+async def cancel_run(
+    run_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """
+    Request cancellation of a running pipeline.
+
+    Cancellation is cooperative: the engine checks the cancel flag between
+    steps. The current step is allowed to finish (avoiding half-applied
+    connector side-effects). Remaining steps are marked cancelled.
+
+    Returns the post-call status. 404 if the run doesn't exist.
+    Note: a 200 with status='completed'/'failed'/'cancelled' means the run
+    already finished — no transition was needed.
+    """
+    service = RunService(db)
+
+    # Set the DB flag (also handles the 'already terminal' case)
+    db_status = await service.set_cancel_requested(run_id)
+    if db_status is None:
+        raise PipelineError(
+            code=ErrorCode.NOT_FOUND,
+            message="Run not found",
+            status_code=404,
+        )
+
+    # Also signal in-process coordinator if the task is running here
+    await coordinator.cancel(run_id)
+
+    return {"run_id": str(run_id), "status": db_status}
 
 
 @router.get("/runs", response_model=RunHistoryResponse)

@@ -127,6 +127,214 @@ class TestListRuns:
         assert runs == []
 
 
+class TestCreatePendingRun:
+    """Tests for RunService.create_pending_run() — used by async launch."""
+
+    @pytest.mark.asyncio
+    async def test_creates_run_with_running_status(
+        self, mock_session, sample_pipeline_dict
+    ):
+        """A new pending run starts with status='running' and no completion fields."""
+        service = RunService(mock_session)
+
+        run_id = uuid.uuid4()
+        await service.create_pending_run(
+            run_id=run_id,
+            pipeline_dict=sample_pipeline_dict,
+        )
+
+        mock_session.add.assert_called_once()
+        added = mock_session.add.call_args[0][0]
+        assert isinstance(added, PipelineRunModel)
+        assert added.id == run_id
+        assert added.status == "running"
+        assert added.completed_at is None
+        assert added.total_duration_ms is None
+        assert added.cancel_requested is False
+        assert added.pipeline_id == PIPE_UUID
+        assert added.pipeline_name == "Test Pipeline"
+        assert added.pipeline_snapshot == sample_pipeline_dict
+
+    @pytest.mark.asyncio
+    async def test_flushes_to_persist(self, mock_session, sample_pipeline_dict):
+        """create_pending_run flushes so the row exists for foreign key references."""
+        service = RunService(mock_session)
+        await service.create_pending_run(uuid.uuid4(), sample_pipeline_dict)
+        mock_session.flush.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_handles_missing_pipeline_id(self, mock_session):
+        """If pipeline hasn't been saved yet, pipeline_id is None (nullable FK)."""
+        service = RunService(mock_session)
+        pipeline = {"id": "", "name": "Untitled", "nodes": [], "edges": []}
+
+        await service.create_pending_run(uuid.uuid4(), pipeline)
+
+        added = mock_session.add.call_args[0][0]
+        assert added.pipeline_id is None
+        assert added.pipeline_name == "Untitled"
+
+
+class TestUpdateRunStatus:
+    """Tests for RunService.update_run_status() — terminal state transitions."""
+
+    @pytest.mark.asyncio
+    async def test_marks_run_completed(self, mock_session):
+        """Transitioning to a terminal state sets completed_at and totals."""
+        run_id = uuid.uuid4()
+        service = RunService(mock_session)
+
+        await service.update_run_status(
+            run_id=run_id,
+            status="completed",
+            total_duration_ms=2500,
+            total_cost_usd=0.012,
+        )
+
+        # Should issue an UPDATE statement
+        mock_session.execute.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_marks_run_failed_without_cost(self, mock_session):
+        """A failed run with no AI steps has no cost — total_cost_usd may be None."""
+        service = RunService(mock_session)
+
+        await service.update_run_status(
+            run_id=uuid.uuid4(),
+            status="failed",
+            total_duration_ms=120,
+            total_cost_usd=None,
+        )
+
+        mock_session.execute.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_marks_run_cancelled(self, mock_session):
+        """Cancellation is a terminal state too."""
+        service = RunService(mock_session)
+        await service.update_run_status(
+            run_id=uuid.uuid4(),
+            status="cancelled",
+            total_duration_ms=500,
+            total_cost_usd=None,
+        )
+        mock_session.execute.assert_awaited_once()
+
+
+class TestSetCancelRequested:
+    """Tests for RunService.set_cancel_requested() — used by /cancel endpoint."""
+
+    @pytest.mark.asyncio
+    async def test_sets_flag_on_running_run(self, mock_session):
+        """Sets cancel_requested=true when run is in a non-terminal state."""
+        service = RunService(mock_session)
+
+        # Mock the SELECT step that fetches current status
+        mock_run = MagicMock()
+        mock_run.status = "running"
+        mock_run.cancel_requested = False
+        mock_select_result = MagicMock()
+        mock_select_scalars = MagicMock()
+        mock_select_scalars.first.return_value = mock_run
+        mock_select_result.scalars.return_value = mock_select_scalars
+        mock_session.execute = AsyncMock(return_value=mock_select_result)
+
+        result = await service.set_cancel_requested(uuid.uuid4())
+
+        assert result == "cancelling"
+        # Should have called execute (select + update)
+        assert mock_session.execute.await_count >= 2
+
+    @pytest.mark.asyncio
+    async def test_returns_existing_status_when_terminal(self, mock_session):
+        """If run already finished, return its current status without modifying it."""
+        service = RunService(mock_session)
+
+        mock_run = MagicMock()
+        mock_run.status = "completed"
+        mock_run.cancel_requested = False
+        mock_select_result = MagicMock()
+        mock_select_scalars = MagicMock()
+        mock_select_scalars.first.return_value = mock_run
+        mock_select_result.scalars.return_value = mock_select_scalars
+        mock_session.execute = AsyncMock(return_value=mock_select_result)
+
+        result = await service.set_cancel_requested(uuid.uuid4())
+
+        assert result == "completed"
+        # Only the SELECT, no UPDATE
+        assert mock_session.execute.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_returns_none_when_run_not_found(self, mock_session):
+        """If run doesn't exist, return None so endpoint can return 404."""
+        service = RunService(mock_session)
+
+        mock_select_result = MagicMock()
+        mock_select_scalars = MagicMock()
+        mock_select_scalars.first.return_value = None
+        mock_select_result.scalars.return_value = mock_select_scalars
+        mock_session.execute = AsyncMock(return_value=mock_select_result)
+
+        result = await service.set_cancel_requested(uuid.uuid4())
+
+        assert result is None
+
+
+class TestUpsertStepResult:
+    """Tests for RunService.upsert_step_result() — progressive step persistence."""
+
+    @pytest.mark.asyncio
+    async def test_inserts_new_step(self, mock_session):
+        """A new step is inserted with started_at and status='running'."""
+        service = RunService(mock_session)
+
+        await service.upsert_step_result(
+            run_id=uuid.uuid4(),
+            step_dict={
+                "node_id": "node_1",
+                "node_type": "datasource",
+                "node_label": "Source",
+                "status": "running",
+                "order": 0,
+                "input": None,
+                "started_at": "2026-04-30T12:00:00+00:00",
+            },
+        )
+
+        # Should call execute (postgres ON CONFLICT upsert)
+        mock_session.execute.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_upserts_completion(self, mock_session):
+        """An update to an existing step writes output, duration, cost."""
+        service = RunService(mock_session)
+
+        await service.upsert_step_result(
+            run_id=uuid.uuid4(),
+            step_dict={
+                "node_id": "node_1",
+                "node_type": "ai",
+                "node_label": "Analyze",
+                "status": "completed",
+                "order": 0,
+                "input": {"x": 1},
+                "output": {"y": 2},
+                "started_at": "2026-04-30T12:00:00+00:00",
+                "completed_at": "2026-04-30T12:00:01+00:00",
+                "duration_ms": 1000,
+                "token_usage": {
+                    "input_tokens": 10,
+                    "output_tokens": 5,
+                    "total_tokens": 15,
+                },
+                "cost_usd": 0.001,
+            },
+        )
+
+        mock_session.execute.assert_awaited_once()
+
+
 class TestGetRun:
     """Tests for RunService.get_run()."""
 

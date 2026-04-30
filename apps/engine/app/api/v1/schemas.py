@@ -122,3 +122,18 @@ class RunDetailResponse(BaseModel):
     """Response wrapper for GET /runs/{run_id}."""
 
     run: PipelineRunResponse
+
+
+class RunAsyncResponse(BaseModel):
+    """Response for POST /runs/async — returned immediately after launch."""
+
+    run_id: str
+    status: str
+    stream_url: str
+
+
+class CancelRunResponse(BaseModel):
+    """Response for POST /runs/{run_id}/cancel."""
+
+    run_id: str
+    status: str
