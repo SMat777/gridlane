@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { getSupabase } from "./supabase";
 import type { PipelineDefinition } from "@gridlane/shared";
 
 /**
@@ -18,7 +18,7 @@ import type { PipelineDefinition } from "@gridlane/shared";
 export async function savePipeline(
   pipeline: PipelineDefinition,
 ): Promise<{ id: string } | { error: string }> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("pipelines")
     .upsert(
       {
@@ -42,7 +42,7 @@ export async function savePipeline(
 export async function loadPipeline(
   id: string,
 ): Promise<PipelineDefinition | { error: string }> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("pipelines")
     .select("definition")
     .eq("id", id)
@@ -59,7 +59,7 @@ export async function loadPipeline(
 export async function listPipelines(): Promise<
   Array<{ id: string; name: string; updatedAt: string }> | { error: string }
 > {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("pipelines")
     .select("id, name, updated_at")
     .order("updated_at", { ascending: false });
