@@ -27,10 +27,11 @@ Design decisions:
 import asyncio
 import logging
 import uuid
-from typing import Awaitable, Callable
+from typing import Any, Awaitable, Callable
 
 from app.core.database import async_session
 from app.core.errors import PipelineError
+from app.services.event_bus import RunEvent, bus
 from app.services.execution import ExecutionEngine
 from app.services.run_service import RunService
 
@@ -73,6 +74,9 @@ class RunCoordinator:
         """
         cancel_event = asyncio.Event()
         self._cancel_events[run_id] = cancel_event
+        # Open bus channel up-front so subscribers connecting between launch()
+        # and the engine's first emit() find a channel to attach to.
+        bus.open_channel(run_id)
 
         task = asyncio.create_task(
             self._run(run_id, pipeline_dict, cancel_event),
@@ -116,12 +120,39 @@ class RunCoordinator:
         engine = ExecutionEngine()
         run_id_str = str(run_id)
 
+        # Open the bus channel before launching the engine so subscribers
+        # connecting between launch() and the first emitted event still
+        # have a channel to attach to.
+        channel = bus.open_channel(run_id)
+
+        # The engine runs in a worker thread (asyncio.to_thread). To safely
+        # publish events from there back into the asyncio loop, capture the
+        # loop reference and use run_coroutine_threadsafe.
+        loop = asyncio.get_running_loop()
+
+        # Buffer so events emitted before persistence completes can still be
+        # written in order. The engine is fast enough that this stays small.
+        pending_events: list[tuple[int, str, dict[str, Any]]] = []
+
+        def emit(event_type: str, payload: dict[str, Any]) -> None:
+            """Engine-side emit callback: schedule async publish on the loop."""
+            sequence = channel.next_sequence()
+            event = RunEvent(
+                sequence=sequence,
+                event_type=event_type,
+                payload=payload,
+            )
+            pending_events.append((sequence, event_type, payload))
+            # Schedule publish onto the loop without blocking the engine thread
+            asyncio.run_coroutine_threadsafe(channel.publish(event), loop)
+
         try:
             run_result = await asyncio.to_thread(
                 engine.execute,
                 pipeline_dict,
                 cancel_event,
                 run_id_str,
+                emit,
             )
         except PipelineError as e:
             # Validation errors caught from engine — persist as failed
@@ -138,12 +169,20 @@ class RunCoordinator:
             await self._mark_failed(run_id, error_message=f"Internal error: {e}")
             return
 
-        # Persist terminal state and step results
+        # Persist terminal state, step results, and the event log.
+        # Order matters: events first so SSE replay is consistent, then step
+        # results, then run status. If anything fails the whole transaction
+        # rolls back — partial state would confuse SSE replay.
         async with async_session() as session:
             try:
                 service = RunService(session)
-                # Save all step results progressively (or in bulk here at end —
-                # PR a2 will switch this to per-step emission via an event bus)
+                for sequence, event_type, payload in pending_events:
+                    await service.append_event(
+                        run_id=run_id,
+                        sequence=sequence,
+                        event_type=event_type,
+                        payload=payload,
+                    )
                 for step in run_result.get("steps", []):
                     await service.upsert_step_result(run_id, step)
                 await service.update_run_status(
@@ -156,12 +195,43 @@ class RunCoordinator:
             except Exception:
                 logger.exception("Failed to persist run result for %s", run_id)
                 await session.rollback()
+        # Close the bus channel — late subscribers fall through to DB replay
+        bus.close_channel(run_id)
 
     async def _mark_failed(self, run_id: uuid.UUID, error_message: str) -> None:
-        """Update DB run row to status=failed when engine raised before any step."""
+        """Update DB run row to status=failed when engine raised before any step.
+
+        Also publishes a run_failed event so SSE clients see the failure
+        immediately, and closes the bus channel.
+        """
+        # Emit run_failed via the bus so live subscribers learn about it
+        channel = bus.get_channel(run_id)
+        if channel is not None:
+            sequence = channel.next_sequence()
+            event = RunEvent(
+                sequence=sequence,
+                event_type="run_failed",
+                payload={
+                    "run_id": str(run_id),
+                    "status": "failed",
+                    "error": error_message,
+                },
+            )
+            try:
+                await channel.publish(event)
+            except Exception:
+                logger.exception("Failed to publish run_failed for %s", run_id)
         async with async_session() as session:
             try:
                 service = RunService(session)
+                # Persist the run_failed event so reconnecting clients see it
+                if channel is not None:
+                    await service.append_event(
+                        run_id=run_id,
+                        sequence=event.sequence,
+                        event_type=event.event_type,
+                        payload=event.payload,
+                    )
                 await service.update_run_status(
                     run_id=run_id,
                     status="failed",
@@ -172,6 +242,7 @@ class RunCoordinator:
             except Exception:
                 logger.exception("Failed to mark run %s as failed", run_id)
                 await session.rollback()
+        bus.close_channel(run_id)
 
 
 # Process-local singleton. FastAPI imports this directly. If we ever move

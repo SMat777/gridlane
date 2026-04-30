@@ -335,6 +335,64 @@ class TestUpsertStepResult:
         mock_session.execute.assert_awaited_once()
 
 
+class TestAppendEvent:
+    """Tests for RunService.append_event() — backs SSE persistence."""
+
+    @pytest.mark.asyncio
+    async def test_inserts_event_with_sequence(self, mock_session):
+        """append_event creates a RunEventModel with the given sequence."""
+        from app.models.run import RunEventModel
+
+        service = RunService(mock_session)
+        run_id = uuid.uuid4()
+
+        await service.append_event(
+            run_id=run_id,
+            sequence=0,
+            event_type="run_started",
+            payload={"total_steps": 3},
+        )
+
+        mock_session.add.assert_called_once()
+        added = mock_session.add.call_args[0][0]
+        assert isinstance(added, RunEventModel)
+        assert added.run_id == run_id
+        assert added.sequence == 0
+        assert added.event_type == "run_started"
+        assert added.payload == {"total_steps": 3}
+        mock_session.flush.assert_awaited_once()
+
+
+class TestListEventsAfter:
+    """Tests for RunService.list_events_after() — backs SSE replay."""
+
+    @pytest.mark.asyncio
+    async def test_returns_empty_when_no_events(self, mock_session):
+        mock_result = MagicMock()
+        mock_scalars = MagicMock()
+        mock_scalars.all.return_value = []
+        mock_result.scalars.return_value = mock_scalars
+        mock_session.execute = AsyncMock(return_value=mock_result)
+
+        service = RunService(mock_session)
+        events = await service.list_events_after(uuid.uuid4(), after_sequence=-1)
+        assert events == []
+
+    @pytest.mark.asyncio
+    async def test_filters_by_sequence(self, mock_session):
+        """list_events_after issues a SELECT — query exactness is hard to
+        assert without a real DB, so we verify execute was called."""
+        mock_result = MagicMock()
+        mock_scalars = MagicMock()
+        mock_scalars.all.return_value = []
+        mock_result.scalars.return_value = mock_scalars
+        mock_session.execute = AsyncMock(return_value=mock_result)
+
+        service = RunService(mock_session)
+        await service.list_events_after(uuid.uuid4(), after_sequence=5)
+        mock_session.execute.assert_awaited_once()
+
+
 class TestGetRun:
     """Tests for RunService.get_run()."""
 

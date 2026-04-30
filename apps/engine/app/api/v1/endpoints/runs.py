@@ -7,11 +7,14 @@ GET  /runs/{run_id} — Get a single run with step details.
 """
 
 import asyncio
+import json
 import logging
 import uuid
+from typing import AsyncIterator
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Header, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from sse_starlette.sse import EventSourceResponse
 
 from app.api.v1.schemas import (
     CancelRunResponse,
@@ -24,9 +27,17 @@ from app.api.v1.schemas import (
 )
 from app.core.database import get_db
 from app.core.errors import ErrorCode, PipelineError
+from app.services.event_bus import bus
 from app.services.execution import ExecutionEngine
 from app.services.run_coordinator import coordinator
 from app.services.run_service import RunService
+
+# How often to send SSE comment-events to keep proxies from closing the
+# connection. 15 seconds is comfortably under typical 30-60s proxy timeouts.
+HEARTBEAT_INTERVAL_SECONDS = 15
+
+# Final event types — when one of these arrives the stream closes.
+TERMINAL_EVENTS = {"run_completed", "run_failed", "run_cancelled"}
 
 logger = logging.getLogger(__name__)
 
@@ -199,6 +210,102 @@ async def cancel_run(
     await coordinator.cancel(run_id)
 
     return {"run_id": str(run_id), "status": db_status}
+
+
+@router.get("/runs/{run_id}/stream")
+async def stream_run(
+    run_id: uuid.UUID,
+    request: Request,
+    last_event_id: str | None = Header(default=None, alias="Last-Event-ID"),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Stream run progress events via SSE.
+
+    Behavior:
+      - If the run is currently active, attach to the live event bus.
+        Replays any events with sequence > Last-Event-ID first, then
+        continues with new events.
+      - If the run already finished, replay events from the DB and close.
+      - If the run is unknown (no DB row, no live channel), 404.
+
+    Heartbeat comment-events are sent every 15s while the connection
+    is open to prevent intermediate proxies from closing it.
+    """
+    last_seq = _parse_last_event_id(last_event_id)
+
+    # Pre-check via the request-scoped session (returns 404 cleanly if missing)
+    pre_service = RunService(db)
+    run = await pre_service.get_run(run_id)
+    live_channel = bus.get_channel(run_id)
+    if run is None and live_channel is None:
+        raise PipelineError(
+            code=ErrorCode.NOT_FOUND,
+            message="Run not found",
+            status_code=404,
+        )
+
+    # Replay events from the same session before the connection upgrades.
+    # This bounded list is fine — a run produces at most O(steps) events.
+    initial_replay = await pre_service.list_events_after(
+        run_id, after_sequence=last_seq
+    )
+
+    async def event_stream() -> AsyncIterator[dict]:
+        replayed_max = last_seq
+        for event_model in initial_replay:
+            yield {
+                "id": str(event_model.sequence),
+                "event": event_model.event_type,
+                "data": json.dumps(event_model.payload),
+            }
+            replayed_max = max(replayed_max, event_model.sequence)
+            if event_model.event_type in TERMINAL_EVENTS:
+                return  # finished run — replay is everything
+
+        # Live attach if the run is still in flight
+        channel = bus.get_channel(run_id)
+        if channel is None:
+            return
+
+        queue = channel.subscribe()
+        try:
+            while True:
+                if await request.is_disconnected():
+                    break
+                try:
+                    event = await asyncio.wait_for(
+                        queue.get(),
+                        timeout=HEARTBEAT_INTERVAL_SECONDS,
+                    )
+                except asyncio.TimeoutError:
+                    yield {"comment": "keepalive"}
+                    continue
+
+                if event.sequence <= replayed_max:
+                    continue
+
+                yield {
+                    "id": str(event.sequence),
+                    "event": event.event_type,
+                    "data": json.dumps(event.payload),
+                }
+                if event.event_type in TERMINAL_EVENTS:
+                    break
+        finally:
+            channel.unsubscribe(queue)
+
+    return EventSourceResponse(event_stream())
+
+
+def _parse_last_event_id(header_value: str | None) -> int:
+    """Parse Last-Event-ID. -1 means "from the beginning"."""
+    if not header_value:
+        return -1
+    try:
+        return int(header_value)
+    except (TypeError, ValueError):
+        return -1
 
 
 @router.get("/runs", response_model=RunHistoryResponse)

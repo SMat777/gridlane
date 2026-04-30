@@ -632,6 +632,78 @@ class TestCancellation:
         assert run["steps"][1]["status"] == "cancelled"
         assert run["steps"][2]["status"] == "cancelled"
 
+    def test_emit_callback_receives_lifecycle_events(self):
+        """The emit callback is called with run_started, step_*, run_completed."""
+        events: list[tuple[str, dict]] = []
+
+        def emit(event_type: str, payload: dict) -> None:
+            events.append((event_type, payload))
+
+        pipeline = make_pipeline(
+            nodes=[{"id": "a", "type": "datasource"}],
+            edges=[],
+        )
+        engine = ExecutionEngine()
+        engine.execute(pipeline, emit=emit)
+
+        event_types = [e[0] for e in events]
+        assert "run_started" in event_types
+        assert "step_started" in event_types
+        assert "step_completed" in event_types
+        assert "run_completed" in event_types
+
+        # run_started carries pipeline metadata
+        run_started_payload = events[0][1]
+        assert run_started_payload["total_steps"] == 1
+
+    def test_emit_callback_receives_step_failed_then_run_failed(self):
+        """When a step throws, emit gets step_failed then run_failed."""
+
+        class FailingExecutor(NodeExecutor):
+            @classmethod
+            def manifest(cls):
+                return ConnectorManifest(
+                    type="datasource", name="Bomb", description="", config_schema={}
+                )
+
+            def validate_config(self, config):
+                return []
+
+            def execute(self, config, input_data):
+                raise RuntimeError("boom")
+
+        events: list[tuple[str, dict]] = []
+        original = _EXECUTORS["datasource"]
+        _EXECUTORS["datasource"] = FailingExecutor
+        try:
+            pipeline = make_pipeline(
+                nodes=[{"id": "a", "type": "datasource"}],
+                edges=[],
+            )
+            engine = ExecutionEngine()
+            engine.execute(pipeline, emit=lambda t, p: events.append((t, p)))
+        finally:
+            _EXECUTORS["datasource"] = original
+
+        types = [t for t, _ in events]
+        assert "step_failed" in types
+        assert "run_failed" in types
+
+    def test_emit_failure_does_not_crash_run(self):
+        """A buggy emit callback must not bring down the pipeline."""
+
+        def bad_emit(event_type: str, payload: dict) -> None:
+            raise RuntimeError("emit broken")
+
+        pipeline = make_pipeline(
+            nodes=[{"id": "a", "type": "datasource"}],
+            edges=[],
+        )
+        engine = ExecutionEngine()
+        run = engine.execute(pipeline, emit=bad_emit)
+        # Run completes normally despite emit raising
+        assert run["status"] == "completed"
+
     def test_explicit_run_id_is_preserved(self):
         """When a run_id is supplied, it's used in the result instead of a new UUID."""
         pipeline = make_pipeline(

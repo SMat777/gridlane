@@ -19,7 +19,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models.run import PipelineRunModel, StepResultModel
+from app.models.run import PipelineRunModel, RunEventModel, StepResultModel
 
 
 def _parse_uuid(value: str | None) -> uuid.UUID | None:
@@ -236,6 +236,50 @@ class RunService:
             },
         )
         await self.session.execute(stmt)
+
+    async def append_event(
+        self,
+        run_id: uuid.UUID,
+        sequence: int,
+        event_type: str,
+        payload: dict,
+    ) -> None:
+        """Append a run event to the log for SSE replay support.
+
+        Sequence is allocated by the caller (the event bus owns counter
+        state during a live run). The unique constraint on
+        (run_id, sequence) enforces ordered, gap-free writes.
+        """
+        event = RunEventModel(
+            run_id=run_id,
+            sequence=sequence,
+            event_type=event_type,
+            payload=payload,
+        )
+        self.session.add(event)
+        await self.session.flush()
+
+    async def list_events_after(
+        self,
+        run_id: uuid.UUID,
+        after_sequence: int = -1,
+        limit: int = 1000,
+    ) -> list[RunEventModel]:
+        """Return events for a run with sequence > after_sequence, in order.
+
+        Used by the SSE endpoint for Last-Event-ID resume and for replaying
+        already-finished runs to late subscribers. limit is generous —
+        no realistic run produces 1000+ events.
+        """
+        query = (
+            select(RunEventModel)
+            .where(RunEventModel.run_id == run_id)
+            .where(RunEventModel.sequence > after_sequence)
+            .order_by(RunEventModel.sequence.asc())
+            .limit(limit)
+        )
+        result = await self.session.execute(query)
+        return list(result.scalars().all())
 
     async def list_runs(
         self,

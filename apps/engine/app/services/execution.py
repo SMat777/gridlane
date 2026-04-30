@@ -13,10 +13,16 @@ import asyncio
 import uuid
 from collections import defaultdict, deque
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Callable
 
 from app.core.errors import ErrorCode, PipelineError
 from app.services.executors import get_executor
+
+# Emit callback signature: (event_type: str, payload: dict) -> None
+# Synchronous because it's called from inside the engine's sync execute() loop,
+# which itself runs inside asyncio.to_thread(). Implementations should be quick
+# (the bus.publish + DB append happens via thread-safe coro scheduled on the loop).
+EmitCallback = Callable[[str, dict[str, Any]], None]
 
 
 def topological_sort(
@@ -89,6 +95,7 @@ class ExecutionEngine:
         pipeline: dict[str, Any],
         cancel_event: asyncio.Event | None = None,
         run_id: str | None = None,
+        emit: EmitCallback | None = None,
     ) -> dict[str, Any]:
         """
         Execute a pipeline and return the run result.
@@ -102,6 +109,11 @@ class ExecutionEngine:
             run_id: Optional pre-assigned run ID. The async launch flow
                 creates a DB row first and passes the ID in so the engine
                 writes step results against the correct run.
+            emit: Optional callback for progress events. Called with
+                (event_type, payload). Event types: run_started,
+                step_started, step_completed, step_failed,
+                run_completed, run_failed, run_cancelled. The async
+                launch + SSE flow wires this through the event bus.
 
         Returns:
             Run result dict matching the PipelineRun shape.
@@ -111,9 +123,30 @@ class ExecutionEngine:
         run_started = datetime.now(timezone.utc)
         steps: list[dict[str, Any]] = []
 
+        def _emit(event_type: str, payload: dict[str, Any]) -> None:
+            """Internal emit wrapper — silently no-op if no callback provided."""
+            if emit is not None:
+                try:
+                    emit(event_type, payload)
+                except Exception:
+                    # Never let event emission failure crash the run.
+                    # Persistence is the source of truth; events are best-effort.
+                    pass
+
         sorted_nodes = topological_sort(
             pipeline.get("nodes", []),
             pipeline.get("edges", []),
+        )
+
+        _emit(
+            "run_started",
+            {
+                "run_id": run_id,
+                "pipeline_id": pipeline.get("id", ""),
+                "pipeline_name": pipeline.get("name", ""),
+                "total_steps": len(sorted_nodes),
+                "started_at": run_started.isoformat(),
+            },
         )
 
         # ── Preflight: validate all configs before executing any step ──
@@ -182,7 +215,7 @@ class ExecutionEngine:
                         }
                     )
                 run_completed = cancelled_at
-                return {
+                final = {
                     "id": run_id,
                     "pipeline_id": pipeline.get("id", ""),
                     "pipeline_name": pipeline.get("name", ""),
@@ -197,6 +230,16 @@ class ExecutionEngine:
                     "started_at": run_started.isoformat(),
                     "completed_at": run_completed.isoformat(),
                 }
+                _emit(
+                    "run_cancelled",
+                    {
+                        "run_id": run_id,
+                        "status": "cancelled",
+                        "total_duration_ms": final["total_duration_ms"],
+                        "completed_at": final["completed_at"],
+                    },
+                )
+                return final
 
             node_id = node["id"]
             node_type = node.get("type", node.get("data", {}).get("nodeType", ""))
@@ -221,6 +264,17 @@ class ExecutionEngine:
                 "input": input_data,
                 "started_at": step_started.isoformat(),
             }
+
+            _emit(
+                "step_started",
+                {
+                    "node_id": node_id,
+                    "node_type": node_type,
+                    "node_label": node_label,
+                    "order": order,
+                    "started_at": step_started.isoformat(),
+                },
+            )
 
             try:
                 executor = get_executor(node_type)
@@ -248,6 +302,23 @@ class ExecutionEngine:
 
                 node_outputs[node_id] = result.output
 
+                cumulative_cost = sum(
+                    s.get("cost_usd", 0)
+                    for s in [*steps, step_result]
+                    if s.get("cost_usd")
+                )
+                _emit(
+                    "step_completed",
+                    {
+                        "node_id": node_id,
+                        "status": "completed",
+                        "duration_ms": duration_ms,
+                        "output": result.output,
+                        "completed_at": step_completed.isoformat(),
+                        "cumulative_cost_usd": cumulative_cost,
+                    },
+                )
+
             except Exception as e:
                 step_completed = datetime.now(timezone.utc)
                 duration_ms = int(
@@ -261,6 +332,17 @@ class ExecutionEngine:
                         "completed_at": step_completed.isoformat(),
                         "duration_ms": duration_ms,
                     }
+                )
+
+                _emit(
+                    "step_failed",
+                    {
+                        "node_id": node_id,
+                        "status": "failed",
+                        "error": str(e),
+                        "duration_ms": duration_ms,
+                        "completed_at": step_completed.isoformat(),
+                    },
                 )
 
                 # Record remaining steps as cancelled
@@ -287,7 +369,7 @@ class ExecutionEngine:
                     )
 
                 run_completed = datetime.now(timezone.utc)
-                return {
+                final = {
                     "id": run_id,
                     "pipeline_id": pipeline.get("id", ""),
                     "pipeline_name": pipeline.get("name", ""),
@@ -302,11 +384,23 @@ class ExecutionEngine:
                     "started_at": run_started.isoformat(),
                     "completed_at": run_completed.isoformat(),
                 }
+                _emit(
+                    "run_failed",
+                    {
+                        "run_id": run_id,
+                        "status": "failed",
+                        "error": str(e),
+                        "total_duration_ms": final["total_duration_ms"],
+                        "total_cost_usd": final["total_cost_usd"],
+                        "completed_at": final["completed_at"],
+                    },
+                )
+                return final
 
             steps.append(step_result)
 
         run_completed = datetime.now(timezone.utc)
-        return {
+        final = {
             "id": run_id,
             "pipeline_id": pipeline.get("id", ""),
             "pipeline_name": pipeline.get("name", ""),
@@ -321,3 +415,14 @@ class ExecutionEngine:
             "started_at": run_started.isoformat(),
             "completed_at": run_completed.isoformat(),
         }
+        _emit(
+            "run_completed",
+            {
+                "run_id": run_id,
+                "status": "completed",
+                "total_duration_ms": final["total_duration_ms"],
+                "total_cost_usd": final["total_cost_usd"],
+                "completed_at": final["completed_at"],
+            },
+        )
+        return final

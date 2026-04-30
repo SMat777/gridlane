@@ -18,6 +18,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from sqlalchemy import (
+    BigInteger,
     Boolean,
     DateTime,
     ForeignKey,
@@ -126,3 +127,27 @@ class StepResultModel(Base):
 
     # Relationships
     run: Mapped["PipelineRunModel"] = relationship(back_populates="steps")
+
+
+class RunEventModel(Base):
+    """Append-only event for pipeline run progress streaming.
+
+    Backs SSE replay: subscribers reconnecting with Last-Event-ID get all
+    rows with sequence > Last-Event-ID for that run, in order.
+    """
+
+    __tablename__ = "run_events"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    run_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("pipeline_runs.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    # Per-run monotonic sequence — also used as the SSE event id
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False)
+    event_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
