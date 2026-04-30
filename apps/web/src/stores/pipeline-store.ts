@@ -193,6 +193,46 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
       }
     }
 
+    // Cycle detection — Kahn's algorithm (topological sort)
+    // Only run when there are edges to check
+    if (edges.length > 0) {
+      const inDegree = new Map<string, number>();
+      const adjacency = new Map<string, string[]>();
+
+      for (const node of nodes) {
+        inDegree.set(node.id, 0);
+        adjacency.set(node.id, []);
+      }
+
+      for (const edge of edges) {
+        inDegree.set(edge.target, (inDegree.get(edge.target) ?? 0) + 1);
+        adjacency.get(edge.source)?.push(edge.target);
+      }
+
+      const queue: string[] = [];
+      for (const [id, degree] of inDegree) {
+        if (degree === 0) queue.push(id);
+      }
+
+      let processed = 0;
+      while (queue.length > 0) {
+        const current = queue.shift()!;
+        processed++;
+        for (const neighbor of adjacency.get(current) ?? []) {
+          const newDegree = (inDegree.get(neighbor) ?? 1) - 1;
+          inDegree.set(neighbor, newDegree);
+          if (newDegree === 0) queue.push(neighbor);
+        }
+      }
+
+      if (processed < nodes.length) {
+        errors.push({
+          type: "cycle-detected",
+          message: "Pipeline contains a cycle — nodes cannot reference each other in a loop",
+        });
+      }
+    }
+
     return errors;
   },
 

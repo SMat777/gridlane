@@ -86,4 +86,56 @@ describe("pipeline validation", () => {
 
     expect(errors[0].nodeId).toBe(nodes[0].id);
   });
+
+  it("detects a simple two-node cycle", () => {
+    const { addNode } = usePipelineStore.getState();
+    addNode("datasource", { x: 0, y: 0 });
+    addNode("ai", { x: 200, y: 0 });
+
+    const { nodes, onConnect } = usePipelineStore.getState();
+    // Create cycle: A → B → A
+    onConnect({ source: nodes[0].id, target: nodes[1].id, sourceHandle: null, targetHandle: null });
+    onConnect({ source: nodes[1].id, target: nodes[0].id, sourceHandle: null, targetHandle: null });
+
+    const errors = usePipelineStore.getState().validate();
+    const cycleErrors = errors.filter((e) => e.type === "cycle-detected");
+
+    expect(cycleErrors).toHaveLength(1);
+    expect(cycleErrors[0].message).toContain("cycle");
+  });
+
+  it("detects a three-node cycle", () => {
+    const { addNode } = usePipelineStore.getState();
+    addNode("datasource", { x: 0, y: 0 });
+    addNode("ai", { x: 200, y: 0 });
+    addNode("action", { x: 400, y: 0 });
+
+    const { nodes, onConnect } = usePipelineStore.getState();
+    // Create cycle: A → B → C → A
+    onConnect({ source: nodes[0].id, target: nodes[1].id, sourceHandle: null, targetHandle: null });
+    onConnect({ source: nodes[1].id, target: nodes[2].id, sourceHandle: null, targetHandle: null });
+    onConnect({ source: nodes[2].id, target: nodes[0].id, sourceHandle: null, targetHandle: null });
+
+    const errors = usePipelineStore.getState().validate();
+    const cycleErrors = errors.filter((e) => e.type === "cycle-detected");
+
+    expect(cycleErrors).toHaveLength(1);
+  });
+
+  it("does not flag a valid DAG as having cycles", () => {
+    const { addNode } = usePipelineStore.getState();
+    addNode("datasource", { x: 0, y: 0 });
+    addNode("ai", { x: 200, y: 0 });
+    addNode("action", { x: 400, y: 0 });
+
+    const { nodes, onConnect } = usePipelineStore.getState();
+    // Linear chain: A → B → C (no cycle)
+    onConnect({ source: nodes[0].id, target: nodes[1].id, sourceHandle: null, targetHandle: null });
+    onConnect({ source: nodes[1].id, target: nodes[2].id, sourceHandle: null, targetHandle: null });
+
+    const errors = usePipelineStore.getState().validate();
+    const cycleErrors = errors.filter((e) => e.type === "cycle-detected");
+
+    expect(cycleErrors).toHaveLength(0);
+  });
 });
