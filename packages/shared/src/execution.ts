@@ -119,9 +119,27 @@ export interface RunPipelineResponse {
   run: PipelineRun;
 }
 
+/** Summary of a pipeline run for the history listing — no per-step detail.
+ *
+ * Mirrors the engine's RunListItem schema. The list endpoint omits step
+ * results to keep responses small; fetch a full PipelineRun via the detail
+ * endpoint when the user opens a specific run.
+ */
+export interface RunSummary {
+  id: string;
+  pipelineId: string;
+  pipelineName: string;
+  status: RunStatus;
+  totalDurationMs?: number;
+  totalCostUsd?: number;
+  startedAt: string;
+  completedAt?: string;
+  stepCount: number;
+}
+
 /** Response body for GET /api/v1/runs */
 export interface RunHistoryResponse {
-  runs: PipelineRun[];
+  runs: RunSummary[];
 }
 
 /** Response body for GET /api/v1/runs/:id */

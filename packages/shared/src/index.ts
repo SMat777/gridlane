@@ -43,6 +43,7 @@ export {
   type RunStatus,
   type StepResult,
   type PipelineRun,
+  type RunSummary,
   type RunPipelineRequest,
   type RunPipelineResponse,
   type RunHistoryResponse,

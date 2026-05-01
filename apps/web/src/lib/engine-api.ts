@@ -9,7 +9,9 @@ import type {
   CancelRunResponse,
   PipelineRun,
   RunAsyncResponse,
+  RunStatus,
   RunStreamEvent,
+  RunSummary,
 } from "@gridlane/shared";
 
 const ENGINE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -218,6 +220,116 @@ export async function runPipelineStreaming(
   // Caller resolves immediately; events flow through onEvent
   void source;
   return { runId };
+}
+
+interface ListRunsParams {
+  pipelineId?: string;
+  limit?: number;
+  offset?: number;
+}
+
+/**
+ * List recent pipeline runs.
+ *
+ * Returns summary rows ordered by most-recent-first. Use getRun(id) to load
+ * a single run with full step results when the user opens one.
+ */
+export async function listRuns(
+  params: ListRunsParams = {},
+): Promise<{ runs: RunSummary[] } | { error: string }> {
+  const url = new URL(`${ENGINE_URL}/api/v1/runs`);
+  if (params.pipelineId) url.searchParams.set("pipeline_id", params.pipelineId);
+  if (params.limit !== undefined) url.searchParams.set("limit", String(params.limit));
+  if (params.offset !== undefined) url.searchParams.set("offset", String(params.offset));
+
+  try {
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      return { error: `Engine error (${response.status}): ${await response.text()}` };
+    }
+    const data = await response.json();
+    const runs: RunSummary[] = (data.runs ?? []).map(
+      (r: Record<string, unknown>) => ({
+        id: String(r.id),
+        pipelineId: String(r.pipeline_id ?? ""),
+        pipelineName: String(r.pipeline_name ?? ""),
+        status: r.status as RunStatus,
+        totalDurationMs:
+          typeof r.total_duration_ms === "number" ? r.total_duration_ms : undefined,
+        totalCostUsd:
+          typeof r.total_cost_usd === "number" ? r.total_cost_usd : undefined,
+        startedAt: String(r.started_at ?? ""),
+        completedAt:
+          typeof r.completed_at === "string" ? r.completed_at : undefined,
+        stepCount: typeof r.step_count === "number" ? r.step_count : 0,
+      }),
+    );
+    return { runs };
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Failed to load run history",
+    };
+  }
+}
+
+/**
+ * Fetch a single run with full step results.
+ *
+ * Used by the run history panel when the user opens a specific row, and by
+ * any future "replay this run" feature that needs the raw step outputs.
+ */
+export async function getRun(
+  runId: string,
+): Promise<{ run: PipelineRun } | { error: string }> {
+  try {
+    const response = await fetch(`${ENGINE_URL}/api/v1/runs/${runId}`);
+    if (!response.ok) {
+      return { error: `Engine error (${response.status}): ${await response.text()}` };
+    }
+    const data = await response.json();
+    const r = data.run as Record<string, unknown>;
+    const run: PipelineRun = {
+      id: String(r.id),
+      pipelineId: String(r.pipeline_id ?? ""),
+      pipelineName: String(r.pipeline_name ?? ""),
+      status: r.status as RunStatus,
+      totalDurationMs:
+        typeof r.total_duration_ms === "number" ? r.total_duration_ms : undefined,
+      totalCostUsd:
+        typeof r.total_cost_usd === "number" ? r.total_cost_usd : undefined,
+      startedAt: String(r.started_at ?? ""),
+      completedAt:
+        typeof r.completed_at === "string" ? r.completed_at : undefined,
+      steps: ((r.steps ?? []) as Array<Record<string, unknown>>).map((s) => ({
+        nodeId: String(s.node_id ?? ""),
+        nodeType: s.node_type as PipelineRun["steps"][number]["nodeType"],
+        nodeLabel: String(s.node_label ?? ""),
+        status: s.status as RunStatus,
+        order: typeof s.order === "number" ? s.order : 0,
+        input: s.input,
+        output: s.output,
+        error: typeof s.error === "string" ? s.error : undefined,
+        startedAt: String(s.started_at ?? ""),
+        completedAt:
+          typeof s.completed_at === "string" ? s.completed_at : undefined,
+        durationMs:
+          typeof s.duration_ms === "number" ? s.duration_ms : undefined,
+        tokenUsage: s.token_usage
+          ? {
+              inputTokens: (s.token_usage as Record<string, number>).input_tokens,
+              outputTokens: (s.token_usage as Record<string, number>).output_tokens,
+              totalTokens: (s.token_usage as Record<string, number>).total_tokens,
+            }
+          : undefined,
+        costUsd: typeof s.cost_usd === "number" ? s.cost_usd : undefined,
+      })),
+    };
+    return { run };
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Failed to load run",
+    };
+  }
 }
 
 /**

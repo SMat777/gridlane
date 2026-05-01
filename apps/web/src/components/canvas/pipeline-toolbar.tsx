@@ -1,7 +1,15 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Save, FolderOpen, Plus, CheckCircle, Play, Square } from "lucide-react";
+import {
+  Save,
+  FolderOpen,
+  Plus,
+  CheckCircle,
+  Play,
+  Square,
+  History,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -17,6 +25,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { usePipelineStore } from "@/stores/pipeline-store";
 import { savePipeline, listPipelines, loadPipeline } from "@/lib/pipeline-api";
 import { runPipelineStreaming, cancelRun } from "@/lib/engine-api";
+import { RunHistoryPanel } from "./run-history-panel";
 
 /**
  * Pipeline toolbar — save, load, validate, and new pipeline actions.
@@ -45,6 +54,7 @@ export function PipelineToolbar() {
   const [saving, setSaving] = useState(false);
   const streamAbortRef = useRef<AbortController | null>(null);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
   const [pipelines, setPipelines] = useState<
     Array<{ id: string; name: string; updatedAt: string }>
@@ -295,6 +305,15 @@ export function PipelineToolbar() {
           </button>
 
           <button
+            onClick={() => setShowHistory(true)}
+            className="flex items-center gap-1 rounded-md border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+            aria-label="Show run history"
+          >
+            <History className="h-3.5 w-3.5" />
+            History
+          </button>
+
+          <button
             onClick={handleValidate}
             className="flex items-center gap-1 rounded-md border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
             aria-label="Validate pipeline"
@@ -357,6 +376,8 @@ export function PipelineToolbar() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <RunHistoryPanel open={showHistory} onOpenChange={setShowHistory} />
 
       {/* Simple load dialog */}
       {showLoadDialog && (
