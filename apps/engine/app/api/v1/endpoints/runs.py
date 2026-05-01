@@ -25,6 +25,7 @@ from app.api.v1.schemas import (
     RunPipelineRequest,
     RunPipelineResponse,
 )
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.errors import ErrorCode, PipelineError
 from app.services.event_bus import bus
@@ -32,12 +33,14 @@ from app.services.execution import ExecutionEngine
 from app.services.run_coordinator import coordinator
 from app.services.run_service import RunService
 
-# How often to send SSE comment-events to keep proxies from closing the
-# connection. 15 seconds is comfortably under typical 30-60s proxy timeouts.
-HEARTBEAT_INTERVAL_SECONDS = 15
-
 # Final event types — when one of these arrives the stream closes.
 TERMINAL_EVENTS = {"run_completed", "run_failed", "run_cancelled"}
+
+# Maximum Last-Event-ID value we'll accept from a client. A real run produces
+# at most a few hundred events; anything beyond this is either client confusion
+# or a probe attempting to push large integer parsing in unexpected directions.
+# Out-of-range values fall back to "from the beginning".
+MAX_LAST_EVENT_ID = 100_000
 
 logger = logging.getLogger(__name__)
 
@@ -276,7 +279,7 @@ async def stream_run(
                 try:
                     event = await asyncio.wait_for(
                         queue.get(),
-                        timeout=HEARTBEAT_INTERVAL_SECONDS,
+                        timeout=settings.sse_heartbeat_seconds,
                     )
                 except asyncio.TimeoutError:
                     yield {"comment": "keepalive"}
@@ -299,13 +302,20 @@ async def stream_run(
 
 
 def _parse_last_event_id(header_value: str | None) -> int:
-    """Parse Last-Event-ID. -1 means "from the beginning"."""
+    """Parse Last-Event-ID. -1 means "from the beginning".
+
+    Caps to MAX_LAST_EVENT_ID so we don't pass arbitrary integers to
+    the DB query — defends against client confusion and lazy probes.
+    """
     if not header_value:
         return -1
     try:
-        return int(header_value)
+        value = int(header_value)
     except (TypeError, ValueError):
         return -1
+    if value < -1 or value > MAX_LAST_EVENT_ID:
+        return -1
+    return value
 
 
 @router.get("/runs", response_model=RunHistoryResponse)

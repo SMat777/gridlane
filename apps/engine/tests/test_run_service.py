@@ -6,6 +6,7 @@ and provides CRUD operations for run history.
 """
 
 import uuid
+from datetime import timedelta
 from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock
 
@@ -424,3 +425,55 @@ class TestGetRun:
         run = await service.get_run(uuid.uuid4())
 
         assert run is None
+
+
+class TestMarkOrphanedRunsFailed:
+    """Tests for RunService.mark_orphaned_runs_failed() — startup cleanup."""
+
+    @pytest.mark.asyncio
+    async def test_returns_rowcount_from_update(self, mock_session):
+        """Returns the number of rows the UPDATE affected."""
+        mock_result = MagicMock()
+        mock_result.rowcount = 3
+        mock_session.execute = AsyncMock(return_value=mock_result)
+
+        service = RunService(mock_session)
+        cleaned = await service.mark_orphaned_runs_failed(
+            older_than=timedelta(hours=1)
+        )
+
+        assert cleaned == 3
+        mock_session.execute.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_returns_zero_when_rowcount_is_none(self, mock_session):
+        """Some DB drivers return None for rowcount — coerce to 0."""
+        mock_result = MagicMock()
+        mock_result.rowcount = None
+        mock_session.execute = AsyncMock(return_value=mock_result)
+
+        service = RunService(mock_session)
+        cleaned = await service.mark_orphaned_runs_failed(
+            older_than=timedelta(hours=1)
+        )
+
+        assert cleaned == 0
+
+    @pytest.mark.asyncio
+    async def test_uses_provided_threshold(self, mock_session):
+        """The cutoff in the WHERE clause derives from the threshold passed in.
+
+        We can't introspect the SQL easily, but we can verify the call ran
+        without exception for any reasonable threshold value.
+        """
+        mock_result = MagicMock()
+        mock_result.rowcount = 0
+        mock_session.execute = AsyncMock(return_value=mock_result)
+
+        service = RunService(mock_session)
+        for hours in (1, 24, 168):
+            await service.mark_orphaned_runs_failed(
+                older_than=timedelta(hours=hours)
+            )
+
+        assert mock_session.execute.await_count == 3

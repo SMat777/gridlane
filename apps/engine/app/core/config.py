@@ -23,6 +23,19 @@ class Settings(BaseSettings):
     # CORS
     allowed_origins: list[str] = ["http://localhost:3000"]
 
+    # SSE
+    # Interval between heartbeat comment-events sent on idle SSE streams.
+    # Set comfortably below typical proxy idle-timeouts (usually 30-60s).
+    # Tests override with a short value so heartbeat behavior is observable
+    # in seconds rather than minutes.
+    sse_heartbeat_seconds: int = 15
+
+    # Cleanup threshold for orphaned runs on startup. Any run still in
+    # 'running' state with started_at older than this is marked failed.
+    # 1 hour is well above any realistic single-run duration on the
+    # foundation stack (engine timeout is 120s).
+    orphan_run_age_seconds: int = 3600
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 

@@ -473,3 +473,34 @@ class TestStreamEndpoint:
         call_kwargs = list_events_mock.call_args.kwargs
         assert call_kwargs.get("after_sequence") == 1
         assert response.status_code == 200
+
+
+class TestParseLastEventId:
+    """Unit tests for the Last-Event-ID parser cap."""
+
+    def test_returns_minus_one_for_missing_or_blank(self):
+        from app.api.v1.endpoints.runs import _parse_last_event_id
+
+        assert _parse_last_event_id(None) == -1
+        assert _parse_last_event_id("") == -1
+
+    def test_returns_minus_one_for_non_integer(self):
+        from app.api.v1.endpoints.runs import _parse_last_event_id
+
+        assert _parse_last_event_id("abc") == -1
+        assert _parse_last_event_id("1.5") == -1
+
+    def test_accepts_in_range_integers(self):
+        from app.api.v1.endpoints.runs import _parse_last_event_id
+
+        assert _parse_last_event_id("0") == 0
+        assert _parse_last_event_id("42") == 42
+        assert _parse_last_event_id("100000") == 100_000
+
+    def test_caps_unreasonable_values(self):
+        from app.api.v1.endpoints.runs import _parse_last_event_id
+
+        # Above MAX_LAST_EVENT_ID — fall back to -1 instead of trusting the value
+        assert _parse_last_event_id("100001") == -1
+        assert _parse_last_event_id("99999999999999999") == -1
+        assert _parse_last_event_id("-2") == -1

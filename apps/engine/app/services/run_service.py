@@ -11,7 +11,7 @@ Schema is managed by Supabase CLI (supabase/migrations/).
 """
 
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
 from sqlalchemy import select, update
@@ -316,3 +316,27 @@ class RunService:
 
         result = await self.session.execute(query)
         return result.scalars().first()
+
+    async def mark_orphaned_runs_failed(self, older_than: timedelta) -> int:
+        """Mark runs still in 'running' state with started_at older than the
+        threshold as failed. Returns the number of rows affected.
+
+        Used by the startup lifespan to clean up runs that the engine never
+        finished — typically because the process restarted mid-flight. The
+        in-process RunCoordinator and EventBus are gone after a restart, so
+        the run can't recover; failing it is the correct terminal state.
+
+        Caller owns the transaction (commit happens after this returns).
+        """
+        cutoff = datetime.now(timezone.utc) - older_than
+        stmt = (
+            update(PipelineRunModel)
+            .where(PipelineRunModel.status == "running")
+            .where(PipelineRunModel.started_at < cutoff)
+            .values(
+                status="failed",
+                completed_at=datetime.now(timezone.utc),
+            )
+        )
+        result = await self.session.execute(stmt)
+        return result.rowcount or 0
