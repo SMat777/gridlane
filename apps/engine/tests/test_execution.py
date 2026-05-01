@@ -17,7 +17,7 @@ from app.services.executors import (
     ConnectorManifest,
     ExecutorResult,
     NodeExecutor,
-    StubDataSourceExecutor,
+    DataSourceExecutor,
     StubAIExecutor,
     StubActionExecutor,
     StubHumanExecutor,
@@ -30,8 +30,11 @@ from app.services.executors import (
 
 # Valid default configs for each node type — used when tests don't
 # specify a config. Matches the minimum required by validate_config().
+# Tests use sourceType="sql" by default so the datasource executor stays on
+# the stub-data branch and no real HTTP call is made. REST behavior is
+# covered by TestRestConnector below with mocked httpx transports.
 VALID_DEFAULTS = {
-    "datasource": {"sourceType": "rest", "url": "https://api.example.com/data"},
+    "datasource": {"sourceType": "sql", "url": "postgresql://localhost/test"},
     "ai": {
         "provider": "anthropic",
         "model": "claude-sonnet-4-20250514",
@@ -168,9 +171,11 @@ class TestTopologicalSort:
 class TestStubExecutors:
     """Stub executors return predictable dummy data for US2."""
 
-    def test_datasource_executor(self):
-        result = StubDataSourceExecutor().execute(
-            config={"sourceType": "rest", "url": "https://api.example.com"},
+    def test_datasource_executor_sql_uses_stub(self):
+        # SQL/file branch still returns sample data while those connectors
+        # are unimplemented. REST goes through TestRestConnector below.
+        result = DataSourceExecutor().execute(
+            config={"sourceType": "sql", "url": "postgresql://localhost/db"},
             input_data=None,
         )
         assert isinstance(result, ExecutorResult)
@@ -209,7 +214,7 @@ class TestStubExecutors:
     def test_manifest_returns_metadata(self):
         """Each executor should provide a ConnectorManifest."""
         for executor_cls in [
-            StubDataSourceExecutor,
+            DataSourceExecutor,
             StubAIExecutor,
             StubActionExecutor,
             StubHumanExecutor,
@@ -244,27 +249,27 @@ class TestStubExecutors:
 
     def test_datasource_validates_url_required_for_rest(self):
         """REST source type requires a non-empty URL."""
-        executor = StubDataSourceExecutor()
+        executor = DataSourceExecutor()
         errors = executor.validate_config({"sourceType": "rest", "url": ""})
         field_names = [e.field for e in errors]
         assert "url" in field_names
 
     def test_datasource_validates_url_required_for_sql(self):
         """SQL source type requires a non-empty connection string."""
-        executor = StubDataSourceExecutor()
+        executor = DataSourceExecutor()
         errors = executor.validate_config({"sourceType": "sql", "url": ""})
         field_names = [e.field for e in errors]
         assert "url" in field_names
 
     def test_datasource_accepts_file_without_url(self):
         """File source type does not require URL."""
-        executor = StubDataSourceExecutor()
+        executor = DataSourceExecutor()
         errors = executor.validate_config({"sourceType": "file"})
         assert errors == []
 
     def test_datasource_rejects_invalid_source_type(self):
         """sourceType must be one of rest/sql/file."""
-        executor = StubDataSourceExecutor()
+        executor = DataSourceExecutor()
         errors = executor.validate_config({"sourceType": "ftp"})
         field_names = [e.field for e in errors]
         assert "sourceType" in field_names
@@ -343,7 +348,7 @@ class TestStubExecutors:
         assert errors == []
 
     def test_get_executor_returns_correct_type(self):
-        assert isinstance(get_executor("datasource"), StubDataSourceExecutor)
+        assert isinstance(get_executor("datasource"), DataSourceExecutor)
         assert isinstance(get_executor("ai"), StubAIExecutor)
         assert isinstance(get_executor("action"), StubActionExecutor)
         assert isinstance(get_executor("human"), StubHumanExecutor)
@@ -351,6 +356,445 @@ class TestStubExecutors:
     def test_get_executor_unknown_type_raises(self):
         with pytest.raises(ValueError, match="Unknown node type"):
             get_executor("nonexistent")
+
+
+# ── REST Connector ────────────────────────────────────────────────────
+
+
+class TestRestConnector:
+    """REST execution path on DataSourceExecutor.
+
+    Uses httpx.MockTransport so no network calls actually happen — the
+    transport intercepts requests and returns canned responses.
+    """
+
+    @staticmethod
+    def _executor_with_transport(handler):
+        """Patch httpx.Client to use a MockTransport for one execute() call."""
+        import httpx as httpx_module
+        from unittest.mock import patch
+
+        transport = httpx_module.MockTransport(handler)
+        original_client = httpx_module.Client
+
+        def make_client(*args, **kwargs):
+            kwargs["transport"] = transport
+            return original_client(*args, **kwargs)
+
+        return patch.object(httpx_module, "Client", side_effect=make_client)
+
+    def _execute(self, config, handler):
+        with self._executor_with_transport(handler):
+            return DataSourceExecutor().execute(config, input_data=None)
+
+    def test_get_returns_parsed_json_body(self):
+        def handler(_request):
+            import httpx as httpx_module
+            return httpx_module.Response(
+                200,
+                json={"hello": "world"},
+                headers={"content-type": "application/json"},
+            )
+
+        result = self._execute(
+            {"sourceType": "rest", "url": "https://x.test", "method": "GET"},
+            handler,
+        )
+        assert result.output["status_code"] == 200
+        assert result.output["body"] == {"hello": "world"}
+        assert result.output["url"] == "https://x.test"
+
+    def test_text_body_falls_back_to_string(self):
+        def handler(_request):
+            import httpx as httpx_module
+            return httpx_module.Response(
+                200,
+                text="plain text",
+                headers={"content-type": "text/plain"},
+            )
+
+        result = self._execute(
+            {"sourceType": "rest", "url": "https://x.test", "method": "GET"},
+            handler,
+        )
+        assert result.output["body"] == "plain text"
+
+    def test_invalid_json_falls_back_to_text(self):
+        def handler(_request):
+            import httpx as httpx_module
+            return httpx_module.Response(
+                200,
+                text="{not valid json",
+                headers={"content-type": "application/json"},
+            )
+
+        result = self._execute(
+            {"sourceType": "rest", "url": "https://x.test", "method": "GET"},
+            handler,
+        )
+        assert result.output["body"] == "{not valid json"
+
+    def test_post_sends_body(self):
+        captured = {}
+
+        def handler(request):
+            import httpx as httpx_module
+            captured["body"] = request.content
+            captured["method"] = request.method
+            return httpx_module.Response(200, json={"ok": True})
+
+        self._execute(
+            {
+                "sourceType": "rest",
+                "url": "https://x.test",
+                "method": "POST",
+                "body": '{"name":"alice"}',
+            },
+            handler,
+        )
+        assert captured["method"] == "POST"
+        assert captured["body"] == b'{"name":"alice"}'
+
+    def test_bearer_adds_authorization_header(self):
+        captured = {}
+
+        def handler(request):
+            import httpx as httpx_module
+            captured["headers"] = dict(request.headers)
+            return httpx_module.Response(200, json={"ok": True})
+
+        self._execute(
+            {
+                "sourceType": "rest",
+                "url": "https://x.test",
+                "method": "GET",
+                "authType": "bearer",
+                "bearerToken": "abc123",
+            },
+            handler,
+        )
+        assert captured["headers"]["authorization"] == "Bearer abc123"
+
+    def test_basic_auth_uses_httpx_basicauth(self):
+        captured = {}
+
+        def handler(request):
+            import httpx as httpx_module
+            captured["headers"] = dict(request.headers)
+            return httpx_module.Response(200, json={"ok": True})
+
+        self._execute(
+            {
+                "sourceType": "rest",
+                "url": "https://x.test",
+                "method": "GET",
+                "authType": "basic",
+                "basicUsername": "user",
+                "basicPassword": "pass",
+            },
+            handler,
+        )
+        # httpx encodes "user:pass" → base64
+        import base64
+        expected = base64.b64encode(b"user:pass").decode()
+        assert captured["headers"]["authorization"] == f"Basic {expected}"
+
+    def test_api_key_uses_custom_header(self):
+        captured = {}
+
+        def handler(request):
+            import httpx as httpx_module
+            captured["headers"] = dict(request.headers)
+            return httpx_module.Response(200, json={"ok": True})
+
+        self._execute(
+            {
+                "sourceType": "rest",
+                "url": "https://x.test",
+                "method": "GET",
+                "authType": "api_key",
+                "apiKeyHeader": "X-Custom-Key",
+                "apiKeyValue": "secret",
+            },
+            handler,
+        )
+        assert captured["headers"]["x-custom-key"] == "secret"
+
+    def test_401_raises_auth_failed(self):
+        from app.core.errors import ErrorCode, PipelineError
+
+        def handler(_request):
+            import httpx as httpx_module
+            return httpx_module.Response(401, json={"error": "unauth"})
+
+        with pytest.raises(PipelineError) as exc:
+            self._execute(
+                {"sourceType": "rest", "url": "https://x.test", "method": "GET"},
+                handler,
+            )
+        assert exc.value.code == ErrorCode.CONNECTOR_AUTH_FAILED
+
+    def test_429_raises_rate_limited(self):
+        from app.core.errors import ErrorCode, PipelineError
+
+        def handler(_request):
+            import httpx as httpx_module
+            return httpx_module.Response(429)
+
+        with pytest.raises(PipelineError) as exc:
+            self._execute(
+                {"sourceType": "rest", "url": "https://x.test", "method": "GET"},
+                handler,
+            )
+        assert exc.value.code == ErrorCode.CONNECTOR_RATE_LIMITED
+
+    def test_500_raises_http_error(self):
+        from app.core.errors import ErrorCode, PipelineError
+
+        def handler(_request):
+            import httpx as httpx_module
+            return httpx_module.Response(500)
+
+        with pytest.raises(PipelineError) as exc:
+            self._execute(
+                {"sourceType": "rest", "url": "https://x.test", "method": "GET"},
+                handler,
+            )
+        assert exc.value.code == ErrorCode.CONNECTOR_HTTP_ERROR
+
+    def test_timeout_raises_connector_timeout(self):
+        import httpx as httpx_module
+        from app.core.errors import ErrorCode, PipelineError
+
+        def handler(_request):
+            raise httpx_module.TimeoutException("slow upstream")
+
+        with pytest.raises(PipelineError) as exc:
+            self._execute(
+                {"sourceType": "rest", "url": "https://x.test", "method": "GET"},
+                handler,
+            )
+        assert exc.value.code == ErrorCode.CONNECTOR_TIMEOUT
+
+    def test_auth_error_does_not_leak_token(self):
+        """Auth failure messages must never include the credentials."""
+        from app.core.errors import PipelineError
+
+        def handler(_request):
+            import httpx as httpx_module
+            return httpx_module.Response(403)
+
+        with pytest.raises(PipelineError) as exc:
+            self._execute(
+                {
+                    "sourceType": "rest",
+                    "url": "https://x.test",
+                    "method": "GET",
+                    "authType": "bearer",
+                    "bearerToken": "very-secret-token",
+                },
+                handler,
+            )
+        assert "very-secret-token" not in exc.value.message
+
+    # ── Validation ─────────────────────────────────────────────────────
+
+    def test_validate_rejects_invalid_auth_type(self):
+        executor = DataSourceExecutor()
+        errors = executor.validate_config(
+            {
+                "sourceType": "rest",
+                "url": "https://x.test",
+                "authType": "oauth2",
+            }
+        )
+        assert any(e.field == "authType" for e in errors)
+
+    def test_validate_bearer_requires_token(self):
+        executor = DataSourceExecutor()
+        errors = executor.validate_config(
+            {
+                "sourceType": "rest",
+                "url": "https://x.test",
+                "authType": "bearer",
+                "bearerToken": "",
+            }
+        )
+        assert any(e.field == "bearerToken" for e in errors)
+
+    def test_validate_basic_requires_username_and_password(self):
+        executor = DataSourceExecutor()
+        errors = executor.validate_config(
+            {
+                "sourceType": "rest",
+                "url": "https://x.test",
+                "authType": "basic",
+            }
+        )
+        fields = {e.field for e in errors}
+        assert "basicUsername" in fields
+        assert "basicPassword" in fields
+
+    def test_validate_api_key_requires_header_and_value(self):
+        executor = DataSourceExecutor()
+        errors = executor.validate_config(
+            {
+                "sourceType": "rest",
+                "url": "https://x.test",
+                "authType": "api_key",
+            }
+        )
+        fields = {e.field for e in errors}
+        assert "apiKeyHeader" in fields
+        assert "apiKeyValue" in fields
+
+    def test_validate_passes_with_valid_bearer_config(self):
+        executor = DataSourceExecutor()
+        errors = executor.validate_config(
+            {
+                "sourceType": "rest",
+                "url": "https://x.test",
+                "authType": "bearer",
+                "bearerToken": "abc",
+            }
+        )
+        assert errors == []
+
+
+# ── Redact ────────────────────────────────────────────────────────────
+
+
+class TestRedact:
+    """NodeExecutor.redact() contract — masks sensitive data before SSE/log."""
+
+    def test_default_redact_is_identity(self):
+        # Default implementation returns the dict unchanged.
+        executor = StubAIExecutor()
+        output = {"analysis": "secret"}
+        assert executor.redact(output) == output
+
+    def test_datasource_redact_masks_authorization_header(self):
+        executor = DataSourceExecutor()
+        output = {
+            "status_code": 200,
+            "headers": {"Authorization": "Bearer secret", "Content-Type": "json"},
+            "body": {},
+        }
+        redacted = executor.redact(output)
+        assert redacted["headers"]["Authorization"] == "[REDACTED]"
+        assert redacted["headers"]["Content-Type"] == "json"
+
+    def test_datasource_redact_is_case_insensitive(self):
+        executor = DataSourceExecutor()
+        output = {
+            "headers": {
+                "authorization": "Bearer x",
+                "Set-Cookie": "session=abc",
+                "X-API-Key": "k",
+            }
+        }
+        redacted = executor.redact(output)
+        assert redacted["headers"]["authorization"] == "[REDACTED]"
+        assert redacted["headers"]["Set-Cookie"] == "[REDACTED]"
+        assert redacted["headers"]["X-API-Key"] == "[REDACTED]"
+
+    def test_datasource_redact_does_not_mutate_input(self):
+        executor = DataSourceExecutor()
+        output = {"headers": {"Authorization": "secret"}, "body": "ok"}
+        original_headers = dict(output["headers"])
+        executor.redact(output)
+        assert output["headers"] == original_headers
+
+    def test_redact_handles_missing_headers_key(self):
+        executor = DataSourceExecutor()
+        output = {"body": "no headers here"}
+        # Should not raise, just return as-is
+        assert executor.redact(output) == output
+
+    def test_engine_passes_redacted_output_to_step_completed(self):
+        """The step_completed event payload must use executor.redact(),
+        while the persisted step_result keeps the raw output."""
+
+        class RedactingExecutor(NodeExecutor):
+            @classmethod
+            def manifest(cls):
+                return ConnectorManifest(
+                    name="Redact Test",
+                    description="x",
+                    node_type="datasource",
+                    required_fields=[],
+                )
+
+            def execute(self, config, input_data):
+                return ExecutorResult(output={"secret": "raw-token", "ok": True})
+
+            def redact(self, output):
+                return {"secret": "MASKED", "ok": output.get("ok")}
+
+        original = _EXECUTORS["datasource"]
+        _EXECUTORS["datasource"] = RedactingExecutor
+        events = []
+        try:
+            pipeline = make_pipeline(
+                nodes=[{"id": "src", "type": "datasource"}],
+                edges=[],
+            )
+            engine = ExecutionEngine()
+            run = engine.execute(
+                pipeline,
+                emit=lambda et, payload: events.append((et, payload)),
+            )
+        finally:
+            _EXECUTORS["datasource"] = original
+
+        # The step_completed event has the redacted output
+        completed = [p for et, p in events if et == "step_completed"]
+        assert len(completed) == 1
+        assert completed[0]["output"] == {"secret": "MASKED", "ok": True}
+
+        # The persisted step_result keeps the raw output
+        assert run["steps"][0]["output"] == {"secret": "raw-token", "ok": True}
+
+    def test_engine_drops_output_when_redact_raises(self):
+        """If a custom redact() blows up, the engine must NOT leak the raw
+        output to the event stream. It substitutes a marker payload instead."""
+
+        class BrokenRedactExecutor(NodeExecutor):
+            @classmethod
+            def manifest(cls):
+                return ConnectorManifest(
+                    name="Broken Redact",
+                    description="x",
+                    node_type="datasource",
+                    required_fields=[],
+                )
+
+            def execute(self, config, input_data):
+                return ExecutorResult(output={"secret": "should-not-leak"})
+
+            def redact(self, output):
+                raise RuntimeError("oops")
+
+        original = _EXECUTORS["datasource"]
+        _EXECUTORS["datasource"] = BrokenRedactExecutor
+        events = []
+        try:
+            pipeline = make_pipeline(
+                nodes=[{"id": "src", "type": "datasource"}],
+                edges=[],
+            )
+            engine = ExecutionEngine()
+            engine.execute(
+                pipeline,
+                emit=lambda et, payload: events.append((et, payload)),
+            )
+        finally:
+            _EXECUTORS["datasource"] = original
+
+        completed = [p for et, p in events if et == "step_completed"]
+        assert len(completed) == 1
+        assert completed[0]["output"] == {"_redact_failed": True}
+        assert "should-not-leak" not in str(completed[0]["output"])
 
 
 # ── Execution Engine Tests ────────────────────────────────────────────
@@ -527,7 +971,10 @@ class TestExecutionEngine:
                 {
                     "id": "src",
                     "type": "datasource",
-                    "config": {"sourceType": "rest", "url": "https://example.com"},
+                    # Use sql to stay on stub-data path; preflight only
+                    # exercises validate_config, but the engine then runs
+                    # execute() which would otherwise fire a real HTTP call.
+                    "config": {"sourceType": "sql", "url": "postgresql://localhost/db"},
                 },
                 {
                     "id": "out",

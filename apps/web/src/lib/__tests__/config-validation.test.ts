@@ -74,6 +74,89 @@ describe("dataSourceConfigSchema", () => {
     const result = dataSourceConfigSchema.safeParse(config);
     expect(result.success).toBe(false);
   });
+
+  // ── Per-authType field requirements ───────────────────────────────
+
+  it("rejects bearer auth without a token", () => {
+    const config = {
+      ...DEFAULT_NODE_CONFIGS.datasource,
+      url: "https://x.test",
+      authType: "bearer" as const,
+    };
+    const result = dataSourceConfigSchema.safeParse(config);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const err = result.error.issues.find((i) =>
+        i.path.includes("bearerToken"),
+      );
+      expect(err).toBeDefined();
+    }
+  });
+
+  it("accepts bearer auth with a token", () => {
+    const config = {
+      ...DEFAULT_NODE_CONFIGS.datasource,
+      url: "https://x.test",
+      authType: "bearer" as const,
+      bearerToken: "abc123",
+    };
+    const result = dataSourceConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects basic auth missing username and password", () => {
+    const config = {
+      ...DEFAULT_NODE_CONFIGS.datasource,
+      url: "https://x.test",
+      authType: "basic" as const,
+    };
+    const result = dataSourceConfigSchema.safeParse(config);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const fields = result.error.issues.map((i) => i.path.join("."));
+      expect(fields).toContain("basicUsername");
+      expect(fields).toContain("basicPassword");
+    }
+  });
+
+  it("rejects api_key auth missing header name and value", () => {
+    const config = {
+      ...DEFAULT_NODE_CONFIGS.datasource,
+      url: "https://x.test",
+      authType: "api_key" as const,
+    };
+    const result = dataSourceConfigSchema.safeParse(config);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const fields = result.error.issues.map((i) => i.path.join("."));
+      expect(fields).toContain("apiKeyHeader");
+      expect(fields).toContain("apiKeyValue");
+    }
+  });
+
+  it("accepts api_key auth with header and value", () => {
+    const config = {
+      ...DEFAULT_NODE_CONFIGS.datasource,
+      url: "https://x.test",
+      authType: "api_key" as const,
+      apiKeyHeader: "X-API-Key",
+      apiKeyValue: "secret",
+    };
+    const result = dataSourceConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+  });
+
+  it("does not enforce auth fields for non-rest sources", () => {
+    // SQL ignores authType entirely — no per-type field check
+    const config = {
+      ...DEFAULT_NODE_CONFIGS.datasource,
+      sourceType: "sql" as const,
+      url: "postgresql://localhost/db",
+      authType: "bearer" as const,
+    };
+    const result = dataSourceConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+  });
 });
 
 // ── AI Config ────────────────────────────────────────────────────────

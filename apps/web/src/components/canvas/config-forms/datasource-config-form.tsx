@@ -35,7 +35,10 @@ const AUTH_TYPES: { value: AuthType; label: string }[] = [
   { value: "none", label: "None" },
   { value: "bearer", label: "Bearer Token" },
   { value: "basic", label: "Basic Auth" },
+  { value: "api_key", label: "API Key" },
 ];
+
+const METHODS_WITH_BODY: HttpMethod[] = ["POST", "PUT", "DELETE"];
 
 export function DataSourceConfigForm({
   config,
@@ -122,6 +125,101 @@ export function DataSourceConfigForm({
               </SelectContent>
             </Select>
           </div>
+
+          {config.authType === "bearer" && (
+            <div className="space-y-2">
+              <Label htmlFor="bearerToken">
+                Bearer Token <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="bearerToken"
+                type="password"
+                placeholder="eyJhbGciOi…"
+                value={config.bearerToken ?? ""}
+                onChange={(e) => onUpdate({ bearerToken: e.target.value })}
+                className={fieldErrorClass(errors, "bearerToken")}
+              />
+              <FieldError errors={errors} field="bearerToken" />
+            </div>
+          )}
+
+          {config.authType === "basic" && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="basicUsername">
+                  Username <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="basicUsername"
+                  value={config.basicUsername ?? ""}
+                  onChange={(e) => onUpdate({ basicUsername: e.target.value })}
+                  className={fieldErrorClass(errors, "basicUsername")}
+                />
+                <FieldError errors={errors} field="basicUsername" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="basicPassword">
+                  Password <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="basicPassword"
+                  type="password"
+                  value={config.basicPassword ?? ""}
+                  onChange={(e) => onUpdate({ basicPassword: e.target.value })}
+                  className={fieldErrorClass(errors, "basicPassword")}
+                />
+                <FieldError errors={errors} field="basicPassword" />
+              </div>
+            </>
+          )}
+
+          {config.authType === "api_key" && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="apiKeyHeader">
+                  Header Name <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="apiKeyHeader"
+                  placeholder="X-API-Key"
+                  value={config.apiKeyHeader ?? ""}
+                  onChange={(e) => onUpdate({ apiKeyHeader: e.target.value })}
+                  className={fieldErrorClass(errors, "apiKeyHeader")}
+                />
+                <FieldError errors={errors} field="apiKeyHeader" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="apiKeyValue">
+                  API Key <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="apiKeyValue"
+                  type="password"
+                  value={config.apiKeyValue ?? ""}
+                  onChange={(e) => onUpdate({ apiKeyValue: e.target.value })}
+                  className={fieldErrorClass(errors, "apiKeyValue")}
+                />
+                <FieldError errors={errors} field="apiKeyValue" />
+              </div>
+            </>
+          )}
+
+          {METHODS_WITH_BODY.includes(config.method) && (
+            <div className="space-y-2">
+              <Label htmlFor="body">Request Body</Label>
+              <textarea
+                id="body"
+                rows={4}
+                placeholder='{"key": "value"}'
+                value={config.body ?? ""}
+                onChange={(e) => onUpdate({ body: e.target.value })}
+                className="flex w-full rounded-md border border-input bg-background px-3 py-2 font-mono text-xs ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+              <p className="text-xs text-gray-500">
+                Sent as the request body for {config.method} requests.
+              </p>
+            </div>
+          )}
         </>
       )}
 

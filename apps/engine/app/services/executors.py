@@ -20,6 +20,10 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any
 
+import httpx
+
+from app.core.errors import ErrorCode, PipelineError
+
 
 # ── Connector Contract Types ─────────────────────────────────────────
 
@@ -105,20 +109,53 @@ class NodeExecutor(ABC):
         """Execute the node with given config and input from upstream."""
         ...
 
+    def redact(self, output: dict[str, Any]) -> dict[str, Any]:
+        """Strip sensitive fields before output enters the public event stream.
+
+        Default returns output unchanged. Override per executor to mask
+        fields like response headers (Authorization, Set-Cookie),
+        credentials, or raw rows from privileged queries.
+
+        Contract:
+          - MUST NOT mutate the input dict; return a new dict.
+          - The redacted result is what goes into SSE events and the
+            run_events log (currently public per the foundation auth model).
+          - Raw output is still passed as input to the next step and stored
+            in step_results.output_data, which will be auth-gated when auth
+            lands.
+        """
+        return output
+
 
 # ── Stub Executors ───────────────────────────────────────────────────
 
 
-class StubDataSourceExecutor(NodeExecutor):
-    """Returns sample data as if fetched from an API or database."""
+REST_TIMEOUT_SECONDS = 30.0
+VALID_AUTH_TYPES = {"none", "bearer", "basic", "api_key"}
+VALID_HTTP_METHODS = {"GET", "POST", "PUT", "DELETE"}
+
+# Headers we always mask before output reaches the public event stream.
+# Comparison is lowercase since HTTP header names are case-insensitive.
+SENSITIVE_HEADER_NAMES = frozenset(
+    {"authorization", "cookie", "set-cookie", "x-api-key", "proxy-authorization"}
+)
+
+
+class DataSourceExecutor(NodeExecutor):
+    """Routes by sourceType. REST is real (httpx); SQL/File still stub.
+
+    SQL and File connectors will replace their stub branches in later phases.
+    Keeping them here means existing pipelines using sourceType=sql/file keep
+    working — they just continue to receive sample data rather than failing.
+    """
 
     VALID_SOURCE_TYPES = {"rest", "sql", "file"}
 
     @classmethod
     def manifest(cls) -> ConnectorManifest:
         return ConnectorManifest(
-            name="Data Source (Stub)",
-            description="Returns sample data for testing",
+            name="Data Source",
+            description="Fetch data from REST APIs (SQL and File coming next)",
             node_type="datasource",
             required_fields=["sourceType"],
         )
@@ -147,10 +184,71 @@ class StubDataSourceExecutor(NodeExecutor):
                     )
                 )
 
+        if source_type == "rest":
+            method = config.get("method", "GET")
+            if method and method not in VALID_HTTP_METHODS:
+                errors.append(
+                    ConfigError(
+                        field="method",
+                        message=f"method must be one of: {', '.join(sorted(VALID_HTTP_METHODS))}",
+                    )
+                )
+
+            auth_type = config.get("authType", "none")
+            if auth_type and auth_type not in VALID_AUTH_TYPES:
+                errors.append(
+                    ConfigError(
+                        field="authType",
+                        message=f"authType must be one of: {', '.join(sorted(VALID_AUTH_TYPES))}",
+                    )
+                )
+
+            # Per-authType field requirements
+            if auth_type == "bearer" and not config.get("bearerToken", "").strip():
+                errors.append(
+                    ConfigError(
+                        field="bearerToken",
+                        message="Bearer token is required when authType is bearer",
+                    )
+                )
+            if auth_type == "basic":
+                if not config.get("basicUsername", "").strip():
+                    errors.append(
+                        ConfigError(
+                            field="basicUsername",
+                            message="Username is required for basic auth",
+                        )
+                    )
+                if not config.get("basicPassword", "").strip():
+                    errors.append(
+                        ConfigError(
+                            field="basicPassword",
+                            message="Password is required for basic auth",
+                        )
+                    )
+            if auth_type == "api_key":
+                if not config.get("apiKeyHeader", "").strip():
+                    errors.append(
+                        ConfigError(
+                            field="apiKeyHeader",
+                            message="Header name is required for API key auth",
+                        )
+                    )
+                if not config.get("apiKeyValue", "").strip():
+                    errors.append(
+                        ConfigError(
+                            field="apiKeyValue",
+                            message="API key value is required for API key auth",
+                        )
+                    )
+
         return errors
 
     def execute(self, config: dict[str, Any], input_data: Any) -> ExecutorResult:
         source_type = config.get("sourceType", "rest")
+        if source_type == "rest":
+            return _execute_rest(config)
+        # SQL/File still stubbed — replaced when those connectors land
         return ExecutorResult(
             output={
                 "data": [
@@ -162,6 +260,140 @@ class StubDataSourceExecutor(NodeExecutor):
                 "record_count": 3,
             }
         )
+
+    def redact(self, output: dict[str, Any]) -> dict[str, Any]:
+        """Mask sensitive response headers before SSE / event log.
+
+        REST responses can echo back credentials (Set-Cookie on auth flows,
+        Authorization in proxied requests, vendor-specific X-API-Key headers).
+        We mask values rather than dropping the keys so debugging can still
+        confirm "an Authorization header was present" without revealing it.
+        """
+        if "headers" not in output or not isinstance(output["headers"], dict):
+            return output
+        redacted_headers = {
+            k: ("[REDACTED]" if k.lower() in SENSITIVE_HEADER_NAMES else v)
+            for k, v in output["headers"].items()
+        }
+        return {**output, "headers": redacted_headers}
+
+
+def _build_headers(config: dict[str, Any]) -> dict[str, str]:
+    """Combine user-defined headers with auth-derived header (bearer/api_key).
+
+    Auth values overwrite same-named user headers — explicit auth config
+    should win over a stale Authorization key the user might have left in.
+    """
+    headers: dict[str, str] = {}
+    for key, value in (config.get("headers") or {}).items():
+        headers[str(key)] = str(value)
+
+    auth_type = config.get("authType", "none")
+    if auth_type == "bearer":
+        token = config.get("bearerToken", "")
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+    elif auth_type == "api_key":
+        header_name = config.get("apiKeyHeader") or "X-API-Key"
+        api_key = config.get("apiKeyValue", "")
+        if api_key:
+            headers[str(header_name)] = str(api_key)
+    return headers
+
+
+def _build_auth(config: dict[str, Any]) -> httpx.Auth | None:
+    """Return an httpx.Auth instance for basic auth, or None for header-based."""
+    if config.get("authType") == "basic":
+        return httpx.BasicAuth(
+            username=config.get("basicUsername", ""),
+            password=config.get("basicPassword", ""),
+        )
+    return None
+
+
+def _parse_body(response: httpx.Response) -> Any:
+    """Decode response body. JSON when content-type announces it; else text.
+
+    Falls back to text on JSON parse failure rather than raising — clients
+    benefit more from "here is what came back" than from an internal error.
+    """
+    content_type = response.headers.get("content-type", "").lower()
+    if "application/json" in content_type or "+json" in content_type:
+        try:
+            return response.json()
+        except ValueError:
+            return response.text
+    return response.text
+
+
+def _execute_rest(config: dict[str, Any]) -> ExecutorResult:
+    """Execute an HTTP request using the REST connector config.
+
+    Maps httpx-level outcomes to structured ErrorCodes so the frontend can
+    render specific messages for timeout, auth failure, rate-limiting and
+    generic HTTP error. Auth failures intentionally never include the token
+    in the error payload — only the status code is exposed.
+    """
+    url = config.get("url", "")
+    method = config.get("method", "GET")
+    body = config.get("body")
+    headers = _build_headers(config)
+    auth = _build_auth(config)
+
+    try:
+        with httpx.Client(timeout=REST_TIMEOUT_SECONDS) as client:
+            response = client.request(
+                method=method,
+                url=url,
+                headers=headers,
+                auth=auth,
+                content=body if body else None,
+            )
+    except httpx.TimeoutException:
+        raise PipelineError(
+            code=ErrorCode.CONNECTOR_TIMEOUT,
+            message=f"Request to {url} timed out after {int(REST_TIMEOUT_SECONDS)}s",
+            status_code=504,
+        )
+    except httpx.HTTPError as exc:
+        raise PipelineError(
+            code=ErrorCode.CONNECTOR_NETWORK_ERROR,
+            message=f"Network error calling {url}: {exc}",
+            status_code=502,
+        )
+
+    status = response.status_code
+    if status in (401, 403):
+        raise PipelineError(
+            code=ErrorCode.CONNECTOR_AUTH_FAILED,
+            message=f"Authentication failed (HTTP {status})",
+            status_code=502,
+            details={"status": status, "url": url},
+        )
+    if status == 429:
+        raise PipelineError(
+            code=ErrorCode.CONNECTOR_RATE_LIMITED,
+            message="Rate limited by upstream",
+            status_code=502,
+            details={"status": status, "url": url},
+        )
+    if status >= 400:
+        raise PipelineError(
+            code=ErrorCode.CONNECTOR_HTTP_ERROR,
+            message=f"HTTP {status} from {url}",
+            status_code=502,
+            details={"status": status, "url": url},
+        )
+
+    return ExecutorResult(
+        output={
+            "status_code": status,
+            "headers": dict(response.headers),
+            "body": _parse_body(response),
+            "url": url,
+            "method": method,
+        }
+    )
 
 
 class StubAIExecutor(NodeExecutor):
@@ -327,7 +559,7 @@ class StubHumanExecutor(NodeExecutor):
 
 
 _EXECUTORS: dict[str, type[NodeExecutor]] = {
-    "datasource": StubDataSourceExecutor,
+    "datasource": DataSourceExecutor,
     "ai": StubAIExecutor,
     "action": StubActionExecutor,
     "human": StubHumanExecutor,

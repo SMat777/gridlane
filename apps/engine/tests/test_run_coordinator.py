@@ -55,8 +55,8 @@ def trivial_pipeline():
                     "label": "Source",
                     "nodeType": "datasource",
                     "config": {
-                        "sourceType": "rest",
-                        "url": "https://example.com",
+                        "sourceType": "sql",
+                        "url": "postgresql://localhost/test",
                     },
                 },
             }

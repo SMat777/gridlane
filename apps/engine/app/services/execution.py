@@ -307,13 +307,24 @@ class ExecutionEngine:
                     for s in [*steps, step_result]
                     if s.get("cost_usd")
                 )
+
+                # Run executor-defined redaction before output enters the
+                # public event stream. The raw output stays on step_result
+                # for DB persistence and downstream input — only the SSE
+                # payload is masked. Fail-safe: if a custom redact() raises
+                # we drop the output rather than leak it.
+                try:
+                    redacted_output = executor.redact(result.output)
+                except Exception:
+                    redacted_output = {"_redact_failed": True}
+
                 _emit(
                     "step_completed",
                     {
                         "node_id": node_id,
                         "status": "completed",
                         "duration_ms": duration_ms,
-                        "output": result.output,
+                        "output": redacted_output,
                         "completed_at": step_completed.isoformat(),
                         "cumulative_cost_usd": cumulative_cost,
                     },

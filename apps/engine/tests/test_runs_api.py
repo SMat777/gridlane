@@ -48,7 +48,9 @@ TEST_PIPELINE_ID = "22222222-2222-2222-2222-222222222222"
 # Valid default configs for each node type — used when tests don't
 # specify a config. Matches the minimum required by validate_config().
 VALID_DEFAULTS = {
-    "datasource": {"sourceType": "rest", "url": "https://api.example.com/data"},
+    # Use sql so the API tests don't accidentally fire HTTP requests via
+    # the real REST executor. REST is covered separately with mocks.
+    "datasource": {"sourceType": "sql", "url": "postgresql://localhost/test"},
     "ai": {
         "provider": "anthropic",
         "model": "claude-sonnet-4-20250514",

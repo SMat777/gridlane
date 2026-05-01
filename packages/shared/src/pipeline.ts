@@ -21,7 +21,7 @@ export type PipelineNodeType = (typeof PIPELINE_NODE_TYPES)[number];
 
 export type DataSourceType = "rest" | "sql" | "file";
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
-export type AuthType = "none" | "bearer" | "basic";
+export type AuthType = "none" | "bearer" | "basic" | "api_key";
 
 export interface DataSourceConfig {
   sourceType: DataSourceType;
@@ -29,6 +29,18 @@ export interface DataSourceConfig {
   method: HttpMethod;
   headers: Record<string, string>;
   authType: AuthType;
+  /** Request body for POST/PUT/DELETE. Free-form string — user may JSON-encode if needed. */
+  body?: string;
+  /** Token used when authType = "bearer" (sent as `Authorization: Bearer <token>`). */
+  bearerToken?: string;
+  /** Username when authType = "basic". */
+  basicUsername?: string;
+  /** Password when authType = "basic". */
+  basicPassword?: string;
+  /** Header name when authType = "api_key" (e.g. "X-API-Key"). */
+  apiKeyHeader?: string;
+  /** Header value when authType = "api_key". */
+  apiKeyValue?: string;
 }
 
 export type AIProvider = "anthropic" | "openai";

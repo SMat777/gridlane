@@ -16,7 +16,13 @@ export const dataSourceConfigSchema = z
     url: z.string().default(""),
     method: z.enum(["GET", "POST", "PUT", "DELETE"]).default("GET"),
     headers: z.record(z.string(), z.string()).default({}),
-    authType: z.enum(["none", "bearer", "basic"]).default("none"),
+    authType: z.enum(["none", "bearer", "basic", "api_key"]).default("none"),
+    body: z.string().optional(),
+    bearerToken: z.string().optional(),
+    basicUsername: z.string().optional(),
+    basicPassword: z.string().optional(),
+    apiKeyHeader: z.string().optional(),
+    apiKeyValue: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.sourceType === "rest" && !data.url.trim()) {
@@ -32,6 +38,50 @@ export const dataSourceConfigSchema = z
         path: ["url"],
         message: "Connection string is required for SQL sources",
       });
+    }
+
+    // Per-authType field requirements — only enforced for REST sources;
+    // SQL/File ignore authType entirely.
+    if (data.sourceType !== "rest") return;
+
+    if (data.authType === "bearer" && !data.bearerToken?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["bearerToken"],
+        message: "Bearer token is required",
+      });
+    }
+    if (data.authType === "basic") {
+      if (!data.basicUsername?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["basicUsername"],
+          message: "Username is required",
+        });
+      }
+      if (!data.basicPassword?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["basicPassword"],
+          message: "Password is required",
+        });
+      }
+    }
+    if (data.authType === "api_key") {
+      if (!data.apiKeyHeader?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["apiKeyHeader"],
+          message: "Header name is required (e.g. X-API-Key)",
+        });
+      }
+      if (!data.apiKeyValue?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["apiKeyValue"],
+          message: "API key value is required",
+        });
+      }
     }
   });
 
