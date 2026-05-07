@@ -15,8 +15,8 @@ Build pipelines by dragging data sources, AI analysis steps, and actions onto a 
                    ▼
 ┌─────────────────────────────────────────────┐
 │  Engine (FastAPI + Python 3.12)             │
-│  Pipeline Runner → Connectors → AI Nodes   │
-│  Observability → Audit Log → HUMAN Step    │
+│  Pipeline Runner → Connectors → AI Nodes    │
+│  Observability → Audit Log → HUMAN Step     │
 └──────────┬──────────────┬───────────────────┘
            │              │
            ▼              ▼
