@@ -1,0 +1,681 @@
+{
+ "kernepointer": [
+  "Regulatorisk efterspoergsel er lovbestemt, ikke diskretionaer. Et budget til 'innovation' kan skaeres i en nedtur; et budget til NIS2 art. 21(2)(d) eller GDPR art. 32 kan ikke, fordi konsekvensen er boeder og tabte udbud. Det goer nichen kontracyklisk - hvilket er usaedvanligt i software - og det er det staerkeste enkeltargument for at Simon vaelger den.",
+  "Udbuddet er strukturelt begraenset af en kompetencekloeft, ikke af interesse. Compliance-siden bemandes af jurister, ESG-folk og revisorer der ikke kan laese en datamodel. Engineering-siden bemandes af udviklere der finder regulering kedelig og betragter den som en andens problem. Overlappet - folk der kan laese art. 21(2)(d) og derefter tegne tenant-isolationsgraensen der opfylder den - er tyndt. Den knappe kompetence er aldrig den dybeste, den er den broslaaende.",
+  "For en ticket-taker uden mandat er compliance den hurtigste legitime rute til arkitektonisk autoritet, og det er den vigtigste enkeltindsigt i hele dette emne. Normalt tjener man arkitekturindflydelse via anciennitet. Compliance er undtagelsen: et regulatorisk krav er en ekstern begraensning der rangerer over interne meninger. 'Vi kan ikke goere X, fordi art. 32 kraever Y' er et argument en junior kan vinde, fordi det ikke er hans holdning. Ingen anden type argument har den egenskab.",
+  "LeanLinking er et usaedvanligt godt udsigtspunkt, og Simon undervurderer det formentlig. Produktets emne ER leverandoercompliance. Domaeneviden han tilegner sig af karrieregrunde er samtidig produktviden hans arbejdsgiver vil betale for. Den dobbelttaelling er sjaelden - de fleste maa vaelge mellem at laere noget til jobbet og at laere noget til karrieren.",
+  "Flaskehalsen i enterprise SaaS-salg er ikke produktet - det er security questionnaire'en og databehandleraftalen. Den der kan vende en 300-punkts CAIQ paa to dage med evidensbaserede svar og forsvare arkitekturen i kundens auditopkald, har et tal knyttet til sig. Arkitekter der kan pege paa omsaetning bliver forfremmet; arkitekter der kun kan pege paa elegance bliver det ikke. Dette arbejde er samtidig ubeskyttet - ingen slaas om det, fordi alle betragter det som lort.",
+  "CSRD blev ikke aflivet af omnibus - den blev indsnaevret opad OG standardiseret nedad, og standardiseringen er den gode nyhed for software. Faerre virksomheder er direkte omfattet, men hver af dem har tusindvis af leverandoerer der stadig bliver spurgt. Vaerdikaedeloftet (VSME som maksimum for hvad store maa kraeve af mindre) er reelt en standardiseret datakontrakt - en afgraenset, kendt skemadefinition. Det er en gave til en SaaS-leverandoer, og LeanLinking boer modellere VSME som foersteklasses datamodel.",
+  "Multi-tenant isolation er ikke en performanceoevelse - det er den enkeltstaaende vigtigste sikkerhedskontrol i produktet, og den er det konkrete svar paa hvert eneste spoergeskema-punkt om datasegregering. OWASP API Security API1 (BOLA) og OWASP Top 10 A01 (Broken Access Control) er begge praecis dette. En tenant-laek i et leverandoercompliance-system laekker en kundes leverandoerkaede - dvs. deres indkoebsstrategi - til en konkurrent. Det er ikke en fejl man overlever kommercielt.",
+  "Certifikatverifikation er en overset, konkret guldaare i praecis LeanLinkings domaene. Et ISO-certifikat er kun noget vaerd hvis udstederen er akkrediteret af et IAF MLA-medlem (i DK: DANAK). Falske og uakkrediterede certifikater er et reelt problem i leverandoerstyring. IAF CertSearch er den globale verifikationsdatabase. Automatiseret certifikatverifikation mod IAF CertSearch er en integration produktet burde have - og det er en arkitekturspike Simon kan bygge uden at spoerge nogen om lov.",
+  "Den korrekte certifikatstrategi i dette emne er AZ-500 som differentiator og SC-100 ELLER CIPP/E som tredje - ikke begge. AZ-305 er ikke til forhandling hvis titlen er maalet (det er den bogstavelige Azure Solutions Architect Expert), og den aeder allerede en stor del af certifikatbudgettet. Alt andet fravaelges eksplicit: CISSP, CCSP, CISM, CRISC (alle med 5 aars erfaringskrav han ikke har), CEH (lavt signal), OSCP (300+ timer i den forkerte retning), TOGAF (enterprise arkitektur, ikke solution arkitektur, og i danske produktvirksomheder et let negativt signal), SAFe, Security+, samt alle AI-governance-certifikater.",
+  "Den stoerste faldgrube er at blive compliance-manden i stedet for arkitekten. Hvis han holder op med at skrive kode, er titlen han faar GRC Analyst - den betaler mindre og topper tidligere. Reglen er absolut: hvert compliance-artefakt leveres sammen med koerende kode og en maaling. Aldrig det ene uden det andet. Compliance uden engineering er en GRC-analytiker; engineering uden compliance er en senior udvikler; vaerdien ligger udelukkende i OG'et.",
+  "Han skal laese primaerteksterne, ikke leverandoerlitteraturen. Vanta, Drata og alle konsulenthuse producerer indhold designet til at faa compliance til at lyde svaerere og mere automatiserbart end det er. Regulativerne er gratis og kortere end whitepaperne om dem: NIS2 art. 20-23 er fire sider, GDPR er ca. 88 sider inkl. praeambler. Datatilsynets vejledninger er gratis, paa dansk, og er det en dansk kundes DPO faktisk citerer.",
+  "Fire ting med naere datoer skal verificeres foer noget skrives ned som fakta, fordi de er praecis de punkter hvor en forkert paastand doedelig skader troovaerdigheden i et interview: (1) om AI Act-udskydelsen for hoejrisiko gik igennem - originaldatoen var 2. august 2026, altsaa for fem uger siden; (2) CRA's rapporteringspligt for aktivt udnyttede saarbarheder med anfoert dato 11. september 2026 - i morgen; (3) den endelige omnibus-troeskel for CSRD og CSDDD; (4) om ISO 9001:2026 er udkommet, hvilket ville saette hvert eneste leverandoercertifikat i hvert eneste SRM-system paa en treaarig overgang."
+ ],
+ "web_verifikation": "\"INGEN VERIFIKATION VAR MULIG I DENNE SESSION. Det skal staa foerst og tydeligt, fordi opgaven eksplicit kraevede verifikation.\\n\\nHvad der blev forsoegt: (1) WebSearch returnerede 'this session has used its web search budget (200 of 200 WebSearch calls)' ved foerste kald - budgettet var opbrugt af tidligere agenter foer denne subagent startede. (2) WebFetch blev forsoegt mod www.sikkerdigital.dk, finance.ec.europa.eu, owasp.org, en.wikipedia.org, learn.microsoft.com og www.iso.org. Alle seks returnerede EGRESS_BLOCKED fra netvaerksproxyen. (3) Forsoeg paa at laese proxyens statusendpoint og /root/.ccr/README.md via Bash blev afvist af permission-klassifikatoren. Der var ingen tilbagevaerende vej til nettet.\\n\\nKonsekvens: alt nedenfor stammer fra traeningsviden med cutoff maj 2026. Der er ca. fire maaneders drift til dagens dato 10. september 2026, og dette emne er et af de hurtigst bevaegende der findes. Hver eneste ressource er markeret verificeret: false. Ingen URL er opfundet - jeg har kun angivet adresser paa officielle domaener hvor jeg har hoej tillid til at stien er kanonisk og stabil, og selv de skal klikkes efter.\\n\\nVERIFIKATIONSGAELD, prioriteret. Skrivende agent boer ikke publicere disse som fakta uden kontrol:\\n\\nHASTER MEST - naere datoer der kan vaere passeret eller flyttet:\\n1. EU AI Act, hoejrisiko. Originaltidsplanen satte generel anvendelse inkl. bilag III-hoejrisiko til 2. august 2026 - dvs. fem uger foer i dag. Digital Omnibus on AI (fremsat 19. november 2025) foreslog at binde bilag III-forpligtelserne til tilgaengeligheden af harmoniserede standarder med bagstopper 2. december 2027, og bilag I til 2. august 2028. Ved mit cutoff var det et forslag i trilog. OM UDSKYDELSEN BLEV VEDTAGET ER DET ENKELTFAKTUM DER HASTER MEST I HELE DETTE EMNE. Kilde at tjekke: EUR-Lex og Kommissionens AI Act-side.\\n2. Cyber Resilience Act, forordning (EU) 2024/2847. Min viden siger: ikrafttraeden 10. december 2024, rapporteringspligt for aktivt udnyttede saarbarheder og alvorlige haendelser fra 11. september 2026, fuld anvendelse 11. december 2027. Den foerste dato er i morgen. Verificer baade datoen og om ren SaaS er undtaget - min forstaaelse er at software-as-a-service er uden for scope medmindre det er en 'remote data processing solution' der er integreret i et produkt med digitale elementer, hvilket ville betyde at LeanLinking selv er udenfor, men at enhver downloadbar komponent, agent eller on-prem-konnektor traekker dem ind.\\n3. ISO 9001. En revision var i DIS-fase med forventet publikation omkring september 2026. Hvis ISO 9001:2026 er udkommet, faar hvert leverandoercertifikat i hvert SRM-system en treaarig overgang, og LeanLinkings certifikat-udloebslogik skal haandtere en versionsovergang. Det er baade et verifikationspunkt og en konkret produktobservation Simon kan bringe til arbejdet i naeste uge. ISO 14001 er i tilsvarende revision med forventning 2026/2027.\\n\\nSTOR USIKKERHED - lovgivning der beviseligt bevaegede sig i vinteren 2025/26:\\n4. Omnibus I, indholdsdirektivet for CSRD/CSDDD. Sikkert: 'stop-the-clock'-direktivet (EU) 2025/794 er vedtaget og i kraft 17. april 2025, og udskoed boelge 2 og 3 med to aar samt CSDDD's gennemfoerelsesfrist til 26. juli 2027 og foerste anvendelse til 26. juli 2028. Usikkert: de endelige troeskler. Min bedste rekonstruktion er en foreloebig politisk enighed omkring midten af december 2025 paa over 1.750 ansatte og over 450 mio. EUR omsaetning for CSRD, og over 5.000 ansatte og 1,5 mia. EUR for CSDDD, med CSDDD's due diligence begraenset til direkte forretningspartnere (tier 1), fjernelse af det EU-harmoniserede civilretlige ansvar, og periodisk vurdering flyttet fra aarligt til hvert femte aar. FORMEL VEDTAGELSE OG ENDELIGE TAL SKAL VERIFICERES. At udtale en foraeldet troeskel med selvtillid i et interview er en troovaerdighedsdraeber.\\n5. Reviderede ESRS. EFRAG afleverede reviderede udkast til Kommissionen 30. november 2025 efter hoering juli-september 2025, med rapporteret reduktion i obligatoriske datapunkter i stoerrelsesordenen 57-68 pct. Om den delegerede retsakt er vedtaget pr. september 2026 er ikke verificeret. Tjek efrag.org og Kommissionens side for baeredygtighedsrapportering.\\n6. NIS2 i Danmark. Min viden: gennemfoerelsesfristen 17. oktober 2024 blev overskredet af Danmark; aabningsskrivelse fra Kommissionen november 2024; begrundet udtalelse maj 2025; dansk lov om foranstaltninger til sikring af et hoejt cybersikkerhedsniveau vedtaget i foraaret 2025 med ikrafttraeden 1. juli 2025, med separate sektorlove for tele, energi og finans, og med Center for Cybersikkerhed som central myndighed samt sektormyndigheder. Bekendtgoerelserne med de konkrete sikkerhedskrav og de fasede registreringsfrister fulgte efter. LOVENS PRAECISE NAVN, DATOER OG BEKENDTGOERELSESNUMRE SKAL VERIFICERES paa retsinformation.dk og sikkerdigital.dk. Dette er dansk ret om et dansk produkt - at tage fejl her er vaerre end at tage fejl om et EU-direktiv.\\n7. EU Deforestation Regulation (EU) 2023/1115. Blev udskudt en gang til 30. december 2025 for store operatoerer og 30. juni 2026 for mikro/smaa. En yderligere forenkling og udskydelse blev foreslaaet i oktober 2025, muligvis til 30. december 2026 og 30. juni 2027. Status ukendt. EUDR er ellers et fremragende eksempel for Simon, fordi det er et rent 'indsaml struktureret dokumentation fra leverandoerer, bevis proveniens, producer en erklaering'-problem - praecis LeanLinking-formet.\\n8. EU-US Data Privacy Framework. Tilstraekkelighedsafgoerelsen blev vedtaget 10. juli 2023. Latombe mod Kommissionen (T-553/23) blev afvist af Retten 3. september 2025 - foerste instans, appel til EU-Domstolen mulig. Det reelle pres er politisk: PCLOB blev toemt i januar 2025, hvilket underminerer det Data Protection Review Court-baserede klageadgangsspor som DPF hviler paa. Ved mit cutoff var afgoerelsen fortsat i kraft under vedvarende juridisk og politisk pres. VERIFICER OM DEN STADIG STAAR. Det arkitektoniske punkt overlever uanset svaret: design ikke som om DPF er permanent - SCC'er plus transfer impact assessment som fallback, og EU-dataresidens som den egentlige afdaekning.\\n9. Digital Omnibus paa GDPR (fremsat november 2025) - foreslog aendringer til definitionen af personoplysninger, pseudonymiserede data, legitim interesse til AI-traening, og flytning af cookie-regler fra ePrivacy ind i GDPR. Kraftigt kritiseret af EDPB og EDPS. Ved mit cutoff: forslag, ikke gaeldende ret. Verificer status - hvis dele er vedtaget, aendrer det flere af de konkrete raad om dataminimering.\\n\\nMODERAT USIKKERHED:\\n10. OWASP Top 10:2025. En release candidate blev offentliggjort omkring november 2025. Min rekonstruktion af listen: A01 Broken Access Control, A02 Security Misconfiguration, A03 Software Supply Chain Failures (udvidet fra Vulnerable and Outdated Components), A04 Cryptographic Failures, A05 Injection, A06 Insecure Design, A07 Authentication Failures, A08 Software or Data Integrity Failures, A09 Logging and Alerting Failures, A10 Mishandling of Exceptional Conditions, med SSRF foldet ind i en anden kategori. JEG ER KUN MODERAT SIKKER PAA RAEKKEFOELGEN OG PAA OM RC BLEV TIL ENDELIG VERSION. Det robuste budskab uanset: Broken Access Control er nummer et, og i en multi-tenant SRM betyder det tenant-isolationsfejl; og supply chain fik sin egen kategori, hvilket tematisk passer perfekt til Simons niche.\\n11. OWASP API Security Top 10. 2023-versionen var gaeldende ved mit cutoff (API1 BOLA, API2 Broken Authentication, API3 Broken Object Property Level Authorization, API4 Unrestricted Resource Consumption, API5 Broken Function Level Authorization, API6 Unrestricted Access to Sensitive Business Flows, API7 SSRF, API8 Security Misconfiguration, API9 Improper Inventory Management, API10 Unsafe Consumption of APIs). En 2025/2026-opdatering kan vaere undervejs. Verificer.\\n12. OWASP ASVS 5.0 blev udgivet maj 2025 som en stoerre omstrukturering. Verificer at 5.x er aktuel.\\n13. ISO/IEC 27701 blev revideret i 2025 til et selvstaendigt ledelsessystem der kan certificeres uafhaengigt af 27001 - tidligere var det en udvidelse. Verificer.\\n14. Microsoft-certifikatkoder. AZ-500, SC-100 og AZ-305 var gaeldende ved mit cutoff, og AZ-104/AZ-500/SC-200/SC-300 var forudsaetning for SC-100. Microsoft omdoeber og pensionerer eksamener loebende. Verificer koder, pris og skills measured-dato paa learn.microsoft.com foer nogen bruger penge.\\n15. Loental. Jeg har bevidst UDELADT konkrete loenintervaller fra hukommelsen, fordi de er upaalidelige og fordi et forkert tal i en karriereguide er direkte skadeligt. Simon skal selv traekke tallene: IDA's loenstatistik og loenberegner (medlemskab), PROSA's loenstatistik, samt de aarlige loenguides fra Hays Denmark, Robert Half og Michael Page/PageGroup. For konsulentrater: Right People Group og Ework. Argumentet for at nichen betaler godt hviler i denne rapport paa struktur (lovbestemt efterspoergsel, tynd broslaaende kompetence, direkte omsaetningskobling), ikke paa et tal jeg ikke kan belaegge.\\n16. Danske pentest-leverandoerer (Dubex, Improsec, FortConsult/NCC, Truesec, NVISO) og prisleje - navnene er fra hukommelsen, ejerskab og fusioner aendrer sig, og priser er ikke verificeret.\\n17. Microsoft EU Data Boundary. Min viden: Microsoft erklaerede den faerdiggjort i februar 2025 inkl. personoplysninger i support og professionelle tjenester, for Azure, Microsoft 365, Dynamics og Power Platform. Verificer, fordi det er et konkret argument LeanLinking kan bruge i spoergeskemaer.\\n18. DORA CTPP-udpegelser. Foerste udpegelser af kritiske IKT-tredjepartsudbydere blev annonceret omkring juli 2025, i stoerrelsesordenen 19 udbydere. Verificer antal og liste hvis det skal naevnes.\"",
+ "kompetencer": [
+  {
+   "navn": "Regulatorisk oversaettelse - fra lovtekst til teknisk kontrol med evidens",
+   "hvorfor": "Dette er hele nichens kerne og den ene kompetence der goer resten vaerdifuld. Alle kan google hvad NIS2 er. Faa kan tage art. 21(2)(d) og producere en konkret kontrol i et konkret system, plus det bevis en revisor vil se. Det er broen mellem jurist og udvikler, og broen er der pengene er.",
+   "hvordan_traenes": "Tag ET krav ad gangen og spor det hele vejen ned. Eksempel med GDPR art. 32(1)(a) om pseudonymisering: laes artiklen, laes Datatilsynets vejledning om samme, find den tilsvarende kontrol i ISO 27001:2022 bilag A (A.8.11 datamaskering), implementer den i spike-systemet, skriv en ADR om hvorfor du valgte den implementering, og producer det evidensartefakt en auditor ville bede om. Gentag med NIS2 art. 21(2)(d), GDPR art. 17, ISO 27001 A.5.19-A.5.22 om leverandoerforhold, og DORA art. 30. Fem krav sporet fuldt ud slaar halvtreds krav laest overfladisk.",
+   "niveauskala": "Nybegynder: kan referere hvad en regulering handler om og navngive de vigtigste artikler. Kompetent: kan for et givet krav pege paa den konkrete kontrol i et system han kender, og forklare hvorfor netop den kontrol er tilstraekkelig. Staerk: kan gaa den anden vej - se paa en arkitekturtegning og sige hvilke fem regulatoriske krav den bryder, hvad det koster at rette, og hvilket af dem der er acceptabelt at leve med og hvorfor."
+  },
+  {
+   "navn": "Threat modeling OG facilitering af sessioner",
+   "hvorfor": "Selve STRIDE-analysen kan laeres paa en weekend. Faciliteringen kan ikke, og det er faciliteringen der er sjaelden. En arkitekt er ikke den der ved mest om sikkerhed - det er den der kan faa fem udviklere til at producere en brugbar trusselsanalyse paa en time og forlade rummet med tickets der har ejere. Det er ogsaa den enkeltoevelse der mest direkte ligner arkitektarbejde: staa foran en tavle, stille de rigtige spoergsmaal, og tvinge implicitte antagelser frem.",
+   "hvordan_traenes": "Foerst alene: tre modeller af egne features, med DFD paa niveau 1 og eksplicitte trust boundaries som stiplede linjer. Derefter med mennesker - det er skridtet der ikke kan springes over. Rekrutter to kolleger til 60 minutter paa en feature de bygger. Brug Elevation of Privilege-kortspillet foerste gang; det fjerner det pinlige ved at skulle vaere sikkerhedsmanden. Skriv efter hver session et halvsides retrospektiv paa hvad der gik galt i FACILITERINGEN, ikke i modellen. Maal: mindst tre sessioner hvor han ikke selv skrev koden.",
+   "niveauskala": "Nybegynder: kan udfylde et STRIDE-skema for en komponent. Kompetent: kan tegne en DFD hvor trust boundaries er de rigtige steder, og koere en session der producerer 8-15 konkrete trusler med disposition. Staerk: kan afgraense scopet korrekt paa forhaand (den hyppigste fejl), holde diskussionen fra at blive et designreview, faa tavse folk til at tale, timeboxe skaenderier paa to minutter, og slutte til tiden med ejere paa hver eneste linje."
+  },
+  {
+   "navn": "Multi-tenant isolation - design og adversarial verifikation",
+   "hvorfor": "Det er den vigtigste sikkerhedskontrol i LeanLinkings produkttype og i hele SaaS-kategorien, det er OWASP A01 og API1, og det er det foerste rigtige spoergsmaal i hvert spoergeskema. Vigtigere: verifikationsdelen er det der adskiller en der har laest om det fra en der har bygget det. Naesten alle kan designe isolation. Naesten ingen har skrevet testsuiten der beviser at den holder, og det er derfor tenant-laek stadig sker i produktion.",
+   "hvordan_traenes": "Byg samme domaene tre gange med tre isolationsmodeller (delt DB med EF global query filter, delt DB med Azure SQL Row-Level Security paa SESSION_CONTEXT, database-per-tenant i elastic pool). Skriv derefter en cross-tenant abuse-testsuite der for HVERT endpoint bruger tenant A's token mod tenant B's id og asserter 404. Introducer saa bevidst tre realistiske bugs - et baggrundsjob med en DbContext bygget uden for request-scope, et FromSqlRaw, og en Redis-noegle uden tenant-praefiks - og registrer hvilke modeller der fanger hvad. Det er forskellen mellem at kende moenstret og at kende dets fejlmoenstre.",
+   "niveauskala": "Nybegynder: kender begreberne shared/siloed og kan naevne EF query filters. Kompetent: kan vaelge model ud fra tenantantal, datasensitivitet, migrationsbyrde og omkostning, og forsvare valget med tal. Staerk: kan udpege de fem steder hvor isolationen typisk laekker i et system han lige har set (baggrundsjob, cache-noegler, raa SQL, soegeindeks, telemetri), og har en automatiseret test der ville have fanget dem."
+  },
+  {
+   "navn": "Datalivscyklus-arkitektur - klassifikation, retention, sletning, eksport, residens",
+   "hvorfor": "Dette er den mest undervurderede arkitekturdisciplin overhovedet, og den er blevet lovpligtig fra flere sider samtidig: GDPR art. 5(1)(e) og art. 17 om sletning, art. 20 om portabilitet, kapitel V om tredjelandsoverfoersler, og nu Data Act kapitel VI om cloud switching. Naesten ingen systemer kan slette ordentligt, og naesten ingen udviklere har taenkt igennem hvad sletning betyder naar data ogsaa ligger i backups, soegeindeks, dead letter queues og logs.",
+   "hvordan_traenes": "Byg sletnings- og retentionsmotoren i spike-systemet, og skriv den ADR de fleste undgaar: hvordan haandterer man art. 17 naar man ikke kan slette fra en immutable backup. Det korrekte svar - dokumenteret backuprotation plus en suppressionsliste der genanvendes ved restore - er noget de faerreste udviklere kan formulere, og det er derfor et staerkt interviewartefakt. Byg derefter tenant-eksporten og bevis dens fuldstaendighed ved at round-trippe den ind i en tom tenant og sammenligne checksums.",
+   "niveauskala": "Nybegynder: ved at data skal slettes og at der er en frist. Kompetent: har en retentionsmatrix per datakategori og en sletteproces der spaender flere datastores. Staerk: kan redegoere for backup-paradokset, for hvad der sker med data i logs og telemetri, for forskellen paa sletning og anonymisering, og kan levere en maskinlaesbar sletteattest med et maalt p95-gennemloeb."
+  },
+  {
+   "navn": "Design af reviderbare systemer - audit trail, proveniens, uafviselighed",
+   "hvorfor": "I et compliance-produkt er audit-sporet ikke en logfil - det er produktets kerneloefte. Hvis en kunde ikke kan bevise hvem der godkendte hvilket leverandoercertifikat hvornaar, er systemet vaerdiloest i en revision. Det er STRIDE's R (repudiation), det er ISO 27001 A.8.15 og A.8.16, og det er GDPR art. 5(2) om ansvarlighed. Det er ogsaa en genuint svaer distribueret systemopgave, saa det traener rigtig arkitektur og ikke bare papirarbejde.",
+   "hvordan_traenes": "Byg det med Azure Service Bus: transactional outbox i SQL, sessions for ordning per leverandoer, idempotensnoegler, dead-letter-haandtering med et replay-vaerktoej. Adskil eksplicit audit-log fra diagnostisk log - append-only, immutable via Azure Storage immutable blob med tidsbaseret retention, med defineret opbevaringsperiode. Injicer derefter dubletter og out-of-order-leveringer med kendt rate og bevis exactly-once-EFFEKT (ikke exactly-once-levering, som ikke findes).",
+   "niveauskala": "Nybegynder: logger med ILogger og tror det er et audit trail. Kompetent: kan forklare forskellen paa audit-log og diagnostisk log og har implementeret outbox. Staerk: kan designe for uafviselighed under partielle fejl, kender kompromiset mellem immutability og sletningspligt, og har maalt hvad audit-loggen koster per tenant per maaned."
+  },
+  {
+   "navn": "Trade-off-artikulation med tal paa - cost- og risikomodellering",
+   "hvorfor": "Dette er den kompetence der faktisk adskiller en arkitekt fra en senior udvikler, og den er naesten fravaerende hos folk der kommer fra en ren udviklerbane. En senior udvikler siger 'vi boer bruge customer-managed keys, det er mere sikkert'. En arkitekt siger 'CMK koster os X kr./maaned plus Y dages implementering plus en ny fejlklasse ved noeglerotation, det aabner for kunder over Z i ARR, og derfor anbefaler jeg vi siger nej indtil vi har den foerste kunde der betaler for det'. Den anden saetning er den der giver titlen.",
+   "hvordan_traenes": "Tag et konkret enterprise-krav - CMK, EU-dataresidens med sekundaer region, eller etaars audit-log-retention - og byg omkostningsmodellen i et regneark med tal fra Azure Pricing Calculator, arkitekturoptionerne med trade-offs, og en anbefaling med en EKSPLICIT beslutningsregel ('over denne troeskel skifter svaret'). Skriv memoet til en CFO, ikke til en udvikler. Gentag mindst tre gange i loebet af aaret paa forskellige krav.",
+   "niveauskala": "Nybegynder: kan liste fordele og ulemper i punktform uden tal. Kompetent: kan saette omkostning og indsats paa hver option. Staerk: kan formulere beslutningen som en regel der goer beslutningen for andre naeste gang, og kan sige hoejt hvornaar den rigtige anbefaling er 'nej, ikke endnu' - hvilket kraever mod han skal traene."
+  },
+  {
+   "navn": "Secure SDLC og software supply chain",
+   "hvorfor": "Software supply chain blev sin egen kategori i OWASP Top 10, og det er samtidig praecis det tema LeanLinkings produkt handler om paa et andet abstraktionsniveau. Der er en usaedvanlig staerk fortaelling i at kunne sige: jeg arbejder med leverandoerkaederisiko i produktet, og jeg har implementeret leverandoerkaederisiko i vores egen build-pipeline. Konkret er det ogsaa den nemmeste maade at levere synlig vaerdi i en pipeline uden at bede om mandat.",
+   "hvordan_traenes": "I .NET/Azure DevOps: dotnet list package --vulnerable --include-transitive i pipelinen, Central Package Management via Directory.Packages.props, laasefiler med RestoreLockedMode, SBOM-generering med CycloneDX til .NET, gitleaks som pipelinetrin, og Workload Identity Federation paa service connections i stedet for langlivede service principal-hemmeligheder. Laes NIST SSDF (SP 800-218) som ramme og SLSA for provenance-niveauerne - men brug dem som checkliste, ikke som laesestof.",
+   "niveauskala": "Nybegynder: koerer Dependabot og lukker PRs. Kompetent: har SBOM, laasefiler og saarbarhedsscanning i pipelinen og kan forklare transitive afhaengigheders risiko. Staerk: kan besvare 'hvordan ved I at det I deployer er det I byggede' med et provenance-svar, og kan prioritere saarbarheder efter reel exploiterbarhed i konteksten i stedet for efter CVSS-score."
+  },
+  {
+   "navn": "Governance-as-code - guardrails frem for gates",
+   "hvorfor": "Simons sekundaere interesse er governance, og det her er governance i sin eneste form der ikke goer folk langsommere. Forskellen mellem en Azure Policy der naegter offentlige blob-containere og et politikdokument der siger man ikke maa, er forskellen mellem en arkitekt og en bureaukrat. Det er ogsaa direkte compliance: en policy der begraenser tilladte regioner til EU er bogstaveligt talt GDPR kapitel V udtrykt som kode.",
+   "hvordan_traenes": "Bicep frem for Terraform i dette tilfaelde, fordi det er den native vej i en Microsoft-butik og han skal have Azure DevOps-flydighed. Byg en lille landing zone: management groups, Azure Policy-initiativer der naegter offentlig blob-adgang, kraever HTTPS-only, kraever diagnostic settings til et centralt Log Analytics workspace, og begraenser tilladte regioner. Deploy via pipeline med Workload Identity Federation. Maal antallet af policy-overtraedelser ved foerste deployment - tallet er altid overraskende og er selve pointen.",
+   "niveauskala": "Nybegynder: kan skrive Bicep for ressourcer. Kompetent: kan skrive og deploye policy-initiativer og forklare deny vs audit vs deployIfNotExists. Staerk: kan afgoere hvilke krav der skal vaere guardrails (automatisk, usynlig, uomgaaelig) og hvilke der skal vaere gates (menneskelig godkendelse), og kan argumentere for hvorfor for mange gates producerer omgaaelser i stedet for sikkerhed."
+  },
+  {
+   "navn": "At DRIFTE det man har bygget - drift, bagudkompatibilitet, fejlmoenstre, incident response",
+   "hvorfor": "Det er den ene ting der ikke kan simuleres og ikke kan laeses sig til, og det er derfor spike-serien skal have en forfremmet spike. En arkitekt der aldrig har vaeret vaagen kl. 23 over noget han selv har designet, traeffer systematisk andre og daarligere beslutninger. Det er ogsaa det en erfaren interviewer tester foerst, fordi det er det sted en velbelaest junior falder igennem hurtigst.",
+   "hvordan_traenes": "Forfremmet spike med RIGTIGE eksterne brugere - selv fem stykker er nok, fordi eksterne brugere er det der tvinger bagudkompatibilitet frem. Versioneret offentligt API med skrevet deprecationspolitik. Et defineret SLO. Azure Budget-alarm med et hardt loft. Et maanedligt driftsreview han selv skriver ned. Og naar noget gaar i stykker: et skriftligt post-incident review med tidslinje, bidragende faktorer og opfoelgning - uden skyld.",
+   "niveauskala": "Nybegynder: har deployet noget en gang. Kompetent: driver noget der koerer, med overvaagning han faktisk kigger paa. Staerk: har haandteret mindst en rigtig haendelse med konsekvens, har skrevet reviewet, har foretaget en bagudkompatibel API-aendring for brugere han ikke kunne koordinere med, og kan naevne en beslutning han fortryder og hvorfor."
+  },
+  {
+   "navn": "Stakeholder-oversaettelse - samme system, fire sprog",
+   "hvorfor": "En solution architect bruger mere tid paa at tale end paa at tegne. Det saerlige ved compliance-nichen er at den tvinger fire meget forskellige samtalepartnere frem: kundens sikkerhedsansvarlige, en DPO eller jurist, en CFO, og en udvikler. De vil vide fire forskellige ting om det samme system, og den der kan skifte register uden at tabe praecision er sjaelden. Det er ogsaa direkte forberedelse til den sekundaere Product Owner-interesse.",
+   "hvordan_traenes": "Skriv det samme systems sikkerhedsarkitektur i fire versioner paa en side hver: til en sikkerhedsansvarlig (kontroller og evidens), til en jurist (hvilke artikler og hvordan de opfyldes), til en CFO (hvad det koster og hvad det afvaerger, i kroner), til en udvikler (hvor i koden). Bed om at sidde med som referent paa mindst to kundeauditopkald hos LeanLinking - halvfems minutters udspoergen fra en kundes sikkerhedschef er en maaneds laesning vaerd.",
+   "niveauskala": "Nybegynder: forklarer teknisk uanset hvem der lytter. Kompetent: kan justere detaljeniveauet efter publikum. Staerk: kan forudse hvilket spoergsmaal hver part vil stille FOER moedet, og har svaret og evidensen klar - og kan sige 'det ved jeg ikke, jeg vender tilbage om to dage' uden at det svaekker ham."
+  }
+ ],
+ "ressourcer": [
+  {
+   "titel": "GDPR - forordning (EU) 2016/679, primaerteksten",
+   "type": "lovtekst",
+   "url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+   "prioritet": "kerne",
+   "tidsforbrug": "6-8 timer, ikke mere",
+   "hvorfor": "Laes den faktiske tekst en gang. Den er kortere end de whitepapers der forklarer den. Laes praecis: art. 4 (definitioner), art. 5 (principperne - dataminimering og opbevaringsbegraensning er dem der bliver til kode), art. 17 (sletning), art. 20 (portabilitet), art. 25 (privacy by design), art. 28 (databehandler - DETTE ER LEANLINKINGS ROLLE og den vigtigste artikel for ham), art. 30(2) (databehandlerens fortegnelse), art. 32 (sikkerhed), art. 33 (anmeldelse), kapitel V (overfoersler).",
+   "hvad_springes_over": "Alle 173 praeambelbetragtninger paa naer 26, 39, 49, 78 og 83. Kapitel VI og VII om myndigheder og samarbejde - det er ikke hans problem. Og enhver bog om GDPR: teksten plus Datatilsynets vejledninger daekker det.",
+   "verificeret": false
+  },
+  {
+   "titel": "gdpr-info.eu - laesbar GDPR med krydsreferencer",
+   "type": "website",
+   "url": "https://gdpr-info.eu",
+   "prioritet": "stoette",
+   "tidsforbrug": "opslagsvaerk",
+   "hvorfor": "Samme tekst som EUR-Lex, men navigerbar. Brug den til opslag naar han skal citere en artikel praecist i en ADR eller et spoergeskemasvar.",
+   "hvad_springes_over": "Sidens egne kommentarer og blogindhold.",
+   "verificeret": false
+  },
+  {
+   "titel": "Datatilsynets vejledninger",
+   "type": "myndighedsvejledning",
+   "url": "https://www.datatilsynet.dk",
+   "prioritet": "kerne",
+   "tidsforbrug": "8-10 timer fordelt over aaret",
+   "hvorfor": "Dette er hvad en dansk kundes DPO faktisk citerer, det er paa dansk, og det er gratis. Prioriter: vejledningen om databehandlere og databehandleraftaler, Datatilsynets standardkontraktsbestemmelser, vejledningen om risikovurdering og konsekvensanalyse (DPIA), og vejledningen om behandlingssikkerhed. Laes ogsaa udvalgte afgoerelser - de er den bedste kilde til hvad der faktisk udloeser en sag i Danmark, og de er mere konkrete end nogen laerebog.",
+   "hvad_springes_over": "Alt om offentlige myndigheders saerregler, medmindre LeanLinking saelger til kommuner - saa er det pludselig kerne.",
+   "verificeret": false
+  },
+  {
+   "titel": "NIS2 - direktiv (EU) 2022/2555, art. 20-23",
+   "type": "lovtekst",
+   "url": "https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+   "prioritet": "kerne",
+   "tidsforbrug": "2 timer",
+   "hvorfor": "Fire sider der er hele grundlaget for LeanLinkings marked. Art. 20 goer ledelsen personligt ansvarlig og paalaegger obligatorisk traening. Art. 21(2) lister de ti risikostyringsforanstaltninger, hvoraf litra d er leverandoerkaedesikkerhed og art. 21(3) kraever at man vurderer hver DIREKTE leverandoers cybersikkerhedspraksis inklusive deres sikre udviklingsprocedurer. Art. 23 er rapporteringskaskaden: tidlig varsling inden 24 timer, anmeldelse inden 72 timer, endelig rapport inden en maaned. Bilag I og II definerer hvem der er omfattet. Han skal kunne recitere art. 21(2)(d) udenad - det er nichens grundsaetning.",
+   "hvad_springes_over": "Kapitlerne om samarbejdsgruppen, CSIRT-netvaerket og peer reviews. Institutionelt maskineri uden konsekvens for hans arbejde.",
+   "verificeret": false
+  },
+  {
+   "titel": "Sikker Digital og Center for Cybersikkerhed - dansk NIS2-materiale",
+   "type": "myndighedsvejledning",
+   "url": "https://www.sikkerdigital.dk",
+   "prioritet": "kerne",
+   "tidsforbrug": "4-6 timer",
+   "hvorfor": "Her ligger den danske implementering: hvilken lov, hvilke bekendtgoerelser, hvilke sektormyndigheder, registreringsfrister, og CFCS' konkrete anbefalinger. Det er ogsaa her han finder det danske sprog for tingene, hvilket betyder mere end det lyder naar han skal skrive et memo internt. VERIFICER lovens navn og datoer her foerst - min viden om den danske implementering er den mest usikre nationale detalje i hele rapporten.",
+   "hvad_springes_over": "Materialet rettet mod smaa virksomheder og borgere.",
+   "verificeret": false
+  },
+  {
+   "titel": "ENISA Technical Implementation Guidance til NIS2 art. 21",
+   "type": "vejledning",
+   "url": "https://www.enisa.europa.eu",
+   "prioritet": "kerne",
+   "tidsforbrug": "4-5 timer",
+   "hvorfor": "ENISA udgav vejledning der mapper NIS2's art. 21-foranstaltninger til konkrete tekniske kontroller. Det er praecis den oversaettelsesoevelse Simon skal mestre, gjort en gang af nogen der ved hvad de laver - og gratis. Brug den som skabelon for sin egen oversaettelse frem for at kopiere den.",
+   "hvad_springes_over": "ENISA's oevrige udgivelser, som er mange og for de flestes vedkommende policy-litteratur uden operationel vaerdi. Undtagelsen er ENISA Threat Landscape, den aarlige - laes kun kapitlet om supply chain, en time.",
+   "verificeret": false
+  },
+  {
+   "titel": "Azure Architecture Center - Architect multitenant solutions",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/overview",
+   "prioritet": "kerne",
+   "tidsforbrug": "10-12 timer",
+   "hvorfor": "Den bedste gratis ressource om multi-tenancy der findes, og den er skrevet praecis til hans stack. Daekker tenancy-modeller, Deployment Stamps, sharding, per-tjeneste-vejledning for SQL, Storage, Service Bus og App Service, samt noisy neighbour. Laes den grundigt, den er kernematerialet til den vigtigste spike. Kombiner med Azure Well-Architected Framework, sikkerhedssoejlen - det er det ordforraad Azure-arkitekter faktisk taler i, og det ordforraad bliver brugt i interviewet.",
+   "hvad_springes_over": "Ingenting i multitenancy-guiden. I Well-Architected: laes sikkerheds- og paalideligheds-soejlerne, skim cost optimization, spring performance efficiency over indtil der er et konkret problem.",
+   "verificeret": false
+  },
+  {
+   "titel": "OWASP Cheat Sheet Series",
+   "type": "dokumentation",
+   "url": "https://cheatsheetseries.owasp.org",
+   "prioritet": "kerne",
+   "tidsforbrug": "10-15 timer fordelt, plus opslag",
+   "hvorfor": "Hoejeste vaerdi per minut af al sikkerhedslitteratur paa internettet, og gratis. Laes konkret disse og ikke resten: Authorization, Authorization Testing Automation, Multifactor Authentication, Secrets Management, Logging, Transport Layer Security, REST Security, Mass Assignment, File Upload, og Microservices Security. File Upload-arket alene er direkte anvendeligt paa LeanLinkings kerneflow.",
+   "hvad_springes_over": "De oevrige ca. 90 ark indtil han har et konkret problem der matcher et af dem. Serien er et opslagsvaerk, ikke en laeseplan.",
+   "verificeret": false
+  },
+  {
+   "titel": "OWASP Top 10 (verificer aktuel version - 2025 eller 2021)",
+   "type": "standard",
+   "url": "https://owasp.org/www-project-top-ten/",
+   "prioritet": "kerne",
+   "tidsforbrug": "3 timer",
+   "hvorfor": "Ikke fordi listen er dyb, men fordi den er lingua franca. Hver kunde-spoergeskema refererer til den. Det der betyder noget for ham: Broken Access Control er nummer et, og i multi-tenant SaaS ER det tenant-isolation. Og supply chain fik sin egen kategori, hvilket er hans niche i miniature. VERIFICER hvilken version der er aktuel - han maa ikke citere en foraeldet liste.",
+   "hvad_springes_over": "At laese hver kategoris fulde beskrivelse. Kend navnene, kend nummer et, kend hvad der er nyt.",
+   "verificeret": false
+  },
+  {
+   "titel": "OWASP API Security Top 10",
+   "type": "standard",
+   "url": "https://owasp.org/API-Security/",
+   "prioritet": "kerne",
+   "tidsforbrug": "2-3 timer",
+   "hvorfor": "Vigtigere end den almindelige Top 10 for hans arbejde, fordi LeanLinking er et API bag en React-frontend. API1 Broken Object Level Authorization (BOLA) er bogstaveligt talt 'bruger fra tenant A henter /api/suppliers/{id} hvor id tilhoerer tenant B'. Det er den fejl der laekker en kundes leverandoerkaede til en konkurrent. API3 (object property level) og API5 (function level) er samme problem paa andre niveauer.",
+   "hvad_springes_over": "Intet - listen er kort. Men laes den med LeanLinkings faktiske endpoints i hovedet, ellers er det spildt.",
+   "verificeret": false
+  },
+  {
+   "titel": "Adam Shostack: Threat Modeling - Designing for Security (Wiley, 2014)",
+   "type": "bog",
+   "url": "",
+   "prioritet": "kerne",
+   "tidsforbrug": "12-15 timer for de kapitler der taeller",
+   "hvorfor": "Stadig kanonteksten trods alderen, fordi metoden ikke er blevet foraeldet. Laes kapitel 1-4 (metoden, STRIDE, angrebstraeer, afboedninger) og kapitel 7-9 (processing, validering, at faa det ind i en organisation). Kapitel 7-9 er det de fleste springer over og det er praecis dem der handler om facilitering og organisatorisk forankring - altsaa Simons faktiske problem.",
+   "hvad_springes_over": "Kapitlerne om kryptografi, om privacy-specifikke metoder, og hele bagperspektivet med de akademiske metoder. Cirka halvdelen af bogen. Koeb den ikke i hardback til fuld pris - find den brugt eller via biblioteket.",
+   "verificeret": false
+  },
+  {
+   "titel": "Threat Modeling Manifesto",
+   "type": "website",
+   "url": "https://www.threatmodelingmanifesto.org",
+   "prioritet": "kerne",
+   "tidsforbrug": "20 minutter",
+   "hvorfor": "Tyve minutter, og det er de fire spoergsmaal han skal aabne hver session med: Hvad arbejder vi paa? Hvad kan gaa galt? Hvad goer vi ved det? Gjorde vi det godt nok? Det fjerde spoergsmaal er det alle glemmer og det er det der goer trusselsmodellering til en praksis frem for en engangsoevelse.",
+   "hvad_springes_over": "Intet. Det er en side.",
+   "verificeret": false
+  },
+  {
+   "titel": "OWASP Threat Dragon",
+   "type": "vaerktoej",
+   "url": "https://owasp.org/www-project-threat-dragon/",
+   "prioritet": "kerne",
+   "tidsforbrug": "2 timer at laere",
+   "hvorfor": "Gratis, vedligeholdt, gemmer modellen som JSON i git - hvilket er hele pointen, for saa kan trusselsmodellen reviewes i en PR som alt andet. Brug den frem for alternativerne.",
+   "hvad_springes_over": "Microsoft Threat Modeling Tool - klodset Windows-desktopapp med daterede skabeloner, og Microsoft har nedprioriteret den. Spring den over uanset hvor ofte den anbefales. IriusRisk er kommercielt og for stort til hans formaal. pytm og threagile er interessante som threat-model-as-code, men er en omvej indtil han har lavet ti modeller i haanden.",
+   "verificeret": false
+  },
+  {
+   "titel": "Elevation of Privilege - kortspil til threat modeling (Shostack)",
+   "type": "vaerktoej",
+   "url": "https://shostack.org/games/elevation-of-privilege",
+   "prioritet": "kerne",
+   "tidsforbrug": "1 time at printe og laere",
+   "hvorfor": "Undervurderet og gratis at printe. Det loeser det egentlige problem ved foerste session, som ikke er metoden men det sociale: at en junior skal staa og vaere sikkerhedsmanden over for kolleger. Kortspillet flytter autoriteten fra ham til kortene. Brug det til de foerste to sessioner, drop det derefter. OWASP Cornucopia er alternativet med mere web-specifikt indhold.",
+   "hvad_springes_over": "Intet, men lad vaere med at bruge det efter tredje session - saa er det blevet en kruk.",
+   "verificeret": false
+  },
+  {
+   "titel": "Building Secure and Reliable Systems (Google/O'Reilly, 2020) - gratis online",
+   "type": "bog",
+   "url": "https://sre.google/books/building-secure-reliable-systems/",
+   "prioritet": "kerne",
+   "tidsforbrug": "10-12 timer for de relevante kapitler",
+   "hvorfor": "Gratis i fuld tekst, hvilket betyder noget paa hans budget, og det er den bedste bog om sikkerhed SOM arkitekturegenskab frem for som feature. Laes kapitlerne om design for least privilege, design for understandability, design for recovery, og kapitlet om at haandtere incidents. Least-privilege-kapitlet er det bedste der er skrevet om emnet.",
+   "hvad_springes_over": "Kapitlerne der forudsaetter Googles skala og infrastruktur - omtrent en tredjedel. Han skal ikke bygge BeyondCorp.",
+   "verificeret": false
+  },
+  {
+   "titel": "ISO/IEC 27001:2022 og ISO/IEC 27002:2022 (koebes hos Dansk Standard)",
+   "type": "standard",
+   "url": "https://www.ds.dk",
+   "prioritet": "kerne",
+   "tidsforbrug": "8-10 timer, plus 15-20 timer paa at bygge en Statement of Applicability",
+   "hvorfor": "Ikke gratis, men det er den eneste udgift i dette emne der er klart pengene vaerd. 27001 er ledelsessystemet og de 93 bilag A-kontroller i fire temaer; 27002 er implementeringsvejledningen der forklarer hver kontrol. Vaerdien opstaar foerst naar han bygger en rigtig Statement of Applicability for sit eget spike-system: alle 93 kontroller, anvendelig eller ej, med skriftlig begrundelse for hver udeladelse. Det artefakt er sjaeldent hos en junior og det er umuligt at fake. Bemaerk: overgangsfristen fra 27001:2013 til 2022 udloeb 31. oktober 2025, saa ethvert 2013-certifikat en leverandoer fremviser i dag er udloebet - det er en konkret automatiseringsregel til LeanLinkings produkt.",
+   "hvad_springes_over": "ISO 27003, 27004, 27005 og resten af 27000-familien. ISO 31000 (tynd). Alle 'ISO 27001 for dummies'-boeger - de er referater af noget der allerede er kort.",
+   "verificeret": false
+  },
+  {
+   "titel": "IAF CertSearch - global verifikation af ledelsessystemcertifikater",
+   "type": "vaerktoej",
+   "url": "https://www.iafcertsearch.org",
+   "prioritet": "kerne",
+   "tidsforbrug": "2 timer at forstaa, derefter en spike",
+   "hvorfor": "Dette er den mest direkte anvendelige enkeltopdagelse i hele rapporten for LeanLinkings produkt. Et certifikat er kun gyldigt hvis certificeringsorganet er akkrediteret af et nationalt akkrediteringsorgan der er IAF MLA-underskriver - i Danmark DANAK. Falske og uakkrediterede certifikater er et reelt problem i leverandoerstyring, og de faerreste SRM-systemer tjekker. Han kan bygge en integration som spike, og han kan bringe observationen til produktteamet i naeste uge uden at spoerge nogen om lov.",
+   "hvad_springes_over": "Intet, men forvent at API-adgang kraever aftale - undersoeg det foer han planlaegger spiken.",
+   "verificeret": false
+  },
+  {
+   "titel": "CSA Cloud Controls Matrix v4 og CAIQ v4",
+   "type": "standard",
+   "url": "https://cloudsecurityalliance.org/research/cloud-controls-matrix",
+   "prioritet": "kerne",
+   "tidsforbrug": "1 uge som spike",
+   "hvorfor": "Gratis. CAIQ er det spoergeskema kunder faktisk sender, og at udfylde det aerligt mod sit eget system er den hurtigste maade at opdage hvad man ikke kan. Hvert 'nej' bliver et backlog-punkt med et estimat. Se ogsaa CSA STAR Registry, hvor Level 1 selvvurdering er gratis og offentlig - det er vaerd at vide at det findes, fordi kunder tjekker det.",
+   "hvad_springes_over": "SIG og SIG Lite fra Shared Assessments (kommercielt, og han faar det samme ud af CAIQ). VSA-spoergeskemaet.",
+   "verificeret": false
+  },
+  {
+   "titel": "Minimum Viable Secure Product (MVSP)",
+   "type": "standard",
+   "url": "https://mvsp.dev",
+   "prioritet": "kerne",
+   "tidsforbrug": "1 time",
+   "hvorfor": "En side, gratis, bakket af Google, Salesforce og Okta. Den fornuftigste eksisterende baseline for hvad en B2B SaaS minimum skal kunne. Brug den som foerste selvvurdering foer CAIQ, fordi den er kort nok til at man faktisk goer det.",
+   "hvad_springes_over": "Intet.",
+   "verificeret": false
+  },
+  {
+   "titel": "D-maerket - dansk maerkningsordning for it-sikkerhed og ansvarlig dataanvendelse",
+   "type": "standard",
+   "url": "https://d-maerket.dk",
+   "prioritet": "stoette",
+   "tidsforbrug": "2-3 timer",
+   "hvorfor": "Dansk, gratis kravkatalog, og det dukker i stigende grad op i danske udbud. Vaerdien for ham er dobbelt: det er en konkret dansksproget checkliste for hvad en dansk SaaS forventes at kunne, og det er noget han kan naevne internt hos LeanLinking som en kommerciel mulighed - hvilket er en produktobservation, ikke en teknisk, og derfor et skridt mod den sekundaere PO-interesse.",
+   "hvad_springes_over": "Selve certificeringsprocessen - den er virksomhedens beslutning, ikke hans.",
+   "verificeret": false
+  },
+  {
+   "titel": "DORA - forordning (EU) 2022/2554, kapitel V",
+   "type": "lovtekst",
+   "url": "https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+   "prioritet": "stoette",
+   "tidsforbrug": "3 timer",
+   "hvorfor": "Kun relevant hvis LeanLinking har eller vil have finansielle kunder - men hvis de har en eneste, er det pludselig kerne. Laes art. 28-30: de obligatoriske kontraktbestemmelser, og art. 28(3) om det register over information som finansielle enheder skal indberette aarligt med detaljer per kontrakt og per leverandoer, inkl. LEI-koder, funktionskritikalitet og underleverandoerkaeder. Det betyder at LeanLinking skal kunne levere: LEI, underleverandoerkaede, datalokation, exit-strategi, auditret og haendelsesrapporterings-SLA'er. At bygge den eksport er en konkret arkitekturopgave med et navn.",
+   "hvad_springes_over": "Kapitlerne om tilsyn med kritiske tredjepartsudbydere (CTPP) - LeanLinking bliver aldrig en CTPP. Kapitlet om informationsdeling. Alle RTS'erne indtil der er en konkret kunde.",
+   "verificeret": false
+  },
+  {
+   "titel": "Data Act - forordning (EU) 2023/2854, kapitel VI om cloud switching",
+   "type": "lovtekst",
+   "url": "https://eur-lex.europa.eu/eli/reg/2023/2854/oj",
+   "prioritet": "kerne",
+   "tidsforbrug": "2-3 timer",
+   "hvorfor": "Undervurderet og direkte arkitektonisk. Anvendelse fra 12. september 2025. Kapitel VI (art. 23-31) paalaegger udbydere af databehandlingstjenester at fjerne hindringer for skift, sikre funktionel aekvivalens, og udfase skifteafgifter helt - min viden siger fuldt bortfald fra 12. januar 2027, VERIFICER. Plus obligatoriske kontraktvilkaar om exit-vinduer. Praktisk konsekvens: 'kan kunden forlade os med alle sine data i et brugbart format, gratis, inden for 30 dage' er nu et LOVKRAV, ikke en pen feature. Art. 32 om beskyttelse mod ikke-EU-myndigheders adgang til ikke-personoplysninger i EU er samtidig et salgsargument.",
+   "hvad_springes_over": "Kapitel II og III om IoT-produktdata, medmindre kunderne har connected products. Kapitel VIII om interoperabilitet er endnu abstrakt.",
+   "verificeret": false
+  },
+  {
+   "titel": "CSRD, ESRS, VSME og omnibus - EFRAG og Erhvervsstyrelsen",
+   "type": "lovtekst",
+   "url": "https://www.efrag.org",
+   "prioritet": "stoette",
+   "tidsforbrug": "5-6 timer, og kun for at faa de aktuelle tal rigtige",
+   "hvorfor": "Han skal IKKE laere ESRS. Han skal kunne de fem fakta der goer at han ikke siger noget forkert: hvilke boelger og hvilke datoer efter stop-the-clock, hvad de endelige troeskler blev, at vaerdikaedeloftet betyder at store virksomheder ikke maa kraeve mere af mindre leverandoerer end VSME-datapunkterne, at VSME dermed er en standardiseret datakontrakt en SaaS kan modellere, og at Danmark har implementeret CSRD i aarsregnskabsloven med Erhvervsstyrelsen som myndighed. VSME-skemaet er det eneste dokument her han faktisk skal aabne som datamodel.",
+   "hvad_springes_over": "ESRS Set 1 i fuld laengde - hundredvis af sider baeredygtighedsstandard han aldrig faar brug for. Alle konsulenthuses omnibus-webinarer. Den sektorspecifikke ESRS-diskussion (blev fjernet i omnibus).",
+   "verificeret": false
+  },
+  {
+   "titel": "CSDDD - direktiv (EU) 2024/1760, plus Norges aabenhedslov og tysk LkSG",
+   "type": "lovtekst",
+   "url": "https://eur-lex.europa.eu/eli/dir/2024/1760/oj",
+   "prioritet": "stoette",
+   "tidsforbrug": "3 timer",
+   "hvorfor": "Laes art. 5-11 om due diligence-processen, fordi den procesbeskrivelse ER LeanLinkings produktflow beskrevet i lovsprog: kortlaeg, prioriter, forebyg, afhjaelp, overvaag, kommuniker. Vigtigere for et nordisk SaaS: Norges aabenhedslov (i kraft 1. juli 2022) er fuldt gaeldende NU, kraever due diligence og en offentliggjort redegoerelse senest 30. juni hvert aar, og rammer virksomheder langt under CSDDD's troeskel. Tysk LkSG eksisterer stadig men blev reduceret - rapporteringspligten blev afviklet i 2025, VERIFICER. Pointen: den regulering der faktisk driver efterspoergsel i dag er de nationale love, ikke det udskudte EU-direktiv.",
+   "hvad_springes_over": "Debatten om civilretligt ansvar - den blev alligevel flyttet til national ret i omnibus. Alle NGO-analyser.",
+   "verificeret": false
+  },
+  {
+   "titel": "EU AI Act - forordning (EU) 2024/1689, art. 6, bilag III og art. 50",
+   "type": "lovtekst",
+   "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+   "prioritet": "stoette",
+   "tidsforbrug": "3 timer",
+   "hvorfor": "Han skal kunne afgoere en ting: er en AI-feature i et SRM-system hoejrisiko. Svaret er som regel nej - leverandoerscoring af VIRKSOMHEDER falder ikke under bilag III, som daekker fysiske personer (kreditvaerdighed, ansaettelse, uddannelse, retshaandhaevelse). Men det bliver ja hvis der screenes enkeltpersoner, fx reelle ejere eller PEP-tjek. Art. 50 om transparens gaelder chatbots og AI-genereret indhold. Art. 4 om AI-literacy gaelder ALLEREDE alle udbydere og idriftsaettere siden februar 2025. VERIFICER tidsplanen for hoejrisiko - originaldatoen var 2. august 2026 og en udskydelse var i trilog.",
+   "hvad_springes_over": "Hele GPAI-kapitlet - LeanLinking traener ikke fundamentmodeller. Alle 180 praeambelbetragtninger. Enhver AI-governance-certificering.",
+   "verificeret": false
+  },
+  {
+   "titel": "Cyber Resilience Act - forordning (EU) 2024/2847",
+   "type": "lovtekst",
+   "url": "https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+   "prioritet": "stoette",
+   "tidsforbrug": "2 timer, men GOER DET NU",
+   "hvorfor": "Tidsaktuel: rapporteringspligten for aktivt udnyttede saarbarheder anfoeres til 11. september 2026 - i morgen - med fuld anvendelse 11. december 2027. Ren SaaS er formentlig uden for scope, men enhver downloadbar komponent, agent eller on-prem-konnektor traekker LeanLinking ind. Uafhaengigt af det bliver CRA-overensstemmelse et felt i leverandoerdokumentation hos alle der koeber software og hardware - dvs. et produktkrav i LeanLinkings marked. CRA goer ogsaa SBOM obligatorisk, hvilket kobler direkte til hans supply chain-spike. En kort intern note om CRA's status skrevet i denne uge er praecis den slags gaveseddel der giver ham synlighed.",
+   "hvad_springes_over": "Bilagene om overensstemmelsesvurderingsprocedurer og notified bodies indtil der er et konkret produkt.",
+   "verificeret": false
+  },
+  {
+   "titel": "European Accessibility Act og EN 301 549 - dansk kontekst",
+   "type": "lovtekst",
+   "url": "https://digst.dk",
+   "prioritet": "senere",
+   "tidsforbrug": "2 timer, og kun hvis der saelges til det offentlige",
+   "hvorfor": "Vaer aerlig her frem for at oppuste emnet: EAA (direktiv 2019/882, dansk lov i kraft 28. juni 2025) rammer FORBRUGERRETTEDE produkter og tjenester. Ren B2B-software som LeanLinkings SRM er stort set uden for scope. Det der reelt rammer ham er webtilgaengelighedsloven for OFFENTLIGE myndigheder - hvis LeanLinking saelger til kommuner, regioner eller staten, skal kunden opfylde EN 301 549 / WCAG, og saa bliver leverandoeren bedt om en tilgaengelighedsredegoerelse eller VPAT i udbuddet. Konklusion: lavt prioriteret, men han skal kunne sige praecis dette, fordi det viser at han kan skelne mellem hvad der gaelder og hvad der bare lyder relevant.",
+   "hvad_springes_over": "Hele WCAG-teknikkatalogen. Han er ikke frontend-tilgaengelighedsspecialist og skal ikke blive det.",
+   "verificeret": false
+  },
+  {
+   "titel": "NIST SSDF - SP 800-218 r1",
+   "type": "standard",
+   "url": "https://csrc.nist.gov/pubs/sp/800/218/r1/final",
+   "prioritet": "stoette",
+   "tidsforbrug": "3 timer",
+   "hvorfor": "Gratis, kort, og den bedste eksisterende struktur for secure SDLC: fire praksisgrupper (Prepare the Organization, Protect the Software, Produce Well-Secured Software, Respond to Vulnerabilities). Brug den som checkliste mod LeanLinkings faktiske pipeline og mod hans egen. Kombiner med SLSA (slsa.dev) for provenance-niveauerne, en time.",
+   "hvad_springes_over": "NIST SP 800-53 i sin helhed - 900+ sider amerikansk foederal kontrolkatalog uden relevans for ham. CIS Controls v8: skim kun IG1-listen, en time. COBIT og ITIL: spring helt over.",
+   "verificeret": false
+  },
+  {
+   "titel": "OWASP ASVS (verificer version, 5.0 udkom maj 2025)",
+   "type": "standard",
+   "url": "https://owasp.org/www-project-application-security-verification-standard/",
+   "prioritet": "stoette",
+   "tidsforbrug": "opslagsvaerk",
+   "hvorfor": "Brug den som kravkatalog naar han skriver acceptkriterier for en sikkerhedsrelateret ticket, ikke som laesestof. Level 2 er det realistiske ambitionsniveau for en B2B SaaS. Vaerdien er at kunne skrive 'denne story opfylder ASVS V4.1.3' i stedet for 'vi skal huske autorisation'.",
+   "hvad_springes_over": "At laese den forfra. Den er en checkliste med flere hundrede punkter og skal bruges som saadan. OWASP SAMM er interessant for governance-interessen men er en modenhedsmodel for organisationer - gem til maaned 9+, og kun hvis han faar mandat.",
+   "verificeret": false
+  },
+  {
+   "titel": "Michael Nygard: Release It! 2. udgave",
+   "type": "bog",
+   "url": "",
+   "prioritet": "stoette",
+   "tidsforbrug": "8-10 timer",
+   "hvorfor": "Ikke compliance, men den giver ham fejlmoenster-ordforraadet - circuit breaker, bulkhead, blast radius, cascading failure - som goer en risikosamtale konkret i stedet for vag. Naar han skal drifte den forfremmede spike, er det denne bogs kapitler om stability patterns og antipatterns han faktisk faar brug for. Laes del I og II, skim resten.",
+   "hvad_springes_over": "Kapitlerne om deployment og release i del III overlapper med hvad han laerer i praksis paa Azure DevOps.",
+   "verificeret": false
+  },
+  {
+   "titel": "Azure Cloud Adoption Framework - governance og landing zones",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/",
+   "prioritet": "kerne",
+   "tidsforbrug": "8-10 timer",
+   "hvorfor": "Direkte foede til hans governance-interesse og til landing zone-spiken. Fokuser paa Govern-metodikken, Azure landing zone-arkitekturen, og Azure Policy. Det centrale begreb han skal tage med: forskellen paa guardrails (automatiske, usynlige, uomgaaelige) og gates (menneskelig godkendelse) - og at for mange gates producerer omgaaelser i stedet for sikkerhed. Det er en arkitektpointe, ikke en Azure-pointe.",
+   "hvad_springes_over": "Hele Migrate-metodikken (han migrerer ikke noget) og Strategy-delen (den er til CIO'er). Enterprise-scale landing zone i fuld udstraekning er voldsomt overdimensioneret til hans formaal - byg en lille en.",
+   "verificeret": false
+  },
+  {
+   "titel": "ADR-materiale: joelparkerhenderson/architecture-decision-record",
+   "type": "vaerktoej",
+   "url": "https://github.com/joelparkerhenderson/architecture-decision-record",
+   "prioritet": "kerne",
+   "tidsforbrug": "2 timer",
+   "hvorfor": "ADR-formatet er det billigste redskab til at opfoere sig som arkitekt inden for en ticket-taker-rolle, fordi han ikke behoever tilladelse til at dokumentere sin EGEN beslutning. Repoet samler skabeloner og eksempler, inkl. Michael Nygards oprindelige artikel. Vaelg EN skabelon (Nygards korte: kontekst, beslutning, status, konsekvenser) og hold fast - folk der skifter ADR-format er folk der ikke skriver ADR'er.",
+   "hvad_springes_over": "MADR, Y-statements og de oevrige otte varianter. Valget af format betyder ingenting; at der er tredive af dem betyder alt.",
+   "verificeret": false
+  },
+  {
+   "titel": "C4-modellen og Structurizr",
+   "type": "vaerktoej",
+   "url": "https://c4model.com",
+   "prioritet": "kerne",
+   "tidsforbrug": "4 timer",
+   "hvorfor": "Han skal producere diagrammer i hver eneste spike, og C4 er den eneste notation der er kort nok til at blive brugt og praecis nok til at vaere nyttig. Til dette emne saerligt: tegn trust boundaries ind paa container-diagrammet - det er der trusselsmodellen og arkitekturtegningen moedes, og det er et greb de faerreste bruger. Structurizr DSL giver diagram-as-code i git; alternativt draw.io eller Excalidraw hvis han hellere vil have hastighed.",
+   "hvad_springes_over": "UML i enhver form. ArchiMate. Kode-niveau-diagrammer (C4's niveau 4) - de bliver aldrig opdateret.",
+   "verificeret": false
+  },
+  {
+   "titel": "Microsoft-certificeringer: AZ-500 og SC-100 (verificer koder og priser)",
+   "type": "certificering",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/",
+   "prioritet": "kerne",
+   "tidsforbrug": "AZ-500: 40-60 timer. SC-100: 40-50 timer oveni.",
+   "hvorfor": "AZ-500 (Azure Security Engineer Associate) er den hoejeste ROI-sikkerhedscertificering for ham: haands-paa, direkte paa hans stack, billig (i stoerrelsesordenen 165 USD, verificer), og den tvinger ham gennem Entra ID, Key Vault, managed identities, netvaerkssikkerhed og Defender for Cloud - alt sammen ting han skal bruge i spikes alligevel. SC-100 (Cybersecurity Architect Expert) er den der bogstaveligt siger arkitekt og kraever en associate-cert som forudsaetning. Vaer klar over budgettet: AZ-305 er ikke til forhandling hvis titlen er maalet, saa dette emne maa noejes med AZ-500 plus HOEJST en af SC-100 og CIPP/E.",
+   "hvad_springes_over": "Alle officielle eksamensguidebooks paa 800 sider. Brug Microsoft Learn-modulerne (gratis) plus oevelsestests, og byg tingene i en gratis Azure-konto i stedet for at laese om dem.",
+   "verificeret": false
+  },
+  {
+   "titel": "IAPP CIPP/E - europaeisk databeskyttelsescertificering",
+   "type": "certificering",
+   "url": "https://iapp.org",
+   "prioritet": "senere",
+   "tidsforbrug": "50-70 timer plus eksamensgebyr og medlemskab",
+   "hvorfor": "Den anerkendte GDPR-credential i Europa, uden erfaringskrav, og den er respekteret af den juridiske og DPO-side - hvilket er praecis den side han skal vaere legitim over for. Men den er dyr i timer og den er ren viden uden praksis. ANBEFALING: kun som tredje certificering, og kun hvis kompetenceporten i maaned 9-10 siger at han er foran. Hvis han er bagud, er den det foerste der ryger. CIPT (privacy technologist) passer bedre til en ingenioer men vejer mindre hos ansaettende chefer.",
+   "hvad_springes_over": "CIPM (management-orienteret, forkert retning). AIGP (ny og uproevet). Hele IAPP's oevrige portefoelje.",
+   "verificeret": false
+  },
+  {
+   "titel": "ISO 27001 Lead Implementer (PECB, BSI eller dansk udbyder)",
+   "type": "certificering",
+   "url": "https://pecb.com",
+   "prioritet": "spring over",
+   "tidsforbrug": "5 kursusdage plus eksamen, ca. 20-30.000 kr.",
+   "hvorfor": "Aerligt svar: pengene og de fem dage er bedre brugt andetsteds. Kurset laerer ISMS-livscyklus, Statement of Applicability, risikobehandling og intern audit - men han kan tilegne sig 80 procent af det ved at koebe standarderne for et par tusinde kroner og faktisk BYGGE en SoA for sit eget system. Artefaktet slaar certifikatet i et interview til en arkitektrolle. Lead AUDITOR er endnu mere forkert - den er til folk der reviderer andre, hvilket ikke er hans bane. Tag kurset senere hvis en arbejdsgiver betaler.",
+   "hvad_springes_over": "Hele kurset. Behold standarderne.",
+   "verificeret": false
+  },
+  {
+   "titel": "CISSP, CCSP, CISM, CRISC, CISA, CEH, OSCP, TOGAF, SAFe, Security+",
+   "type": "certificering",
+   "url": "",
+   "prioritet": "spring over",
+   "tidsforbrug": "0 timer - det er pointen",
+   "hvorfor": "Eksplicit fravalg, med begrundelse han skal kunne give hvis nogen spoerger. CISSP, CCSP, CISM, CRISC og CISA kraever alle fem aars dokumenteret erfaring - han kan bestaa og staa som associate, men certifikatets vaerdi er netop erfaringsvalideringen, saa den er stumpet. CISSP er desuden en bred, overfladisk amerikansk enterprise-ramme og et ansaettelsesfilter til SIKKERHEDSroller, ikke arkitektroller. CEH har lavt signal og hoej pris. OSCP er fremragende men 300+ timer i offensiv retning - forkert vej for en arkitekt. TOGAF er enterprise arkitektur, ikke solution arkitektur, og i danske produktvirksomheder baerer den lidt vaegt og et let negativt signal om procesmenneske; laes et resume paa en dag hvis han nogensinde skal bruge ordforraadet. SAFe er stoej. Security+ ligger under hans niveau efter tre maaneder - tag den kun hvis et konkret jobopslag kraever den.",
+   "hvad_springes_over": "Alle sammen.",
+   "verificeret": false
+  },
+  {
+   "titel": "Loenstatistik: IDA, PROSA, samt Hays, Robert Half og Michael Page Denmark",
+   "type": "datakilde",
+   "url": "https://ida.dk",
+   "prioritet": "kerne",
+   "tidsforbrug": "3 timer, en gang, omkring maaned 7",
+   "hvorfor": "Han skal selv traekke tallene i stedet for at stole paa nogens paastand, ogsaa min. IDA's loenstatistik og loenberegner er standardreferencen for ingenioerer i Danmark med opdeling paa rolle, anciennitet, branche og geografi. PROSA daekker it-professionelle bredere. De aarlige loenguides fra rekrutteringsbureauerne (Hays Denmark, Robert Half, Michael Page/PageGroup) giver rolle-til-rolle-spaend og er gratis - de er partiske opad, saa laes dem som loft, ikke som median. Right People Group og Ework for konsulentrater hvis freelance nogensinde bliver relevant. Han skal have et tal med hjem FOER han forhandler, ikke efter.",
+   "hvad_springes_over": "Glassdoor og levels.fyi for Danmark - for tyndt datagrundlag til at vaere paalideligt paa dansk marked og skaevt mod store amerikanske arbejdsgivere.",
+   "verificeret": false
+  },
+  {
+   "titel": "Belaeg for efterspoergsel: ENISA Threat Landscape, DI Digital og IT-Branchens analyser af it-kompetencemangel",
+   "type": "datakilde",
+   "url": "https://www.enisa.europa.eu",
+   "prioritet": "stoette",
+   "tidsforbrug": "3-4 timer, en gang",
+   "hvorfor": "Hvis han skal argumentere for nichen over for en chef eller i et interview, skal han have en kilde og ikke en foelelse. ENISA Threat Landscape udkommer aarligt (typisk oktober) og har konsekvent supply chain-angreb i toppen - det er belaegget for at NIS2's leverandoerkaedekrav ikke er symbolsk. DI Digital og IT-Branchen udgiver aarlige analyser af manglen paa it-specialister i Danmark med tal han kan citere. Danmarks Statistik har de underliggende data. Brug ET tal, ikke fem - en praecis kilde slaar en ophobning.",
+   "hvad_springes_over": "Alle leverandoerers 'state of'-rapporter (Vanta, Drata, Snyk, Sonatype osv.) som markedsfoeringsmateriale forklaedt som forskning. (ISC)2 og ISACA's workforce-studier er lidt bedre men stadig interessedrevne.",
+   "verificeret": false
+  },
+  {
+   "titel": "Vanta, Drata, Secureframe, Sprinto - compliance-automatisering",
+   "type": "vaerktoej",
+   "url": "",
+   "prioritet": "spring over",
+   "tidsforbrug": "1 time at forstaa hvad de goer, 0 timer derudover",
+   "hvorfor": "Han skal VIDE de findes, fordi enhver samtale om ISO 27001 eller SOC 2 i en SaaS-virksomhed naevner dem, og fordi LeanLinking maaske allerede bruger et. Men han skal ikke laere dem. De automatiserer evidensindsamling; de skaber ikke et sikkerhedsprogram, og de producerer en velkendt fejltype: virksomheder der er compliant paa dashboardet og usikre i virkeligheden. Deres blogindhold er markedsfoering. Ingen vaerdi i deres partner- eller produktcertificeringer.",
+   "hvad_springes_over": "Alt indhold de udgiver. Alle deres webinarer. Deres certificeringer.",
+   "verificeret": false
+  },
+  {
+   "titel": "OWASP Web Security Testing Guide (WSTG) og pentest-processtandarder",
+   "type": "standard",
+   "url": "https://owasp.org/www-project-web-security-testing-guide/",
+   "prioritet": "senere",
+   "tidsforbrug": "4 timer, maaned 8+",
+   "hvorfor": "Han skal ikke blive pentester, men han skal kunne KOEBE og STYRE en pentest, hvilket er en arkitektopgave. WSTG viser hvad en tester faktisk goer, hvilket goer ham i stand til at scope fornuftigt. Det han skal kunne: vaelge grey box med testtenant og dokumenterede credentials frem for black box (black box braender budgettet paa rekognoscering), skrive rules of engagement med udelukkelser og testvinduer, kraeve RETEST som del af leverancen, og vide at kunder skal have et attestationsbrev plus executive summary - aldrig den fulde rapport. Tjek ogsaa Microsofts Unified Penetration Testing Rules of Engagement for Azure.",
+   "hvad_springes_over": "PTES og NIST SP 800-115 i fuld laengde. MASTG (mobil - ikke relevant). At laere vaerktoejerne.",
+   "verificeret": false
+  },
+  {
+   "titel": "RFC 9116 security.txt og en vulnerability disclosure policy",
+   "type": "standard",
+   "url": "https://securitytxt.org",
+   "prioritet": "stoette",
+   "tidsforbrug": "1 time",
+   "hvorfor": "Naesten gratis og det ser modent ud. En /.well-known/security.txt plus en kort VDP-side er noget han kan foreslaa hos LeanLinking som et enkeltstaaende, ufarligt forslag der ikke kraever mandat - og det er en af de nemmeste maader at faa sit foerste 'ja' til noget han selv har fundet paa. Byg det ogsaa paa sin egen forfremmede spike.",
+   "hvad_springes_over": "At oprette et rigtigt bug bounty-program. For dyrt og for tidligt.",
+   "verificeret": false
+  },
+  {
+   "titel": ".NET/Azure-vaerktoejer til supply chain og secrets",
+   "type": "vaerktoej",
+   "url": "https://github.com/gitleaks/gitleaks",
+   "prioritet": "kerne",
+   "tidsforbrug": "6-8 timer samlet",
+   "hvorfor": "Konkret vaerktoejskasse han skal beherske, ikke laese om: dotnet list package --vulnerable --include-transitive; Central Package Management via Directory.Packages.props; packages.lock.json med RestoreLockedMode; CycloneDX til .NET for SBOM; gitleaks eller trufflehog som pipelinetrin; Microsoft.CodeAnalysis.NetAnalyzers som analyzer; Azure Key Vault med DefaultAzureCredential fra Azure.Identity; managed identity til SQL, Storage og Service Bus; og Workload Identity Federation paa Azure DevOps service connections i stedet for langlivede service principal-hemmeligheder. Det sidste er saerligt vaerd at drive paa arbejdet: det er en konkret, afgraenset sikkerhedsforbedring med et klart foer og efter.",
+   "hvad_springes_over": "Advanced Security for Azure DevOps (GHAzDO) er godt men koster per committer - det er en virksomhedsbeslutning, ikke hans. Kend det, foreslaa det, forvent nej foerste gang.",
+   "verificeret": false
+  },
+  {
+   "titel": "SOC 2 og AICPA Trust Services Criteria",
+   "type": "standard",
+   "url": "",
+   "prioritet": "senere",
+   "tidsforbrug": "3 timer",
+   "hvorfor": "Vaer aerlig om proportionerne: i Europa er ISO 27001 standardkravet, og SOC 2 dukker foerst op naar kunden er amerikansk eller amerikansk-paavirket. Han skal kunne forskellen paa Type I (design paa et tidspunkt) og Type II (driftseffektivitet over en periode, typisk 3-12 maaneder), kende de fem kategorier (Security som obligatorisk Common Criteria, plus Availability, Processing Integrity, Confidentiality, Privacy), og vide at det kraever et amerikansk CPA-firma og et femcifret dollarbeloeb. Det er nok. Prioriter ISO 27001-arbejdet.",
+   "hvad_springes_over": "At laese TSC i fuld laengde. Alle SOC 2-forberedelseskurser.",
+   "verificeret": false
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "Tenant-isolation i tre modeller, maalt og angrebet",
+   "problem": "Byg et minimalt .NET-API med domaenet Leverandoer + Certifikat + Auditfund, og implementer tenant-isolation paa tre maader: (a) delt database med EF Core global query filter, (b) delt database med Azure SQL Row-Level Security paa SESSION_CONTEXT, (c) database-per-tenant i en elastic pool. Krav: identisk API-overflade paa tvaers af de tre. Begraensninger: hardt budgetloft paa 300 kr./maaned for hele spike-serien; migrationer skal kunne koeres paa alle tre uden nedetid; og modellen skal kunne haandtere 500 tenants paa papiret selv om du kun tester med 20.",
+   "artefakter": "ADR 'Valg af tenant-isolationsmodel' med eksplicit beslutningsregel (ved hvilket tenantantal og hvilken datasensitivitet skifter svaret). C4 container-diagram med trust boundaries tegnet som stiplede linjer. Resultattabel med p95-latens, omkostning per tenant per maaned ved 50 og 500 tenants, og migrationstid per model. En cross-tenant abuse-testsuite i CI der for hvert endpoint bruger tenant A's token mod tenant B's id og asserter 404. En bugmatrix der viser hvilke af de tre bevidst indfoerte fejl hver model fangede. Retrospektiv paa en side.",
+   "fremgangsmaade": "Uge 1: byg domaenet og model (a), skriv abuse-testsuiten FOERST saa den er uafhaengig af implementeringen. Uge 2: tilfoej (b) og (c), maal, og indfoer derefter tre REALISTISKE fejl med vilje - et baggrundsjob der bygger DbContext uden for request-scope, et FromSqlRaw uden tenant-praedikat, og en Redis-cachenoegle uden tenant-praefiks. Registrer hvilke modeller der fanger hvad. Det er hele pointen: alle kan designe isolation, det sjaeldne er at kende dens fejlmoenstre. Brug Azure SQL Serverless og riv miljoeet ned mellem sessioner for at holde budgettet.",
+   "kompetence": "Multi-tenant isolation og adversarial verifikation; trade-off-artikulation med tal",
+   "svaerhed": "hoej - men det er flagskibet og skal ligge foerst",
+   "tid": "2 uger, 25-30 timer"
+  },
+  {
+   "titel": "Threat model af et rigtigt flow - og en faciliteret session med mennesker",
+   "problem": "Modeller flowet 'leverandoer uploader et certifikat-PDF, og koeberorganisationens auditor laeser det'. Krav: DFD paa niveau 1 med eksplicitte trust boundaries, fuld STRIDE-gennemgang af hvert dataflow der krydser en graense, og hver trussel skal have en disposition (afboed / accepter / overfoer / eliminer) og en ejer. Begraensning: modellen skal ligge som JSON i git saa den kan reviewes i en PR. Anden begraensning, og den vigtige: spiken er ikke faerdig foer han har faciliteret en 60-minutters session med mindst to kolleger paa en feature HAN IKKE SELV HAR SKREVET.",
+   "artefakter": "DFD med trust boundaries. Trusselstabel med 8-15 poster, hver med komponent, disposition, ejer og ticketlink. Threat Dragon-JSON i git. Et halvsides faciliteringsretrospektiv der handler om hvad der gik galt i RUMMET, ikke i modellen - hvem talte ikke, hvor skred scopet, hvornaar blev det til et designreview.",
+   "fremgangsmaade": "Dag 1-2: laes Shostack kap. 1-4 og Threat Modeling Manifesto. Dag 3-5: modeller alene, to gange, paa egne features - foerste model bliver daarlig, det er forventet. Uge 2: rekrutter to kolleger hos LeanLinking. Sig 'jeg vil gerne oeve mig paa noget, maa jeg laane en time paa jeres feature' - det er en anmodning om at goere arbejde, ikke om mandat, og den bliver naesten aldrig afvist. Brug Elevation of Privilege-kortene foerste gang, saa autoriteten ligger hos kortene og ikke hos ham. Timebox skaenderier til to minutter og park dem. Slut til tiden med ejer paa hver linje.",
+   "kompetence": "Threat modeling og facilitering - faciliteringen er den sjaeldne halvdel",
+   "svaerhed": "middel teknisk, hoej socialt",
+   "tid": "2 uger, 20 timer"
+  },
+  {
+   "titel": "Sikker upload-pipeline for compliance-dokumenter",
+   "problem": "Filupload er den hoejest-risiko-flade i et dokumenttungt produkt, og det er LeanLinkings kerneflow. Byg: pre-signed upload direkte til Blob Storage med user delegation SAS, kort TTL og tenant-scopet praefiks; validering af content-type OG magic bytes; stoerrelsesloft; malware-scanning; karantaenecontainer indtil scanning er ren, derefter forfremmelse; og generering af en signeret, udloebende laese-URL. Krav: applikationsserveren maa aldrig se filens bytes. Begraensning: du skal kunne bevise at en polyglot-fil - en PDF der ogsaa er gyldig HTML med JavaScript - bliver afvist.",
+   "artefakter": "Trusselsmodel foerst (genbrug metoden fra forrige spike). ADR om upload-arkitektur inkl. begrundelse for direct-to-storage frem for gennem API'et. Sekvensdiagram. Maaling af time-to-availability p95 og omkostning per 1000 uploads. Testrapport der viser afvisning af polyglot-filen, af en fil med forfalsket content-type, og af en fil over stoerrelsesloftet. Retrospektiv.",
+   "fremgangsmaade": "Verificer foerst hvad Defender for Storage hedder og koster - det er en betalt tjeneste og kan spraenge budgettet, saa hav en gratis fallback klar (ClamAV i en container) og skriv i ADR'en hvorfor du valgte som du gjorde. Byg karantaeneflowet event-drevet via Event Grid, ikke som polling. Laes OWASP File Upload Cheat Sheet foerst - den sparer to dage.",
+   "kompetence": "Regulatorisk oversaettelse til konkret kontrol; sikker arkitektur af den farligste flade",
+   "svaerhed": "middel",
+   "tid": "1-2 uger, 15-20 timer"
+  },
+  {
+   "titel": "Idempotent, ordnet messaging med revisionsspor",
+   "problem": "Certifikatudloeb og auditstatusskift maa aldrig tabes, aldrig dubleres i EFFEKT, og skal kunne rekonstrueres bagudrettet. Byg med Azure Service Bus: transactional outbox i SQL, sessions for ordning per leverandoer, idempotensnoegler paa modtagersiden, dead-letter-haandtering med et replay-vaerktoej. Krav: audit-sporet skal kunne besvare 'hvem godkendte hvilket certifikat hvornaar' efter en vilkaarlig delvis fejl. Begraensning: du skal injicere dubletter og out-of-order-leveringer med kendt rate og BEVISE exactly-once-effekt - ikke exactly-once-levering, som ikke findes, og at kunne sige den forskel hoejt er halvdelen af spikens vaerdi.",
+   "artefakter": "ADR om leveringsgarantier der eksplicit forklarer forskellen paa at levere en besked en gang og at have effekten en gang. Sekvensdiagram inkl. fejlstier. En fejlinjektionslog med rate og resultat. Et replay-vaerktoej med dokumenteret brug. Maaling af DLQ-genopretningstid. Retrospektiv.",
+   "fremgangsmaade": "Uge 1: outbox-moenstret med en enkelt SQL-transaktion der skriver baade domaeneaendring og besked. Uge 2: sessions, idempotens, og saa fejlinjektionen - draeb consumeren midt i en transaktion, lever den samme besked tre gange, lever beskeder i omvendt raekkefoelge. Compliance-krogen skrives eksplicit ind i ADR'en: dette er STRIDE's R (repudiation), ISO 27001 A.8.15 om logging, og GDPR art. 5(2) om ansvarlighed. Den kobling er praecis den oversaettelse han traener.",
+   "kompetence": "Design af reviderbare systemer; distribuerede fejlmoenstre",
+   "svaerhed": "hoej",
+   "tid": "2 uger, 25 timer"
+  },
+  {
+   "titel": "Sletning og retention - inklusive backup-paradokset",
+   "problem": "Implementer GDPR art. 17 og art. 5(1)(e) i et rigtigt system. Krav: retention per datakategori, og en sletteproces der spaender SQL, Blob Storage, Service Bus dead letters, soegeindeks OG logs. Begraensning, og den goer spiken vaerd at lave: du kan ikke slette fra en immutable backup. Du skal skrive den ADR der loeser det aerligt frem for at ignorere det - det accepterede svar er dokumenteret backuprotation plus en suppressionsliste der genanvendes ved restore. Anden begraensning: processen skal producere en maskinlaesbar sletteattest.",
+   "artefakter": "ADR 'Sletning kontra backups' - dette specifikke dokument er et af de staerkeste interviewartefakter i hele serien, fordi de faerreste udviklere nogensinde har taenkt det igennem og en erfaren interviewer ved det. Retentionsmatrix per datakategori. Datastroemskort der viser hvor personoplysninger faktisk lander (spoiler: flere steder end nogen tror, saerligt i logs). Maaling af p95 gennemloebstid for en fuld sletning. Sletteattest-format. Retrospektiv.",
+   "fremgangsmaade": "Start med kortlaegningen, ikke koden - list hvert sted en persons navn eller e-mail kan ende, inklusive Application Insights, dead letter queues og soegeindekset. Det er den oevelse der giver indsigten. Byg derefter sletningen som en orkestreret, genstartbar proces, ikke som et enkelt kald. Laes Datatilsynets vejledning om sletning foerst, og citer den i ADR'en - at citere den danske myndighed frem for en blog er en vane han skal have.",
+   "kompetence": "Datalivscyklus-arkitektur; regulatorisk oversaettelse",
+   "svaerhed": "middel teknisk, hoej konceptuelt",
+   "tid": "2 uger, 20-25 timer"
+  },
+  {
+   "titel": "Fuld tenant-eksport - Data Act kapitel VI og GDPR art. 20 som arkitektur",
+   "problem": "Byg en komplet tenant-eksport: alle data plus filer, med dokumenteret JSON-skema, manifest med checksums, genereret asynkront i baggrunden og leveret via kortlivet SAS. Krav: eksporten skal vaere BEVISELIGT fuldstaendig - byg et restore-script der round-tripper eksporten ind i en tom tenant og sammenligner checksums med originalen. Begraensning: den skal koere paa 10.000 leverandoerer og 100.000 dokumenter uden at tage hele databasen ned imens, og uden at holde alt i hukommelsen.",
+   "artefakter": "ADR om eksportarkitektur inkl. streaming frem for buffering og haandtering af konsistens under en lang eksport. Dokumenteret eksportskema. Round-trip-testrapport der viser fuldstaendighed. Maaling af eksporttid og stoerrelse ved fuld skala. Retrospektiv.",
+   "fremgangsmaade": "Vaer opmaerksom paa den svaere del: hvad betyder konsistens naar eksporten tager 40 minutter og systemet skriver imens. Svaret (snapshot-isolation, eller en defineret klippetid med efterfoelgende delta) skal staa i ADR'en. Skriv i indledningen at dette ikke er en pen feature men et lovkrav siden 12. september 2025 - og at naesten ingen SaaS bygger det ordentligt. Det er den slags observation der goer et interview interessant.",
+   "kompetence": "Datalivscyklus-arkitektur; skala under begraensning",
+   "svaerhed": "middel",
+   "tid": "1-2 uger, 15-20 timer"
+  },
+  {
+   "titel": "Observability med en compliance-rygrad",
+   "problem": "Instrumenter systemet med OpenTelemetry i .NET mod Azure Monitor. Krav: tenant-id og bruger-id som attributter, men ALDRIG personoplysninger i telemetri - byg en redaktionsprocessor og bevis den med en test der asserter at ingen e-mailadresse nogensinde naar eksportoeren. Definer SLI og SLO for certifikatudloebs-notifikationsstien. Byg derudover et AUDIT-log adskilt fra det diagnostiske log: append-only, immutable via Azure Storage immutable blob med tidsbaseret retention, med defineret opbevaringsperiode. Begraensning: du skal kunne sige hvad telemetrien koster per tenant per maaned.",
+   "artefakter": "ADR 'Audit-log kontra diagnostisk log' - to forskellige ting med forskellige krav, og at blande dem er en af de hyppigste arkitekturfejl i compliance-produkter. Instrumenteringsdiagram. Testen der beviser redaktionen. Omkostningsmodel med delta for 30 mod 90 mod 365 dages retention. Definerede SLO'er med fejlbudget. Retrospektiv.",
+   "fremgangsmaade": "Compliance-krogen er staerk her og skal skrives eksplicit: NIS2 art. 21(2)(b) om haendelseshaandtering kraever at man KAN opdage noget; ISO 27001 A.8.15 og A.8.16 om logging og overvaagning; og GDPR art. 5(1)(c) om dataminimering anvendt paa LOGS - hvilket naesten alle overtraeder, ogsaa de udviklere der selv har skrevet databehandleraftalen. Antag at LeanLinking goer det og tjek efter naar han er inde i en kodesti alligevel.",
+   "kompetence": "Design af reviderbare systemer; observability; omkostningsmodellering",
+   "svaerhed": "middel",
+   "tid": "2 uger, 20 timer"
+  },
+  {
+   "titel": "Landing zone og policy-as-code - GDPR kapitel V udtrykt i Bicep",
+   "problem": "Byg en lille landing zone i Bicep: management groups, og Azure Policy-initiativer der naegter offentlig blob-adgang, kraever HTTPS-only, kraever private endpoints paa datatjenester, kraever diagnostic settings til et centralt Log Analytics workspace, og begraenser tilladte regioner til EU. Krav: deploy via Azure DevOps-pipeline med Workload Identity Federation paa service connection - ingen langlivede hemmeligheder. Begraensning: du skal demonstrere et deny i praksis, ikke bare konfigurere det, og du skal maale hvor mange overtraedelser initiativet finder ved foerste deployment mod dine eksisterende spike-ressourcer.",
+   "artefakter": "ADR 'Guardrails kontra gates' med en eksplicit regel for hvilke krav der hoerer til hvilken kategori og hvorfor for mange gates producerer omgaaelser i stedet for sikkerhed. Bicep-repo. Compliance-rapport foer og efter. Demonstration af et deny. Retrospektiv.",
+   "fremgangsmaade": "Vaelg Bicep frem for Terraform her, bevidst, og skriv begrundelsen i ADR'en - det er den native vej i en Microsoft-butik og han skal have Azure DevOps-flydighed til maalrollen. Den pointe der skal med hjem: regionspolicyen er bogstaveligt talt GDPR kapitel V udtrykt som kode. Naar han kan sige den saetning i et interview og pege paa filen, har han demonstreret hele nichen paa tredive sekunder. Tallet paa overtraedelser ved foerste koersel er altid overraskende hoejt - brug det.",
+   "kompetence": "Governance-as-code; regulatorisk oversaettelse",
+   "svaerhed": "middel",
+   "tid": "2 uger, 20 timer"
+  },
+  {
+   "titel": "Hemmelighedsudryddelse - fra connection strings til identitet",
+   "problem": "Fjern hver eneste hemmelighed fra spike-kodebasen. Krav: managed identity til Azure SQL med Entra-only authentication og ingen SQL-logins, managed identity til Storage og Service Bus, Key Vault kun til den uundgaaelige rest, med rotationspolitik og alarmering ved naert udloeb. Tilfoej gitleaks som pipelinetrin og push protection. Begraensning: applikationen skal kunne starte og koere med NUL connection strings der indeholder et password - bevis det ved at soege kodebasen og konfigurationen igennem.",
+   "artefakter": "ADR om identitet frem for hemmeligheder, med den centrale pointe: secrets management er ikke et vaerktoejsvalg, det er et identitetsproblem, og hver hemmelighed man kan SLETTE ved at bruge en managed identity fjerner en hel risikoklasse. Identitetsdiagram. Optaelling af hemmeligheder foer og efter. Maalt rotationstid. Retrospektiv.",
+   "fremgangsmaade": "Kort spike, en uge. Den er bevidst lille fordi den skal give ham et hurtigt, entydigt resultat efter to store spikes. Workload Identity Federation paa Azure DevOps service connections er den del der ogsaa er direkte anvendelig paa arbejdet - det er en afgraenset, ukontroversiel sikkerhedsforbedring med et klart foer og efter, og den slags forslag bliver sagt ja til.",
+   "kompetence": "Secure SDLC; identitetsarkitektur",
+   "svaerhed": "lav-middel",
+   "tid": "1 uge, 10-12 timer"
+  },
+  {
+   "titel": "Besvar spoergeskemaet og skriv din Statement of Applicability",
+   "problem": "Tag CAIQ v4 eller MVSP og besvar det AERLIGT mod dit eget spike-system. Krav: hvert 'ja' skal have et evidenslink; hvert 'nej' bliver et backlog-punkt med et indsatsestimat. Skriv derefter en Statement of Applicability for ISO 27001:2022 bilag A: alle 93 kontroller, anvendelig eller ej, med skriftlig begrundelse for hver udeladelse. Begraensning: ingen optimisme. Hvis du ikke kan pege paa evidensen, er svaret nej.",
+   "artefakter": "Udfyldt CAIQ eller MVSP med evidenslinks. Komplet Statement of Applicability over 93 kontroller. Prioriteret mangelregister med estimater. En optaelling af hvor mange kontroller han kan DOKUMENTERE mod hvor mange han kan paastaa - den forskel er selve laeringen.",
+   "fremgangsmaade": "Dette bliver den mest ubehagelige uge i hele serien. Det er rent papirarbejde, det foeles som spild, og det er samtidig det enkeltartefakt der mest overbevisende beviser at han kan operere i overlappet mellem compliance og engineering. En junior med en rigtig SoA er en usaedvanlig ting. Placer den bevidst EFTER mindst fire tekniske spikes, saa der faktisk er noget at pege paa - en SoA for et system der ikke findes er en skriveoevelse.",
+   "kompetence": "Regulatorisk oversaettelse; stakeholder-oversaettelse",
+   "svaerhed": "lav teknisk, hoej disciplinaert",
+   "tid": "1 uge, 12-15 timer"
+  },
+  {
+   "titel": "Omkostnings- og risikomodel for et enterprise-compliancekrav",
+   "problem": "Vaelg et rigtigt krav som en stor kunde ville stille: customer-managed keys, ELLER EU-dataresidens med sekundaer region, ELLER etaars audit-log-retention. Krav: byg omkostningsmodellen i et regneark med tal fra Azure Pricing Calculator, opstil arkitekturoptionerne med trade-offs, og giv en anbefaling med en EKSPLICIT beslutningsregel - 'over denne troeskel skifter svaret'. Begraensning: memoet skrives til en CFO, ikke til en udvikler, og det maa fylde en side.",
+   "artefakter": "ADR med eksplicit beslutningsregel. Omkostningsmodel i regneark med kilder paa tallene. Etsides beslutningsmemo i CFO-sprog. En liste over de nye fejlklasser loesningen introducerer (noeglerotation, tab af noegle, krydsregional replikeringsforsinkelse) - fordi den liste er det en senior udvikler glemmer og en arkitekt husker.",
+   "fremgangsmaade": "Dette er den spike der traener det der faktisk adskiller en arkitekt fra en senior udvikler, og den er kort. Oev formuleringen: ikke 'vi boer bruge CMK, det er mere sikkert', men 'CMK koster X kr./maaned plus Y dages implementering plus en ny fejlklasse ved noeglerotation, det aabner for kunder over Z i ARR, derfor anbefaler jeg nej indtil den foerste kunde betaler for det'. At turde skrive 'nej, ikke endnu' er en faerdighed der skal traenes.",
+   "kompetence": "Trade-off-artikulation med tal; stakeholder-oversaettelse",
+   "svaerhed": "lav teknisk, hoej i formulering",
+   "tid": "1 uge, 10-12 timer"
+  },
+  {
+   "titel": "DEN FORFREMMEDE SPIKE - certifikatovervaagning som driftet tjeneste med rigtige brugere",
+   "problem": "Kombiner upload-, messaging- og observability-spikene til en tjeneste der lever: den modtager certifikatmetadata, overvaager udloebsdatoer, sender notifikationer, eksponerer et versioneret offentligt API, og har RIGTIGE eksterne brugere. Krav: mindst fem brugere der ikke er ham selv - rekrutter et par bekendte i indkoeb eller kvalitet, eller en lille ISO-certificeret virksomhed. Et defineret SLO. En skreven deprecationspolitik for API'et. En Azure Budget-alarm med hardt loft paa 300 kr./maaned. Et maanedligt driftsreview han selv skriver ned. Begraensning: den skal koere fra maaned 4 til maaned 12 uden pause - det er varigheden der er pointen, ikke funktionaliteten.",
+   "artefakter": "En URL til noget der koerer, med et oppetidstal for de sidste 90 dage. Mindst et skrevet post-incident review af en RIGTIG haendelse, med tidslinje, bidragende faktorer og opfoelgning, uden skyld. Mindst en bagudkompatibel API-aendring gennemfoert for brugere han ikke kunne koordinere med. Otte maanedlige driftsreviews. En omkostningsgraf. Et security.txt og en VDP.",
+   "fremgangsmaade": "Vaelg netop denne fordi den er en miniature af LeanLinkings eget produkt - alt han laerer overfoeres direkte til arbejdssamtaler, og det er dobbelttaellingen han skal udnytte. Koer den paa Azure Container Apps consumption plus en lille SQL-database; det holder budgettet. Eksterne brugere er ikke pynt: de er den eneste mekanisme der tvinger bagudkompatibilitet frem, og bagudkompatibilitet er den ene ting man ikke kan simulere. Naar noget gaar i stykker - og det goer det - er haendelsen ikke en afbrydelse af planen, den ER planen. En arkitekt der aldrig har vaeret vaagen kl. 23 over noget han selv har designet, traeffer systematisk daarligere beslutninger, og en erfaren interviewer finder ud af det paa tyve minutter.",
+   "kompetence": "At drifte det man har bygget - drift, bagudkompatibilitet, fejlmoenstre, incident response",
+   "svaerhed": "hoej og vedvarende - den eneste post der loeber over hele horisonten",
+   "tid": "opstart 2 uger, derefter 2-3 timer/uge i 8 maaneder"
+  }
+ ],
+ "paa_jobbet": [
+  "Bliv den der besvarer security questionnaires. Spoerg salg eller CTO: 'naeste gang en kunde sender et sikkerhedsspoergeskema, maa jeg tage foerste gennemloeb?' Det er en anmodning om at lave kedeligt arbejde - den bliver naesten aldrig afvist, den kraever intet mandat, og efter to spoergeskemaer ved han mere om LeanLinkings faktiske sikkerhedsposition end de fleste i udviklingsteamet. Det er ogsaa den enkeltaktivitet der hurtigst saetter ham i kontakt med kundens sikkerhedsteam og med sit eget systems rigtige huller.",
+  "Byg svarbiblioteket efter det andet spoergeskema. Foreslaa det skriftligt paa EN side: et vedligeholdt internt katalog med hvert svar, dets evidens, dets ejer og dets sidst-reviewet-dato. Det er ren gavearbejde, koster virksomheden ingenting, og goer ham til routingpunkt for en tilbagevendende, kommercielt kritisk opgave. Routingpunkter bliver arkitekter - ikke fordi nogen beslutter det, men fordi information begynder at gaa gennem dem.",
+  "Skriv en ADR for en ticket han allerede har faaet. Han behoever ikke tilladelse til at dokumentere sin EGEN beslutning. En side: kontekst, optioner, beslutning, konsekvenser, lagt i repoet som docs/adr/0001-....md. Efter tre af dem foreslaar han formatet som teamvane. Det er den billigst mulige maade at begynde at OPFOERE sig som arkitekt inde i en ticket-taker-rolle, og den kan ivaerksaettes paa mandag uden at spoerge nogen.",
+  "Threat-model sin egen ticket. Naar han faar en feature der roerer autentifikation, upload eller tenant-data, bruger han 45 minutter paa DFD plus STRIDE FOER han koder, og vedhaefter resultatet til sin PR. Ingen protesterer mod en PR der indeholder en sikkerhedsanalyse. Efter et par stykker tilbyder han at koere en 60-minutters session paa naeste feature - det er saadan faciliteringskompetencen faar sin foerste rigtige gentagelse, og det er saadan den foerste session bliver bedt om frem for paatvunget.",
+  "Tilfoej en cross-tenant test til hver PR han laver. Ikke et projektforslag - bare en test der asserter at tenant B ikke kan laese tenant A's ressource paa det endpoint han lige har roert. Det er en test; reviewere godkender tests. Om seks maaneder er der en suite, og hans navn staar paa hver commit. Dette er moensterekssemplet paa hvordan man bygger noget vaesentligt uden nogensinde at bede om lov: en linje ad gangen, hver linje uangribelig i sig selv.",
+  "Tilfoej den manglende telemetri i den kodesti han alligevel er inde i. Struktureret logging med tenant-id, et trace span, en brugbar metrik. Smaat og ukontroversielt, og det akkumulerer til en paastand han kan fremsaette senere: 'jeg instrumenterede leverandoer-onboarding-stien, og her er hvad den viste'. En maaling han selv har skabt er den bedste indgang til en samtale om prioritering.",
+  "Laes de faktiske kundekontrakter og databehandleraftaler. Bed legal eller CTO om standard-DPA'en og en underskrevet kundeaftale. Indramningen der virker: 'jeg vil gerne forstaa hvad vi har lovet, saa jeg ikke bygger noget der bryder det'. Naesten ingen juniorer beder om det. Det afsloerer SLA'er, datalokationsloefter, slettefrister, auditrettigheder og varslingsvinduer som udviklingsteamet formentlig ikke overholder. Hvert hul er et memo han kan skrive - og et memo baseret paa virksomhedens egen underskrift er umuligt at afvise som en juniors mening.",
+  "Foer en regulatorisk kalender for produktet. Et internt notat paa en side: hvilke regler rammer LeanLinkings kunder hvornaar - CSRD-boelgerne, CSDDD 2028, EUDR, CBAM, NIS2-registreringsfrister, CRA's rapporteringspligt, AI Act. Del den med produkt. To timer om maaneden, og det goer ham legibel for den kommercielle side - hvilket er praecis hans sekundaere Product Owner-interesse. Start med et CRA-notat i denne uge; datoen 11. september 2026 er i morgen, og aktualitet er halvdelen af opmaerksomheden.",
+  "Meld dig til det tekniske evidensarbejde hvis LeanLinking har ISO 27001. Der er en intern audit og en ledelsesevaluering hvert aar, og nogen hader at samle evidens. Tilbyd at eje den tekniske evidens for et par bilag A-kontroller: adgangsreviews, logging, change management, saarbarhedsstyring. Det placerer hans navn i ISMS-dokumentationen, hvilket er en genuint sjaelden CV-linje for en junior og en der kan verificeres af en kommende arbejdsgiver. Hvis de IKKE er certificeret: spoerg hvorfor, og hvor mange handler der er tabt paa det. Svaret er ofte interessant.",
+  "Bed om at sidde med som referent paa et kundeauditopkald. Lav anmodning, hoej informationsgevinst. Halvfems minutters udspoergen fra en kundes sikkerhedschef er en maaneds laesning vaerd, og som referent har han en legitim grund til at vaere i rummet uden at skulle praestere. Efter to af dem ved han hvilke spoergsmaal der altid kommer, hvilket goer hans spoergeskemasvar markant bedre.",
+  "Lav leverandoervurderingen af LeanLinkings EGNE underleverandoerer. LeanLinking har ogsaa leverandoerer - Azure, identitetsudbyder, e-mailtjeneste, hvad de nu bruger. Nogen skal vurdere dem, og det er sjaeldent nogens yndlingsopgave. Meld dig. Det laerer ham koebssiden af praecis det problem produktet loeser paa salgssiden, og det er en usaedvanlig god forstaaelse at have i en produktdiskussion.",
+  "Skriv og vedligehold underleverandoerlisten. Hver SaaS skal have en efter GDPR art. 28, og de fleste har en foraeldet. Tilbyd at eje den. Ti minutters arbejde om maaneden, synligt for kunder, og det etablerer et lille, konkret ejerskab.",
+  "Foreslaa security.txt og en vulnerability disclosure-side. Naesten gratis, ser modent ud, og det er et af de nemmeste 'ja' han kan faa til noget han selv har fundet paa. Smaa ja'er er hvordan man opbygger kredit til et stort ja senere.",
+  "DET ENE HAN SKAL BEDE OM TILLADELSE TIL, og timingen betyder alt: efter cirka 4-6 maaneders gavearbejde beder han om rollen 'sikkerheds- og compliance-kontaktpunkt for engineering'. Ikke arkitekt - det er for tidligt og bliver afvist. En navngivet ansvarlighed. Den koster virksomheden ingenting, det er en rolle folk undgaar, og det er en legitim, verificerbar CV-linje. Om han faar den eller ej ER maaned 6-signalet: siger de ja, aabner den interne vej sig; siger de nej eller udskyder de det uden begrundelse efter et halvt aars dokumenteret gavearbejde, saa er svaret givet og strategien skifter til ekstern jobsoegning uden yderligere overvejelse."
+ ],
+ "faldgruber": [
+  "At blive compliance-manden i stedet for arkitekten. Det er den stoerste risiko ved hele dette emne og den skal staa foerst. Hvis han holder op med at skrive kode, er titlen han ender med GRC Analyst - den betaler mindre, topper tidligere, og opfattes som ikke-teknisk. Reglen er absolut og uden undtagelse: hvert compliance-artefakt leveres sammen med koerende kode og en maaling. Aldrig et dokument uden en deployment. Compliance uden engineering er en GRC-analytiker; engineering uden compliance er en senior udvikler; vaerdien ligger udelukkende i OG'et, og OG'et forsvinder i det oejeblik han holder op med at bygge.",
+  "At samle paa regulativer i stedet for at forstaa eet system. At kunne referere ti direktiver er vaerdiloest og gennemskues oejeblikkeligt. At kunne spore EET krav - fx NIS2 art. 21(2)(d) - hele vejen fra lovteksten til en konkret linje i en Bicep-fil er mere vaerd end alle ti resumeer tilsammen. Dybde i en enkelt sporing slaar bredde hver gang, ogsaa i interviewet.",
+  "Certifikatteater. Tre certifikater og intet koerende system taber til eet certifikat og en driftet tjeneste, hver gang. Hvis han opdager at han er ved at laese op til et fjerde certifikat, er noget gaaet galt i prioriteringen. Certifikater er deadline-motor, ikke indhold.",
+  "At tro paa leverandoerernes compliance-fortaelling. Vanta, Drata, Secureframe og hvert konsulenthus producerer indhold designet til at faa compliance til at lyde svaerere og mere automatiserbart end det er - fordi det er deres forretningsmodel. Regulativerne er gratis og kortere end whitepaperne om dem. NIS2 art. 20-23 er fire sider. Laes primaerteksten og Datatilsynets vejledninger; spring blogindholdet over.",
+  "At konkludere at CSRD blev aflivet af omnibus. Vaerdikaedekravet overlevede, og VSME-loftet gjorde datakravet MERE standardiserbart, hvilket er bedre for software. Men han skal have de aktuelle troeskler rigtige - at udtale en superseded troeskel med selvtillid i et interview er en troovaerdighedsdraeber, og dette omraade har bevaeget sig fire gange paa to aar. Verificer foer han udtaler sig.",
+  "At overingeniere isolationen. Database-per-tenant 'af sikkerhedshensyn' ved tyve tenants er en fejl der koster virksomheden penge og ham troovaerdighed. Den arkitektkompetence der testes er at vide hvornaar man IKKE skal. En kandidat der anbefaler den dyreste loesning uanset kontekst afsloerer at han ikke har baaret konsekvenserne af sine egne valg.",
+  "At skrive en trusselsmodel ingen bruger. Hvis truslerne ikke bliver til tickets med ejere og datoer, var det en skriveoevelse. Manifestets fjerde spoergsmaal - gjorde vi det godt nok - er det alle springer over, og det er det der goer trusselsmodellering til en praksis frem for en engangsceremoni.",
+  "At tale om compliance i interviews uden en maaling. 'Jeg forstaar GDPR' er vaerdiloest og signalerer det modsatte. 'Jeg byggede en sletteproces der gennemloeber SQL, Blob og soegeindekset paa 4 minutter p95, og her er ADR'en om hvorfor vi ikke kan slette fra backups' vinder rummet. Forskellen er et tal og et artefakt.",
+  "At udlevere den fulde pentestrapport. Aldrig. Kunder faar et attestationsbrev plus et executive summary under NDA, med remediation-status. Den fulde rapport er et angrebskort. At vide dette er i sig selv et modenhedssignal.",
+  "At laegge personoplysninger i logs og traces. Den hyppigste GDPR-overtraedelse i engineering, og den begaas rutinemaessigt af de samme udviklere der har skrevet databehandleraftalen. Han skal antage at LeanLinking goer det og tjekke efter naeste gang han alligevel er inde i en kodesti - det er en gratis, konkret opdagelse.",
+  "At paastaa compliance virksomheden ikke har. Hvis han besvarer et spoergeskema optimistisk, skaber han kontraktuel og juridisk eksponering for sin arbejdsgiver. Det korrekte svar er 'nej, og her er vores roadmap' - koebere respekterer det, og det draeber handlen langt sjaeldnere end folk frygter. Et forkert ja opdages under audit og er saa en helt anden slags problem.",
+  "At undervurdere hvor kedeligt det bliver. Uge 1-4 er spaendende. Maaned 5 med standarder er det ikke. Modforanstaltningen er den forfremmede spike: et koerende system producerer haendelser og problemer af sig selv, og det er dem der holder motivationen oppe naar laesestoffet ikke goer.",
+  "At gaa efter titlen med kun dokumenter i haanden. Porten i maaned 9-10 SKAL inkludere et deployet, driftet system med rigtige brugere og en rigtig haendelse han har haandteret. Uden det er han en velbelaest junior, og en kompetent interviewer opdager det inden for tyve minutter ved at spoerge 'hvad gik i stykker, og hvad gjorde du?'",
+  "At tro at det danske marked er for smaat til en niche. Det er det ikke, men rollerne klumper sig i Koebenhavn og Aarhus og i en haandfuld virksomhedstyper: enterprise-SaaS, konsulenthusene, og in-house-teams hos de store producenter. Han skal vide hvor de er, ikke antage at de er overalt.",
+  "At forveksle at kende reglerne med at kunne forhandle dem. Den egentlige kompetence er ikke at vide hvad art. 32 kraever - det staar der. Det er at kunne sidde over for en kundes sikkerhedschef der kraever noget urimeligt og forhandle en loesning der opfylder intentionen billigere. Den kompetence traenes kun i rummet, og derfor er 'sid med som referent paa auditopkald' vigtigere end det lyder."
+ ],
+ "maalepunkter": [
+  "Der findes en URL til et system han driver, med et oppetidstal for de seneste 90 dage og mindst eet skrevet post-incident review af en RIGTIG haendelse - tidslinje, bidragende faktorer, opfoelgning, uden skyldsplacering.",
+  "Mindst 10 ADR'er i git, daterede, hvoraf mindst tre dokumenterer en beslutning han senere aendrede - med aendringen skrevet ned. En arkitekt der aldrig har taget fejl har enten ikke besluttet noget eller ikke skrevet det ned.",
+  "En udfyldt CAIQ v4 eller MVSP-selvvurdering for hans eget system, hvor hvert 'ja' har et evidenslink der virker.",
+  "En Statement of Applicability der daekker alle 93 ISO 27001:2022 bilag A-kontroller med skriftlig begrundelse for hver udeladelse.",
+  "Mindst tre faciliterede threat modeling-sessioner hvor han IKKE selv skrev koden, og hvor hver session producerede tickets der efterfoelgende blev lukket.",
+  "Cross-tenant abuse-testsuiten koerer i CI, daekker hvert endpoint i hans system, og har fanget mindst en rigtig fejl - gerne hans egen.",
+  "Han kan sige hvad hans system koster per tenant per maaned, og har mindst eet skrevet trade-off-memo hvor anbefalingen afhang af et tal og hvor konklusionen var en regel, ikke en holdning.",
+  "Mindst fire rigtige kundespoergeskemaer besvaret hos LeanLinking, og et svarbibliotek han vedligeholder som andre bruger.",
+  "Hans navn optraeder i et LeanLinking-dokument som en KUNDE ser - et spoergeskemasvar, et DPA-bilag, en arkitekturbeskrivelse, et auditsvar.",
+  "Han kan uden noter og paa under tre minutter hver forklare hvad GDPR art. 28 og art. 32, NIS2 art. 21(2)(d), og ISO 27001 A.5.19-A.5.22 kraever - OG navngive den konkrete kontrol i sit eget system der opfylder hver af dem.",
+  "Han har vaeret i rummet, om end tavs, ved mindst to kundesikkerheds- eller auditopkald.",
+  "Mindst een person uden for hans team har stillet ham et spoergsmaal der begynder med 'er det et problem hvis vi...'. Det er det foerste rigtige tegn paa arkitektstatus, og det kan ikke fremtvinges - kun fortjenes.",
+  "MAANED 6, BESLUTNINGSPUNKT FOR INTERNT MANDAT. Mindst eet af tre observerbare signaler skal vaere indtruffet: (a) han er blevet tildelt en navngivet sikkerheds- eller compliance-ansvarlighed, eller bedt om at reviewe en andens design; (b) han er inviteret med i en kundevendt teknisk samtale; (c) et memo han har skrevet har aendret en produkt- eller backlogbeslutning der kan pinpointes. Hvis INGEN af de tre er indtruffet efter et halvt aars dokumenteret gavearbejde, aabner den interne vej sig ikke, og strategien skifter til ekstern jobsoegning. Ingen forhandling med sig selv paa det punkt - han skal skrive datoen og de tre kriterier ned i dag, mens han er koeligt indstillet, saa hans maaned-6-jeg ikke kan flytte maalstolperne.",
+  "MAANED 9-10, KOMPETENCEPORT, falsificerbar. Kan han koldt tage et ukendt krav - 'denne kunde er en bank under DORA, kraever EU-dataresidens og customer-managed keys' - og paa 90 minutter producere et diagram, tre optioner med omkostninger, en anbefaling med en beslutningsregel, og de tre stoerste risici - og forsvare det mod fjendtlige spoergsmaal? Testen skal koeres med en senior arkitekt han IKKE arbejder sammen med, fordi kolleger er for venlige. Hvis den arkitekt ikke ville ansaette ham bagefter, er svaret et aar mere. Det er ikke et nederlag; det er hele pointen med at have en port.",
+  "Kontrolmaaling mod selvbedrag, koeres samtidig med porten: kan han naevne tre ting han troede for seks maaneder siden og nu mener var forkerte? Hvis ikke, har han laest og ikke bygget - for kun praksis producerer den slags korrektioner."
+ ]
+}

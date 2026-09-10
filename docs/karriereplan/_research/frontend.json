@@ -1,0 +1,370 @@
+{
+ "kernepointer": [
+  "ROLLEAFGRÆNSNINGEN FØRST: En solution architect skal kunne stille frontend til regnskab, ikke skrive den. Det operative krav er: på en dag kunne aflæse et ukendt React-repo og sige hvor det knækker om 18 måneder, og kunne forsvare kontrakten mod backend. Ikke kunne optimere en re-render. Frontend bør maks. være ~15% af Simons samlede øvetid — ca. 60-90 timer ud af de ca. 550-600 timer 12 måneder à 10-15 t/uge giver. Går han over, er han på vej ind i den forkerte rolle.",
+  "FRONTEND RÅDNER AF MANGLENDE GRÆNSER, IKKE AF DÅRLIG KODE. Fem rådnemekanismer: (a) server-state gemt i client-state-container, (b) komponentvækst uden ejerskab eller lag, (c) ingen design-system-governance så hver ticket træffer mikrobeslutninger der aldrig konvergerer, (d) intet bundle-budget så størrelsen vokser monotont (ingens ticket hedder 'gør den mindre'), (e) ingen versionsdisciplin i drift, så deployede klienter cacher sig fast. Alle fem er organisatoriske problemer med teknisk symptom. Det er præcis derfor de er arkitektens og ikke seniorudviklerens.",
+  "DEN ENKELTSTØRSTE FEJL I B2B SAAS: at behandle server-state som client-state. Redux-slices navngivet efter API-endpoints, manuelle loading/error-booleans overalt, stale-data-bugs, og den afslørende 'Opdater'-knap i UI'et (en refresh-knap er en indrømmelse af at cachen er brudt). 2026-svaret er kedeligt og velkendt: server-state i et query-cache-lag (TanStack Query 5.102.8, verificeret aktiv, eller RTK Query hvis Redux allerede er der), client-state i noget lille (Zustand 5.0.15, eller bare useState). Redux Toolkit (2.12.0, maj 2026) er ikke dødt, men er sjældent det rigtige default for ny kode. Arkitektens ene spørgsmål: hvor mange kilder til sandhed har dette datum? Mere end én = råd. LeanLinking er statistisk set en kodebase fra 2018-2021 og har med stor sandsynlighed netop denne sygdom — det er Simons bedste indgang til at sige noget arkitektonisk uden mandat.",
+  "REACT-STATUS 2026, VERIFICERET: React 19.3.0 er nyeste stabile (npm registry, 9. sept 2026). Der findes ingen React 20. React 19 har været current major siden dec 2024 — altså næsten to år uden ny major. Det er i sig selv en pointe: framework-tempoet er faldet, og 'hold dig opdateret'-panik er ikke længere en arkitekturrisiko i React-verdenen. Til gengæld har React Router haft v6→v7→v8 (8.3.1, aug 2026) på kort tid — en router der laver major årligt ER en migrationsskat, og det er den slags leverandørrisiko en arkitekt skal prissætte, ikke ignorere.",
+  "RSC/NEXT.JS ER OFTE FORKERT SVAR FOR HANS KONTEKST — OG AT KUNNE BEGRUNDE DET NEJ ER MERE ARKITEKTVÆRDI END AT KUNNE IMPLEMENTERE DET. Server Components er reelt en framework-funktion (Next.js App Router er nu det mest udbredte React-setup). Men for en autentificeret B2B SaaS bag Entra ID med .NET-backend: SEO er irrelevant (siden er bag login), og at indføre Next.js betyder at indføre en Node-runtime ved siden af .NET — et andet sprog i drift, et andet deployment-target, en anden sikkerhedsflade, en anden on-call-kompetence. Det er en organisatorisk beslutning forklædt som et frontend-valg. Den omformulering er selve arkitektarbejdet.",
+  "MICRO-FRONTENDS: SVARET ER NÆSTEN ALTID NEJ, OG KRITERIET ER ORGANISATORISK. Micro-frontends løser ét problem: at flere selvstændige teams ikke kan deploye uafhængigt af hinanden. Testen er ikke teknisk, den er Conway: hvor mange teams er blokeret af hinanden lige nu, målt i PR-kø-tid og release-kadence? Under ca. 4-5 selvstændige frontend-teams er prisen større end gevinsten: versionsdrift på delte afhængigheder (to React-versioner på én side), delt auth/session, ejerskab over routing, cross-app state, og en fejlsøgningshistorie hvor en bug kan ligge i et vilkårligt af N deploys. Teknologien er fin og vedligeholdt (Module Federation @module-federation/enhanced 2.9.0, aug 2026) — beslutningen er det sjældent. Eneste stærke case i LeanLinking-format: strangler-fig-migration væk fra en ældre frontend, og den er per design midlertidig.",
+  "BFF LØSER TRE TING OG KUN TRE: (1) at browseren aldrig ser et access token, (2) at N backend-kald bliver til ét, (3) at frontend får en datamodel formet efter skærmen i stedet for efter domænet. Gør ingen af de tre ondt, er en BFF bare ekstra drift. Punkt (1) er ikke længere en smagssag: RFC 10017 gør det normativt. Den klassiske fejl: BFF'en bliver et andet forretningslogiklag. Reglen der skal stå i ADR'en: en BFF må aggregere, transformere og autentificere. Den må ikke beslutte.",
+  "AUTH GJORT RIGTIGT I 2026 = TOKENS UD AF BROWSEREN, OG DET ER NU EN PUBLICERET RFC. RFC 10017 (OAuth 2.0 for Browser-Based Applications) rangerer mønstrene: BFF (tokens kun server-side, browseren får en HttpOnly-cookie) > token-mediating backend (refresh token server-side, access token i browseren) > browser-based OAuth client (alt i browseren). Det er guld for en junior: en verificerbar, citerbar, normativ kilde gør forskellen på 'jeg synes' og 'standarden siger, vi valgte nummer to, og prisen er X'. At kunne argumentere mod en ekstern autoritet i stedet for mod sin egen smag er en af de mest undervurderede arkitektfærdigheder.",
+  "AUTORISATION I FRONTEND ER ALDRIG SIKKERHED — DET ER UX. Hver eneste kontrol skal håndhæves i backend, uden undtagelse. Men den gode variant er ikke at duplikere reglerne to steder: lad serveren returnere de tilladte handlinger sammen med ressourcen (et permissions-felt på objektet), så UI'et renderer ud fra data i stedet for at reimplementere regler. Én kilde til sandhed. I LeanLinkings produktform — multi-tenant, med både køberside-brugere og eksterne leverandørbrugere, hvor en leverandør kan betjene flere købere — er tenant-valg den mest sandsynlige reelle sårbarhed: hvis tenant-id kommer fra en URL-segment eller en header som klienten kontrollerer, har man horizontal privilege escalation. At fange den slags er nøjagtig det en arkitekt er ansat til.",
+  "KONTRAKTEN MELLEM .NET OG REACT ER DEN MEST UNDERVURDEREDE ARKITEKTURGRÆNSE I STACKEN — OG DEN ENESTE FRONTEND-KOMPETENCE DER OVERFØRES 1:1 TIL DISTRIBUERET SYSTEMARKITEKTUR. Håndskrevne TypeScript-interfaces der spejler C#-DTO'er er gæld der ikke fremgår af nogen metric før det brækker i produktion. Generér i stedet: .NET 10 genererer OpenAPI 3.1 native (Microsoft.AspNetCore.OpenApi 10.0.12, verificeret på NuGet), TS-klienten genereres i CI (NSwag.MSBuild 14.7.1 aktivt vedligeholdt, eller @hey-api/openapi-ts). Så bliver et breaking change en build-fejl i stedet for en supportsag. VIGTIGT FORBEHOLD han skal kunne sige selv: generering løser kun SYNTAKTISK kompatibilitet. Semantiske brud — et felt der beholder sin type men skifter betydning, en enum der får en ny værdi klienten ikke håndterer — er usynlige for ethvert diff-værktøj. At kunne navngive den begrænsning er forskellen på en der har læst et blogindlæg og en der har kørt det.",
+  "CORE WEB VITALS GÆLDER BOGSTAVELIGT TALT IKKE FOR EN APP BAG LOGIN. Metrikkerne er LCP <2,5 s, INP <200 ms, CLS <0,1 målt på 75.-percentilen af rigtige brugere i Googles CrUX-datasæt (INP afløste FID endeligt i marts 2024). CrUX indeholder kun offentligt tilgængelige sider. LeanLinkings app er ikke i CrUX, har ingen SEO-effekt, og LCP betyder næsten intet der. INP-KONCEPTET betyder til gengæld alt: B2B-brugere sidder i systemet i timevis og laver tusindvis af interaktioner. De rigtige budgetter skal han udlede selv fra en brugerkendsgerning — fx 'tid pr. tastetryk i en tabel med 5.000 rækker' og 'tid til et auditskema med 200 felter er interaktivt på en 4x throttlet CPU'. Bonus-metrik som næsten ingen underviser i og som er dybt B2B-relevant: hukommelsesvækst over en 8-timers session uden reload. En læk en forbrugerside aldrig opdager, dræber en B2B-app.",
+  "TILGÆNGELIGHED ER EN SALGSBLOKERING FØR DEN ER EN LOVBLOKERING — OG DET ER DEN VINKEL DER VIRKER INTERNT. Fakta: EAA har været håndhævelig siden 28. juni 2025, alle 27 medlemslande har implementeret, første franske retssager nov 2025. EN 301 549 v4.1.1 blev publiceret af ETSI 2. sept 2026 og peger på WCAG 2.2 AA (Annex ZB mapper til EAA). MEN: EAA dækker specifikke forbrugerrettede tjenester, og en B2B-leverandørportal er sjældent direkte omfattet (professional-capacity-diskussionen). Den reelle mekanisme er indkøb: offentlige kunder SKAL indkøbe efter EN 301 549, og store private kunder beder om en ACR/VPAT i udbud uanset jura. En arkitekt der kan svare 'ja, her er vores ACR' vinder udbud. Simon skal argumentere tabt omsætning, ikke moral og ikke paragraffer.",
+  "DESIGN SYSTEM ER ET ORGANISATORISK VÆRKTØJ FORKLÆDT SOM ET KODEBIBLIOTEK. Koden er 20% af arbejdet; de 80% er governance: hvem afgør at en ny komponent er nødvendig, hvem reviewer, hvem versionerer, hvem migrerer forbrugerne, hvad sker der når en designer vil have en engangsløsning. Uden svar får man blot et andet sted at skrive CSS. Målestokken er ikke antal komponenter, men andelen af nye skærme bygget uden ny CSS — under 80% og systemet er dekoration. Byg-vs-køb: for et firma af LeanLinkings størrelse er 'byg fra bunden' næsten altid forkert. Den reelle arkitektbeslutning er ikke hvilket bibliotek, men: ejer vi tilgængelighedslaget eller lejer vi det? At leje et accessible primitives-sæt er den eneste realistiske måde et lille team når WCAG 2.2 AA uden en tilgængelighedsspecialist — og det er den højeste løftestang i hele frontend-arkitekturen for en virksomhed som denne.",
+  "DET SAMME MØNSTER GENTAGER SIG TRE STEDER, OG DET ER DEN GENERALISERBARE INDSIGT: kontrakten mod backend håndhæves ét sted (genereret klient + CI-gate) eller også lækker den overalt. Autorisation håndhæves ét sted (serveren, leveret som data) eller også divergerer den. Tilgængelighed håndhæves ét sted (komponentlaget) eller også bliver det ubegrænset per-skærm-oprydning. Design tokens er kontrakten mellem design og kode præcis som OpenAPI er kontrakten mellem frontend og backend (W3C DTCG-specifikationen nåede sin første stabile version 2025.10 i okt 2025, understøttet af 40+ organisationer). Når Simon kan se det ene mønster i fire forklædninger, er han holdt op med at samle facts og begyndt at tænke som arkitekt."
+ ],
+ "ressourcer": [
+  {
+   "titel": "RFC 10017 — OAuth 2.0 for Browser-Based Applications (IETF)",
+   "type": "standard / RFC",
+   "prioritet": "kerne",
+   "hvorfor": "Den vigtigste enkeltressource på hele emnet for ham. Rangerer arkitekturmønstrene for browser-auth normativt (BFF > token-mediating backend > browser-based OAuth client) og giver ham en citerbar autoritet i stedet for en mening. Læs kun afsnittene om de tre arkitekturmønstre og trusselsmodellen — spring den fulde protokoldetalje over. Direkte input til spike F2.",
+   "tidsforbrug": "2-3 timer",
+   "url": "https://www.rfc-editor.org/info/rfc10017/",
+   "verificeret": true,
+   "hvad_springes_over": "Alle appendiks og detaljerede protokolflows. Han skal kunne mønstrene og trusselsmodellen, ikke implementere en AS."
+  },
+  {
+   "titel": "Microsoft Learn: Backends for Frontends pattern (Azure Architecture Center)",
+   "type": "dokumentation / mønsterbeskrivelse",
+   "prioritet": "kerne",
+   "hvorfor": "Kort, autoritativ og i Azure-sprog — altså det sprog beslutninger træffes i hos LeanLinking. Giver ham 'hvornår IKKE' -afsnittet, som er den halvdel juniorer springer over. Kombinér med RFC 10017: Microsoft giver aggregerings-argumentet, RFC'en giver sikkerhedsargumentet.",
+   "tidsforbrug": "45 minutter",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/backends-for-frontends",
+   "verificeret": false,
+   "hvad_springes_over": "Resten af Azure Architecture Center som sammenhængende læsning. Det er opslagsværk, ikke pensum."
+  },
+  {
+   "titel": "Microsoft Learn: OpenAPI support in ASP.NET Core (Microsoft.AspNetCore.OpenApi)",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "hvorfor": "Den praktiske kerne i hans vigtigste spike. Verificeret: Microsoft.AspNetCore.OpenApi 10.0.12 er nyeste stabile på NuGet, .NET 10 genererer OpenAPI 3.1 som default (op fra 3.0 i .NET 9), og Swashbuckle blev fjernet fra webapi-templaten i .NET 9. Han skal specifikt kunne build-time dokumentgenerering, så spec'en bliver et build-artefakt CI kan diffe.",
+   "tidsforbrug": "3-4 timer inkl. hands-on",
+   "url": "https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/overview",
+   "verificeret": false,
+   "hvad_springes_over": "Native AOT-afsnittet og custom transformer-API'et i dybden. Interessant, men ikke arkitektviden."
+  },
+  {
+   "titel": "GitHub: dotnet/aspnetcore issue #54599 — Announcement: Swashbuckle.AspNetCore is being removed in .NET 9",
+   "type": "primærkilde / beslutningsdokument",
+   "prioritet": "støtte",
+   "hvorfor": "Værd at læse ikke for indholdet, men som eksempel på hvordan en platformsbeslutning bliver kommunikeret og hvordan økosystemet reagerer. NB: Swashbuckle er IKKE dødt — kun fjernet fra templaten. Swashbuckle.AspNetCore 10.x understøtter .NET 10 og OpenAPI 3.1 (opt-in). Hvis Simon påstår Swashbuckle er dødt i et møde, taber han troværdighed hos en senior.",
+   "tidsforbrug": "30 minutter",
+   "url": "https://github.com/dotnet/aspnetcore/issues/54599",
+   "verificeret": true,
+   "hvad_springes_over": "Kommentartråden i sin helhed (hundredvis)."
+  },
+  {
+   "titel": "TanStack Query — dokumentation, specifikt 'Important Defaults' og caching-modellen",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "hvorfor": "Ikke fordi han skal blive god til biblioteket, men fordi dokumentationen er den bedste gratis forklaring af skellet mellem server-state og client-state, som er den vigtigste enkeltdiagnose i frontend-arkitektur. Verificeret aktiv: 5.102.8, publiceret aug 2026. Læs caching- og invalideringsmodellen, og luk så siden.",
+   "tidsforbrug": "2-3 timer",
+   "url": "https://tanstack.com/query/latest",
+   "verificeret": false,
+   "hvad_springes_over": "Hele API-referencen. Han skal kunne forklare modellen, ikke skrive hooks i søvne."
+  },
+  {
+   "titel": "Martin Fowler / Cam Jackson: Micro Frontends",
+   "type": "artikel",
+   "prioritet": "kerne",
+   "hvorfor": "Én artikel er hele hans micro-frontend-pensum. Den er ærlig om omkostningerne og god på det organisatoriske kriterium. Formålet er ikke at kunne bygge det — formålet er at kunne afvise det med en begrundelse der refererer til teamstruktur og deploy-kadence i stedet for til smag. Læs den, skriv en nej-ADR, gå videre.",
+   "tidsforbrug": "1,5 timer inkl. nej-ADR",
+   "url": "https://martinfowler.com/articles/micro-frontends.html",
+   "verificeret": false,
+   "hvad_springes_over": "Alt andet micro-frontend-materiale. Se separat 'spring over'-post om Mezzalira-bogen."
+  },
+  {
+   "titel": "WCAG 2.2 Quick Reference, filtreret til Level AA",
+   "type": "standard / referenceværk",
+   "prioritet": "kerne",
+   "hvorfor": "EN 301 549 v4.1.1 (ETSI, 2. sept 2026) peger på WCAG 2.2 AA, så det er den konkrete målestok EU-indkøb bruger. Han skal IKKE læse den som en bog. Han skal filtrere til AA, læse de ~9 nye kriterier i 2.2 ift. 2.1, og derefter bruge den som opslagsværk under sin ACR-spike.",
+   "tidsforbrug": "2 timer første gang, derefter opslag",
+   "url": "https://www.w3.org/WAI/WCAG22/quickref/",
+   "verificeret": false,
+   "hvad_springes_over": "Level AAA i sin helhed. AAA er ikke et realistisk mål for et produkt og bliver aldrig krævet i udbud."
+  },
+  {
+   "titel": "Design Tokens Community Group: 'Design Tokens specification reaches first stable version' (W3C, 28. okt 2025) + designtokens.org",
+   "type": "standard / annoncering",
+   "prioritet": "støtte",
+   "hvorfor": "Verificeret: version 2025.10 er første stabile, bakket af 40+ organisationer inkl. Adobe, Figma, Google, Microsoft, Salesforce; en undersøgelse fra juni 2026 angiver 84% adoption blandt ca. 300 fagfolk (op fra 56% året før). Pointen for ham er ikke tokens som CSS-teknik, men tokens som KONTRAKT mellem design og kode — samme mønster som OpenAPI mellem frontend og backend. Læs annonceringen, ikke specifikationen.",
+   "tidsforbrug": "1 time",
+   "url": "https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/",
+   "verificeret": true,
+   "hvad_springes_over": "Selve specifikationsteksten. Den er til værktøjsbyggere."
+  },
+  {
+   "titel": "Michael Nygard: Documenting Architecture Decisions (ADR) + adr.github.io templates",
+   "type": "artikel + skabelon",
+   "prioritet": "kerne",
+   "hvorfor": "Han skal producere 4+ ADR'er på dette emne alene. Vælg ÉN skabelon (Nygards korte, ikke MADR med 14 felter) og brug den uændret i 12 måneder. Tilføj ét felt skabelonen ikke har: 'Hvad giver vi afkald på'. Det felt er det eneste der adskiller en ADR fra et referat.",
+   "tidsforbrug": "1 time, én gang",
+   "url": "https://adr.github.io/",
+   "verificeret": false,
+   "hvad_springes_over": "ADR-værktøjsøkosystemet (log4brains osv.). Markdown i repoet er nok. Værktøjsvalg her er ren prokrastinering."
+  },
+  {
+   "titel": "size-limit (CI-håndhævelse af bundle-budget)",
+   "type": "værktøj",
+   "prioritet": "kerne",
+   "hvorfor": "Verificeret frisk og vedligeholdt: 13.0.3, juli 2026, ~5,2 mio. downloads/md. Det er hele hans performance-governance-værktøjskasse. Et budget der ikke fejler en build er ikke et budget, det er en ambition. Skal ind i spike F4 og i hans Azure DevOps-pipeline.",
+   "tidsforbrug": "2 timer opsætning",
+   "url": "https://github.com/ai/size-limit",
+   "verificeret": false,
+   "hvad_springes_over": "Konkurrerende bundle-værktøjer. Vælg ét, kom videre."
+  },
+  {
+   "titel": "Lighthouse CI (@lhci/cli)",
+   "type": "værktøj",
+   "prioritet": "senere",
+   "hvorfor": "ADVARSEL SOM ER VÆRD AT VIDERBRINGE: seneste udgivelse er 0.15.1 fra 25. juni 2025 — over 15 måneder uden release, og stadig 0.x. Det er stagnation, ikke død, og downloadtallene er høje. Brugbart til den offentlige del (marketingsite, loginside) hvor Core Web Vitals FAKTISK gælder. Men det er ikke rygraden i hans måledisciplin, og han skal ikke bygge governance oven på et værktøj der ikke er udgivet i over et år. At kunne se den slags signal er i sig selv arkitektarbejde.",
+   "tidsforbrug": "1-2 timer, kun hvis han rører den offentlige del",
+   "url": "https://github.com/GoogleChrome/lighthouse-ci",
+   "verificeret": false,
+   "hvad_springes_over": "Hele Lighthouse-scoren som mål for en app bag login. Den måler ting der ikke betyder noget der."
+  },
+  {
+   "titel": "@axe-core/playwright (automatiseret tilgængelighedsscanning)",
+   "type": "værktøj",
+   "prioritet": "støtte",
+   "hvorfor": "Verificeret aktiv: 4.13.0, aug 2026. Kernen i ACR-spiken. KRITISK NUANCE han skal eje: automatik fanger kun en delmængde af WCAG-fejl. Han skal MÅLE sin egen andel (automatiske fund vs. manuelle fund på samme skærm) i stedet for at citere et tal fra en blog. Det tal, målt af ham selv på LeanLinkings egne skærme, er et stærkere argument end nogen ekstern statistik.",
+   "tidsforbrug": "3 timer inkl. manuel tastatur- og NVDA-gennemgang",
+   "url": "https://github.com/dequelabs/axe-core-npm",
+   "verificeret": false,
+   "hvad_springes_over": "Overlay-produkter og 'ét script gør dig compliant'-værktøjer. De er aktivt skadelige og bliver sagsøgt."
+  },
+  {
+   "titel": "NSwag (NSwag.MSBuild) — TypeScript-klientgenerering i en .NET-pipeline",
+   "type": "værktøj",
+   "prioritet": "kerne",
+   "hvorfor": "Verificeret aktivt vedligeholdt: NSwag.MSBuild 14.7.1 på NuGet. Det .NET-native valg: lever i MSBuild, så backend-teamet ejer generatoren — hvilket i en .NET-tung organisation som LeanLinking er den rigtige ejerskabsplacering. Alternativ: @hey-api/openapi-ts (0.99.0, juni 2026) hvis frontend skal eje den; god output og TanStack Query-plugin, MEN den er stadig pre-1.0 efter flere år, hvilket er en reel leverandørrisiko en arkitekt skal nævne højt. Tredje mulighed: openapi-typescript hvis han kun vil have typer og ingen klient.",
+   "tidsforbrug": "4-6 timer hands-on i spike F1",
+   "url": "https://github.com/RicoSuter/NSwag",
+   "verificeret": false,
+   "hvad_springes_over": "Kiota og openapi-generator. Begge fine, men han skal vælge ét og forstå trade-offet, ikke evaluere fem."
+  },
+  {
+   "titel": "TypeSpec 1.0 GA-annonceringen (Microsoft)",
+   "type": "artikel / produktannoncering",
+   "prioritet": "senere",
+   "hvorfor": "Verificeret: TypeSpec har nået 1.0 GA med stabile kernekomponenter og produktionsklare OpenAPI 3-emittere; klient-/servergenerering til .NET, JS, Java og Python er i preview. Relevant som RETNING — 'API-first hvor spec'en er kilden, ikke koden' — men det er en organisatorisk beslutning LeanLinking næppe træffer i hans horisont. Læs annonceringen i måned 9-12 for at kunne tale om det. Byg ikke noget på det i år 1.",
+   "tidsforbrug": "45 minutter",
+   "url": "https://typespec.io/blog/typespec-1-0-GA-release/",
+   "verificeret": true,
+   "hvad_springes_over": "Al hands-on. Det er et fremtidsargument, ikke en spike."
+  },
+  {
+   "titel": "Deque: EN 301 549 — det europæiske standard for digital tilgængelighed",
+   "type": "referenceartikel",
+   "prioritet": "støtte",
+   "hvorfor": "Hurtigste vej til at forstå forholdet mellem EAA (direktivet), EN 301 549 (den harmoniserede standard) og WCAG 2.2 AA (de tekniske kriterier) — en trelagsstruktur juniorer konsekvent blander sammen. v4.1.1 blev publiceret af ETSI 2. sept 2026 med Annex ZB der mapper til EAA. Han skal kunne tegne de tre lag på et whiteboard.",
+   "tidsforbrug": "1 time",
+   "url": "https://www.deque.com/accessibility-compliance/en-301-549/",
+   "verificeret": true,
+   "hvad_springes_over": "Selve EN 301 549-dokumentet. Det er hundredvis af sider normtekst til indkøbsjurister."
+  },
+  {
+   "titel": "Alla Kholmatova: Design Systems (Smashing Magazine)",
+   "type": "bog",
+   "prioritet": "senere",
+   "hvorfor": "God netop fordi den er organisatorisk og ikke teknisk — den handler om sprog, beslutninger og konvergens, ikke om komponenter. Men den er kun relevant hvis LeanLinking faktisk beslutter sig for et design system, og det er ikke Simons beslutning i år 1. Læs den i måned 10-12 hvis positioneringssporet peger mod en organisation der har det problem.",
+   "tidsforbrug": "6-8 timer",
+   "url": "https://www.smashingmagazine.com/design-systems-book/",
+   "verificeret": false,
+   "hvad_springes_over": "Alle andre design system-bøger."
+  },
+  {
+   "titel": "Luca Mezzalira: Building Micro-Frontends (O'Reilly)",
+   "type": "bog",
+   "prioritet": "spring over",
+   "hvorfor": "SPRING OVER. Bogen er kompetent, men den træner præcis den fejl han skal undgå: at kunne bygge noget han bør afvise. 250 siders investering i et mønster hvis rigtige svar er nej, mens han har ca. 60-90 timer til HELE frontend-emnet. Fowler-artiklen på 90 minutter giver ham 95% af den beslutningsevne han har brug for. Hvis han nogensinde havner i en organisation med 6+ frontend-teams, køber han bogen den dag.",
+   "tidsforbrug": "0",
+   "url": "",
+   "verificeret": false,
+   "hvad_springes_over": "Hele bogen."
+  },
+  {
+   "titel": "Next.js / React Server Components — dybdelæring, kurser, App Router-migrationsguides",
+   "type": "kursus/dokumentation",
+   "prioritet": "spring over",
+   "hvorfor": "SPRING OVER SOM DYBDESPOR. Han skal bruge to timer på at forstå hvad RSC ER og hvad det koster, så han kan skrive en nej-ADR. Han skal ikke bruge to måneder på at kunne implementere det. RSC er en Next.js-centreret teknologi til offentlige, indholdstunge sider; LeanLinkings app er autentificeret, datatung og har en .NET-backend. Kritikpunkterne i 2026 er konsistente: caching og debugging er svært, server/klient-grænsen forvirrer stadig erfarne udviklere, og gevinsterne udebliver ofte i virkelige forhold. Det er nok til et velbegrundet nej.",
+   "tidsforbrug": "2 timer, ikke mere",
+   "url": "",
+   "verificeret": false,
+   "hvad_springes_over": "Alle App Router-kurser, alle RSC-dybdeartikler, al Server Actions-praksis."
+  },
+  {
+   "titel": "CPACC / WAS (IAAP-tilgængelighedscertificeringer)",
+   "type": "certificering",
+   "prioritet": "spring over",
+   "hvorfor": "SPRING OVER. Forkert signal til forkert pris. Certificeringerne er til folk der SKAL være tilgængelighedsspecialister eller auditorer. En solution architect skal kunne oversætte et indkøbsspørgeskema til en arkitekturbeslutning — og det beviser han med en ACR han selv har skrevet, ikke med et badge. Hans 2-3 certificeringsslots skal gå til Azure/arkitektur (behandles i andre emner), ikke her.",
+   "tidsforbrug": "0",
+   "url": "",
+   "verificeret": false,
+   "hvad_springes_over": "Hele IAAP-certificeringssporet."
+  },
+  {
+   "titel": "Enhver 'frontend architecture'-certificering eller -bootcamp",
+   "type": "certificering",
+   "prioritet": "spring over",
+   "hvorfor": "SPRING OVER, UDEN UNDTAGELSE. Der findes ingen frontend-arkitekturcertificering med troværdighed hos nogen der ansætter solution architects. Finder han én, er svaret nej. Signalet på dette emne er artefakter: ADR'er med tal, en CI-gate der fejler builds, og en frontend han har driftet.",
+   "tidsforbrug": "0",
+   "url": "",
+   "verificeret": false,
+   "hvad_springes_over": "Alt."
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "F1 (OBLIGATORISK — vigtigste frontend-spike, prioritet 1 af 6): Kontrakten mellem .NET og React, håndhævet i CI",
+   "problem": "Byg en .NET 10 minimal-API med 3-4 endpoints der modellerer et forsimplet supplier-certificate-flow (opret leverandør, upload certifikat med udløbsdato, hent leverandørliste med status). Generér OpenAPI 3.1 som build-artefakt via Microsoft.AspNetCore.OpenApi. Generér en TypeScript-klient i CI. Byg derefter en pipeline-gate i Azure DevOps der FEJLER builden når OpenAPI-dokumentet indeholder et breaking change ift. main: fjernet felt, ændret type, strammet nullability, fjernet enum-værdi. KRAV: (1) gaten skal kunne overrules med en eksplicit ADR-reference i commit-beskeden — governance skal have en dokumenteret nødudgang, ellers bliver den omgået i det skjulte; (2) frontend og backend må ikke være tvunget til at deploye sammen. BEGRÆNSNING: du må ikke håndskrive en eneste TypeScript-type der spejler en C#-DTO.",
+   "artefakter": "ADR: 'Hvordan vi styrer API-kontrakten mellem .NET og React' med afsnit om hvad vi giver afkald på (generatorens begrænsninger, byggetid, ejerskab). C4 container-diagram + ét sekvensdiagram over deploy-rækkefølge der viser hvorfor uafhængig deploy holder. MÅLING: plant 10 bevidste ændringer — 6 breaking, 4 non-breaking — og tæl hvor mange gaten klassificerer korrekt. Både falske negativer og falske positiver skal noteres. RETROSPEKTIV: en navngivet liste over de brud gaten IKKE kan fange.",
+   "fremgangsmaade": "Uge 1: API + OpenAPI-generering som build-artefakt + klientgenerering (NSwag.MSBuild 14.7.1 hvis backend skal eje den, @hey-api/openapi-ts hvis frontend skal). Uge 2: diff-gaten i Azure DevOps, de 10 plantede ændringer, målingen, artefakterne. Ram MED VILJE de tre klassiske .NET→TS-fælder og dokumentér dem: (a) C#-enums serialiseret som int giver TS-numre, og en ny enum-værdi bryder stille eksisterende exhaustive switches; (b) nullable reference types skal være slået ordentligt til i C#, ellers LYVER det genererede skema om required og TS får 'string' hvor det burde være 'string | undefined'; (c) DateTime vs. DateTimeOffset og tidszoner — i et compliance-produkt er et certifikats udløbsdato en juridisk kendsgerning, ikke et formateringsspørgsmål. De tre eksempler er guld i et interview, fordi de viser drift frem for teori.",
+   "kompetence": "Kontraktdesign og bagudkompatibilitet — den eneste frontend-kompetence der overføres 1:1 til distribueret systemarkitektur. Plus CI-gate som governance-instrument.",
+   "svaerhed": "middel",
+   "tid": "2 uger, ca. 20-25 timer"
+  },
+  {
+   "titel": "F2 (OBLIGATORISK — prioritet 2 af 6): Tokens ud af browseren — BFF mod Microsoft Entra ID, målt mod et rigtigt angreb",
+   "problem": "Byg BEGGE varianter, ikke kun den rigtige — hele pointen er sammenligningsgrundlaget. Variant A: React SPA med MSAL i browseren (@azure/msal-browser 5.21.0), access token i browseren. Variant B: samme SPA bag en .NET BFF, der kører authorization code flow med PKCE mod Entra ID, holder tokens server-side og udsteder KUN en HttpOnly + Secure + SameSite-cookie, og proxyer API-kald videre med token påhæftet. KRAV: (1) CSRF-forsvar i variant B, fordi cookie-baseret auth genindfører CSRF som SameSite alene ikke lukker i alle tilfælde; (2) silent renew der ikke smider brugeren ud midt i en 20-minutters auditformular — det er den fejl der genererer flest supportsager i virkelige B2B-produkter; (3) defineret opførsel når refresh token endeligt udløber. BEGRÆNSNING: du skal kunne DEMONSTRERE forskellen, ikke påstå den.",
+   "artefakter": "ADR: 'BFF vs. token i browseren' med RFC 10017 som normativ reference, mønsterrangeringen gengivet, og et eksplicit afsnit om prisen (ekstra netværkshop, sessionsstate der skal distribueres via Azure Cache/Redis når du skalerer ud, endnu en ting på vagtplanen). Sekvensdiagrammer for login, silent renew og logout — alle tre, for renew og logout er der fejlene bor. MÅLING: injicér samme simulerede XSS-payload i begge varianter — et script der forsøger at læse token fra memory/localStorage og sende det til en opsamler du selv har kørende. Dokumentér at variant A lykkes og variant B fejler. Det er en måling, ikke en påstand. RETROSPEKTIV.",
+   "fremgangsmaade": "Uge 1: variant A og angrebsdemoen (den er hurtig og motiverende, fordi den virker). Uge 2: variant B. Til .NET-siden: enten Duende.BFF (4.2.0 nyeste på NuGet — VERIFICÉR licensvilkårene før du anbefaler den kommercielt, Duende har omsætningsbaseret licens) eller gør-det-selv med YARP (Yarp.ReverseProxy) + cookie-authentication + Microsoft.Identity.Web. Byg gør-det-selv-varianten — du lærer mere, og du kan bagefter argumentere kvalificeret for hvorfor man alligevel skal købe. Tilføj eksplicit et afsnit i ADR'en om Entra ID group claims: i organisationer med mange grupper sprænger token-størrelsen header-grænser, og det er en klassisk produktionsnedbrud. Løsningen er app roles eller at hente permissions via API i stedet for at proppe dem i token'et.",
+   "kompetence": "Auth-arkitektur, sikkerhedsræsonnement, og — vigtigst — trade-off-artikulering mod en normativ ekstern kilde i stedet for mod egen smag.",
+   "svaerhed": "høj",
+   "tid": "2 uger, ca. 22-25 timer"
+  },
+  {
+   "titel": "F3 (DRIFTSKANDIDAT — den ene spike der skal promoveres til noget han faktisk driver, prioritet 3 af 6): Den deployede frontend der ikke kan rulles tilbage",
+   "problem": "Deploy resultatet af F1+F2 til Azure og DRIV det i resten af de 12 måneder. Frontend på Azure Static Web Apps eller Blob Storage + Front Door; API i Azure Container Apps eller App Service. KRAV: (1) en bruger der har appen åben når du deployer må ikke få hvid skærm — håndtér chunk-load-fejl fra assets der ikke længere findes; (2) du skal kunne rulle backend én version tilbage uden at en allerede indlæst ældre frontend brækker; (3) cache-strategi: immutable hashede assets, ucachet index.html, og du skal kunne forklare hver header; (4) en synlig version-stamp i UI'et så en supportsag kan starte med 'hvilken build kører du'. BEGRUNDELSE FOR AT NETOP DENNE PROMOVERES: en deployet SPA er det sværeste at rulle tilbage i hele stakken, fordi klienten cacher og du ikke kontrollerer hvornår brugeren genindlæser. Det er den mest undervurderede driftslektion i frontend, og den kan ikke læres af en bog.",
+   "artefakter": "ADR om cache-, versionerings- og rollback-strategi. Deployment-diagram med cache-lag og TTL'er markeret. MÅLING: gennemfør 5 deploys mens en browser står med appen åben i baggrunden. Tæl hvide skærme og chunk-load-fejl FØR afbødning, implementér afbødningen, tæl igen. Løbende driftsmåling over 3+ måneder: antal hændelser, tid til opdagelse, tid til afhjælpning. RETROSPEKTIV der specifikt navngiver hvad der først kunne SES i drift og var usynligt i udvikling — det er den sætning der gør ham troværdig i et interview.",
+   "fremgangsmaade": "Uge 1: deploy-pipeline i Azure DevOps, cache-headers, version-stamp. Uge 2: bryd det med vilje 5 gange, mål, afbød, mål igen. Derefter: rør ved det mindst én gang om måneden i resten af året — deploy en ændring, hold en afhængighed opdateret, reagér på noget der går i stykker af sig selv. Hold en simpel hændelseslog. En frontend der har kørt i 9 måneder med en dokumenteret hændelseslog er et stærkere arkitektbevis end fem urørte demoer, fordi den beviser at han har mødt tidens virkning på et system.",
+   "kompetence": "Drift, bagudkompatibilitet, fejlmønstre, release engineering — og den erfaring af at eje noget over tid som et 12-måneders forløb ellers ikke giver.",
+   "svaerhed": "middel til høj (svær at holde ved lige, ikke svær at bygge)",
+   "tid": "2 uger opsætning, derefter ca. 2 timer/måned i 10 måneder"
+  },
+  {
+   "titel": "F4 (STÆRKT ANBEFALET — prioritet 4 af 6): Performance budget for en B2B-skærm der faktisk gør ondt",
+   "problem": "Byg ÉN realistisk LeanLinking-agtig skærm: en leverandørtabel med 5.000 rækker og 25 kolonner med filtrering og sortering, plus et auditskema med 200 felter og betinget validering. DEFINÉR BUDGETTET FØR DU OPTIMERER — det er hele disciplinen, og det er den rækkefølge alle bytter om: INP under 200 ms ved tastetryk i filterfeltet på 4x throttlet CPU, initial JS under et selvvalgt antal kB gzip, og tid til at auditformularen er interaktiv under en selvvalgt grænse. Optimér indtil budgettet holder. KRAV: budgettet skal håndhæves i CI med size-limit, så det ikke kan glide stille. BEGRÆNSNING: du må ikke bruge Googles Core Web Vitals-tal som dit budget — du skal udlede dine egne fra en brugerkendsgerning og kunne forsvare hvert tal.",
+   "artefakter": "ADR: 'Performance budget for datatunge B2B-skærme — og hvorfor Core Web Vitals ikke er vores metrik'. Den ADR er hans stærkeste enkeltdokument på hele emnet, fordi den viser at han kan AFVISE en industristandard med begrundelse i stedet for at citere den. MÅLING: før/efter-tal på alle budgetposter, målt af ham, på throttlet hardware. Diagram over renderingspipeline for tabellen der viser hvor tiden går. RETROSPEKTIV. EKSTRA MÅLING som næsten ingen laver og som er dybt B2B-relevant: lad appen stå åben i 8 timer med simuleret interaktion og mål hukommelsesvækst. En læk en forbrugerside aldrig opdager, dræber en app hvor brugeren aldrig genindlæser.",
+   "fremgangsmaade": "Uge 1: byg skærmene grimt og langsomt med vilje, og mål. Uge 2: definér budget, optimér, mål igen, sæt CI-gaten op. Argumentet han skal kunne føre bagefter: LeanLinkings app er bag login og indgår derfor slet ikke i Googles CrUX-datasæt, har nul SEO-effekt, og LCP betyder næsten intet der. Men INP-KONCEPTET betyder alt, fordi B2B-brugere laver tusindvis af interaktioner om dagen. Og for den LEVERANDØRVENDTE del af portalen — eksterne SMV-brugere, ofte på gammelt udstyr og dårlige forbindelser, nogle gange uden for EU — konverterer performance direkte til afbrudt onboarding. Den kobling (performance → onboarding completion rate) er hvordan han får en performance-ticket prioriteret uden mandat: han taler ikke om Lighthouse-scorer, han taler om leverandører der ikke bliver færdige.",
+   "kompetence": "Måledisciplin og budget som styringsværktøj. Plus evnen til at udlede krav fra brugerkendsgerninger i stedet for at låne industristandarder.",
+   "svaerhed": "middel",
+   "tid": "1,5-2 uger, ca. 18 timer"
+  },
+  {
+   "titel": "F5 (ANBEFALET hvis governance-sporet forfølges — prioritet 5 af 6): Tilgængelighed som salgsargument — en ACR på én skærm",
+   "problem": "Tag én skærm fra F4. Gennemfør en fuld tilgængelighedsvurdering mod WCAG 2.2 AA: automatiseret scanning med @axe-core/playwright, PLUS manuel tastaturgennemgang (kan hele skærmen betjenes uden mus, i logisk rækkefølge, med synlig fokus?), PLUS skærmlæser (NVDA på Windows — gratis, og det er hvad danske brugere faktisk anvender). KRAV: dokumentér resultatet i et ACR-lignende format (Accessibility Conformance Report) mod WCAG 2.2 AA / EN 301 549 — altså det format en indkøbsafdeling faktisk beder om. BEGRÆNSNING: du må ikke citere et blogtal for hvor meget automatik fanger. Du skal måle DIN egen andel: automatiske fund vs. manuelle fund på samme skærm.",
+   "artefakter": "ACR-udkast for én skærm — et dokument der ligner det LeanLinkings salgsafdeling ville skulle vedlægge et udbud. ADR: 'Hvor håndhæver vi tilgængelighed' med den afgørende beslutning: i komponentlaget én gang, eller per skærm i det uendelige. MÅLING: antal automatiske fund vs. antal manuelle fund, kategoriseret. RETROSPEKTIV.",
+   "fremgangsmaade": "3-4 dage arbejde, spredt over en uge. Den intellektuelle kerne er ikke scanningen — det er trelagsmodellen han skal kunne tegne: EAA (direktivet, håndhæveligt siden 28. juni 2025, implementeret i alle 27 lande) → EN 301 549 (den harmoniserede standard, v4.1.1 fra ETSI 2. sept 2026, Annex ZB mapper til EAA) → WCAG 2.2 AA (de konkrete tekniske kriterier). Og den ærlige konklusion: en B2B-leverandørportal er sjældent DIREKTE omfattet af EAA, fordi direktivet dækker specifikke forbrugerrettede tjenester, og der findes en professional-capacity-diskussion. Men offentlige kunder SKAL indkøbe efter EN 301 549, og store private kunder beder om en ACR i udbud uanset jura. Han skal argumentere indkøb, ikke paragraffer. NB: Danmarks konkrete implementeringslov af EAA kunne ikke verificeres i denne session — skrivende agent bør enten verificere navnet eller undlade at nævne en specifik dansk lovtitel.",
+   "kompetence": "Compliance-oversættelse og governance — den kompetence der tydeligst adskiller en solution architect fra en senior udvikler i B2B SaaS, og som rammer hans erklærede sekundære interesse direkte.",
+   "svaerhed": "lav teknisk, middel begrebsmæssig",
+   "tid": "1 uge, ca. 10-12 timer"
+  },
+  {
+   "titel": "F6 (ANBEFALET — binder frontend til hans observability-interesse, prioritet 6 af 6): Én trace fra klik til database",
+   "problem": "Instrumentér React-appen fra F1-F3 så et brugerklik starter en distribueret trace der kan følges hele vejen gennem BFF'en, API'et og databasekaldet i Azure Application Insights via OpenTelemetry. KRAV: (1) trace-id skal være SYNLIGT i UI'et, så en supportsag kan starte med 'giv mig dit trace-id' i stedet for 'kan du beskrive hvad du gjorde'; (2) ingen PII må havne i telemetrien — i et compliance-produkt med leverandørdokumenter er det ikke en detalje; (3) sampling skal være eksplicit defineret, og du skal kunne sige præcis hvad du kaster væk og hvorfor. BEGRÆNSNING: hvis kæden brydes ét sted, tæller spiken ikke som gennemført — det er netop det sidste hop der er svært, og det er derfor de fleste opgiver med en halv løsning.",
+   "artefakter": "ADR om frontend-telemetri, sampling-strategi og PII-politik. Diagram over den fulde trace-kæde med de steder korrelationen kan gå tabt markeret. MÅLING: andel af sessioner hvor hele kæden kan korreleres end-to-end — kør 50 interaktioner og tæl. RETROSPEKTIV om hvad der gik tabt og hvorfor.",
+   "fremgangsmaade": "Uge 1: OpenTelemetry i browseren, trace-context-propagering over BFF-hoppet (det er her det typisk knækker, fordi BFF'en starter en ny kontekst i stedet for at videreføre). Uge 2: Application Insights, sampling, PII-filtrering, målingen. Dette er den spike der kobler frontend til hans erklærede observability-interesse, og den har en usædvanlig høj nytteværdi på jobbet: frontend er næsten altid der hvor traces stopper, så en junior der lukker det hul bliver med det samme synlig for de seniorer der ejer driften. Det er en af de få steder hvor en ticket-taker kan levere noget arkitekter faktisk savner.",
+   "kompetence": "Frontend-observability, korrelation på tværs af grænser, og sampling som en bevidst arkitekturbeslutning frem for en default.",
+   "svaerhed": "høj",
+   "tid": "1,5-2 uger, ca. 18-20 timer"
+  }
+ ],
+ "paa_jobbet": [
+  "SKYGGEAUDIT AF FRONTEND-KODEBASEN (kræver kun læserettigheder, som han allerede har). Tæl komponenter. Find de 10 største filer. Kortlæg HVOR server-state ligger: i en global store, i et query-lag, eller begge dele (begge dele er diagnosen). Tæl hvor mange steder det samme API-kald foretages. Find komponenter med over 15 props — en komponent med 25 props er holdt op med at være en komponent og er blevet et framework. Skriv det ned i et notat du IKKE sender endnu. Du bygger et bevismateriale, ikke en anklage.",
+  "SKRIV TO LINJER ARKITEKTUR I HVER ENESTE PR-BESKRIVELSE: hvilken grænse rørte jeg ved, og hvad fravalgte jeg. Ingen beder om lov til at skrive en PR-beskrivelse. Efter tre måneder har han 40 mikro-ADR'er der viser mønstre — og efter seks har han en dokumenteret vane som senior-kolleger begynder at læse. Det er den billigste tilgængelige måde at ændre hvordan man bliver opfattet.",
+  "MÅL BUNDLE-STØRRELSEN FØR OG EFTER DIN EGEN ÆNDRING PÅ HVER TICKET, og skriv tallet i PR'en. Det tager to minutter. Efter 20 tickets har han en kurve. En kurve er et argument; en mening er det ikke. Når nogen en dag siger 'appen føles langsom', er han den eneste i rummet med data — og det er det øjeblik hvor mandat opstår i stedet for at blive uddelt.",
+  "STIL ÉT SPØRGSMÅL, ALDRIG ET KRAV, når en ticket kræver et nyt felt fra backend: 'er det her breaking for eksisterende klienter?' Et spørgsmål kræver ingen autoritet, og det kan ikke afvises. Efter et halvt år er han manden der tænker på kontrakten, uden at have bedt om at være det.",
+  "KØR AXE DEVTOOLS I BROWSEREN PÅ DEN SKÆRM DIN TICKET RØRER, og rapportér fund som en note i ticket'en. Ingen beder om lov til at rapportere en bug. Det bygger stille en dokumenteret bestand af tilgængelighedsgæld, som bliver forretningskritisk den dag et udbud spørger.",
+  "KORTLÆG HVILKE SKÆRME LEVERANDØRER SER VERSUS HVILKE KØBERE SER. Ren domæneviden, ingen tilladelse nødvendig. Den skelnen er hans stærkeste arkitekturargument senere, fordi den ændrer både performance- og tilgængelighedskravene fundamentalt: interne købersidebrugere er trænede og sidder på firmahardware; eksterne leverandørbrugere er utrænede, bruger systemet sjældent, og sidder på hvad som helst. Hvis de to populationer i dag behandles ens, har han fundet et reelt arkitekturproblem — og han fandt det ved at læse, ikke ved at få lov.",
+  "LÆS DE SIDSTE 12 MÅNEDERS FRONTEND-RELATEREDE BUGS OG SUPPORTSAGER og kategorisér dem: kontraktbrud, state-fejl, permission-fejl, performance, browser/cache. Adgang til bug-trackeren har han. Det er den ENESTE pålidelige kilde til hvor arkitekturen faktisk gør ondt — alt andet er gætteri — og det er data ingen andre har gidet samle. En junior der møder op med den kategorisering bliver behandlet anderledes samme dag.",
+  "BLIV DEN DER SKRIVER KONVENTIONER NED — ikke den der beslutter dem. 'Jeg noterede lige hvordan vi plejer at gøre med formularer, så nye ikke skal spørge.' Det er en tjeneste, ikke en magtovertagelse, og det bliver aldrig afvist. Men den der skriver konventionen ned, ejer den i praksis inden for et halvt år. Det er den billigste mandat-vej der findes for en ticket-taker.",
+  "SPØRG SALG ELLER CUSTOMER SUCCESS: 'har vi nogensinde fået et tilgængelighedsspørgsmål i et udbud, og hvem svarede på det?' Det er ét spørgsmål til en afdeling der aldrig taler med udviklere. Hvis svaret er ja, har han en forretningscase. Hvis ingen ved det, har han fundet et hul — og at finde huller mellem afdelinger er præcis hvad en solution architect gør. Sidegevinsten er større end hovedgevinsten: han bliver synlig for den kommercielle side af huset, og det er dér arkitekttitler i praksis besluttes.",
+  "SÅDAN FÅR HAN LOV NÅR HAN FAKTISK SKAL SPØRGE — REGEL 1: bed aldrig om mandat, bed om et afgrænset eksperiment med en slutdato. 'Må jeg bruge 4 timer på at måle X og vise jer resultatet på fredag?' er et ja fra de fleste ledere. 'Må jeg lave et design system?' er et nej fra alle. Små, tidsbegrænsede, med et konkret leverancetidspunkt.",
+  "SÅDAN FÅR HAN LOV — REGEL 2: kom med målingen først og forslaget bagefter, aldrig omvendt. Data flytter mandat; meninger gør ikke, især ikke fra den yngste i rummet. Rækkefølgen er ikke et stilspørgsmål, den er hele mekanikken.",
+  "SÅDAN FÅR HAN LOV — REGEL 3: start aldrig et nyt spor. Gør et eksisterende, allerede prioriteret spor 20% bredere. 'Jeg skal alligevel røre den skærm i denne ticket — jeg tilføjer lige en måling mens jeg er der.' Ingen afviser det. Alle afviser et nyt initiativ."
+ ],
+ "faldgruber": [
+  "AT BLIVE FRONTEND-SPECIALIST I STEDET FOR ARKITEKT. Den farligste fælde på dette emne, fordi den føles som fremskridt hele vejen. Frontend er dybt og der er altid mere at lære — men han skal kunne nok til at stille krav og aflæse råd, ikke til at være holdets bedste React-udvikler. Konkret loft: over ca. 15% af hans samlede øvetid på frontend, og han er på vej ind i den forkerte rolle. Målet er ikke at kunne bygge det. Målet er at kunne bedømme det.",
+  "AT FORVEKSLE NYE BIBLIOTEKER MED ARKITEKTUR. State-of-JS er ikke pensum. Ingen ansætter en solution architect fordi han kender det nyeste state management-bibliotek. React 19 har været nyeste major i næsten to år (19.3.0 nu) — framework-panikken er objektivt aftaget, og at jage den er ren undgåelsesadfærd forklædt som læring.",
+  "AT BYGGE ET DESIGN SYSTEM SOM SIN FØRSTE ELLER ENESTE SPIKE. Design systems fejler organisatorisk, ikke teknisk — og han har ingen organisation at fejle i. Han vil bygge 30 knapper, føle sig produktiv og lære nul arkitektur. Design system-kompetence er relevant for ham som BESLUTNINGSKOMPETENCE (byg vs. køb, hvem ejer governance, ejer vi tilgængelighedslaget eller lejer vi det), ikke som byggekompetence.",
+  "AT TRO AT RSC/NEXT.JS ER 'DET MODERNE' OG DERFOR RIGTIGT. For en autentificeret B2B SaaS bag Entra ID med .NET-backend er det ofte forkert, og det forkerte er ikke teknisk — det er at man indfører en Node-runtime, et ekstra deployment-target og en ekstra sikkerhedsflade ved siden af .NET. At kunne begrunde det NEJ er mere arkitektværdi end at kunne implementere JA'et. Fælden er at han bruger to måneder på at lære noget han skulle have brugt to timer på at afvise.",
+  "AT ARGUMENTERE FOR MICRO-FRONTENDS FOR AT LYDE AVANCERET. Det er den hurtigste måde at afsløre over for en erfaren arkitekt at man aldrig har DREVET noget. Enhver der har driftet en micro-frontend-opsætning taler om den med træthed, ikke med begejstring. Hvis han nævner det, skal det være i formen 'hvor mange teams er blokeret af hinanden lige nu, og kan vi måle det?'",
+  "AT CITERE CORE WEB VITALS FOR EN APP BAG LOGIN. Det afslører at han ikke har tænkt over hvem brugeren er. Appen indgår ikke i CrUX, har ingen SEO-effekt, og LCP betyder næsten intet der. Det er en lånt metrik, og lånte metrikker er det modsatte af arkitektur.",
+  "AT TRO AT FRONTEND-PERMISSION-CHECKS ER SIKKERHED. At skjule en knap er UX. Hvis backend ikke håndhæver det samme, findes kontrollen ikke. I et multi-tenant leverandørsystem hvor en leverandør kan betjene flere købere er det her de rigtige brud sker — og et brud af typen 'leverandør A kunne se leverandør B's auditsvar' er en sag der koster kunder, ikke en bug.",
+  "ADR'ER UDEN TAL. En ADR uden en måling er en mening med overskrift, og enhver erfaren arkitekt gennemskuer det på ti sekunder. Hvert artefaktsæt SKAL have mindst ét før/efter-tal han selv har målt. Det er den regel der forhindrer hele spike-serien i at blive PowerPoint-arkitektur — og PowerPoint-arkitektur er præcis den anklage der rejses mod for hurtigt forfremmede arkitekter.",
+  "AT LADE EN SPIKE VOKSE TIL ET PRODUKT. Han har ca. 60-90 timer til HELE frontend-emnet. En CRUD-app med login og brugerhåndtering æder det på tre uger og lærer ham intet arkitektonisk. Reglen skal håndhæves brutalt: når spikens spørgsmål er besvaret og målt, stopper spiken — også selvom den er 'næsten færdig'. Følelsen af at ville gøre den færdig er ikke fagligt argument, det er ejerskabsimpuls.",
+  "AT VENTE PÅ MANDAT. Mandat uddeles ikke, det bekræftes bagudrettet til folk der allerede har lavet arbejdet. Hvis han bruger måned 1-6 på at vente på lov til at tænke arkitektur, har han ingen data i måned 9 når kompetenceporten skal afgøres. Bevismaterialet skal bygges før tilladelsen findes.",
+  "AT TRO AT 'ARKITEKT' BETYDER AT MAN HOLDER OP MED AT KODE. I dansk SaaS af LeanLinkings størrelse er solution architect en hands-on rolle. At kunne åbne et repo og læse det gør ham mere troværdig, ikke mindre. Faren går den anden vej: den nyudnævnte arkitekt der holder op med at røre kode og inden for et år ikke længere kan bedømme sine egne beslutninger.",
+  "CERTIFICERINGSFÆLDEN PÅ NETOP DETTE EMNE: der findes ingen frontend-arkitekturcertificering der er værd at tage. Ingen. Hvis han finder en, er svaret nej. Tilgængelighedscertificeringer (CPACC/WAS) er ægte, men er til specialister og auditorer og er forkert signal for en arkitekt. Hans 2-3 certificeringsslots hører til andre emner.",
+  "AT PÅSTÅ TING DER VAR SANDE FOR TO ÅR SIDEN. 'Swashbuckle er dødt' er den aktuelle version af fejlen — det er fjernet fra .NET-templaten, men Swashbuckle.AspNetCore 10.x understøtter .NET 10 og OpenAPI 3.1 og er aktivt vedligeholdt. At sige det forkert i et møde koster mere troværdighed end at have tiet. En arkitekt der ikke tjekker inden han udtaler sig, er farligere end en der ikke ved det."
+ ],
+ "maalepunkter": [
+  "60-MINUTTERS REPO-TEST: I et React-repo han aldrig har set, producerer han på en time en liste med 5 arkitekturrisici, hver med en konkret kodereference. En erfaren kollega er enig i mindst 3 af dem. Dette er den enkeltmåling der bedst forudsiger om han kan bære titlen — den kan ikke fakes og kan ikke læses sig til.",
+  "MINDST 4 ADR'ER OM FRONTEND-GRÆNSER EKSISTERER, hver med (a) mindst ét måletal han selv har målt, (b) et eksplicit 'hvad vi giver afkald på'-afsnit, og (c) en ekstern reference. En ADR uden alle tre tæller ikke.",
+  "HAN KAN TEGNE KONTRAKTEN MELLEM LEANLINKINGS FRONTEND OG BACKEND PÅ ET WHITEBOARD UDEN NOTER, inklusive hvor et breaking change bliver opdaget — og hvis svaret er 'det gør det ikke', kan han sige det uden at pynte på det.",
+  "HAN HAR SKRIFTLIGT AFVIST MINDST ÉT POPULÆRT MØNSTER (RSC, micro-frontends, eller global store til server-data), OG afvisningen refererer til en ORGANISATORISK kendsgerning — antal teams, deploy-kadence, hvem der er på vagt — ikke til en teknisk præference. Bonuskriterium der adskiller kompetent fra stærk: han har navngivet den betingelse der ville vende svaret til ja.",
+  "DER FINDES EN PIPELINE HAN HAR BYGGET SOM FEJLER EN BUILD ved et breaking change eller en budgetoverskridelse. Den kører. Og — det afgørende led — nogen ANDEN end ham har set den fejle og har måttet forholde sig til det. En gate ingen andre har mødt, er en demo.",
+  "EN FRONTEND HAN HAR DEPLOYET HAR KØRT I MINDST 3 MÅNEDER, har haft mindst 2 hændelser med bagudkompatibilitet eller cache som han håndterede, og der findes et retrospektiv der NAVNGIVER fejlmønsteret. Uden dette punkt er hele driftspåstanden tom.",
+  "HAN KAN GENGIVE RFC 10017'S MØNSTERRANGERING FRA HUKOMMELSEN, sige hvilket mønster LeanLinking faktisk bruger, og sige hvad det koster dem. Det tager 90 sekunder at teste og er umuligt at bluffe.",
+  "HAN KAN SVARE PÅ ET TILGÆNGELIGHEDSSPØRGSMÅL FRA ET INDKØBSSPØRGESKEMA UDEN AT SLÅ OP — trelagsmodellen EAA → EN 301 549 → WCAG 2.2 AA — og han ved hvem hos LeanLinking der ejer svaret. Hvis ingen ejer det, ved han også det, og det er i sig selv et brugbart svar.",
+  "HAN HAR ET PERFORMANCE-BUDGETTAL HAN SELV HAR UDLEDT for en konkret skærm, og kan forklare hvorfor det ikke er Googles tal. Han kan navngive den brugerkendsgerning tallet stammer fra.",
+  "EN KOLLEGA HAR SPURGT HAM OM EN FRONTEND-ARKITEKTURBESLUTNING UDEN AT HAN BAD OM DET. Dette er det eneste ægte mandat-signal der findes. Alt andet — titler, invitationer, ros — er støj. Hvis dette aldrig sker, er intern forfremmelse ikke på vej, uanset hvad nogen siger.",
+  "MÅNED 6-BESLUTNINGSPUNKT, FRONTEND-ANDELEN (fire binære spørgsmål, hvert enten ja eller nej): (1) Har nogen bedt om hans mening om en frontend-beslutning uden at han bad om det? (2) Er en af hans målinger blevet citeret af en anden person? (3) Er en af hans PR-noter blevet til en konvention andre følger? (4) Har han fået lov til at bruge arbejdstid på noget der ikke var en ticket? NUL ud af fire efter 6 måneder betyder at den interne mandat-vej ikke åbner sig hos LeanLinking — det er ikke et personligt nederlag, det er data der skal udløse jobsøgningssporet. Én ud af fire er tvetydigt og kræver et nyt målepunkt i måned 8. To eller flere: fortsæt internt.",
+  "MÅNED 9-10 KOMPETENCEPORT, FRONTEND-ANDELEN — falsificerbart, ingen fortolkning: (a) 4 ADR'er med tal, (b) en kørende CI-gate en anden har set fejle, (c) en deployet frontend med 3+ måneders drift og 2 håndterede hændelser, (d) bestået 60-minutters repo-test bekræftet af en tredjepart. Færre end 3 ud af 4 og frontend-benet af arkitektpåstanden bærer ikke. Det betyder ikke at hele planen fejler — det betyder at han skal kunne sige højt i et interview 'frontend-arkitektur er mit svageste område, her er hvad jeg har gjort ved det', hvilket er et respektabelt svar. At påstå styrke han ikke har, er ikke."
+ ],
+ "kompetencer": [
+  {
+   "navn": "Grænselæsning — at kunne se hvor en frontend-kodebase har mistet sine grænser",
+   "hvorfor": "En arkitekt vurderer strukturer han ikke selv har skrevet, ofte under tidspres og ofte foran folk der kender koden bedre end ham. Det er den ene færdighed der gør ham nyttig fra dag ét i en ny organisation, og den ene der ikke kan læses sig til.",
+   "hvordan_traenes": "60-minutters repo-audit på 6 forskellige open source React-B2B-apps over 6 måneder, én om måneden. Skriftligt resultat hver gang, produceret FØR han kigger i repoets issues. Sammenlign derefter sin liste med de faktiske issues og med commit-historikken: fik han ret? Det er en selvkorrigerende træningsløkke, som er sjælden i arkitekturlæring, og den koster kun 6 timer i alt.",
+   "niveauskala": "NYBEGYNDER: finder store filer og siger 'den her burde splittes op'. KOMPETENT: finder hvor server-state og client-state er blandet sammen, hvor der ikke findes nogen kontrakt mod backend, og hvor komponenter har mistet deres lag. STÆRK: kan forudsige hvilken grænse der knækker FØRST og hvorfor — og bliver bekræftet af repoets egen historik."
+  },
+  {
+   "navn": "Kontraktdesign og bagudkompatibilitet",
+   "hvorfor": "Den eneste frontend-kompetence der overføres 1:1 til distribueret systemarkitektur. Lærer han at styre ÉN kontrakt ordentligt — versionering, additive ændringer, uafhængig deploy, detektion i CI — kan han styre alle kontrakter i et system. Det er derfor spike F1 er obligatorisk og ikke til forhandling.",
+   "hvordan_traenes": "Spike F1, derefter bevidst plantede breaking changes og måling af hvad gaten fanger og ikke fanger. Suppleres på jobbet ved at stille kontraktspørgsmålet på hver relevant ticket.",
+   "niveauskala": "NYBEGYNDER: ved at breaking changes findes og kan nævne et eksempel. KOMPETENT: kan klassificere en konkret ændring som breaking eller non-breaking, og har automatiseret klientgenereringen. STÆRK: kan designe et deploy-flow hvor frontend og backend deployes uafhængigt i VILKÅRLIG rækkefølge, har målt at det holder, OG kan navngive de semantiske brud intet værktøj fanger."
+  },
+  {
+   "navn": "Trade-off-artikulering mod en normativ kilde",
+   "hvorfor": "Juniorer siger 'det er bedre'. Arkitekter siger 'RFC 10017 rangerer mønstrene sådan, vi valgte nummer to, prisen er X, og vi revurderer når Y'. Forskellen er ikke viden — den er argumentform. For en 23-årig der skal overbevise folk med 15 års erfaring er evnen til at argumentere gennem en ekstern autoritet i stedet for gennem sin egen anciennitet den mest asymmetrisk værdifulde færdighed på hele listen.",
+   "hvordan_traenes": "Ufravigelig regel: hver eneste ADR skal have (1) en ekstern reference og (2) et 'hvad vi gav afkald på'-afsnit. Ingen undtagelser, heller ikke når det føles overflødigt. Efter 10 ADR'er er formen automatisk.",
+   "niveauskala": "NYBEGYNDER: angiver fordele ved det valgte. KOMPETENT: angiver fordele OG ulemper, og har læst en kilde. STÆRK: angiver hvad der skal være sandt OM ORGANISATIONEN for at valget er rigtigt, og hvornår beslutningen skal tages op igen. Det sidste er det der får seniorer til at behandle en som ligemand."
+  },
+  {
+   "navn": "Måledisciplin — budget som styringsværktøj frem for ambition",
+   "hvorfor": "Uden tal er arkitektur smag, og smag taber altid mod den mest selvsikre person i rummet — hvilket aldrig er den yngste. Målinger er hans eneste vej til at vinde en diskussion han ellers ville tabe på anciennitet. Det er også den vane der forhindrer hele spike-serien i at forfalde til demoer.",
+   "hvordan_traenes": "Intet artefaktsæt godkendes uden mindst ét før/efter-tal han selv har målt på egen hardware. Plus vanen på jobbet: bundle-tal i hver PR. Budgettet skal defineres FØR optimering — den rækkefølge er hele disciplinen, og den er den eneste del folk konsekvent bytter om på.",
+   "niveauskala": "NYBEGYNDER: kører et værktøj og rapporterer scoren. KOMPETENT: definerer et budget før optimering og håndhæver det i CI så det ikke kan glide. STÆRK: UDLEDER budgettet fra en brugerkendsgerning — hvem sidder foran skærmen, på hvilken maskine, hvor længe ad gangen — i stedet for at låne en industristandard, og kan forsvare hvert enkelt tal."
+  },
+  {
+   "navn": "Arkitektonisk afvisning — at sige nej med en betingelse",
+   "hvorfor": "Det meste af en arkitekts værdi ligger i de systemer han forhindrede i at blive bygget. Men et nej uden betingelse gør en til bremseklods; et nej MED den betingelse der ville vende svaret gør en til rådgiver. Det er en ren formuleringsforskel med enorm konsekvens for hvordan man opfattes.",
+   "hvordan_traenes": "Skriv tre eksplicitte nej-ADR'er i løbet af året: nej til micro-frontends, nej til RSC/Next.js i denne kontekst, nej til en global store til server-data. Hver skal indeholde det ORGANISATORISKE kriterium der ville vende svaret (fx: 'ja til micro-frontends når vi har 5+ frontend-teams der beviseligt blokerer hinanden, målt på PR-kø-tid').",
+   "niveauskala": "NYBEGYNDER: siger nej af smag eller fordi han ikke kan finde ud af det. KOMPETENT: siger nej med teknisk begrundelse. STÆRK: navngiver den præcise betingelse under hvilken svaret bliver ja — hvilket gør ham troværdig i stedet for konservativ, og gør det umuligt at afvise ham som 'ham der altid er imod'."
+  },
+  {
+   "navn": "Compliance-oversættelse (governance)",
+   "hvorfor": "Hans erklærede sekundære interesse, OG den kompetence der tydeligst adskiller en solution architect fra en senior udvikler i B2B SaaS. En arkitekt oversætter mellem et indkøbsspørgeskema og en kodebase. Det er et af de få steder hvor en 12-måneders indsats reelt kan matche en 5-årig karriere, fordi de fleste udviklere aldrig lærer det og de fleste jurister ikke kan kode.",
+   "hvordan_traenes": "Spike F5: skriv et ACR-udkast for én skærm. Plus: find ud af om LeanLinking nogensinde har svaret på et tilgængelighedsspørgsmål i et udbud, og hvem der gjorde det.",
+   "niveauskala": "NYBEGYNDER: kender WCAG som begreb og ved at EAA findes. KOMPETENT: kan mappe et konkret krav til en konkret komponent, og kan tegne trelagsmodellen EAA → EN 301 549 → WCAG 2.2 AA. STÆRK: kan sige HVOR i arkitekturen kravet skal håndhæves én gang så det ikke skal løses per skærm, og kan estimere prisen ved at lade være — i tabte udbud, ikke i moralske termer."
+  },
+  {
+   "navn": "Frontend-observability og korrelation over grænser",
+   "hvorfor": "Hans erklærede interesse, og frontend er næsten altid det sted hvor distribuerede traces stopper. En arkitekt der kan lukke hullet fra klik til database er umiddelbart nyttig for de seniorer der ejer driften — og det er dem der i praksis afgør om en junior får arkitektmandat. Det er sjældent kompetence i et ellers mættet felt.",
+   "hvordan_traenes": "Spike F6. Kravet om at trace-id skal være synligt i UI'et er ikke kosmetik — det tvinger ham til at tænke på supportprocessen, hvilket er en organisatorisk overvejelse forklædt som en teknisk.",
+   "niveauskala": "NYBEGYNDER: logger fejl til en tjeneste. KOMPETENT: korrelerer en frontend-hændelse med en backend-trace end-to-end og kan vise det. STÆRK: har defineret sampling-strategi og PII-politik, kan forsvare præcis hvad der kastes væk og hvorfor, og kan sige hvad telemetrien KOSTER — i kroner og i drift."
+  },
+  {
+   "navn": "Byg-vs-lej-vurdering, med tilgængelighedslaget som lakmusprøve",
+   "hvorfor": "Den mest konsekvensrige frontend-beslutning et firma af LeanLinkings størrelse kan træffe, og den træffes næsten altid ubevidst. At bygge sine egne UI-primitiver betyder at man har påtaget sig at implementere WCAG 2.2 AA selv, for evigt, uden specialist. De færreste opdager at de har truffet den beslutning før den koster et udbud.",
+   "hvordan_traenes": "Skriv én ADR: 'ejer vi tilgængelighedslaget eller lejer vi det?' med tre reelle optioner prissat i timer — egne primitiver, headless accessible primitives (Radix, React Aria), eller et fuldt system (Fluent UI, MUI). Prissæt hver option i vedligeholdelsestimer over 3 år, ikke i implementeringstimer. Det er selve øvelsen: arkitekter regner i år, udviklere regner i sprints.",
+   "niveauskala": "NYBEGYNDER: vurderer biblioteker på API-æstetik og popularitet. KOMPETENT: vurderer på vedligeholdelse, leverandørrisiko og migrationsomkostning. STÆRK: identificerer hvilken FORPLIGTELSE valget påtager organisationen — hvem skal kunne noget de ikke kan i dag, og i hvor mange år — og prissætter den."
+  }
+ ],
+ "web_verifikation": "\"VERIFIKATIONSMETODE OG BEGRÆNSNINGER I DENNE SESSION — skrivende agent bør læse dette før der citeres tal.\\n\\nWebSearch-budgettet (200 kald) blev opbrugt undervejs, og den udgående proxy BLOKEREDE de fleste domæner for WebFetch, herunder react.dev, learn.microsoft.com, web.dev, rfc-editor.org, datatracker.ietf.org og karlgroves.com. GitHub-MCP'en var scopet til ét enkelt repo og kunne ikke bruges til at tjekke eksterne projekters vedligeholdelse. Verifikationen hviler derfor på to ting: (1) direkte, autoritative pakkeregister-opslag der LYKKEDES, og (2) søgeresultater der returnerede titel+URL fra kendte kilder.\\n\\nDIREKTE VERIFICERET VIA PAKKEREGISTRE (højeste tillid — hentet fra registry.npmjs.org og api.nuget.org 10. sept 2026):\\n- react: 19.3.0 er nyeste stabile. Der findes INGEN React 20. Dette er den vigtigste enkeltverifikation på emnet.\\n- @tanstack/react-query: 5.102.8 (27. aug 2026), aktiv.\\n- zustand: 5.0.15 (13. aug 2026), aktiv.\\n- @reduxjs/toolkit: 2.12.0 (15. maj 2026), aktiv — Redux er ikke dødt, blot sjældent default.\\n- react-router: 8.3.1 (28. aug 2026) — NB: v6→v7→v8 på kort tid, hvilket er en reel migrationsskat værd at nævne.\\n- @module-federation/enhanced: 2.9.0 (24. aug 2026), ~15,5 mio. downloads/md, aktivt vedligeholdt.\\n- storybook: 10.6.0 (2. sept 2026).\\n- @axe-core/playwright: 4.13.0 (11. aug 2026).\\n- size-limit: 13.0.3 (30. juli 2026), aktiv.\\n- @lhci/cli (Lighthouse CI): 0.15.1, sidst udgivet 25. JUNI 2025 — over 15 måneder uden release og stadig 0.x. Behandl som stagnerende. Dette er et fund værd at bringe videre.\\n- @azure/msal-browser: 5.21.0 (2. sept 2026).\\n- @hey-api/openapi-ts: 0.99.0 (22. juni 2026) — stadig PRE-1.0 efter flere år. Reel leverandørrisiko, bør nævnes hvis værktøjet anbefales.\\n- Microsoft.AspNetCore.OpenApi (NuGet): 10.0.12 nyeste stabile; 11.0.0-rc findes (matcher .NET 11 i nov 2026).\\n- NSwag.MSBuild (NuGet): 14.7.1 nyeste, aktivt vedligeholdt.\\n- Duende.BFF (NuGet): 4.2.0 nyeste. ADVARSEL: Duendes LICENSVILKÅR (omsætningsbaseret kommerciel licens) kunne IKKE verificeres i denne session. Verificér før den anbefales til erhvervsbrug.\\n\\nVERIFICERET VIA SØGERESULTATER (god tillid, men ikke hentet direkte — behandl detaljer med et gran salt):\\n- RFC 10017 'OAuth 2.0 for Browser-Based Applications' EKSISTERER som publiceret RFC (rfc-editor.org returnerede den som titel+URL). Mønsterrangeringen BFF > token-mediating backend > browser-based OAuth client er konsistent gengivet på tværs af flere uafhængige kilder. Selve RFC-teksten kunne ikke hentes — skrivende agent bør ikke citere paragraf- eller sektionsnumre.\\n- Core Web Vitals: LCP <2,5 s, INP <200 ms, CLS <0,1, ved 75.-percentilen i CrUX. INP afløste FID endeligt i marts 2024. Konsistent på tværs af mange kilder.\\n- EAA: håndhævelig fra 28. juni 2025; alle 27 medlemslande har transponeret; første franske retssager nov 2025; mikrovirksomhedsundtagelse <10 ansatte OG <2 mio. EUR omsætning (tjenester).\\n- EN 301 549 v4.1.1 publiceret af ETSI 2. sept 2026, refererer WCAG 2.2 AA, tilføjer Annex ZB der mapper til EAA. Bemærk at citering i EU-Tidende (der giver formodning om overensstemmelse) endnu ikke var bekræftet.\\n- .NET 10 er LTS, udgivet 11. nov 2025, support til nov 2028. .NET 11 (STS) ventes nov 2026.\\n- Swashbuckle blev fjernet fra webapi-TEMPLATEN i .NET 9 (dotnet/aspnetcore issue #54599), men biblioteket LEVER: Swashbuckle.AspNetCore 10.x understøtter .NET 10 og OpenAPI 3.1 (opt-in) og afhænger nu af Microsoft.OpenApi v2. .NET 10 genererer OpenAPI 3.1 som default (op fra 3.0 i .NET 9).\\n- TypeSpec 1.0 er GA med stabile kernekomponenter; klient-/servergenerering til .NET/JS/Java/Python i preview.\\n- W3C Design Tokens-specifikationen nåede første stabile version 2025.10 den 28. okt 2025, bakket af 40+ organisationer; en undersøgelse fra juni 2026 (~300 fagfolk) angav 84% adoption mod 56% året før.\\n\\nIKKE VERIFICERET — SKRIVENDE AGENT SKAL ENTEN TJEKKE ELLER UNDLADE:\\n- React Compiler's præcise stabilitetsstatus i sept 2026. Nævnes bevidst ikke i dette dossier. Undlad hellere end at gætte.\\n- Danmarks konkrete implementeringslov af EAA (titel og ikrafttrædelsesdatoer). Nævn ingen specifik dansk lovtitel uden verifikation.\\n- Om EN 301 549 v4.1.1 er citeret i EU-Tidende endnu.\\n- Duendes licensvilkår og omsætningsgrænser.\\n- Konkrete værktøjer til OpenAPI breaking-change-diff (oasdiff m.fl.) — argumentet i spike F1 står uafhængigt af værktøjsvalg, og det er en pointe i sig selv: gaten er arkitekturen, værktøjet er udskifteligt.\\n- Alle URL'er markeret verificeret:false i ressourcelisten er kendte, veletablerede sider som jeg ikke kunne hente i denne session. De er ikke opfundet, men de bør klikkes efter én gang inden publicering.\\n\\nMANGE AF SØGERESULTATERNE PÅ REACT- OG NEXT.JS-EMNET VAR AI-GENERERET SEO-INDHOLD af lav kvalitet. Påstande derfra (fx præcise adoptionsprocenter for Next.js) er BEVIDST udeladt af dossieret. Hvor der optræder tal i teksten, kommer de fra pakkeregistre eller fra kilder der optrådte konsistent på tværs af flere uafhængige søgninger.\""
+}

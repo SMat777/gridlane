@@ -1,0 +1,296 @@
+{
+ "kernepointer": [
+  "PRAEMIS-KORREKTION 1, den vigtigste i hele sektionen: AZ-204 var ALDRIG forudsaetning for AZ-305. Forudsaetningen til Azure Solutions Architect Expert er og har siden AZ-305 kom i 2021-22 vaeret AZ-104 Azure Administrator Associate. AZ-204-pensioneringen 31. juli 2026 aendrer derfor INTET for ruten mod AZ-305. Ruten er, og var hele tiden, AZ-104 -> AZ-305. Al panik om 'hvad erstatter AZ-204 paa vej mod arkitekt' er et ikke-problem.",
+  "HVOR AZ-204-doeden FAKTISK goer ondt: AZ-400 (DevOps Engineer Expert) accepterede historisk AZ-104 ELLER AZ-204 som forudsaetning. Med AZ-204 vaek staar AZ-104 tilbage som den sikre indgang. Konsekvens: AZ-104 er nu den ENE associate-cert der laaser BEGGE expert-spor op (AZ-305 og AZ-400). Det goer valget trivielt - der er kun een foerste cert at tage.",
+  "PRAEMIS-KORREKTION 2: Briefets beskrivelse af AI-200 som 'AI-drejet, RAG, vector databases, ikke en generel .NET-udviklereksamen' holder ikke mod det officielle lab-pensum. Jeg har verificeret MicrosoftLearning/mslearn-azure-ai (aktiv, opdateret 8. sep 2026), hvis _config.yml har titlen 'Develop AI Cloud Solutions on Microsoft Azure'. Oevelsesmapperne er: azure-container-apps, azure-kubernetes-service, cosmosdb, azure-database-postgresql, azure-managed-redis, app-sec-config, instrument-observe, integrate-services, container-hosting. Det er klassisk cloud-native udvikling - containere, Cosmos DB, PostgreSQL, Redis, Key Vault/managed identity, observability, message-baseret integration. 'AI' er indpakningen; de maalte faerdigheder er AZ-204's arvtager. Det aendrer ikke anbefalingen (AI-200 fravaelges alligevel), men det aendrer BEGRUNDELSEN: den fravaelges fordi den er ny og uafproevet, ikke fordi den er irrelevant.",
+  "GRATIS SIDEGEVINST af korrektion 2: hele AI-200-labserien ligger offentligt paa https://github.com/MicrosoftLearning/mslearn-azure-ai. Han kan koere hver eneste oevelse uden at betale eksamensgebyr. Pensumlisten er naesten en 1:1-matchning med hans spike-behov (idempotent indlaesning = integrate-services, dokumentlager = cosmosdb, multi-tenant = app-sec-config, revisionsspor = instrument-observe). Brug labs som gratis oevebane; spring eksamen over.",
+  "ANBEFALING, ingen forbehold: TO certs paa 12 maaneder. AZ-104 med eksamensdato ultimo november 2026 (maaned 3). AZ-305 med eksamensdato juni-juli 2027 (maaned 10), placeret saa den bliver et af kriterierne i kompetenceporten. En tredje - HashiCorp Terraform Associate, maaned 12 - kun hvis AZ-104 gik glat foerste forsoeg. Samlet eksamensgebyr for de to: stoerrelsesorden DKK 2.500-3.000. Det er en beloebsstoerrelse en stifter i et 9-mandsfirma siger ja til over frokost.",
+  "PAA DET AABNE SPOERGSMAAL compliance-cert vs. cloud-cert tager jeg stilling: cloud-certen vinder i aar 1. Grunden er at porten maaler om han kan DESIGNE systemer under begraensninger, og AZ-305 er den eneste cert paa hele listen der faktisk tester designvalg med afvejninger i stedet for faktahukommelse. Compliance-viden skal han hente fra domaenet og fra selve lovteksten - CSDDD, NIS2, GDPR art. 17 og 30 - ikke fra et Lead Implementer-kursus til DKK 20.000. Compliance-certen er et AAR-2-vaaben, ikke et aar-1-vaaben.",
+  "MEN i maaned 18-24 vender det: naar cloud-arkitekturen er dokumenteret, er det ISO 27001 Lead Implementer eller IAPP CIPP/E der goer forskellen mellem 'endnu en Azure-arkitekt' og 'ham der kan tegne compliance-arkitektur til leverandoerkaeder'. Der findes mange af de foerste i Danmark og meget faa af de sidste. Det er praecis den niche briefet peger paa, og certen skal koebes NAAR nichen allerede er bevist med artefakter - ikke foer.",
+  "FORUDSAETNING DER SKAL TJEKKES I UGE 1, og som vaelter hele planen hvis den er forkert: koerer LeanLinking overhovedet paa Azure? Jeg har ikke kunnet verificere deres cloud-leverandoer. Er de paa AWS, skal hele raekken skiftes til AWS Solutions Architect Associate (SAA-C03) -> Solutions Architect Professional (SAP-C02), samme rytme og samme logik. Er de paa on-prem eller hosted hos en dansk udbyder, er cloud-certen vaerdilos som deadline-motor og planen skal bygges om. Han skal spoerge stifteren foerste arbejdsdag, foer han booker noget som helst.",
+  "RENEWAL er en skjult loebende omkostning i TID, ikke i penge: Microsoft rollebaserede certs (AZ-104, AZ-305) udloeber efter 12 maaneder og fornys GRATIS via en uproctoreret online-assessment paa Microsoft Learn, tilgaengelig fra 6 maaneder foer udloeb. Fundamentals-certs (AZ-900, AI-900) udloeber aldrig. Praktisk konsekvens: hver aktiv Microsoft-cert koster ham 1-2 timer om aaret for evigt. To certs = haandterbart. Fem certs = en tilbagevendende skat paa hans 10-15 timer. Det er et selvstaendigt argument for FAA certs.",
+  "BOOK EKSAMEN FOER DU LAESER. Det er hele pointen med at bruge certs som deadline-motor, og det er det raad flest springer over. Uden dato i kalenderen glider pensum ud i det uendelige. Microsoft tillader gebyrfri ombooking indtil ca. 6 hverdage foer, saa risikoen ved at booke tidligt er naesten nul, mens den disciplinerende effekt er hele gevinsten.",
+  "BRAIN DUMPS: ExamTopics og lignende sider der saelger 'rigtige eksamensspoergsmaal' er brud paa Microsoft Certification Exam Agreement. Sanktionerne er annulleret score, inddraget certificering og permanent udelukkelse fra Microsofts certificeringsprogram. Ud over det er de virkningsloese netop paa AZ-305, som er case study-baseret: memorerede svar kollapser saa snart scenariets begraensninger flyttes. De gratis officielle Practice Assessments paa Microsoft Learn er lovlige, gratis og bedre.",
+  "STOERSTE ENKELTFEJL i certificeringsplaner for folk i hans situation: at tage mange lette certs fordi de foles som fremdrift. AZ-900 + AI-900 + PSM I + ITIL 4 kan tages paa faa maaneder og signalerer TILSAMMEN mindre end AZ-305 alene. Ekstern hiring manager laeser en lang liste fundamentals-certs som stoej, ikke som dybde. Faa og tunge slaar mange og lette, hver eneste gang."
+ ],
+ "ressourcer": [
+  {
+   "titel": "AZ-104 Microsoft Azure Administrator - officielt lab-repo",
+   "type": "lab-samling / gratis",
+   "prioritet": "1 - kritisk",
+   "hvorfor": "Den ene cert der laaser BEGGE expert-spor op (AZ-305 og AZ-400). Verificeret aktiv og commit-opdateret 10. sep 2026, ikke arkiveret. Pensum - Entra ID, RBAC, Azure Policy, storage-tiers og lifecycle, virtual networking, private endpoints, monitoring, backup - er praecis den ubehagelige del en udvikler mangler for at kunne kalde sig arkitekt. Og den rammer hans domaene direkte: RBAC og Policy er multi-tenant isolation, storage lifecycle er dokumenttunge cost-modeller, backup/retention er revisionsspor.",
+   "url": "https://github.com/MicrosoftLearning/AZ-104-MicrosoftAzureAdministrator",
+   "verificeret": true,
+   "tidsforbrug": "70-90 timer effektiv forberedelse for en udvikler med nogen Azure-eksponering. Ca. 6 t/uge i 12 uger.",
+   "hvad_springes_over": "Spring de rene VM-tunge afsnit let henover (VM-stoerrelser, VM-backup i detaljer) - de er eksamensstof, men har ingen transferværdi til hans PaaS-baserede SaaS. Laer dem til eksamen, invester ikke i dem bagefter."
+  },
+  {
+   "titel": "AZ-305 Designing Microsoft Azure Infrastructure Solutions - officielt lab-repo",
+   "type": "lab-samling / gratis",
+   "prioritet": "1 - kritisk",
+   "hvorfor": "Maalcerten. VERIFICERET LEVENDE: repoet blev commit-opdateret 10. september 2026, dags dato, og er ikke arkiveret. Det er den eneste cert paa hele listen der tester DESIGNVALG under modstridende krav frem for faktahukommelse, og den eneste hvis titel indeholder ordet Architect og samtidig respekteres af eksterne hiring managers. Dens fire domaener - identity/governance/monitoring, data storage, business continuity, infrastructure - er en faerdig disposition for hans spike-serie.",
+   "url": "https://github.com/MicrosoftLearning/AZ-305-DesigningMicrosoftAzureInfrastructureSolutions",
+   "verificeret": true,
+   "tidsforbrug": "80-100 timer. Ca. 7 t/uge i 13-14 uger, maaned 7-10.",
+   "hvad_springes_over": "Spring alt hybrid-/on-prem-migrationsstof (Azure Arc, ExpressRoute-topologier, Site Recovery fra on-prem) ned til rent eksamensniveau. LeanLinking har ingen on-prem-arv at migrere. Det er eksamensstof, ikke arbejdsstof."
+  },
+  {
+   "titel": "AI-200-pensum: Develop AI Cloud Solutions on Microsoft Azure - officielle labs",
+   "type": "lab-samling / gratis - BRUG UDEN AT TAGE EKSAMEN",
+   "prioritet": "2 - hoej som gratis oevebane, 5 - fravalgt som eksamen",
+   "hvorfor": "Dette er AZ-204's reelle arvtager. Jeg verificerede _config.yml: titel 'Develop AI Cloud Solutions on Microsoft Azure'. Oevelsesmapperne er azure-container-apps, azure-kubernetes-service, cosmosdb, azure-database-postgresql, azure-managed-redis, app-sec-config, instrument-observe, integrate-services, container-hosting. Det er cloud-native udvikling, ikke RAG-kursus. Naesten hver mappe svarer til en spike han skal lave alligevel: integrate-services = idempotent ERP-indlaesning, cosmosdb = dokumentlager, app-sec-config = multi-tenant hemmeligheder, instrument-observe = revisionsspor. Gratis, offentligt, ingen eksamen noedvendig.",
+   "url": "https://github.com/MicrosoftLearning/mslearn-azure-ai",
+   "verificeret": true,
+   "tidsforbrug": "Plukkes ad hoc, 2-4 timer pr. relevant lab. Ikke en samlet indsats.",
+   "hvad_springes_over": "Selve AI-200-eksamenen springes over i aar 1 - se fravalgsliste. Og spring de rene AI-model-labs over; det er container-, data- og integrationslabsene der har vaerdi for ham."
+  },
+  {
+   "titel": "Microsoft Learn officielle Practice Assessments (gratis)",
+   "type": "practice-eksamen / gratis / LEGITIM",
+   "prioritet": "1 - kritisk",
+   "hvorfor": "Microsofts egne gratis practice-assessments findes for AZ-104 og AZ-305, ligger paa den enkelte certificerings-side paa Microsoft Learn og er den eneste practice-ressource der baade er gratis, lovlig og pensumtro. De bruges som DIAGNOSE, ikke som traening: tag en kold foer du laeser noget som helst, saa du ved hvor hullerne er. Anvend derefter kun paa emner du allerede har bygget noget i.",
+   "url": "learn.microsoft.com/credentials/certifications/ - find den enkelte cert og fanen Practice assessment. URL ikke verificeret i denne session, se web_verifikation.",
+   "verificeret": false,
+   "tidsforbrug": "2 timer kold diagnose + 6-8 timer i sidste tredjedel af forberedelsen",
+   "hvad_springes_over": "Spring MeasureUp og andre betalte practice-tests over indtil de gratis officielle konsekvent giver over 80 procent. Betalte practice-tests er penge brugt paa at maale i stedet for at laere."
+  },
+  {
+   "titel": "Microsoft Azure Well-Architected Framework - de fem soejler",
+   "type": "rammevaerk / gratis",
+   "prioritet": "1 - kritisk",
+   "hvorfor": "Dette er den mentale model AZ-305 faktisk tester, og hovedaarsagen til at AZ-305-forberedelse og spike-arbejde IKKE konkurrerer om hans timer. De fem soejler - Reliability, Security, Cost Optimization, Operational Excellence, Performance Efficiency - er ogsaa den struktur han skal skrive sine ADR'er i. Metoden: tag et konkret LeanLinking-problem, gennemgaa det systematisk mod alle fem soejler, skriv hvor de er i konflikt. Det er baade eksamensforberedelse og arkitektarbejde i samme time.",
+   "url": "learn.microsoft.com/azure/well-architected/ - URL ikke verificeret i denne session",
+   "verificeret": false,
+   "tidsforbrug": "10-12 timer for de fem soejler, spredt ud over AZ-305-forberedelsen",
+   "hvad_springes_over": "Spring de leverandoerspecifikke service-guides i WAF over. Det er soejlerne og afvejningerne mellem dem der har vaerdi, ikke checklisterne pr. Azure-tjeneste."
+  },
+  {
+   "titel": "Azure Architecture Center - reference architectures",
+   "type": "referencesamling / gratis",
+   "prioritet": "2 - hoej",
+   "hvorfor": "AZ-305 er moensterkendelse: eksamen praesenterer et scenarie og spoerger hvilket moenster der passer. Metode der virker: vaelg 8-10 reference-arkitekturer der ligner et multi-tenant dokumenttungt SaaS, og skriv for hver enkelt to linjer om hvad den ville betyde for LeanLinking. Saa laerer han moensteret gennem sit eget domaene i stedet for gennem et abstrakt eksempel.",
+   "url": "learn.microsoft.com/azure/architecture/ - URL ikke verificeret i denne session",
+   "verificeret": false,
+   "tidsforbrug": "8-10 timer i maaned 8-9",
+   "hvad_springes_over": "Spring de brancheløsninger over der ikke ligner hans - retail, gaming, IoT-telemetri. Fokuser paa multitenant SaaS og data governance."
+  },
+  {
+   "titel": "HashiCorp Terraform Associate",
+   "type": "certificering / valgfri tredje",
+   "prioritet": "3 - moderat, kun som stretch",
+   "hvorfor": "Billigste meningsfulde cert paa listen, stoerrelsesorden USD 70. Infrastructure as Code er en reel arkitektkompetence og understoetter hans spikes direkte: reproducerbare miljoeer og provisionering af tenant-isolation. Gyldighed 2 aar. Kort forberedelse. Tages KUN i maaned 12 og KUN hvis AZ-104 blev bestaaet foerste forsoeg - ellers stjaeler den timer fra AZ-305.",
+   "url": "developer.hashicorp.com/certifications - domaene blokeret i denne session, version og pris IKKE verificeret",
+   "verificeret": false,
+   "tidsforbrug": "20-25 timer",
+   "hvad_springes_over": "Springes helt hvis AZ-104 kraevede to forsoeg, eller hvis LeanLinking ikke bruger IaC i forvejen. En Terraform-cert uden en kodebase at bruge den paa er papir."
+  },
+  {
+   "titel": "ISO/IEC 27001 Lead Implementer",
+   "type": "certificering / UDSKUDT til maaned 18-24",
+   "prioritet": "4 - lav i aar 1, hoej i aar 2",
+   "hvorfor": "Det er denne cert der i aar 2 forvandler ham fra Azure-arkitekt til compliance-arkitekt, og det er den eneste paa listen der forstaerker nichen frem for at brede den ud. Ekstra pointe der goer den saerligt relevant netop dér: LeanLinkings egne enterprise-kunder vil selv kraeve ISO 27001 af LeanLinking. Naar det sker, er han manden der kan koere det - og saa er certen betalt af en reel forretningsnoedvendighed i stedet for af hans egen lomme. Men den koster typisk DKK 15.000-25.000 med kursus, og det er en maerkbar post i et firma med DKK 4,2 mio. i bruttofortjeneste. Den skal koebes NAAR nichen er bevist, ikke foer.",
+   "url": "Udbydere: PECB, BSI, DNV, Bureau Veritas. Ingen URL verificeret i denne session - priser og formater varierer kraftigt mellem udbydere og skal indhentes som tilbud.",
+   "verificeret": false,
+   "tidsforbrug": "Typisk 5 dages kursus + eksamen. Ikke foreneligt med 10-15 t/uge ved siden af AZ-305.",
+   "hvad_springes_over": "Springes HELT i de foerste 12 maaneder. Og spring 'Lead Auditor'-varianten over - auditor er en kontrolrolle, implementer er en byggerolle. Han skal bygge."
+  },
+  {
+   "titel": "IAPP CIPP/E - Certified Information Privacy Professional/Europe",
+   "type": "certificering / UDSKUDT, alternativ til ISO 27001",
+   "prioritet": "4 - lav i aar 1",
+   "hvorfor": "Hvis nichen udvikler sig mod persondata frem for informationssikkerhed, er CIPP/E den rigtige i stedet for ISO 27001 LI. Det er den anerkendte europaeiske privacy-credential og daekker praecis hans svaereste domaeneproblem: sletning under GDPR med legal hold ovenpaa, opbevaringsperioder, art. 30-fortegnelser. Vaesentligt: CIPP/E er den seriøse vej - ikke et tilfaeldigt dansk 'GDPR-kursus' eller en 'DPO-uddannelse' fra en kursusudbyder, som markedet ikke tillaegger vaegt.",
+   "url": "iapp.org - ikke verificeret i denne session",
+   "verificeret": false,
+   "tidsforbrug": "40-60 timer selvstudium",
+   "hvad_springes_over": "Vaelg ENTEN ISO 27001 LI ELLER CIPP/E i aar 2, aldrig begge. De koster det samme i tid og daekker to forskellige kunder. Lad LeanLinkings faktiske kundekrav afgoere valget."
+  },
+  {
+   "titel": "Azure for Students - USD 100 cloud-kredit uden betalingskort",
+   "type": "studenterfordel / TIDSFOELSOM",
+   "prioritet": "1 - kritisk OG udloeber naar han dimitterer",
+   "hvorfor": "Dette er den studenterfordel der faktisk betyder noget for ham, og den handler om COMPUTE, ikke om eksamensrabat. Hans spike-serie kraever rigtige Azure-ressourcer - Cosmos DB, Service Bus, Blob storage med immutability policies, Container Apps. Gratis kredit betyder at han kan bygge og maale rigtigt i stedet for at noejes med diagrammer. Skal aktiveres med akademisk e-mail MENS han stadig er studerende. Naar han er dimitteret er doeren lukket.",
+   "url": "azure.microsoft.com/free/students - URL og aktuelle beloeb IKKE verificeret i denne session",
+   "verificeret": false,
+   "tidsforbrug": "20 minutter at aktivere. Goer det i denne uge.",
+   "hvad_springes_over": "Ingenting. Dette er det billigste og mest tidsfoelsomme punkt i hele planen."
+  },
+  {
+   "titel": "GitHub Student Developer Pack",
+   "type": "studenterfordel / TIDSFOELSOM",
+   "prioritet": "2 - hoej, udloeber ved dimission",
+   "hvorfor": "Samme logik som ovenfor: skal claimes mens han er studerende. Indeholder historisk vaerktoejsadgang og sommetider cloud-kredit hos flere udbydere. Vaerdien er ujaevn og skifter loebende, men omkostningen ved at soege er naesten nul og gevinsten er permanent for de vaerktoejer der gives varigt.",
+   "url": "education.github.com/pack - indhold IKKE verificeret i denne session",
+   "verificeret": false,
+   "tidsforbrug": "30 minutter",
+   "hvad_springes_over": "Brug ikke tid paa at gennemgaa hele katalogget. Kig efter cloud-kredit og udviklervaerktoejer, ignorer resten."
+  },
+  {
+   "titel": "Microsoft Virtual Training Days",
+   "type": "gratis kursus + historisk gratis eksamensvoucher",
+   "prioritet": "3 - moderat, kun for fundamentals",
+   "hvorfor": "Microsoft har igennem flere aar afholdt gratis halv- og heldagssessioner der udloeste en gratis eksamensvoucher - men i praksis kun til fundamentals-niveau (AZ-900, AI-900, SC-900). Det er relevant for ham paa PRAECIS een maade: hvis han er i tvivl om han overhovedet har Azure-grundlaget, kan han tage AZ-900 gratis via denne kanal i stedet for at betale. Men han skal ikke bruge tid paa det hvis han allerede arbejder i Azure til dagligt.",
+   "url": "Microsoft Virtual Training Days-kalenderen - voucher-ordningens status i 2026 er IKKE verificeret og har historisk aendret sig uden varsel",
+   "verificeret": false,
+   "tidsforbrug": "4-8 timer for en session",
+   "hvad_springes_over": "Vouchers herfra daekker efter alt at doemme IKKE AZ-104 og AZ-305. Regn ikke med gratis expert-eksamener; budgetter med fuld pris."
+  },
+  {
+   "titel": "MicrosoftLearning/mslearn-devops - AZ-400's nuvaerende labs",
+   "type": "lab-samling / gratis / til aar 2",
+   "prioritet": "4 - lav i aar 1",
+   "hvorfor": "Medtaget for at aflive en misforstaaelse der er let at begaa lige nu: AZ-400's gamle lab-repo blev arkiveret i januar 2026, hvilket ligner en pensionering. Det er det ikke. Labsene er flyttet til mslearn-devops, som er aktivt og commit-opdateret 8. september 2026. AZ-400 LEVER. Den er bare ikke hans vej i aar 1.",
+   "url": "https://github.com/MicrosoftLearning/mslearn-devops",
+   "verificeret": true,
+   "tidsforbrug": "Ikke relevant i aar 1",
+   "hvad_springes_over": "Hele AZ-400 udskydes til maaned 18-24 og tages kun hvis hans rolle reelt drejer mod platform og deployment."
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "Multi-tenant isolationsmodel - tre niveauer, samme compliancekrav",
+   "problem": "LeanLinkings kunder er stoerre virksomheder der hver har egne compliancekrav til hvor og hvordan deres leverandoerdata opbevares. Nogle vil acceptere delt database med row-level isolation, andre kraever separat database, og enkelte vil kraeve separat region. Design de tre isolationsniveauer i samme produkt og beskriv hvad hvert niveau koster i drift, i kompleksitet og i maanedlig kroner-pr-tenant.",
+   "artefakter": "En ADR paa max to sider pr. niveau. Et omkostningsregnestykke i regneark med faktiske Azure-listepriser ved 10, 50 og 200 tenants. Et diagram der viser hvor tenant-graensen ligger i hvert niveau. En eksplicit liste over hvilke kundekrav hvert niveau IKKE kan opfylde.",
+   "kompetence": "Identity, governance og data-isolation. Daekker AZ-104's RBAC- og Azure Policy-stof og AZ-305's foerste og andet domaene direkte.",
+   "fremgangsmaade": "Byg alle tre som fungerende skeletter i Azure paa studenterkreditten - ikke kun paa papir. Brug Entra ID og RBAC til at haandhaeve graensen, og skriv en test der FORSOEGER at laese paa tvaers af tenants og skal fejle. En isolationsmodel uden en test der beviser isolationen er en paastand.",
+   "tid": "14-18 timer over tre uger",
+   "svaerhed": "Hoej",
+   "domaenekobling": "Direkte fra briefets problemklasse om multi-tenant isolation hvor hver kunde har egne compliancekrav. Det er samtidig det spoergsmaal LeanLinkings salg med sikkerhed faar fra enhver enterprise-kunde, saa artefaktet har oejeblikkelig intern vaerdi."
+  },
+  {
+   "titel": "Uforanderligt revisionsspor der kan holde til en CSDDD-audit",
+   "problem": "Et append-only revisionsspor skal kunne bevise over for en ekstern auditor at en leverandoergodkendelse ikke er blevet aendret bagudrettet. Samtidig skal GDPR art. 17 kunne opfyldes for personoplysninger i sporet - med legal hold ovenpaa der forhindrer sletning under en verserende sag. De to krav er i direkte konflikt. Loes konflikten og dokumenter hvorfor loesningen holder.",
+   "artefakter": "En ADR der eksplicit navngiver konflikten mellem uforanderlighed og sletteret og beskriver den valgte loesning. En fungerende prototype med time-based retention policy og legal hold. En skriftlig redegoerelse i auditor-sprog, ikke udvikler-sprog, paa en side.",
+   "kompetence": "Data storage design, governance, regulatorisk oversaettelse. AZ-305 domaene to og tre.",
+   "fremgangsmaade": "Azure Blob Storage har indbygget immutability med baade tidsbaseret opbevaring og legal hold - brug det frem for at opfinde noget. Den arkitektoniske noed loeses typisk ved at adskille personhenfoerbare felter fra selve haendelsen, saa haendelsen forbliver uforanderlig mens identiteten kan krypto-slettes. Laes den faktiske ordlyd af GDPR art. 17 stk. 3 om undtagelser foer du designer - ikke et blogindlaeg om den.",
+   "tid": "16-20 timer over fire uger",
+   "svaerhed": "Hoej - det er den svaereste spike i serien og den mest vaerdifulde",
+   "domaenekobling": "Kombinerer to af briefets problemklasser: append-only revisionsspor til CSDDD/NIS2-audit og sletning under GDPR med legal hold. Ingen generisk portefoelje indeholder dette. Det er selve nichen."
+  },
+  {
+   "titel": "Varsling af udloebende certifikater i millionskala",
+   "problem": "Millioner af leverandoercertifikater med hver sin udloebsdato skal udloese varsling paa 90, 30 og 7 dage. Design evalueringen saa den ikke bliver en natlig batch der scanner hele tabellen, saa en varsling aldrig sendes to gange selv hvis joberet koeres igen, og saa en aendret udloebsdato annullerer en planlagt varsling.",
+   "artefakter": "To designoplaeg der loeser samme problem forskelligt - eksempelvis planlagte beskeder versus tidsindekseret polling - med en maalt sammenligning paa latenstid og kroner pr. maaned ved 1 mio. og 10 mio. certifikater. En ADR med det valgte design og de afviste alternativer.",
+   "kompetence": "Messaging, idempotens, skaleringsoekonomi. AZ-305 infrastruktur- og compute-domaene.",
+   "fremgangsmaade": "Byg begge varianter i lille skala og ekstrapoler omkostningen med rigtige listepriser. Vigtigst: skriv testen der koerer varslingsjobbet to gange og beviser at der kun sendes een besked. Idempotens man ikke har testet, har man ikke.",
+   "tid": "12-16 timer over tre uger",
+   "svaerhed": "Middel",
+   "domaenekobling": "Ordret fra briefets problemklasse om certifikater der udloeber i millionvis og skal varsles. Det er samtidig LeanLinkings kerneforretning, saa han kan diskutere resultatet med stifteren uden at skulle forklare konteksten foerst."
+  },
+  {
+   "titel": "Idempotent indlaesning af leverandoerstamdata fra kunde-ERP",
+   "problem": "Kunder leverer leverandoerstamdata fra deres egne ERP-systemer i uensartet kvalitet. Samme fil kan blive sendt to gange, felter kan mangle, og en opdatering kan ankomme foer den oprettelse den hoerer til. Design en indlaesning der er sikker at koere igen, som isolerer daarlige raekker uden at vaelte hele batchen, og som kan afspilles forfra efter en fejl.",
+   "artefakter": "Et sekvensdiagram over normalflow, dubletflow og fejlflow. En fungerende prototype med dead-letter-haandtering og en dokumenteret genafspilningsprocedure. En kort tekst om hvordan dubletter identificeres naar kunden ikke leverer en stabil noegle - hvilket de ikke goer.",
+   "kompetence": "Integrationsdesign, fejlhaandtering, datakvalitet. Svarer til integrate-services-labsene i det gratis AI-200-pensum.",
+   "fremgangsmaade": "Brug Service Bus med deduplikering og dead-letter queue. Den svaere del er ikke teknikken, men at beslutte hvad der udgoer identitet naar kildesystemet ikke giver en. Skriv den beslutning ned som en ADR - det er et arkitektvalg, ikke et implementeringsdetalje.",
+   "tid": "12-15 timer over tre uger",
+   "svaerhed": "Middel",
+   "domaenekobling": "Direkte fra briefets problemklasse om idempotent indlaesning af leverandoerstamdata fra kunders ERP-systemer. Det er ogsaa det problem der med stoerst sandsynlighed allerede goer ondt hos LeanLinking, hvilket goer det let at faa lov til at arbejde med det."
+  },
+  {
+   "titel": "Omkostningsmodel for dokumenttungt lager over ti aars opbevaringspligt",
+   "problem": "Compliance-dokumentation skal ofte opbevares i mange aar, men laeses naesten aldrig efter de foerste maaneder. Byg en model over hvad lagringen koster over ti aar med og uden automatisk nedgradering gennem lagertrin, og find det punkt hvor gebyret for at hente et koldt dokument overstiger besparelsen ved at have lagt det derned.",
+   "artefakter": "En regnearksmodel med lagertrin, overgangsregler og hentningsgebyrer. En anbefalet lifecycle-politik i faerdig konfiguration. Et notat paa en side der oversaetter modellen til en pris pr. kunde pr. maaned - i det sprog en stifter traeffer beslutninger i.",
+   "kompetence": "Cost optimization som arkitektdisciplin - den WAF-soejle udviklere systematisk ignorerer og arkitekter maales paa.",
+   "fremgangsmaade": "Brug faktiske Azure Blob-lagertrin og de gaeldende listepriser. Modeller ogsaa det ubehagelige scenarie: en auditor beder om 5.000 arkiverede dokumenter paa een gang. Hvad koster det, og hvor lang tid tager det? Det er det spoergsmaal der afgoer om politikken duer.",
+   "tid": "8-10 timer over to uger",
+   "svaerhed": "Lav til middel - hurtigste vej til et artefakt der taler direkte til forretningen",
+   "domaenekobling": "Fra briefets problemklasse om dokumenttunge storage- og cost-modeller. Denne spike er den letteste at faa opbakning til internt, fordi resultatet er en besparelse stifteren kan se paa bundlinjen."
+  },
+  {
+   "titel": "Kontinuitetsdesign for compliancedata - hvad et nedbrud faktisk koster",
+   "problem": "Fastsaet og begrund RTO og RPO for de forskellige datatyper. Et tabt revisionsspor er en compliancehaendelse, en tabt cache er ingenting. Design forskellig beskyttelse for forskellige data i stedet for at behandle alt ens, og saet tal paa hvad det koster at gaa fra timer til minutter.",
+   "artefakter": "En tabel med datatype, RTO, RPO, valgt mekanisme og maanedlig meromkostning. En gennemfoert og dokumenteret genoprettelsesoevelse med maalt faktisk tid - ikke en anslaaet tid. En ADR der begrunder hvorfor revisionssporet faar strengere krav end resten.",
+   "kompetence": "Business continuity - et helt selvstaendigt domaene i AZ-305 og det omraade juniorer oftest slet ikke har roert.",
+   "fremgangsmaade": "Det afgoerende er at GENNEMFOERE genoprettelsen og tage tid paa den. En backup der aldrig er blevet gendannet, er en formodning. Den maalte tid mod den lovede tid er hele pointen i artefaktet.",
+   "tid": "10-12 timer over to uger",
+   "svaerhed": "Middel",
+   "domaenekobling": "Compliance goer kontinuitet til et regulatorisk spoergsmaal frem for et teknisk. Under NIS2 er evnen til at komme sig efter en haendelse et dokumentationskrav i sig selv, hvilket giver ham en anledning til at koble designet til lovtekst i stedet for til best practice."
+  }
+ ],
+ "paa_jobbet": [
+  "Spoerg stifteren foerste arbejdsdag hvilken cloud LeanLinking koerer paa, og om der er en Microsoft Partner-aftale. Begge svar aendrer planen. Er de Microsoft Partner, findes der partner-vouchers og rabatterede eksamener som firmaet maaske allerede har liggende ubrugt. Det tager fem minutter at spoerge og kan spare hele eksamensbudgettet.",
+  "Bed om de to eksamensgebyrer i een samlet anmodning med belob, datoer og hvad firmaet faar - ikke som to separate forespoergsler et halvt aar fra hinanden. Formulering der virker i et 9-mandsfirma: 'AZ-104 i november og AZ-305 til sommer, cirka 2.700 kroner i gebyrer i alt, jeg betaler selv eventuelle omproever.' At tilbyde selv at daekke omproever fjerner den eneste reelle indvending, nemlig aaben risiko paa budgettet.",
+  "Aktiver Azure for Students-kreditten i denne uge, mens den akademiske e-mail stadig virker. Alle seks spikes kraever rigtige Azure-ressourcer, og gratis kredit er forskellen mellem at maale og at gaette. Dette er det mest tidsfoelsomme punkt i hele certificeringssektionen.",
+  "Naar AZ-104-pensum rammer Azure Policy og RBAC, saa anvend det samme dag paa LeanLinkings faktiske abonnement i stedet for i et oevemiljoe. Skriv den policy der forhindrer at der oprettes storage uden kryptering, eller den der kraever tenant-tag paa alle ressourcer. Det er eksamenspensum, det er en forbedring firmaet beholder, og det koster nul ekstra timer.",
+  "Foer AZ-305-forberedelsen begynder i maaned 7, saa bed om at maatte skrive et kort designnotat paa noget der allerede er besluttet i produktet - ikke noget nyt. At rekonstruere begrundelsen bag en eksisterende beslutning laerer ham at laese arkitektur, og notatet er nyttigt for firmaet uden at kraeve at nogen giver ham mandat over nye beslutninger.",
+  "Nar en Microsoft-renewal-assessment forfalder, saa tag den i arbejdstiden. Den er gratis, uproctoreret, tager en til to timer og er reelt vedligeholdelse af et aktiv firmaet har betalt for. Det er ikke noget der skal ligge i hans 10-15 private timer.",
+  "Brug labsene fra mslearn-azure-ai naar en konkret opgave paa arbejdet rammer det samme emne. Faar han en ticket der roerer Service Bus, saa koer integrate-services-labbet samme uge. Det er den billigste maade at konvertere tickets til bredde paa, og han behoever ikke spoerge nogen om lov."
+ ],
+ "faldgruber": [
+  "At tro AZ-204-pensioneringen har blokeret vejen til AZ-305 og saa jage AI-200 som 'erstatningen'. AZ-204 var aldrig forudsaetning for AZ-305 - AZ-104 var og er. Den fejl koster en cert paa cirka 1.300 kroner og 60-80 timer paa et spor der ikke laaser noget op.",
+  "At tage AZ-900 foerst 'for at starte blodt'. For en person der afslutter en software engineering-uddannelse og arbejder i produktionskode er AZ-900 tabte uger. Den signalerer intet til eksterne, den laaser intet op, og den skaber en falsk foelelse af fremdrift. Undtagelsen er hvis den er gratis via en Virtual Training Day OG han reelt aldrig har roert Azure - saa er den en billig sanity-check, ikke et trin paa stigen.",
+  "Brain dumps. ExamTopics og lignende bryder Microsofts eksamensaftale og kan koste annulleret score, inddraget certificering og permanent udelukkelse. Den mindre kendte del: de virker specifikt daarligt paa AZ-305, som er case study-baseret, saa memorerede svarmoenstre kollapser naar scenariet skifter begraensninger. Han risikerer altsaa baade sanktionen og dumpen.",
+  "At laese pensum foerst og booke bagefter. Saa bliver certen ikke en deadline-motor, men et projekt uden slutdato. Book foerst, laes derefter. Ombookingen er gebyrfri indtil cirka seks hverdage foer, saa der er naesten ingen nedside.",
+  "At jage flere certs fordi de foles som fremdrift. AZ-900, AI-900, PSM I og ITIL 4 kan alle tages hurtigt og signalerer tilsammen mindre end AZ-305 alene. Hver ekstra Microsoft-cert paalaegger ham desuden en aarlig fornyelse - en permanent skat paa de 10-15 timer. Faa og tunge.",
+  "At tage TOGAF fordi det staar 'architecture' i navnet. TOGAF er enterprise architecture-governance til store organisationer med ADM-cyklusser og formelle stakeholder-processer. I et 9-mandsfirma er der ingen praksis at haenge det op paa, og en TOGAF-cert uden erfaring bag laeses af hiring managers som papir. Dertil DKK 8.000-15.000 med kursus. Det er det dyreste fravalg paa listen og det letteste at begaa.",
+  "At betale for ISO 27001 Lead Implementer i aar 1 for at forstaerke nichen. Rigtig instinkt, forkert tidspunkt. Certen giver mening naar han har artefakter der viser at han allerede designer til compliance - foer det er det DKK 15.000-25.000 for en credential uden praksis bag. Og i et firma med DKK 4,2 mio. i bruttofortjeneste braender den anmodning den goodwill han faar meget mere ud af at bruge paa noget andet.",
+  "At booke AZ-305 som online proctored hjemmefra. Proctoreringens miljoekrav er strenge, og en afbrydelse midt i en expert-eksamen med case studies koster hele gebyret og hele forberedelsen. Book AZ-305 i et fysisk Pearson VUE-testcenter. Aarhus har testcentre.",
+  "At forberede AZ-305 som en faktaeksamen med flashcards. Den tester afvejninger mellem WAF-soejlerne, ikke tjenestenavne. Den forberedelse der virker er at tage sine EGNE domaeneproblemer og systematisk gennemgaa dem mod alle fem soejler - og det er samtidig spike-arbejde, saa de to ting holder op med at konkurrere om hans timer.",
+  "At vente med studenterfordelene til efter eksamensplanen er lagt. Azure for Students og GitHub Student Pack doer med den akademiske e-mail. De skal claimes NU, i denne uge, uafhaengigt af alt andet i planen.",
+  "At antage at LeanLinking koerer paa Azure uden at have spurgt. Er de paa AWS, er hele denne raekke forkert og skal skiftes til SAA-C03 efterfulgt af SAP-C02. Det er et fem-minutters spoergsmaal der aendrer 150 timers arbejde.",
+  "At tage CISSP eller CCSP. Begge kraever fem aars dokumenteret relevant erfaring. Uden den bliver han hoejst 'Associate of ISC2', hvilket ikke er den credential markedet efterspoerger. Han er ikke berettiget paa nogen meningsfuld maade og skal ikke bruge en time paa dem foer tidligst om fire aar."
+ ],
+ "maalepunkter": [
+  "Uge 1: bekraeftet svar fra stifteren paa hvilken cloud LeanLinking koerer paa, samt om der findes en Microsoft Partner-aftale med tilhoerende vouchers. Uden dette svar bookes ingen eksamen.",
+  "Uge 1: Azure for Students-kredit aktiveret paa akademisk e-mail. Binaert - enten er der kredit paa kontoen eller ogsaa er der ikke.",
+  "Uge 2: AZ-104 booket med betalt gebyr og bekraeftet dato i slutningen af november 2026. Selve bookingen er maalepunktet, ikke intentionen om at booke.",
+  "Uge 2: kold officiel Practice Assessment paa AZ-104 taget FOER laesning, med scoren skrevet ned. Det tal er hans udgangspunkt og gaar ikke at bortforklare senere.",
+  "Maaned 3: AZ-104 bestaaet. Falsifiserbart, eksternt bedoemt, ikke til forhandling. Dumper han, er omproeven inden for fire uger - ikke en udskydelse til nytaar.",
+  "Maaned 3: mindst tre af de seks spikes har et faerdigt ADR-artefakt med afviste alternativer skrevet ned. Et ADR uden afviste alternativer taeller ikke - det er et referat, ikke et designvalg.",
+  "Maaned 7: AZ-305 booket i fysisk testcenter med dato i juni eller juli 2027. Booket, betalt, i kalenderen.",
+  "Maaned 9: alle seks spikes har artefakter, og mindst to af dem har vaeret gennem ekstern kritik fra en person der ikke er ansat hos LeanLinking, med kritikken skrevet ned og besvaret. Antallet af eksterne kritikker er et hardt tal han ikke kan snyde med.",
+  "Maaned 9-10, KOMPETENCEPORTEN: han kan tage et vilkaarligt af de seks domaeneproblemer og paa 45 minutter foran en fremmed praesentere loesningen, de fravalgte alternativer, omkostningen i kroner pr. maaned og de tre forhold der ville faa ham til at vaelge om. Uden slides forberedt til netop det problem. Bedoemmes af en ekstern arkitekt, ikke af en kollega.",
+  "Maaned 10-11: AZ-305 bestaaet. Sammen med porten er dette de to eksterne signaler han ikke kan tale sig til. Bestaar han AZ-305 men fejler porten, mangler han praksis, ikke pensum - og saa er svaret flere spikes, ikke flere certs.",
+  "Maaned 12: praecis to Microsoft-certs paa profilen, ikke fem. Hvis der er kommet flere til, er planen skredet mod let fremdrift i stedet for dybde, og det er i sig selv en fejl der skal navngives.",
+  "Maaned 12: skriftlig beslutning om aar 2 truffet - ISO 27001 Lead Implementer eller CIPP/E eller ingen af delene - begrundet i hvilke krav LeanLinkings kunder faktisk har stillet i loebet af aaret. Beslutningen skal hvile paa observerede kundekrav, ikke paa hvad der lyder godt."
+ ],
+ "kompetencer": [
+  {
+   "navn": "Designvalg under modstridende krav",
+   "hvorfor": "Det er den ene ting der adskiller en senior udvikler fra en arkitekt, og den eneste kompetence paa listen AZ-305 faktisk tester. Hans domaene leverer konflikterne gratis: uforanderligt revisionsspor mod sletteret, isolation mod driftsomkostning, opbevaringspligt mod lagerpris. En udvikler loeser det staerkeste krav. En arkitekt navngiver konflikten, vaelger, og skriver ned hvad valget kostede.",
+   "hvordan_traenes": "Hver spike afsluttes med en ADR hvor de AFVISTE alternativer fylder mindst lige saa meget som det valgte. Kan han ikke skrive et troværdigt argument FOR det alternativ han fravalgte, har han ikke forstaaet afvejningen. Test det ved at lade en anden laese ADR'en og gaette hvilket alternativ der blev valgt - hvis det er indlysende, var afvejningen ikke reel.",
+   "niveauskala": "Niveau 1: kan implementere en given loesning. Niveau 2: kan foreslaa to loesninger. Niveau 3: kan skrive ned hvorfor den ene blev valgt. Niveau 4: kan forsvare valget over for en der argumenterer imod. Niveau 5: kan sige praecis hvilke aendringer i forudsaetningerne der ville vende valget. Porten i maaned 9-10 kraever niveau 5."
+  },
+  {
+   "navn": "Omkostningsmodellering som designdisciplin",
+   "hvorfor": "Cost Optimization er en af WAF's fem soejler og den soejle udviklere systematisk ignorerer. I et 9-mandsfirma med DKK 4,2 mio. i bruttofortjeneste er den samtidig den soejle stifteren maerker paa kroppen. At kunne saette kroner pr. kunde pr. maaned paa et designvalg er den hurtigste vej til at blive taget alvorligt som arkitekt dér - hurtigere end nogen titel.",
+   "hvordan_traenes": "Ethvert designoplaeg faar en linje med maanedlig omkostning ved tre skalatrin. Brug faktiske listepriser, ikke fornemmelser. Storage-spiken er den reneste traening, men vanen skal ind i alle seks.",
+   "niveauskala": "Niveau 1: ved at cloud koster penge. Niveau 3: kan regne prisen paa et design ud. Niveau 5: kan vende regnestykket om og designe baglaens fra en maalpris pr. kunde."
+  },
+  {
+   "navn": "Regulatorisk oversaettelse",
+   "hvorfor": "Det er selve nichen. CSDDD, NIS2 og GDPR er tekster, ikke tekniske krav, og der er meget faa i Danmark der kan laese en artikel i en forordning og komme ud med en tabelstruktur og en opbevaringspolitik i den anden ende. Kombinationen af den evne og cloud-arkitektur er sjaelden nok til at vaere en position i sig selv - og han kan kun bygge den fordi han sidder hos LeanLinking.",
+   "hvordan_traenes": "Laes den faktiske lovtekst, ikke blogindlaeg om den. Start med GDPR art. 17 og art. 30, som er korte og direkte relevante for revisionsspor og sletning. For hver artikel: skriv en side om hvad den konkret kraever af datamodellen. Gem dem - efter et aar er de tilsammen en tekst ingen anden junior i Danmark har.",
+   "niveauskala": "Niveau 1: kender forkortelserne. Niveau 3: kan laese en artikel og udlede et teknisk krav. Niveau 5: kan sidde i et kundemoede og sige hvad der ikke kan lade sig goere og hvorfor, uden at hente nogen."
+  },
+  {
+   "navn": "Identity- og adgangsdesign",
+   "hvorfor": "Fundamentet under multi-tenant isolation og den tungeste del af baade AZ-104 og AZ-305's foerste domaene. Det er ogsaa det omraade hvor fejl er dyrest og opdages senest - en isolationsbrist findes af en kunde, ikke af en test, medmindre man skriver testen.",
+   "hvordan_traenes": "AZ-104-pensum giver mekanikken - Entra ID, RBAC, managed identity, Azure Policy. Isolationsspiken giver praksis. Det afgoerende greb: skriv altid testen der forsoeger at bryde isolationen og skal fejle.",
+   "niveauskala": "Niveau 1: kan bruge et login. Niveau 3: kan opsaette RBAC korrekt. Niveau 5: kan designe en isolationsmodel og bevise med tests hvor dens graenser gaar."
+  },
+  {
+   "navn": "Idempotens og fejltolerance i integrationer",
+   "hvorfor": "Alle hans domaeneproblemer er integrationsproblemer med daarlige data i den anden ende. Kundernes ERP-systemer sender dubletter, mangelfulde felter og haendelser i forkert raekkefoelge. Evnen til at designe noget der taaler at blive koert igen er den mest transferable enkeltkompetence i hele planen.",
+   "hvordan_traenes": "ERP-indlaesningsspiken plus varslingsspiken. Reglen der goer det maalbart: intet job er faerdigt foer der findes en test der koerer det to gange og beviser at effekten kun sker een gang. De gratis integrate-services-labs i mslearn-azure-ai daekker mekanikken.",
+   "niveauskala": "Niveau 1: haandterer den lykkelige sti. Niveau 3: haandterer dubletter og fejl. Niveau 5: kan designe genafspilning efter delvis fejl uden datatab og uden dobbelteffekt."
+  },
+  {
+   "navn": "Skriftlig teknisk argumentation til ikke-tekniske laesere",
+   "hvorfor": "En arkitekt der ikke kan skrive er en senior udvikler med flere meninger. I hans specifikke tilfaelde er der en ekstra grund: revisionsspor og compliance-designs skal kunne laeses af auditorer og kunder, ikke kun af udviklere. Og fordi ingen paa arbejdet kan give ham modspil, er offentlig skrivning hans primaere kanal til ekstern kritik - det er baade en kompetence og et feedback-instrument.",
+   "hvordan_traenes": "Hvert artefakt faar en version paa een side i auditor- eller stiftersprog uden fagudtryk. Test den ved at give den til nogen uden teknisk baggrund og bede dem gengive konklusionen. Publicer mindst tre af dem offentligt i loebet af aaret - det er dér kritikken kommer fra.",
+   "niveauskala": "Niveau 1: skriver kommentarer i koden. Niveau 3: skriver en laesbar ADR. Niveau 5: skriver et notat en stifter traeffer en beslutning paa uden at stille opklarende spoergsmaal."
+  }
+ ],
+ "feedback_udefra": [
+  "AZ-305 ER i sig selv et eksternt feedback-loop, og det er en undervurderet grund til at tage den. Den er bedoemt af nogen der ikke kender ham, den kan ikke tales igennem, og case study-formatet tvinger ham til at forsvare designvalg mod et scenarie han ikke selv har formuleret. For en mand uden en arkitekt paa kontoret er det den eneste struktureret kritik han kan koebe for 1.300 kroner. Det er ogsaa hele grunden til at den er placeret i maaned 10, oven i porten, i stedet for tidligt.",
+  "Den gratis officielle Practice Assessment taget KOLD, foer der er laest noget, er et aerligt spejl. Scoren skrives ned. Det er den eneste maaling i planen der ikke er farvet af hans egen fornemmelse af hvor god han er blevet, og den skal tages igen midtvejs for at se om der er sket noget reelt.",
+  "Studiet er stadig aabent i et par maaneder endnu - det er hans sidste gratis adgang til folk der er betalt for at give kvalificeret modspil. Bring et af de rigtige LeanLinking-designproblemer til en underviser inden for distribuerede systemer eller sikkerhed og bed om kritik af designvalget, ikke om en karakter. Naar han er dimitteret, koster den samme samtale enten penge eller en tjeneste.",
+  "Publicer designnotaterne fra spikene offentligt - de er interessante netop fordi problemerne er rigtige og nichen er tyndt besat. 'Uforanderligt revisionsspor mod GDPR-sletteret' tiltraekker kvalificerede indvendinger fra folk der har loest det foer. Det er den billigste maade at faa arkitektmodspil paa naar man ikke har en arkitekt. Aftal med stifteren hvad der maa skrives om foerst - i et 9-mandsfirma er det een samtale, ikke en godkendelsesproces.",
+  "Danske faglige miljoeer med reelt niveau: AarhusJUG og .NET- og cloud-meetups i Aarhus giver ansigt-til-ansigt modspil uden rejseomkostning, og han sidder i byen. Meld dig til at holde et 20-minutters oplaeg om revisionsspor-spiken naar den er faerdig - at holde oplaeg er den mest effektive maade at faa kritik paa, fordi folk siger ting til en oplaegsholder de aldrig ville skrive i en kommentar.",
+  "Naar han i maaned 9-10 skal bedoemmes ved kompetenceporten, skal bedoemmeren udefra. En kollega hos LeanLinking kan ikke bedoemme arkitektur - der er ingen arkitekt. En ekstern arkitekt honoreret for to timer er en reel udgift, men den er mindre end en enkelt cert og maaler noget ingen cert maaler. Det er de bedst brugte penge i hele planen, og de skal budgetteres nu, ikke findes i maaned 9.",
+  "Byt code review og designkritik med en anden udvikler paa samme rejse, gerne uden for LeanLinking. Konkret aftale slaar loese hensigter: een designbeskrivelse hver, hver anden uge, med skriftligt svar. Antallet af gennemfoerte bytter er et af maalepunkterne netop for at forhindre at det skrider.",
+  "Architecture katas - fiktive designopgaver loest paa tid og fremlagt til kritik - er den eneste oevelse der traener netop det porten maaler: at forsvare et design foran nogen der stiller spoergsmaal. Koer dem med den byttepartner i stedet for alene; en kata uden en kritiker er bare en skriveoevelse."
+ ],
+ "web_verifikation": "METODE OG BEGRAENSNING - laes dette foer tallene bruges. WebSearch var utilgaengeligt: sessionens soegebudget var opbrugt (200/200) af en tidligere agent. WebFetch blev blokeret af egress-proxyens organisationspolitik for learn.microsoft.com, aka.ms, scrum.org, developer.hashicorp.com, microsoftlearning.github.io og wikipedia.org. Jeg har IKKE omgaaet blokeringerne. Verifikation blev i stedet gennemfoert via GitHub, som var tilgaengeligt, mod MicrosoftLearning-organisationen - den vedligeholder Microsofts officielle lab-repos pr. eksamenskode, hvor arkiveringsstatus og commit-dato er et paalideligt live/doed-signal for kursusindhold.\n\nVERIFICERET DIREKTE 10. SEPTEMBER 2026: AZ-305's lab-repo er aktivt og blev commit-opdateret dags dato, ikke arkiveret - AZ-305 lever og vedligeholdes. AZ-104's lab-repo opdateret dags dato - lever. SC-100 opdateret 9. sep, SC-300 opdateret dags dato plus et nyt mslearn-sec-identity-repo fra marts 2026 - begge lever. AZ-900's repo er aktivt. AZ-204's oprindelige repo er arkiveret, og efterfoelgeren mslearn-azure-developer blev arkiveret 1. september 2026 med banneret \"This repository has been archived. The course and self-paced content it supported have been retired.\" - hvilket uafhaengigt bekraefter AZ-204-pensioneringen.\n\nVIGTIG KORREKTION AF BRIEFETS PRAEMIS OM AI-200: repoet mslearn-azure-ai (oprettet 21. okt 2025, aktivt, opdateret 8. sep 2026) har i _config.yml titlen \"Develop AI Cloud Solutions on Microsoft Azure\". Dets instructions-mappe indeholder app-sec-config, azure-container-apps, azure-database-postgresql, azure-kubernetes-service, azure-managed-redis, container-hosting, cosmosdb, instrument-observe og integrate-services. Pensum er altsaa overvejende klassisk cloud-native udvikling - containere, Cosmos DB, PostgreSQL, Redis, Key Vault og managed identity, observability, message-baseret integration - og ikke primaert RAG og vector-databaser. Briefets formulering om at AI-200 er \"AI-drejet og ikke en generel udviklereksamen\" holder ikke mod det officielle lab-pensum. Det aendrer ikke anbefalingen om at fravaelge eksamenen, men det aendrer begrundelsen: den fravaelges fordi den er ny og uafproevet i markedet, ikke fordi indholdet er irrelevant.\n\nANDEN KORREKTION: AZ-400 er IKKE pensioneret. Det gamle lab-repo blev arkiveret i januar 2026, hvilket let fejllaeses som pensionering, men labsene er blot flyttet til mslearn-devops, der er aktivt og opdateret 8. sep 2026. Tilsvarende er AI-102's og AI-900's repo-arkiveringer rene reorganiseringer til mslearn-ai-*-repos, ikke eksamenspensioneringer. Repo-arkivering alene er derfor IKKE bevis for at en eksamen er doed - det tjekkede jeg i hvert enkelt tilfaelde.\n\nNYE KODER OPDAGET UNDERVEJS, ikke naermere undersoegt: AZ-1012, AZ-1013 og AZ-1014 om Govern/Manage/Secure AI-Ready Infrastructure (okt 2025); AI-300 (fremgaar af et lab-repos beskrivelse); DP-800 (ligeledes). Microsoft er tydeligvis midt i en omnummerering, hvilket i sig selv er et argument for at satse paa de etablerede koder AZ-104 og AZ-305 frem for de nye.\n\nIKKE VERIFICERET og markeret verificeret=false i ressourcelisten: AZ-305's praecise forudsaetningsregel pr. september 2026 (min konklusion om at AZ-104 er forudsaetningen bygger paa reglens stabilitet siden AZ-305 blev indfoert i 2021-22, ikke paa en aflaesning i dag); alle priser i USD og DKK; pensumvaegte; PSM I- og PSPO I-priser og -format; Terraform Associate's aktuelle version; ombooknings-, omproeve- og fornyelsesreglernes praecise ordlyd; samt studenterrabatter, vouchers og Virtual Training Day-ordningens status i 2026. ALT dette skal bekraeftes paa learn.microsoft.com fra en umonteret forbindelse foer der bookes eller budgetteres. Tre konkrete ting skal tjekkes foerst: (1) at AZ-104 fortsat staar anfoert som forudsaetning for Azure Solutions Architect Expert, (2) den faktiske DKK-pris ved booking gennem Pearson VUE i Danmark, og (3) om der findes en gaeldende studenter- eller partnerrabat der kan bruges inden han dimitterer. Ingen URL i dette output er opfundet; de der ikke kunne aabnes, er markeret som uverificerede sti-angivelser.\n\nKilder faktisk aabnet og laest: [MicrosoftLearning/AZ-305](https://github.com/MicrosoftLearning/AZ-305-DesigningMicrosoftAzureInfrastructureSolutions), [MicrosoftLearning/AZ-104](https://github.com/MicrosoftLearning/AZ-104-MicrosoftAzureAdministrator), [MicrosoftLearning/mslearn-azure-ai](https://github.com/MicrosoftLearning/mslearn-azure-ai), [MicrosoftLearning/mslearn-azure-developer](https://github.com/MicrosoftLearning/mslearn-azure-developer), [MicrosoftLearning/mslearn-devops](https://github.com/MicrosoftLearning/mslearn-devops), [MicrosoftLearning/AZ-204 (arkiveret)](https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure), [MicrosoftLearning/AZ-400 (arkiveret)](https://github.com/MicrosoftLearning/AZ400-DesigningandImplementingMicrosoftDevOpsSolutions), [MicrosoftLearning/AI-102 (arkiveret)](https://github.com/MicrosoftLearning/AI-102-AIEngineer), [MicrosoftLearning/SC-100](https://github.com/MicrosoftLearning/SC-100-Microsoft-Cybersecurity-Architect). Verifikationslog gemt i /tmp/claude-0/-home-user-gridlane/90031ba2-8dd7-5a34-8062-2c2655b917e3/scratchpad/cert-verifikation.md"
+}

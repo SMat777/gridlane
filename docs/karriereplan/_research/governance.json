@@ -1,0 +1,698 @@
+{
+ "kernepointer": [
+  "Ordet governance daekker mindst fem forskellige discipliner, og det er derfor samtaler om det gaar i staa. Adskil dem foer noget andet: (1) corporate/IT governance (COBIT, bestyrelse, revision), (2) cloud-/platformgovernance (management groups, Azure Policy, RBAC, PIM), (3) engineering governance (branch policies, environments, approvals, supply chain), (4) arkitekturgovernance (ADR, RFC, principper, tech radar), (5) data governance (ejerskab, klassificering, retention, lineage). Simon skal kunne sige hvilken af de fem han taler om i en given saetning. Det alene loefter ham over de fleste seniorudviklere.",
+  "Den centrale skelnen i hele emnet er guardrail versus gatekeeper. En gatekeeper er et menneske eller udvalg der skal sige ja foer man maa fortsaette: omkostningen skalerer med antal beslutninger, ventetiden med kalendere. En guardrail er en automatiseret begraensning der goer det forkerte svaert og det rigtige til default: omkostningen betales een gang. Arkitektens job er at konvertere gatekeeping til guardrails og gore de tilbagevaerende doemmekraftsbeslutninger billige at traeffe, ikke dyre at godkende.",
+  "Den maalbare test paa om governance virker: forskellen mellem tid-til-compliant-miljoe og tid-til-non-compliant-miljoe. Er den compliante vej langsommere, traener man folk i at rute uden om. Det er ikke et kulturproblem, det er et designproblem. Enhver governance-anbefaling i guiden boer kunne besvare: goer det her den rigtige vej hurtigere eller kun den forkerte vej sværere?",
+  "Progressiv haandhaevelse er den eneste rullestrategi der virker og samtidig den eneste teknik en junior kan bruge til at faa mandat: audit foerst, maal, vis tal, saa modify/deployIfNotExists paa det mekaniske, og deny kun paa det lille sæt der reelt ikke kan forhandles. Azure Policy har enforcementMode DoNotEnforce og GitHub rulesets har evaluate-mode praecis til dette. Moensteret 'jeg koerte det i audit i tre uger, her er de 43 afvigelser, 38 af dem ligger i én resource group' forvandler en juniors mening til en beslutning. Det er den mest overfoerbare teknik i hele emnet og virker identisk paa policy, branch rules, licenser og teknisk gaeld.",
+  "Bicep versus Terraform har ingen vinder i 2026 - der er en vejgaffel, og arkitektens opgave er at kunne argumentere begge sider. Verificeret: Bicep er meget aktiv (v0.47.16, 8. sep. 2026), azurerm-provideren er paa v5.4.0 (3. sep. 2026), OpenTofu lever (v1.12.6, 19. aug. 2026), Azure Verified Modules er erklaeret 'the single Microsoft standard for Bicep modules', og ALZ-Accelerator understoetter baade Bicep (AVM-baseret), Bicep-Classic og Terraform. Vigtigste enkeltfund: ALZ-Bicep Classic er under udfasning - fjernet som Accelerator-default 16. feb. 2026, repoet arkiveres 16. feb. 2027, afloest af Bicep AVM. Raad til Simon: laer Bicep til flydende foerst (ingen state at slaas med, saa han laerer governance frem for vaerktoej), og lav derefter én bevidst sammenligningsspike i Terraform. At kunne sige 'jeg byggede det samme to gange, her er hvad der gik i stykker' er mere vaerd i et interview end noget certifikat.",
+  "TOGAF, ArchiMate, ITIL 4 og COBIT er ordboeger til at tale med folk der styrer budgetter - ikke metoder til at bygge gode systemer. I dansk sammenhaeng bruges de i offentlig sektor, bank/pension/forsikring, energi og de konsulenthuse der saelger derind; i danske SaaS-produktvirksomheder paa LeanLinkings stoerrelse stort set aldrig. Simons risikoprofil er den omvendte af den saedvanlige: han er junior med reel ingenioerkredibilitet og fristes mod rammevaerks-signalering. Rammevaerkerne er den billigste del at tilfoeje senere; ingenioerdybden er den del der udloeber hvis han ikke bygger den nu. Konklusion: nul certificeringer i disse fire i maaned 1-9, kun ordforraad. Genovervej kun hvis kompetenceporten i maaned 9-10 peger mod konsulentbranchen eller offentlig sektor.",
+  "Den enkeltstaaende hoejest forrentede vane han kan starte paa mandag uden mandat: bliv den der skriver beslutninger ned. Hver gang der traeffes en beslutning i et moede og ingen registrerer den, sender han en Y-saetning bagefter ('I konteksten X, staaende over for Y, besluttede vi Z, for at opnaa W, og accepterede V - korrekt?'). Efter tre maaneder er han de facto ejer af beslutningsregistret, hvilket er en stor del af hvad arkitekturgovernance faktisk er. Det kraever nul autoritet og nul tilladelse.",
+  "Architecture Review Boards fejler af strukturelle grunder, ikke kulturelle: de er en synkron, batchet ko med lav gennemloebshastighed foran en proces med hoej ankomstrate. Naar udnyttelsen naermer sig kapaciteten gaar ventetiden mod uendelig, og teams reagerer rationelt ved at batche beslutninger (daarligere beslutninger), forudbeslutte og soege velsignelse bagefter (teater) eller rute uden om (skyggearkitektur). Sekundaer fejl: boardet har autoritet uden konsekvens - beslutningerne traeffes af folk der ikke bliver kaldt ud om natten. Alternativet er advice process plus et aabent advice forum der eksplicit ikke er et godkendelsesorgan. Hvis Simon nogensinde faar lov at designe en proces, er hans foerste designmaal at fjerne sig selv fra den kritiske sti.",
+  "ADR-vaerktoejsmarkedet er doedt, og det er en god nyhed. Verificeret: npryce/adr-tools' sidste commit er 30. marts 2020, log4brains' sidste commit er 17. dec. 2024. Det korrekte svar i 2026 er kedeligt: en docs/adr-mappe, NNNN-kebab-titel.md, MADR bare-minimal-skabelonen (MADR v4.0.0, aktivt vedligeholdt), og render det med det der allerede renderer markdown - Azure DevOps Wiki publicerer direkte fra en repo-mappe, hvilket er gratis i hans miljoe. Vaerdien ligger i triggeren (en skreven liste over hvilke beslutninger der kraever en ADR plus en linje i PR-skabelonen), ikke i vaerktoejet.",
+  "Principper der ikke kan omsaettes til automatiserede checks er plakater. Broen hedder fitness functions: en test der beskytter en arkitektonisk egenskab. I .NET er det konkret NetArchTest eller ArchUnitNET til lagafhaengigheder, en Roslyn-analyzer der forbyder DateTime.Now, PSRule eller Checkov paa infrastrukturkoden, en pipeline-check paa p95-latenstid, og en test der fejler hvis et restricted felt optraeder i en log-payload. Det er den teknik der konverterer governance fra moeder til tests, og den mest arkitektsignalerende ting han kan indfoere paa arbejdet uden at spoerge nogen om lov.",
+  "Data governance er ikke et sidespor for LeanLinking - det er produktet. De opbevarer andre virksomheders leverandoerdokumentation: auditrapporter, ISO-certifikater, CSR- og ESG-erklaeringer, code-of-conduct-underskrifter, undertiden personhenfoerbare data. Det goer LeanLinking til databehandler under GDPR for kundernes data, mens kunderne selv er under stigende leverandoerkaedelovgivning. Den haarde arkitekturkonflikt han boer kunne raesonnere hoejt om: immutabelt revisionsbevis versus ret til sletning. En auditrapport maa ikke kunne aendres; en navngivet person i den har sletteret. Loesningen er normalt at adskille persondata fra beviset eller at dokumentere et retsgrundlag der gaar forud - og at kunne sige det i en samtale er et solution architect-signal i praecis hans branche.",
+  "Multi-tenancy er et data governance-problem, ikke kun et teknisk. Isolationsmodellen afgoer sprængradius ved fejl, om 'slet min lejer' kan honoreres rent, om man kan tilbyde kundeadministrerede noegler, om man kan opfylde datalokaliseringskrav, og om cost per tenant overhovedet kan maales. Det mest almindelige indkoebsspoergsmaal en dansk B2B SaaS faar er en variant af 'hvor ligger vores data, hvem kan se dem, og kan vi faa dem tilbage eller slettet'. Den arkitekt der kan besvare det med et diagram vinder.",
+  "Governance-gaeld er reel: hver regel der indfoeres uden ejer og udloebsdato er permanent. Exemptions er sundhedssignalet - en policy med 200 undtagelser er ikke en policy, det er en loegn med revisionsspor. Antal og alder paa exemptions boer maales som foersteklasses metrik, ogsaa paa hans egne regler."
+ ],
+ "ressourcer": [
+  {
+   "titel": "Microsoft Cloud Adoption Framework - Govern- og Manage-metodikkerne",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/azure/cloud-adoption-framework/ (uverificeret sti - learn.microsoft.com kunne ikke naas fra dette miljoe)",
+   "prioritet": "kerne",
+   "hvorfor": "Det er den kanoniske Azure-governance-referenceramme og det sprog Microsoft-partnere og danske Azure-shops taler. Govern-metodikken giver ham de fem governance-discipliner (cost, security baseline, identity baseline, resource consistency, deployment acceleration) som et faerdigt skelet han kan haenge alt andet paa.",
+   "tidsforbrug": "6-8 timer, kun Govern- og Manage-sektionerne",
+   "hvad_springes_over": "Hele Plan/Ready/Migrate-fortaellingen. Den handler om at flytte et datacenter til skyen, hvilket LeanLinking ikke skal. Ogsaa alle brancheafsnit (Retail, Financial Services osv.).",
+   "verificeret": false
+  },
+  {
+   "titel": "Azure Well-Architected Framework - saerligt Security, Cost Optimization og Operational Excellence",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/azure/well-architected/ (uverificeret sti)",
+   "prioritet": "kerne",
+   "hvorfor": "WAF er den checkliste danske Azure-arkitekter faktisk bruger i design reviews, og de tre naevnte soejler ER governance i praksis. Vigtigere: WAF's trade-off-afsnit er de eneste steder Microsoft skriver eksplicit at soejlerne modarbejder hinanden - det er den taenkning der adskiller en arkitekt fra en der laeser best practices op.",
+   "tidsforbrug": "6 timer",
+   "hvad_springes_over": "Workload-specifikke guider (WAF for SAP, for AVS, for mission-critical). Reliability- og Performance-soejlerne hoerer til hans dybdespor, ikke governance-sporet.",
+   "verificeret": false
+  },
+  {
+   "titel": "Azure Landing Zones - teknisk dokumentation",
+   "type": "dokumentation",
+   "url": "https://aka.ms/alz/techdocs (link citeret direkte fra Azure/Enterprise-Scale-repoet, som blev verificeret)",
+   "prioritet": "kerne",
+   "hvorfor": "Landing zone-designet er det konkrete artefakt der goer management groups, policy, RBAC og tagging til én sammenhaengende ting i stedet for fire loesrevne emner. Han skal kunne tegne hierarkiet og forsvare hvorfor graenserne ligger hvor de ligger.",
+   "tidsforbrug": "4 timer laesning + bruges gennem hele spike G2",
+   "hvad_springes_over": "Alt om hybrid netvaerk, ExpressRoute, on-prem-forbindelse og VWAN medmindre LeanLinking har det. Det er halvdelen af materialet og nul relevans for en ren SaaS.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Verified Modules (Bicep) - Azure/bicep-registry-modules",
+   "type": "kodebase",
+   "url": "https://github.com/Azure/bicep-registry-modules",
+   "prioritet": "kerne",
+   "hvorfor": "Repoet erklaerer eksplicit at 'Azure Verified Modules (AVM) is the single Microsoft standard for Bicep modules'. Det er nu grundlaget for ALZ Bicep, og at kunne laese et AVM-modul (interface, parametre, defaults, hvad de har valgt at eksponere) er den hurtigste vej til at laere hvordan Microsoft selv mener Azure-ressourcer boer indpakkes. Aktivt: 2.813 commits, 736 stars.",
+   "tidsforbrug": "3 timer laesning, derefter brugt i spike G1 og G2",
+   "hvad_springes_over": "AVM's contribution- og specifikationsdokumentation. Han skal bruge modulerne, ikke bidrage til dem.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Landing Zones Library - policy-, archetype- og hierarki-aktiver",
+   "type": "kodebase",
+   "url": "https://github.com/Azure/Azure-Landing-Zones-Library",
+   "prioritet": "kerne",
+   "hvorfor": "Det faelles bibliotek af ALZ-aktiver som baade Bicep- og Terraform-implementeringerne konsumerer. At laese det er den hurtigste maade at se hvordan en rigtig virksomhedsklar policy-portefoelje er struktureret i arketyper, i stedet for at opfinde sin egen struktur i en spike.",
+   "tidsforbrug": "2-3 timer",
+   "hvad_springes_over": "Forsoeg ikke at forstaa hele biblioteket. Vaelg én arketype og laes den til bunds.",
+   "verificeret": true
+  },
+  {
+   "titel": "Enterprise Policy as Code (EPAC) - Azure/enterprise-azure-policy-as-code",
+   "type": "kodebase",
+   "url": "https://github.com/Azure/enterprise-azure-policy-as-code",
+   "prioritet": "kerne",
+   "hvorfor": "Det modne svar paa hvordan man holder Azure Policy i git paa tvaers af mange management groups og miljoeer, med desired-state-afstemning, exemption-haandtering og CI/CD-integration. Aktivt (942 commits). Selv hvis han ikke adopterer det, skal han kende repo-strukturen: det er saadan en policy-monorepo ser ud naar den er lavet af folk der har proevet det foer.",
+   "tidsforbrug": "4 timer - laes dokumentationen og repo-layoutet, deploy det ikke",
+   "hvad_springes_over": "Selve installationen og pipeline-opsaetningen. Den er tung og laerer ham ingenting arkitektonisk. Hans egen spike skal vaere mindre.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Governance Visualizer (AzGovViz) - JulianHayward/Azure-MG-Sub-Governance-Reporting",
+   "type": "vaerktoej",
+   "url": "https://github.com/JulianHayward/Azure-MG-Sub-Governance-Reporting",
+   "prioritet": "kerne",
+   "hvorfor": "Et PowerShell-script der gennemloeber hele management group-hierarkiet og producerer en interaktiv HTML-rapport over policies, RBAC, PIM-berettigelser, Defender for Cloud, tags og omkostninger. Det er baade et laeringsredskab (rapporten viser ham hvad governance-overfladen overhovedet bestaar af) og det mest overbevisende enkeltartefakt en junior kan laegge paa bordet. Verificeret v6.7.3 (18. maj 2026), aktivt vedligeholdt.",
+   "tidsforbrug": "3 timer foerste gang, derefter en times drift om ugen i den promoverede spike",
+   "hvad_springes_over": "Ingenting - men se advarslen: koer det aldrig mod LeanLinkings produktionstenant uden eksplicit skriftlig aftale. Koer det mod hans eget dev-tenant foerst og vis outputtet frem som metode.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure/review-checklists - Azure Landing Zone review checklist",
+   "type": "checkliste",
+   "url": "https://github.com/Azure/review-checklists",
+   "prioritet": "kerne",
+   "hvorfor": "Microsofts egne design review-checklister, herunder Azure Landing Zone, Cost Management, Multitenancy og Azure DevOps. Konsumeres som Excel, som Azure Resource Graph-queries eller direkte i git. Det er den taetteste tilnaermelse til 'hvad spoerger en rigtig Microsoft-arkitekt om i et review', og multitenancy-checklisten rammer LeanLinkings domaene direkte. Aktivt: 2.514 commits.",
+   "tidsforbrug": "3 timer - gennemgaa ALZ- og Multitenancy-checklisterne mod sin egen spike-landing zone",
+   "hvad_springes_over": "Alle workload-specifikke checklister (SAP, AVD, AVS, Stack HCI, ARO).",
+   "verificeret": true
+  },
+  {
+   "titel": "MADR - Markdown Any Decision Records",
+   "type": "skabelon",
+   "url": "https://github.com/adr/madr",
+   "prioritet": "kerne",
+   "hvorfor": "Den skabelon han skal bruge til hele sin ADR-serie. Verificeret v4.0.0, aktivt vedligeholdt, 2.5k stars. Fire varianter: full, minimal, bare, bare-minimal. Anbefalingen er bare-minimal til at starte med - jo lavere skriveomkostning, jo flere ADR'er bliver skrevet, og en skrevet middelmaadig ADR slaar en uskreven perfekt.",
+   "tidsforbrug": "1 time",
+   "hvad_springes_over": "Full-skabelonen. Den har ni sektioner og faar folk til at lade vaere.",
+   "verificeret": true
+  },
+  {
+   "titel": "Facilitating Software Architecture (Andrew Harmel-Law, O'Reilly)",
+   "type": "bog",
+   "url": "Kunne ikke verificeres - alle bogudgiver- og forhandlerdomaener var blokeret fra dette miljoe. Titel og forfatter angives som uverificeret.",
+   "prioritet": "kerne",
+   "hvorfor": "Den centrale bog for praecis dette emne. Den beskriver advice process i detaljer: enhver kan traeffe en beslutning, men skal foerst soege raad hos alle der er meningsfuldt beroert og hos folk med ekspertise; man er ikke forpligtet til at foelge raadet, kun til at soege det og registrere det. Det er det bedst kendte svar paa 'hvordan styrer man arkitektur uden et review board', og det kobler direkte til ADR'er. For Simon er den saerligt vaerdifuld fordi advice process er en maade at faa arkitektonisk indflydelse UDEN formelt mandat - han behoever ingen autoritet for at GIVE raad, og at tilbyde at facilitere raadgivningen omkring en andens beslutning er vejen til at blive den der ejer beslutningsregistret.",
+   "tidsforbrug": "10-12 timer for hele bogen; 4 timer hvis han kun laeser kapitlerne om advice process, ADR'er og advice forum",
+   "hvad_springes_over": "Hvis tiden er knap: laes advice process-delen og ADR-delen foerst, og udskyd resten til maaned 7+.",
+   "verificeret": false
+  },
+  {
+   "titel": "Building Evolutionary Architectures, 2. udgave (Ford, Parsons, Kua, Sadalage)",
+   "type": "bog",
+   "url": "Kunne ikke verificeres - udgave og aarstal angives som uverificeret.",
+   "prioritet": "kerne",
+   "hvorfor": "Kilden til fitness functions - begrebet der oversaetter arkitekturprincipper til automatiserede tests. Det er den enkeltide fra litteraturen der har den hoejeste konverteringsrate til noget Simon kan indfoere paa arbejdet i naeste uge uden at spoerge nogen.",
+   "tidsforbrug": "8 timer for hele bogen, men den aerlige anbefaling er 3 timer paa fitness function-kapitlerne alene",
+   "hvad_springes_over": "Kapitlerne om at bryde monolitter op og om at vaelge arkitekturstile - de hoerer til hans dybdespor og daekkes bedre andetsteds.",
+   "verificeret": false
+  },
+  {
+   "titel": "Bicep - sprog, CLI og linter",
+   "type": "vaerktoej",
+   "url": "https://github.com/Azure/bicep",
+   "prioritet": "kerne",
+   "hvorfor": "Hans primaere IaC-sprog. Verificeret meget aktivt: v0.47.16 udgivet 8. september 2026, med docs-generering, konfigurationsarv via extends, nye linter-regler der kan haandhaeve beskrivelser paa parametre og outputs (i sig selv en governance-mekanisme), OCI-registry-publicering af extensions og promovering af @retryOn til GA. Ingen state-fil betyder at han bruger sin tid paa governance-design frem for tilstandshaandtering.",
+   "tidsforbrug": "15-20 timer til flydende beherskelse, spredt over spike G1 og G2",
+   "hvad_springes_over": "Bicep extensibility/extensions og lokal deploy indtil videre. Det er nyt og eksperimentelt og loeser problemer han ikke har endnu.",
+   "verificeret": true
+  },
+  {
+   "titel": "Microsoft SBOM tool - microsoft/sbom-tool",
+   "type": "vaerktoej",
+   "url": "https://github.com/microsoft/sbom-tool",
+   "prioritet": "stoette",
+   "hvorfor": "Producerer SPDX 2.2 (default) og SPDX 3.0 (via -mi SPDX:3.0), installeres som .NET-vaerktoej med dotnet tool install --global Microsoft.Sbom.DotNetTool, og har dokumenteret Azure DevOps-pipelineopsaetning. Det er praecis den kombination Simons stack kraever, og det fjerner enhver undskyldning for ikke at have en SBOM i spike G8. 2.1k stars, 591 commits.",
+   "tidsforbrug": "2 timer",
+   "hvad_springes_over": "Hele diskussionen om SPDX 3.0 versus CycloneDX-formatvalg. Vaelg SPDX fordi vaerktoejet er Microsofts og integrationen er gratis, og brug tiden paa forespoergselsstien i stedet.",
+   "verificeret": true
+  },
+  {
+   "titel": "Syft - anchore/syft",
+   "type": "vaerktoej",
+   "url": "https://github.com/anchore/syft",
+   "prioritet": "stoette",
+   "hvorfor": "Alternativ SBOM-generator med reel .NET-understoettelse (deps.json-cataloger, PE-cataloger, single-file bundles). Verificeret v1.51.1, 27. august 2026, aktivt vedligeholdt. Relevant hvis han skal scanne containere eller binaerer frem for kildekode - eller hvis han vil sammenligne to SBOM-generatorers output paa samme solution, hvilket i sig selv er en god lille undersoegelse.",
+   "tidsforbrug": "1-2 timer",
+   "hvad_springes_over": "Vaelg ét SBOM-vaerktoej til produktion. To vaerktoejer er kun til sammenligningsoevelsen.",
+   "verificeret": true
+  },
+  {
+   "titel": "PSRule for Azure - microsoft/PSRule.Rules.Azure",
+   "type": "vaerktoej",
+   "url": "https://github.com/microsoft/PSRule.Rules.Azure",
+   "prioritet": "stoette",
+   "hvorfor": "Validerer Bicep, ARM og Terraform mod Well-Architected- og Azure-specifikke regler FOER deploy, og kan eksportere policy-as-code. Det er den rigtige 'shift left'-mekanisme naar man er Bicep-foerst, fordi den forstaar Azure-semantik og ikke bare YAML-moenstre. Advarsel: kadencen er faldet - v1.47.0 er fra januar 2025 og seneste synlige aktivitet er et prerelease fra juni 2026. Stadig levende, men ikke i hastig udvikling.",
+   "tidsforbrug": "3 timer",
+   "hvad_springes_over": "Vaelg PSRule ELLER Checkov, ikke begge. PSRule hvis Bicep-foerst, Checkov hvis Terraform-foerst.",
+   "verificeret": true
+  },
+  {
+   "titel": "Checkov - bridgecrewio/checkov",
+   "type": "vaerktoej",
+   "url": "https://github.com/bridgecrewio/checkov",
+   "prioritet": "stoette",
+   "hvorfor": "Statisk analyse af IaC. Verificeret aktivt udviklet med commits helt frem til 10. september 2026 - bemaerk at releases-siden giver et misvisende indtryk, commit-historikken er den paalidelige indikator. Bedre valg end PSRule hvis han arbejder Terraform-foerst eller skal daekke flere IaC-sprog.",
+   "tidsforbrug": "2-3 timer",
+   "hvad_springes_over": "Bridgecrew/Prisma Cloud-platformsintegrationen. Kun open source-CLI'en.",
+   "verificeret": true
+  },
+  {
+   "titel": "Trivy - aquasecurity/trivy",
+   "type": "vaerktoej",
+   "url": "https://github.com/aquasecurity/trivy",
+   "prioritet": "senere",
+   "hvorfor": "Bredt scanner-vaerktoej (saarbarheder, misconfigurations, hemmeligheder, SBOM). Verificeret v0.74.0, 14. august 2026, aktivt. Relevant hvis LeanLinking koerer containere. Hvis ikke, er den overfloedig ved siden af sbom-tool og PSRule/Checkov.",
+   "tidsforbrug": "2 timer",
+   "hvad_springes_over": "Spring den helt over hvis der ikke er containere i billedet. Tre scannere er to for mange.",
+   "verificeret": true
+  },
+  {
+   "titel": "FinOps toolkit - microsoft/finops-toolkit",
+   "type": "kodebase",
+   "url": "https://github.com/microsoft/finops-toolkit",
+   "prioritet": "kerne",
+   "hvorfor": "Microsofts open source FinOps-vaerktoejskasse: FinOps hubs (deploybar datapipeline med Data Explorer), Power BI-rapporter, Azure Optimization Engine, PowerShell-kommandoer. Verificeret v14, udgivet 29. april 2026, med FOCUS 1.2-understoettelse, ingestion af Azure Advisor-anbefalinger og Resource Graph-queries. Det er et faerdigt, deploybart artefakt til cost governance-spiken - han skal ikke bygge datapipelinen selv.",
+   "tidsforbrug": "4-6 timer, timeboxet - dette kan sluge en uge hvis han lader det",
+   "hvad_springes_over": "Azure Optimization Engine og hele EA/MCA-prisarkdelen medmindre LeanLinking har en Enterprise Agreement. Fokusér paa hub + Power BI-rapport.",
+   "verificeret": true
+  },
+  {
+   "titel": "FOCUS - FinOps Open Cost and Usage Specification",
+   "type": "standard",
+   "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec",
+   "prioritet": "stoette",
+   "hvorfor": "Den tvaersky-standard for omkostnings- og forbrugsdata som Azure Cost Management nu kan eksportere i. Verificeret v1.4 (juni), aktivt vedligeholdt. At kende kolonnenavnene gør 'hvad koster kunde X os' til en forespoergsel frem for et projekt. Det er 2026's vigtigste enkeltbegreb inden for cost governance og et ord de faerreste juniorer kender.",
+   "tidsforbrug": "2 timer - laes kolonnedefinitionerne, ikke hele specifikationen",
+   "hvad_springes_over": "Hele specifikationsdokumentet. Laes kolonnelisten og de to-tre afsnit om allokering.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Community Policy - Azure/Community-Policy",
+   "type": "kodebase",
+   "url": "https://github.com/Azure/Community-Policy",
+   "prioritet": "stoette",
+   "hvorfor": "Rigtige custom policy-definitioner og policySetDefinitions skrevet af Azure-kunder og Microsoft-supportfolk. Den bedste maade at laere policy-syntaks paa er at laese tyve rigtige policies frem for at laese referencedokumentationen. Aktivt: 1.313 commits. Vaer opmaerksom paa deres egen advarsel: disse er IKKE testet eller valideret af Azure Policy-teamet.",
+   "tidsforbrug": "2 timer",
+   "hvad_springes_over": "Brug dem som laesestof, ikke som noget der kopieres direkte ind i en assignment uden gennemlaesning.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure/azure-policy - built-in policy-definitioner",
+   "type": "kodebase",
+   "url": "https://github.com/Azure/azure-policy",
+   "prioritet": "stoette",
+   "hvorfor": "Den direkte repraesentation af de indbyggede policy-definitioner der er publiceret til Azure. Naar han skal finde det praecise definitions-ID til en built-in policy (fx allowed locations) er dette den kilde der ikke lyver.",
+   "tidsforbrug": "Opslagsvaerk, ikke laesning",
+   "hvad_springes_over": "Alt andet end den konkrete definition han leder efter.",
+   "verificeret": true
+  },
+  {
+   "titel": "Build Your Own Radar - thoughtworks/build-your-own-radar",
+   "type": "vaerktoej",
+   "url": "https://github.com/thoughtworks/build-your-own-radar",
+   "prioritet": "stoette",
+   "hvorfor": "Genererer en interaktiv tech radar fra CSV, JSON eller Google Sheets med kolonnerne name, ring, quadrant, isNew, description. Aktivt vedligeholdt (826 commits, Docker-images, CI). Trivielt at deploye som statisk site, hvilket goer det til et billigt og visuelt overbevisende artefakt. Bemaerk dog: for en virksomhed paa LeanLinkings stoerrelse er en fuld radar sandsynligvis overkill - 80 procent-versionen er en TECH-CHOICES.md med tre lister (Default, Tilladt med en ADR, Start ikke nyt arbejde med dette).",
+   "tidsforbrug": "2 timer",
+   "hvad_springes_over": "Bygningen af en radar for LeanLinking uden at nogen har bedt om det. Byg den for sin egen spike-portefoelje foerst.",
+   "verificeret": true
+  },
+  {
+   "titel": "Rust RFCs og Oxide RFDs som eksempler paa fungerende RFC-processer",
+   "type": "eksempelsamling",
+   "url": "https://github.com/rust-lang/rfcs og https://github.com/oxidecomputer/rfd",
+   "prioritet": "stoette",
+   "hvorfor": "At laese tre rigtige RFC'er - inklusive kommentartraadene og de RFC'er der blev afvist - laerer mere om hvordan en beslutningsproces faktisk fungerer end enhver artikel om RFC-processer. Oxides RFD-proces er saerligt god fordi den er dokumenteret som proces og bruges af et lille firma, ikke et open source-community paa tusinder.",
+   "tidsforbrug": "2 timer",
+   "hvad_springes_over": "Laes ikke hele RFC-arkiver. Tre stykker, hvoraf mindst ét afvist.",
+   "verificeret": false
+  },
+  {
+   "titel": "Data Management at Scale, 2. udgave (Piethein Strengholt)",
+   "type": "bog",
+   "url": "Kunne ikke verificeres - udgave og aarstal uverificeret.",
+   "prioritet": "stoette",
+   "hvorfor": "Azure-orienteret data governance skrevet af en der har gjort det i en stor organisation. Daekker dataejerskab, metadata, klassificering og federated governance med konkrete Azure-tjenester frem for abstraktioner. Relevant fordi den giver ham ordforraadet til at tale om dataarkitektur i en organisation, ikke bare i en database.",
+   "tidsforbrug": "8 timer; 3 timer hvis han kun laeser governance- og metadatakapitlerne",
+   "hvad_springes_over": "Kapitlerne om data mesh-organisering og om store analytiske platforme. LeanLinking er et operationelt SaaS-produkt, ikke en datavirksomhed.",
+   "verificeret": false
+  },
+  {
+   "titel": "Accelerate (Forsgren, Humble, Kim)",
+   "type": "bog",
+   "url": "Kunne ikke verificeres - aarstal uverificeret (udgivet 2018 efter min viden).",
+   "prioritet": "stoette",
+   "hvorfor": "Han skal bruge én ting fra denne bog og den er guld vaerd: den empiriske konstatering at tunge change approval-processer korrelerer med DAARLIGERE stabilitet og langsommere levering, ikke bedre. Det er den saetning der lader ham argumentere mod et CAB uden at lyde som en udvikler der bare ikke gider proces.",
+   "tidsforbrug": "5 timer for hele bogen; 1 time hvis han kun laeser kapitlet om change management og de fire noeglemetrikker",
+   "hvad_springes_over": "Hele forskningsmetodologi-delen bagerst. Den er der for at overbevise akademikere.",
+   "verificeret": false
+  },
+  {
+   "titel": "CIS Controls og CIS Microsoft Azure Foundations Benchmark",
+   "type": "standard",
+   "url": "Kunne ikke verificeres - cisecurity.org var ikke tilgaengelig. Aktuel versionsnummerering skal verificeres.",
+   "prioritet": "stoette",
+   "hvorfor": "Hvis han skal kende ét sikkerhedsrammevaerk, er CIS Controls det mest handlingsorienterede og ingenioerlaesbare. Azure Foundations Benchmark findes desuden som en faerdig regulatory compliance-initiative i Defender for Cloud, hvilket goer den direkte maalbar i hans spike-tenant.",
+   "tidsforbrug": "4 timer",
+   "hvad_springes_over": "ISO 27001-standardteksten i sin helhed. Laes en control-mapping i stedet - det er alligevel det revisorer arbejder ud fra.",
+   "verificeret": false
+  },
+  {
+   "titel": "C4-modellen og Mermaid til diagrammer",
+   "type": "notation",
+   "url": "c4model.com kunne ikke verificeres fra dette miljoe. Mermaid renderes natively i baade GitHub og Azure DevOps Wiki.",
+   "prioritet": "stoette",
+   "hvorfor": "Hans diagram-artefakt pr. spike skal tegnes i noget folk kan laese. C4 (context, container, component) plus én deployment-visning og ét sekvensdiagram daekker 90 procent af hvad en solution architect skal tegne. Mermaid vinder over alt andet af én grund: det renderes direkte i de vaerktoejer LeanLinking allerede bruger, saa diagrammet bliver set.",
+   "tidsforbrug": "3 timer",
+   "hvad_springes_over": "ArchiMate-notation som produktionsvaerktoej. Laer at LAESE det paa en eftermiddag; tegn aldrig i det medmindre arbejdspladsen kraever det.",
+   "verificeret": false
+  },
+  {
+   "titel": "AZ-305: Designing Microsoft Azure Infrastructure Solutions",
+   "type": "certificering",
+   "url": "https://github.com/MicrosoftLearning/AZ-305-DesigningMicrosoftAzureInfrastructureSolutions (kursusrepo verificeret, senest opdateret 21. januar 2026)",
+   "prioritet": "kerne",
+   "hvorfor": "Ankeret. Det ER solution architect-certificeringen i Microsoft-verdenen, og pensummet daekker governance, identitet, data og forretningskontinuitet som designdisciplin frem for som administration. Verificeret levende: kursusrepoet blev opdateret i januar 2026. Brugt som deadline-motor er den perfekt, fordi eksamensdatoen tvinger spike-serien til at holde tempo.",
+   "tidsforbrug": "50-70 timer inklusive praksis, spredt over maaned 3-8",
+   "hvad_springes_over": "Kontroversielt og vigtigt: spring AZ-104 som SELVSTAENDIGT maal over. Det er en administratorcertificering. Arbejder han allerede i Azure dagligt, skal han gaa direkte efter AZ-305 og kun bruge AZ-104-materialet til at lukke konkrete huller. Det sparer 40+ timer og et eksamensgebyr. (Verificér selv om AZ-305 fortsat er uden formelle forudsaetninger - learn.microsoft.com kunne ikke naas herfra.)",
+   "verificeret": true
+  },
+  {
+   "titel": "SC-300: Microsoft Identity and Access Administrator",
+   "type": "certificering",
+   "url": "https://github.com/MicrosoftLearning/SC-300-Identity-and-Access-Administrator (kursusrepo verificeret, senest opdateret 17. august 2026)",
+   "prioritet": "stoette",
+   "hvorfor": "Hvis han vaelger ÉT certifikat mere ud over AZ-305 og han vil have governance-profilen, er dette det rigtige: Entra ID, betinget adgang, PIM, access reviews, entitlement management, identity governance. Det er den snaevre, dybe halvdel af cloud governance og den halvdel de faerreste udviklere kan noget om. Verificeret levende (opdateret august 2026).",
+   "tidsforbrug": "35-45 timer",
+   "hvad_springes_over": "Tag enten SC-300 ELLER AZ-500, ikke begge. SC-300 hvis vinklen er governance/identitet; AZ-500 hvis vinklen er sikkerhed bredt og han vil have det mere genkendelige navn.",
+   "verificeret": true
+  },
+  {
+   "titel": "AZ-500: Microsoft Azure Security Technologies",
+   "type": "certificering",
+   "url": "https://github.com/MicrosoftLearning/AZ500-AzureSecurityTechnologies (kursusrepo verificeret, senest opdateret 2. september 2026)",
+   "prioritet": "stoette",
+   "hvorfor": "Bredere end SC-300: Defender for Cloud, Key Vault, netvaerkssikkerhed, sikkerhedsstyring af data og applikationer. Bedre navnegenkendelse i danske jobopslag end SC-300. Verificeret levende. Vaelg denne hvis maalrollen laener mod security architect frem for governance.",
+   "tidsforbrug": "40-50 timer",
+   "hvad_springes_over": "Se ovenfor - én af SC-300/AZ-500, ikke begge.",
+   "verificeret": true
+  },
+  {
+   "titel": "AZ-400: Designing and Implementing Microsoft DevOps Solutions",
+   "type": "certificering",
+   "url": "https://github.com/MicrosoftLearning/mslearn-devops (labs flyttet hertil; de gamle AZ400-repoer blev arkiveret i januar 2026 med henvisning hertil - verificeret)",
+   "prioritet": "senere",
+   "hvorfor": "Daekker pipelines, environments, approvals, release gates og supply chain - altsaa engineering governance. VIGTIGT VERIFICERET FUND: de gamle AZ-400-lab-repoer blev arkiveret 21. januar 2026 med en note der peger paa MicrosoftLearning/mslearn-devops. Det betyder at kursusmaterialet er flyttet og omstruktureret, ikke at eksamen er nedlagt - men enhver aeldre studievejledning til AZ-400 skal betragtes som mistaenkelig. Aerlig vurdering for Simon: overlapper kraftigt med hvad han bygger i spike G4 og G8, saa certifikatet giver mere signalering end laering.",
+   "tidsforbrug": "40-50 timer",
+   "hvad_springes_over": "Tag den kun hvis han faktisk ender med at eje pipelines hos LeanLinking, eller hvis arbejdsgiveren betaler og der er en stille maaned. Aldrig paa bekostning af AZ-305.",
+   "verificeret": true
+  },
+  {
+   "titel": "FinOps Certified Practitioner (FinOps Foundation)",
+   "type": "certificering",
+   "url": "Kunne ikke verificeres - finops.org var ikke tilgaengelig. Pris, format og aktuel status skal verificeres.",
+   "prioritet": "senere",
+   "hvorfor": "Kort, billig og giver et faelles ordforraad (Inform/Optimize/Operate, showback versus chargeback, unit economics, commitment discounts) som er praecis det sprog en arkitekt skal bruge naar han taler med en CFO. Kun relevant hvis kompetenceporten i maaned 9-10 peger paa at cost governance er hans differentiering.",
+   "tidsforbrug": "10-15 timer",
+   "hvad_springes_over": "Spring den over indtil maaned 9. Den er en accelerator paa en profil, ikke en byggesten.",
+   "verificeret": false
+  },
+  {
+   "titel": "TOGAF Standard (10. udgave) og TOGAF-certificering",
+   "type": "rammevaerk",
+   "url": "opengroup.org kunne ikke naas fra dette miljoe. Aktuel udgave (efter min viden 10. udgave, 2022) er UVERIFICERET.",
+   "prioritet": "spring over",
+   "hvorfor": "Hvad det er: en enterprise architecture-metode (ADM-cyklussen), en indholdsmetamodel og en meget stor bunke leverancer. Hvad det reelt er godt til: at give en EA-funktion et faelles ordforraad og en gentagelig maade at koere en stor, flerarig, flerleverandoer-transformation. Det er mere et indkoebs- og portefoeljevaerktoej end et designvaerktoej. Hvor det bruges i Danmark: offentlig sektor, kommuner og regioner, bank, pension, forsikring, energi, forsvar - og de konsulenthuse der saelger derind. I danske SaaS-produktvirksomheder: naesten aldrig. Den skarpe del: TOGAF-certificeringen er en ordforraadseksamen, ikke en kompetenceeksamen. Foundation er udenadslaere af ADM-faser og terminologi; Practitioner tilfoejer scenariespoergsmaal. At bestaa den beviser at man kan bestaa den. Den har reel signalvaerdi praecis ét sted: HR-skrevne jobopslag i store virksomheder og offentlige udbud, hvor 'TOGAF-certificeret' er et filterord.",
+   "tidsforbrug": "0 timer nu. 40-60 timer plus eksamensgebyrer hvis han senere vaelger konsulent- eller offentligsporet.",
+   "hvad_springes_over": "Hele certificeringen i maaned 1-9. Vaerre end spildtiden: den traener en leverance-foerst-vane som laeses som bureaukratisk af produktteams. Stjael i stedet tre ting paa cirka tre timer: ADM-faselisten som en taenkecheckliste (har jeg overhovedet taenkt paa forretning og data, eller kun teknologi?), ideen om arkitekturprincipper med rationale og implikationer, og begrebet Architecture Repository.",
+   "verificeret": false
+  },
+  {
+   "titel": "ArchiMate og ArchiMate-certificering",
+   "type": "rammevaerk",
+   "url": "opengroup.org kunne ikke naas. Aktuel version (efter min viden 3.2) er UVERIFICERET.",
+   "prioritet": "spring over",
+   "hvorfor": "Et modelleringsSPROG (forretnings-, applikations- og teknologilag plus motivations- og implementeringsudvidelser), ikke en metode. Aerlig vurdering: ArchiMate er reelt rigorøst og reelt ulaeseligt for alle der ikke har laert det. Dets viewpoints er nyttige taenkeredskaber; dets diagrammer er kommunikationsfiaskoer uden for EA-lauget. I produktudvikling kommunikerer et C4-diagram ti gange bedre til ti gange flere mennesker.",
+   "tidsforbrug": "0 timer til certificering. En eftermiddag paa at laere at LAESE notationen, i tilfaelde af at han lander et sted der bruger den.",
+   "hvad_springes_over": "Certificeringen og enhver tanke om at tegne i ArchiMate frivilligt. Brug C4 plus sekvensdiagrammer.",
+   "verificeret": false
+  },
+  {
+   "titel": "ITIL 4 (Foundation og videre)",
+   "type": "rammevaerk",
+   "url": "PeopleCert/Axelos kunne ikke naas. Aktuel certificeringsstruktur er UVERIFICERET.",
+   "prioritet": "senere",
+   "hvorfor": "ITIL 4 er en substantiel forbedring af v3: den droppede den processtunge indramning til fordel for et service value system med 34 praksisser og indoptager eksplicit Agile, DevOps og Lean. Bruges bredt i Danmark - overalt hvor der er en driftsorganisation eller et service desk, hos MSP'er, i offentlig sektor og i enhver virksomhed der saelger en SLA. Begreber en arkitekt skal eje uanset certificering: forskellen paa incident, problem og change (folk blander dem sammen konstant, og det goer postmortems ubrugelige), change enablement med standard/normal/emergency-klasser, service level management og forskellen paa hvad man lover en kunde og hvad man maaler, samt service catalogue. Den skarpe pointe han kan bruge i et rum: ITIL 4 stoetter faktisk letvaegtsændringer og foraandsgodkendte standard changes - saa argumentet 'ITIL siger vi skal have et CAB' er typisk forkert paa ITIL's egne praemisser.",
+   "tidsforbrug": "0 timer til eksamen nu. 4-6 timer paa et godt sammendrag af begreberne, hvilket er hvor vaerdien ligger.",
+   "hvad_springes_over": "Foundation-eksamen medmindre et konkret job han vil have lister den, eller arbejdsgiveren betaler i en stille maaned. Alle ITIL-niveauer over Foundation er til service management-karrierer, ikke arkitektur. Lad den aldrig fortraenge AZ-305.",
+   "verificeret": false
+  },
+  {
+   "titel": "COBIT (2019 og senere opdateringer)",
+   "type": "rammevaerk",
+   "url": "ISACA kunne ikke naas. Aktuel udgave er UVERIFICERET.",
+   "prioritet": "spring over",
+   "hvorfor": "Et governance-of-enterprise-IT-rammevaerk med maalkaskade, 40 governance- og management-objectives, modenhedsniveauer og designfaktorer. Det er det sprog revisorer og bestyrelser taler. Bruges i Danmark i finans, forsikring, pension, energi og alt under skaerpet tilsyn - og i interne revisionsfunktioner. Praktisk talt aldrig inde i et produktteam. Blunt: COBIT er ikke til ingenioerer, det er til dem der reviderer ingenioerer. Vaerdien for Simon er udelukkende OVERSAETTELSE: at forstaa at naar Risk eller Compliance beder om 'dokumentation for funktionsadskillelse i deployment-processen', laeser de en COBIT-formet kontrol, og at det de vil acceptere som bevis er 'dette Azure DevOps-environment kraever godkendelse fra en gruppe som deployeren ikke er medlem af, her er audit-log-eksporten'.",
+   "tidsforbrug": "0 timer til certificering. 2 timer paa at forstaa hvad en IT-revisor vil have og hvordan Azure og Azure DevOps producerer det bevis.",
+   "hvad_springes_over": "Certificeringen, kompromisloest. Laer oversaettelsesfaerdigheden i stedet - den er direkte omsaettelig i en compliance-SaaS.",
+   "verificeret": false
+  },
+  {
+   "titel": "SAFe og SAFe Architect (ARCH)",
+   "type": "rammevaerk",
+   "url": "scaledagileframework.com kunne ikke naas. UVERIFICERET.",
+   "prioritet": "spring over",
+   "hvorfor": "Udbredt i store danske virksomheder (banker, teleselskaber, offentlig sektor) og udbredt foragtet af udviklere. Aerlig vurdering: SAFe-certificeringer er naesten vaerdiloese som kompetencesignal, men optraeder lejlighedsvis som udbuds- eller HR-filter. VIGTIG UNDTAGELSE: en stor del af danske solution architect-jobopslag beskriver reelt en SAFe-rolle uden at sige det - enabler epics, architectural runway, deltagelse i PI planning. At kende det ordforraad tager en time og forhindrer ham i at virke uforberedt til en samtale.",
+   "tidsforbrug": "1 time paa ordforraadet. Nul paa certificering.",
+   "hvad_springes_over": "Certificeringen medmindre en arbejdsgiver betaler og kraever den.",
+   "verificeret": false
+  },
+  {
+   "titel": "npryce/adr-tools",
+   "type": "vaerktoej",
+   "url": "https://github.com/npryce/adr-tools",
+   "prioritet": "spring over",
+   "hvorfor": "VERIFICERET DOEDT. Seneste commit er 30. marts 2020; hovedparten af udviklingen skete i 2018. 32 aabne issues og 37 aabne pull requests uden behandling. Det anbefales stadig bredt i blogindlaeg om ADR'er, hvilket er praecis den slags forældede raad guiden skal undgaa. Byg ikke noget paa det.",
+   "tidsforbrug": "0",
+   "hvad_springes_over": "Hele vaerktoejet. Brug MADR-skabelonen og en mappe.",
+   "verificeret": true
+  },
+  {
+   "titel": "log4brains",
+   "type": "vaerktoej",
+   "url": "https://github.com/thomvaill/log4brains",
+   "prioritet": "spring over",
+   "hvorfor": "VERIFICERET STAGNERET. Seneste commit paa develop-grenen er 17. december 2024 - naesten to aar uden aktivitet, med 45 aabne issues. Konceptet (ADR'er fra IDE'en publiceret som statisk site) er godt, men afhaengigheden er for stor en risiko for en portefoelje han skal kunne vise frem om ni maaneder. Det korrekte 2026-svar er kedeligt: docs/adr-mappe, MADR bare-minimal, og Azure DevOps Wiki der publicerer direkte fra repo-mappen.",
+   "tidsforbrug": "0",
+   "hvad_springes_over": "Hele vaerktoejet.",
+   "verificeret": true
+  },
+  {
+   "titel": "Pulumi, Crossplane, Farmer og haandskrevne ARM-templates",
+   "type": "vaerktoej",
+   "url": "Ikke relevant",
+   "prioritet": "spring over",
+   "hvorfor": "Ikke fordi de er daarlige, men fordi de koster uger og koeber ham ingenting paa et dansk Azure/.NET-arbejdsmarked. Bicep og Terraform daekker over 95 procent af stillingsopslagene. Dybde slaar bredde i en 12-maaneders plan.",
+   "tidsforbrug": "0",
+   "hvad_springes_over": "Alle fire.",
+   "verificeret": false
+  },
+  {
+   "titel": "Microsoft Purview",
+   "type": "produkt",
+   "url": "learn.microsoft.com kunne ikke naas. Produktstruktur og SKU'er i 2026 er UVERIFICERET - Purview blev efter min viden samlet i 2025 til at daekke baade data governance, information protection og compliance.",
+   "prioritet": "senere",
+   "hvorfor": "Han skal VIDE hvad Purview loeser (katalog, klassificering, lineage, DLP, sensitivity labels, insider risk) saa han kan vaere troværdig i en samtale om data governance-vaerktoejer. Han skal IKKE bruge to uger paa at stille det op. Det er et stort, dyrt, virksomhedsformet produkt og en spike-fjende af foerste rang.",
+   "tidsforbrug": "2 timer paa produktoversigten. Nul paa deployment.",
+   "hvad_springes_over": "Al opsaetning. Byg i stedet klassificering og retention i applikations- og storagelaget og skriv ADR'en - det laerer ham arkitekturen, ikke portalen.",
+   "verificeret": false
+  },
+  {
+   "titel": "DAMA-DMBOK (Data Management Body of Knowledge)",
+   "type": "bog",
+   "url": "Kunne ikke verificeres.",
+   "prioritet": "spring over",
+   "hvorfor": "Cirka 600-900 sider opslagsvaerk. Det er en referencebog for data management-professionelle, ikke en laeringssti. Han faar de ti procent han skal bruge fra Data Management at Scale paa en broekdel af tiden.",
+   "tidsforbrug": "0",
+   "hvad_springes_over": "Hele bogen.",
+   "verificeret": false
+  },
+  {
+   "titel": "Kubernetes-governance (OPA Gatekeeper, Kyverno)",
+   "type": "vaerktoej",
+   "url": "Ikke relevant medmindre LeanLinking koerer AKS",
+   "prioritet": "spring over",
+   "hvorfor": "Verificér foerst om LeanLinking overhovedet koerer Kubernetes. Goer de ikke det - og mange danske .NET-SaaS'er koerer App Service, Container Apps eller Functions - er det et helt vidensdomaene uden anvendelse. Er svaret ja, flyttes det til stoette og Azure Policy for Kubernetes bliver indgangen frem for Gatekeeper direkte.",
+   "tidsforbrug": "0 indtil verificeret",
+   "hvad_springes_over": "Alt, indtil han har spurgt en kollega om driftsplatformen.",
+   "verificeret": false
+  },
+  {
+   "titel": "Multi-cloud governance",
+   "type": "emne",
+   "url": "Ikke relevant",
+   "prioritet": "spring over",
+   "hvorfor": "Han arbejder i et Azure-hus og soeger job i Azure-huse. Multi-cloud-governance er et emne til folk der har problemet. At laese om det giver ham overfladisk bredde praecis der hvor arbejdsgivere tester for dybde.",
+   "tidsforbrug": "0",
+   "hvad_springes_over": "Alt. Den eneste undtagelse er at kunne sige én saetning om hvorfor Terraform vinder i multi-cloud - det er nok til et interview.",
+   "verificeret": false
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "G1: Tag- og region-guardrail som policy-as-code i Bicep",
+   "problem": "Du har et tenant hvor ingen taggger konsistent og ressourcer dukker op i tilfaeldige regioner. Krav: fire obligatoriske tags (owner, costCenter, env, dataClassification), ressourcer kun i westeurope og northeurope, og tags skal arves fra resource group hvor de mangler. Begraensninger: ingen eksisterende ressource maa gaa i stykker, udrulningen skal vaere maalbar, og der maa ikke haandhaeves Deny foer der foreligger tal. Alt skal ligge i version control og kunne deployes af en anden person.",
+   "artefakter": "Et repo med infra/policy/ i Bicep: fire policy-definitioner, én policySetDefinition (initiative) med parametre for tagnavne og tilladte regioner, og assignment-filer pr. scope. ADR-0001 'Vi haandhaever fire tags, ikke ni' med de afviste alternativer navngivet. Et Mermaid-diagram over management group-hierarkiet med assignment-scopes markeret. En measurements.md med compliance-procent foer og efter, antal ressourcer remedieret, og hvor lang tid remediation task tog. Et kort retrospektiv paa hvad der overraskede.",
+   "kompetence": "Policy-as-code, progressiv haandhaevelse, tagging-strategi der overlever kontakt med mennesker.",
+   "fremgangsmaade": "Opret et gratis eller lavt budgetteret Azure-abonnement. Byg et lille management group-hierarki (sandbox-root med sandbox-corp og sandbox-online under). Skriv de fire definitioner: (a) audit paa manglende tag, én pr. tag, (b) modify der arver tag fra resource group, (c) deny paa ikke-tilladte lokationer - brug den indbyggede allowed-locations-definition og slaa dens praecise ID op i Azure/azure-policy frem for at gaette, (d) audit paa ressource helt uden tags. Bundl dem i én initiative med parametre. Assign paa management group med enforcementMode DoNotEnforce foerst. Deploy derefter cirka femten bevidst non-compliante ressourcer. Vent paa evalueringscyklussen (den er ikke oejeblikkelig - regn med op mod tredive minutter eller udloes en scanning manuelt) og noter compliance-procenten. Opret en remediation task til modify-policyen og maal igen. Skift til slut KUN region-policyen til Enforce og bevis at et forsoeg paa at deploye til en forkert region nu fejler. Bemaerk undervejs at modify og deployIfNotExists kraever en managed identity paa assignment med den rette rolle - det er her de fleste gaar i staa, og det er vaerd at dokumentere i retrospektivet.",
+   "tid": "1 uge ved 10-15 timer, eller 2-3 uger hvis governance kun faar en tredjedel af budgettet",
+   "svaerhed": "Lav-middel. Den rigtige foerste spike i sporet."
+  },
+  {
+   "titel": "G2: Landing zone i miniature - og den der promoveres til drift",
+   "problem": "Rejs et minimalt men aegte platformsfundament for et fiktivt dansk SaaS: ét platform-abonnement til management, ét prod og ét non-prod. Krav: management group-hierarki, initiativet fra G1 assignet, Log Analytics-workspace med diagnostic settings haandhaevet via deployIfNotExists, RBAC via Entra-grupper frem for brugere, et budget med alarm der faktisk udloeser, og et dokumenteret break-glass-setup. Begraensninger: en anden person skal kunne deploye det hele fra bunden paa under tredive minutter, det maa koste under hundrede kroner om maaneden, og alt skal ligge i git. Det haardeste krav er negativt: du skal skrive ned hvad du bevidst har udeladt og hvorfor.",
+   "artefakter": "Repo med én-kommando-deploy og en teardown. ADR-0002 'Hvorfor tre abonnementer og ikke syv'. ADR-0003 'Hvorfor Azure Verified Modules frem for egne moduler'. Et deployment-diagram. En faktisk maalt maanedlig omkostning i kroner. En eksplicit scope-liste over det udeladte med begrundelse - det er den mest arkitektsignalerende del af hele spiken. Retrospektiv paa hvad der gik i stykker under deployment.",
+   "kompetence": "Landing zone-design, AVM-brug, og frem for alt scoping-doemmekraft: evnen til at bygge tredive procent af noget og kunne forsvare graensen.",
+   "fremgangsmaade": "Brug AVM Bicep-moduler fra Azure/bicep-registry-modules frem for at haandrulle ressourcer. Installer sideloebende ALZ PowerShell-modulet, koer Deploy-Accelerator i en generér-men-deploy-ikke-tilstand og LAES hvad den ville have lavet - sammenlign med din miniature og skriv forskellen ned. Det er hurtigere end at laese dokumentationen og laerer dig hvad et fuldt landing zone-design faktisk indeholder. Vaer opmaerksom paa det verificerede skifte: ALZ-Bicep Classic blev fjernet som Accelerator-default 16. februar 2026 og repoet arkiveres 16. februar 2027, saa enhver vejledning der peger paa ALZ-Bicep Classic er foraeldet - brug Bicep AVM-varianten.",
+   "tid": "2 uger dedikeret, realistisk 4-5 uger ved en tredjedels budget",
+   "svaerhed": "Middel-hoej, og den mest sandsynlige tidsslugger i hele sporet. Skriv scope-listen FOER du begynder, og hold den. DETTE ER DEN SPIKE DER SKAL PROMOVERES TIL DRIFT: hold miljoeet i live resten af de tolv maaneder med en ugentlig governance-rapport (AzGovViz eller en Azure Function) der publicerer compliance- og omkostningsdrift. Foer en incident-log med dato, hvad der gik i stykker, hvordan du opdagede det, tid til udbedring og hvad du aendrede. Indbyggede policy-definitioner faar nye versioner, AVM-moduler faar breaking changes, hemmeligheder udloeber, API-versioner deprekeres, omkostninger kryber. Det kan man ikke laere paa to uger. Lav bevidst én breaking change i dit eget initiative omkring maaned 6 og dokumenter migrationsstien. Efter otte maaneder er den incident-log det staerkeste enkeltartefakt i hele portefoeljen: 'her er otte maaneders ting der gik i stykker og hvad jeg gjorde ved det'."
+  },
+  {
+   "titel": "G3: Least privilege, PIM og break-glass",
+   "problem": "Design og implementér en adgangsmodel til landing zonen fra G2. Krav: ingen staaende skriveadgang til prod, udviklere kan laese prod-diagnostik men ikke kundedata, deployment sker via workload identity og ikke via et menneske, to break-glass-konti, og én gennemfoert access review. Begraensning: PIM kraever Entra ID P2 - har du ikke licensen, designer du modellen alligevel og dokumenterer praecist hvad du kunne og ikke kunne verificere. Den aerlighed er selv et artefakt.",
+   "artefakter": "En RBAC-matrix som tabel: roller gange scopes gange grupper, med navngivningskonvention. ADR 'Ingen staaende skriveadgang i prod' med den accepterede ulempe skrevet ud. En break-glass-runbook. Et diagram over identitetsflowet fra pipeline til Azure-ressource uden en eneste hemmelighed undervejs. Maaling: antal staaende rolletildelinger foer og efter, tid til at aktivere en PIM-rolle, og et ja/nej paa om deployment kan gennemfoeres med nul hemmeligheder i pipelinen.",
+   "kompetence": "RBAC-design, PIM, workload identity federation, og den vigtigste skelnen af alle: control plane versus data plane.",
+   "fremgangsmaade": "Opret Entra-grupper pr. rolle gange scope med en navngivningskonvention der koder begge dele. Proev bevidst at loese en opgave med en custom role og opgiv derefter og brug en indbygget - og skriv ned hvorfor. Custom roles er en vedligeholdelsesbyrde fordi nye resource providers giver nye actions som din rolle stille halter efter. Saet en PIM-eligible tildeling op med kraevet begrundelse og godkendelse. Konfigurér en federated credential til en GitHub Actions- eller Azure DevOps-service connection saa der ikke findes en client secret nogen steder. Bevis derefter det klassiske: at Owner paa en storage account IKKE giver adgang til at laese blobs uden en data-rolle. Det er den enkeltmisforstaaelse der fanger flest, og at kunne demonstrere den er et staerkt interviewsvar. Dokumentér ogsaa at deny assignments i praksis ikke kan haandforfattes i Azure, saa du ikke lover noget du ikke kan levere.",
+   "tid": "1 uge dedikeret",
+   "svaerhed": "Middel. Meget hoej interviewvaerdi - adgangsmodel er et af de fem spoergsmaal enhver solution architect-samtale indeholder."
+  },
+  {
+   "titel": "G4: Pipeline-guardrails og required template",
+   "problem": "Goer det strukturelt umuligt at deploye til prod ad andre veje end én kontrolleret sti. Krav: en required YAML-template i Azure DevOps (eller en reusable workflow plus ruleset i GitHub) som enhver prod-deployment SKAL udvide; templaten genererer en SBOM, koerer en IaC-scanning, producerer en aendringsregistrering og kraever godkendelse fra en gruppe deployeren ikke er medlem af. Den haarde begraensning: den compliante vej skal vaere HURTIGERE end den non-compliante. Er den det ikke, har du bygget en skat, ikke en guardrail.",
+   "artefakter": "To pipelines - en 'foer' og en 'efter' - med maalt vaegurstid for begge. Selve template-filen. Den automatisk genererede aendringsregistrering med commit-interval, arbejdselementer, testresultater, godkender og rollback-plan. ADR 'Required template frem for pipeline-review'. Og det bedste artefakt: en skriftlig redegoerelse for dit eget forsoeg paa at omgaa din egen kontrol, og hvad der skulle til.",
+   "kompetence": "Engineering governance, guardrail-design, og funktionsadskillelse som en automatiserbar kontrol frem for en politik paa papir.",
+   "fremgangsmaade": "Required template i Azure DevOps environments er den mest undervurderede governance-mekanisme der findes: i stedet for at gennemgaa hver pipeline goer du det umuligt at deploye til prod uden at udvide en template du kontrollerer. Byg foerst den naive pipeline, maal den. Byg saa templaten. Maal igen. Traek derefter alt hvad udvikleren ikke behoever at taenke over IND i templaten indtil den compliante vej har faerre trin end den naive. Proev til slut aktivt at omgaa kontrollen - opret en ny pipeline, peg paa samme environment, se hvad der sker. Den oevelse afgoer om du har bygget en kontrol eller et hegn med en aaben laage. I GitHub er ekvivalenten reusable workflows plus et organisationsniveau-ruleset, og noeglen der goer det til en guardrail frem for et hegn er rulesets' evaluate-tilstand: koer reglen i toerloeb foerst, ligesom enforcementMode DoNotEnforce i Azure Policy.",
+   "tid": "1 uge dedikeret",
+   "svaerhed": "Middel. Kan koeres gratis paa hans egen GitHub-konto eller i Azure DevOps' gratis niveau."
+  },
+  {
+   "titel": "G5: ADR-serie for en aegte svaer beslutning i LeanLinkings domaene",
+   "problem": "Skriv en sammenhaengende ADR-serie for ét reelt svaert valg: hvordan isolerer vi lejere i dokumentlageret? Optionerne er mindst fire: delt container med sti-praefiks og ABAC-betingelser, container pr. lejer, storage account pr. lejer, eller storage account pr. lejer-niveau med kundeadministrerede noegler til enterprise-kunder. Krav: beslutningen skal adressere sletning af en hel lejer, datalokalisering for en tysk kunde der kraever tyske regioner, kundeadministrerede noegler, maalbar omkostning pr. lejer, og Azures faktiske graenser for antal storage accounts pr. abonnement (slaa dem op, gaet ikke). Begraensninger: én side pr. ADR, maksimalt fem ADR'er, og mindst to skal registrere et FRAVALG med navngivne afviste alternativer og begrundelse.",
+   "artefakter": "docs/adr/ med MADR bare-minimal-skabelonen, filnavne paa formen NNNN-kebab-titel.md, og et index. Et C4 container-diagram over den valgte model. En registrering af den raadgivning du indhentede og hvad der aendrede sig som foelge af den. Maaling: minutter brugt pr. ADR (maalet er under 45) og hvor mange der aendrede sig efter raadgivning. Retrospektiv paa hvilken ADR der var svaerest at skrive og hvorfor.",
+   "kompetence": "Beslutningsregistrering, advice process, og multi-tenancy-raesonnement i praecis den branche han arbejder i.",
+   "fremgangsmaade": "Skriv ADR-0001 med kontekst og beslutningsdrivere, derefter én ADR pr. delbeslutning. Koer saa en simuleret advice process: send serien til to-tre personer - en kollega, nogen fra et dansk arkitekturfaellesskab, eller en sprogmodel instrueret i at spille en skeptisk sikkerhedsansvarlig der skal godkende det - og REGISTRÉR raadet. Selve registreringen af indhentet raad er artefaktet, ikke enigheden. Advice process handler netop om at man ikke er forpligtet til at foelge raadet, kun til at soege det og skrive det ned. Denne spike er teknisk let og doemmekraftsmaessigt svaer, hvilket er den rigtige vej rundt for en der allerede kan kode. Den oever desuden det praecise interviewspoergsmaal 'fortael om en arkitekturbeslutning du har truffet'.",
+   "tid": "1 uge, kan koeres parallelt med en teknisk spike",
+   "svaerhed": "Lav teknisk, hoej i doemmekraft. Bedragerisk vaerdifuld - undervurder den ikke fordi den ikke har kode."
+  },
+  {
+   "titel": "G6: Cost governance og et forsvarligt cost-per-tenant-tal",
+   "problem": "For landing zonen fra G2 plus en simuleret multi-tenant workload (én App Service-plan, én SQL-database, én storage account, tre lejere) skal du producere et forsvarligt tal for omkostning pr. lejer og en showback-rapport. Krav: brug en FOCUS-formateret omkostningseksport, allokér delte omkostninger efter en dokumenteret regel, producér en rapport en ikke-teknisk person kan laese, og saet et budget med en alarm der faktisk udloeser. Begraensning: du skal kunne angive hvor stor en andel af omkostningen der er direkte henfoerbar versus allokeret - det forhold er den aerlige kvalitetsmetrik for enhver showback-model.",
+   "artefakter": "Eksportkonfigurationen som infrastruktur-kode. En rapport - Power BI eller blot en markdown-tabel, formatet er mindre vigtigt end laesbarheden. ADR 'Vi allokerer delt compute efter API-kald, ikke efter antal brugere' med den afviste allokeringsmodel begrundet. Maaling: kroner pr. lejer pr. maaned plus andelen direkte henfoerbar. Retrospektiv.",
+   "kompetence": "Cost governance, unit economics, FinOps-ordforraad, og evnen til at give et tal med en metode i stedet for et gaet.",
+   "fremgangsmaade": "Slaa Cost Management-eksport til i FOCUS-format til en storage account. Deploy eventuelt en FinOps hub fra microsoft/finops-toolkit (verificeret v14, april 2026, med FOCUS 1.2-understoettelse) - men timebox det haardt, det kan sluge en uge. Send samtidig applikationsniveau-forbrugsmetrikker til Log Analytics: dokumenter gemt pr. lejer, API-kald pr. lejer, lagrede bytes pr. lejer. Sammenkoer de to. Det er her den aegte arkitektindsigt ligger: tags loeser IKKE cost-per-tenant naar infrastrukturen er delt. Enten adskiller man de dyre komponenter pr. lejer, eller ogsaa maaler man forbrug i applikationen og allokerer efter en model man kan forsvare. Den erkendelse - og evnen til at formulere den - er sjaelden hos juniorer og direkte kommercielt relevant for en SaaS.",
+   "tid": "1-2 uger dedikeret",
+   "svaerhed": "Middel-hoej. Den mest differentierende spike i hele sporet. Naesten ingen paa hans niveau kan det her."
+  },
+  {
+   "titel": "G7: Klassificering, retention og sletning der faktisk sletter",
+   "problem": "Implementér i en lille .NET-service en klassificerings- og retentionsordning for leverandoerdokumenter. Krav: fire klassificeringsniveauer med DEFINEREDE haandteringsregler (hvor maa data ligge, maa de forlade EU, maa de optraede i logs, maa de bruges i testmiljoeer, krypteringskrav, retention), retention-metadata pr. dokument, et automatisk udloebsjob, og en slet-lejer-operation der beviseligt fjerner data fra primaert storage, soft delete, versioner, backup, soegeindeks og logs. Restricted data maa aldrig optraede i logs. Den haarde begraensning: du skal kunne BEVISE sletningen - skriv testen der beviser det.",
+   "artefakter": "Servicen. Sletningsbevis-testen. Et dataflow-diagram med klassificeringsniveauer markeret pr. lager. ADR 'Immutabelt revisionsbevis versus ret til sletning' med den valgte loesning og den afviste. En retention-politik paa én side med de tre modstridende ure gjort eksplicitte. Maaling - og det er den vigtigste: antallet af steder du OPDAGEDE at data laa som du havde glemt. Notér det aerligt; det er hele laeringen. Retrospektiv.",
+   "kompetence": "Data governance som arkitektur frem for som politik, GDPR omsat til kode, logging-hygiejne.",
+   "fremgangsmaade": "Azure Blob med index tags og en immutability policy paa selve bevisdokumenterne, en SQL-raekke til metadata, et baggrundsjob til udloeb, struktureret logging med en eksplicit allow-liste over felter der maa logges, plus en test der FEJLER hvis et restricted feltnavn optraeder i en log-payload. Haandtér soft delete og versionering eksplicit i slettestien - antallet af systemer hvor 'slet' i virkeligheden betyder 'skjul' er den stoerste enkeltstaaende GDPR-eksponering i de fleste SaaS-produkter. Naar du naar til konflikten mellem immutabelt bevis og sletteret: den anvendelige loesning er normalt enten at adskille persondata fra beviset (pseudonymisér i dokumentet, hold mappingen separat med sin egen retention) eller at stoette sig paa et retsgrundlag der gaar forud og dokumentere det. Skriv begge muligheder ud i ADR'en, ogsaa den du fravalgte.",
+   "tid": "1-2 uger dedikeret",
+   "svaerhed": "Hoej. Men det er praecis LeanLinkings domaene, hvilket goer den til den mest vaerdifulde spike til intern positionering. Hvis han kun laver én af G6/G7/G8/G11, skal det formentlig vaere denne."
+  },
+  {
+   "titel": "G8: Supply chain - SBOM med en forespoergselssti",
+   "problem": "For en .NET-solution med rigtige afhaengigheder skal du generere en SBOM pr. release, gemme den, og kunne besvare paa under fem minutter: hvilke releases der lige nu er i produktion indeholder pakke X i en version under Y? Krav: SBOM genereret i pipelinen, gemt baade som build-artefakt og i blob storage noeglet paa release, et forespoergselsscript, og et licenscheck der faar bygget til at fejle paa AGPL. Begraensning: SBOM-generering alene taeller ikke som loest opgave - uden forespoergselsstien er det en fil ingen aabner.",
+   "artefakter": "Pipeline-YAML. Forespoergselsscriptet. En licenspolitik paa én side med allow-, deny- og undtagelsesvej. ADR 'Vi laaser versioner centralt'. Maaling: tid til at besvare CVE-spoergsmaalet, og antallet af transitive afhaengigheder du opdagede at ingen kendte til. Retrospektiv.",
+   "kompetence": "Supply chain-governance, .NET-afhaengighedshygiejne, licens-compliance som en forretningsbeslutning frem for en vaerktoejsopgave.",
+   "fremgangsmaade": "Brug microsoft/sbom-tool som dotnet global tool i pipelinen - den producerer SPDX og har dokumenteret Azure DevOps-integration, saa der er ingen undskyldning. Tilfoej samtidig de tre kedelige ting der reelt betyder mest i .NET: Central Package Management via Directory.Packages.props saa versioner erklaeres ét sted, lock files via packages.lock.json med --locked-mode i CI saa builds er reproducerbare, og Azure Artifacts upstream sources saa der er ét kontrolleret feed. Sidstnaevnte er specifikt forsvaret mod dependency confusion - angrebet hvor et privat pakkenavn kan resolves fra et offentligt feed med et hoejere versionsnummer. At kunne forklare den mekanik er et staerkt interviewsvar. Licenspolitikken er den aegte arkitektopgave: permissive licenser (MIT, Apache, BSD) tilladt, LGPL betinget, AGPL og SSPL afvist for en SaaS paa grund af netvaerks-copyleft, plus en dokumenteret undtagelsesvej. Det er én side, og den er direkte anvendelig paa arbejdet.",
+   "tid": "1 uge dedikeret",
+   "svaerhed": "Lav-middel. God 'hurtig gevinst'-spike, og licenspolitikken kan bogstaveligt talt afleveres paa arbejdet."
+  },
+  {
+   "titel": "G9: Fitness functions - principper omsat til tests",
+   "problem": "Tag fem arkitekturprincipper og konvertér hvert af dem til en automatiseret check der faar et build til at fejle. Krav: mindst én lagdelingsregel, én afhaengighedsregel, én infrastrukturregel, én runtime-regel og én dataregel. Begraensning: hver check skal bevises ved at du INDFOERER en overtraedelse og ser den fejle. En check du ikke har set fejle, virker ikke.",
+   "artefakter": "Testprojektet. ADR 'Principper vi ikke kan automatisere - og hvad vi goer i stedet'. Maaling: hvor mange af dine fem principper du IKKE kunne automatisere, og hvorfor. Det tal er hele fundet.",
+   "kompetence": "Principper til regler til automatisering. Den mest overfoerbare kompetence i hele emnet til hans faktiske arbejde.",
+   "fremgangsmaade": "Lagdeling og afhaengigheder med NetArchTest eller ArchUnitNET. Infrastruktur med PSRule for Azure eller Checkov paa Bicep-koden. Runtime med en pipeline-assertion paa p95-latenstid eller fejlrate efter deployment. Data med testen fra G7 der fejler hvis et restricted feltnavn optraeder i en log-payload. Eventuelt en Roslyn-analyzer der forbyder DateTime.Now. Skriv for hvert princip foerst princippet ud i fuld form - udsagn, rationale, konsekvens, OG de situationer hvor det ikke gaelder - og derefter checket. Testen paa om et princip er operativt: kan du navngive en beslutning princippet ville faa dig til at AFVISE? Kan du ikke det, er det en plakat, og saa er fundet at det ikke kan automatiseres fordi det ikke betyder noget.",
+   "tid": "1 uge, kan koeres parallelt",
+   "svaerhed": "Lav-middel. Billig og med hoej vaegtstang. Kan laegges tidligt, og resultatet kan indfoeres paa arbejdet i naeste ticket uden at spoerge nogen om lov."
+  },
+  {
+   "titel": "G11: Fra revisionsspoergsmaal til Azure-konfiguration",
+   "problem": "Tag ti rigtige spoergsmaal fra et offentligt tilgaengeligt leverandoer-sikkerhedsspoergeskema, eller ti kontroller fra CIS Controls eller ISO 27001 Annex A, og producér for hvert enkelt: hvilken Azure-konfiguration der opfylder det, hvordan du ville eksportere beviset, og om du faktisk opfylder det i landing zonen fra G2. Begraensning: 'vi har en politik om det' taeller ikke som bevis. Kun konfiguration og eksporterbare logs taeller.",
+   "artefakter": "En mapping-tabel: kontrol, Azure-mekanisme, beviseksport, status. ADR paa én accepteret risiko med begrundelse for accepten. Maaling: hvor mange af de ti du kunne dokumentere automatisk versus manuelt. Det forhold er den aegte modenhedsmetrik og et langt bedre tal end nogen Secure Score.",
+   "kompetence": "Rammevaerks-oversaettelse, ISO- og CIS-laesefaerdighed, bevis-taenkning. Den kompetence der goer ham nyttig for salg og dermed synlig for ledelsen.",
+   "fremgangsmaade": "Slaa Defender for Clouds gratis niveau til med Microsoft Cloud Security Benchmark. Kig paa regulatory compliance-dashboardet og se hvordan policies allerede er mappet til rammevaerk. Map dine ti kontroller. For dem der fejler: beslut om du udbedrer eller accepterer med begrundelse - og skriv accepten ned, for det er den beslutning revisorer og kunder respekterer, mens en tom kontrol er en roed markering. Vigtig advarsel til retrospektivet: Secure Score er et RELATIVT tal der er let at spille og som indeholder anbefalinger man rationelt aldrig foelger. Brug tendensen, aldrig tallet, og skriv i ADR'en hvorfor.",
+   "tid": "1 uge dedikeret",
+   "svaerhed": "Lav-middel. Den spike der hurtigst goer ham nyttig for LeanLinkings salgsproces, hvilket er den korteste vej til et mandat."
+  },
+  {
+   "titel": "G10: Terraform-sammenligningsspiken - byg det samme to gange",
+   "problem": "Genimplementér G1's policy-initiative og G2's management group-hierarki i Terraform. Krav: samme funktionelle resultat, samme scopes, samme parametre. Begraensning: du maa ikke bare oversaette syntaks - du skal notere hver gang de to modeller tvinger dig til at traeffe forskellige beslutninger.",
+   "artefakter": "Terraform-repoet. En sammenligning paa én side: state-haandtering, hastighed for nye Azure-ressourcetyper, kvaliteten af plan versus what-if som review-artefakt, modul-oekosystem, licensforhold, og hvad der gik i stykker i hver af dem. ADR 'Hvorfor Bicep frem for Terraform hos os (eller omvendt)' med BEGGE sider argumenteret og en anbefaling der passer til en konkret organisationsbeskrivelse.",
+   "kompetence": "Argumenteret vaerktoejsvalg. Evnen til at forsvare et trade-off med artefakter i stedet for meninger.",
+   "fremgangsmaade": "Brug den officielle AVM pattern-modul til ALZ som reference (Azure/terraform-azurerm-avm-ptn-alz) - bemaerk at den kraever Terraform 1.12 eller nyere og bruger azapi-provideren omkring version 2.12 plus en dedikeret alz-provider, ikke azurerm alene. Det er i sig selv et fund vaerd at skrive ned: i 2026 er azapi den vej man gaar naar azurerm halter efter nye Azure-ressourcetyper. Noter konkret hvor lang tid du bruger paa state (backend, laasning, hvad der sker naar en apply afbrydes), for det er den mest undervurderede forskel. Noter ogsaa den modsatte pointe aerligt: terraform plan postet som kommentar paa en pull request er et aegte governance-artefakt, og oekosystemet omkring det er tykkere end omkring Bicep what-if. Er dit governance-princip 'diffen bliver reviewet', giver Terraform i dag den bedre diff. Licensforholdet naevnes i én saetning: Terraform er BUSL-licenseret, OpenTofu er MPL-forken og er verificeret levende (v1.12.6, august 2026, understoettet gren til august 2027). Det er et indkoebs- og juridisk spoergsmaal, ikke et religioest.",
+   "tid": "1-2 uger dedikeret, laegges bedst i maaned 5-7 naar Bicep sidder fast",
+   "svaerhed": "Middel. Lav den ikke foerst - hele pointen er at sammenligne mod noget du allerede behersker."
+  }
+ ],
+ "paa_jobbet": [
+  "Bliv den der skriver beslutninger ned. Hver gang der traeffes en beslutning i et moede og ingen registrerer den, sender han bagefter en Y-saetning: 'I konteksten X, staaende over for Y, besluttede vi Z, for at opnaa W, og accepterede V - er det korrekt forstaaet?' Det kraever nul autoritet, nul tilladelse og to minutter. Efter tre maaneder er han de facto ejer af beslutningsregistret, hvilket er en betydelig del af hvad arkitekturgovernance faktisk ER. Det er den hoejest forrentede vane i hele emnet.",
+  "Governance-arbejde er naesten altid ejerloest, og det er hele strategien: vaelg det arbejde ingen har faaet tildelt og ingen forsvarer. Ingen ejer tagging-strategien. Ingen ejer licenspolitikken. Ingen ejer listen over hvilke beslutninger der kraever en ADR. Han behoever ikke mandat til at samle noget op som ingen holder i.",
+  "Governance i tickets: hver ticket han faar har en governance-overflade han kan forbedre i samme pull request uden at spoerge. Tilfoej de manglende tags til den ressource ticketen alligevel roerer - via infrastruktur-kode, ikke via portalen. Erstat en connection string med en managed identity naar han alligevel er inde i konfigurationen. Pin en pakkeversion eller flyt den til Directory.Packages.props naar han roerer en csproj. Tilfoej en fitness-function-test der laaser den invariant ticketen afhang af. Formlen er altid den samme: 'jeg loeste ticketen, og her er en lille ting jeg ogsaa gjorde'. Det er den laveste friktion der findes til at aendre et kodebases normer.",
+  "Skriv den én-afsnits ADR for beslutningen han lige traf inde i sin egen ticket, laeg den i pull request-beskrivelsen og se hvem der reagerer. Han skal ikke bede om lov til at indfoere ADR'er som proces - han skal bare skrive dem og lade dem blive laest. Naar nogen for foerste gang linker til en af dem i en anden diskussion, er processen indfoert uden et eneste moede.",
+  "Tilbyd at hjaelpe med naeste kundesikkerhedsspoergeskema. Spoerg salg eller CTO'en. Det er kedeligt arbejde de gladeligt giver fra sig, og det giver ham paa én uge et komplet kort over virksomhedens governance-huller plus synlighed hos kommercielle mennesker. Det er den bedste enkeltmanoeuvre til at faa mandat der findes, fordi den goer ham nyttig for omsaetningen frem for for arkitekturen.",
+  "Meld dig paa de upopulaere compliance-tickets: ISO 27001-bevisindsamling, en access review, et pen-test-fund, en CVE i en afhaengighed. De er governance i forklaedning, ingen slaas om dem, og de placerer ham i samtaler han ellers ikke ville vaere i.",
+  "Brug altid audit-foer-enforce-manoeuvren naar han vil aendre noget. Foreslaa aldrig en Deny-policy eller en blokerende branch-regel foerst. Foreslaa audit- eller evaluate-versionen, lad den koere to-fire uger, og kom tilbage med tal: '43 ressourcer er non-compliante, 38 af dem ligger i én resource group, her er modify-policyen der retter dem, skal vi haandhaeve for nye ressourcer?' Data forvandler en juniors mening til en beslutning. Moensteret virker identisk paa policy, branch-regler, licenser og teknisk gaeld.",
+  "Sig aldrig ordet governance internt. Sig 'det her stopper os i at blive kaldt ud', 'det her goer naeste sikkerhedsspoergeskema til en time i stedet for tre dage', eller 'det her lader os fortaelle kunder hvor deres data ligger'. Governance er et ord der goer udviklere defensive og ledelse mistaenksom.",
+  "Aflevér i organisationens format. Bruger LeanLinking Azure DevOps, saa laeg ADR'en i wiki'en eller repoet - Azure DevOps Wiki publicerer direkte fra en repo-mappe, saa markdown-filer i git bliver til en laesbar side gratis. Laeg den aldrig i et Word-dokument eller et slidedeck ingen har bedt om. Match beholderen.",
+  "Omformulér teknisk gaeld som risiko med en dato og et beloeb, ikke som kodekvalitet. Ingen handler paa en debt ratio. Alle handler paa 'denne runtime mister support paa dato D, derefter kan vi ikke patche CVE'er, vores enterprise-kunders sikkerhedsspoergeskemaer kraever understoettede runtimes, og ét tabt enterprise-fornyelse koster mere end migreringen'. I en leverandoer-compliance-SaaS skriver det argument sig selv, fordi kunderne selv er under leverandoerkaede-krav.",
+  "Bed om praecis én ting, og bed smaat: Reader-adgang paa ét abonnement saa han kan generere en governance-rapport, med tilbud om at koere den mens nogen ser med og vise outputtet foerst. Det er en lille, konkret, afgraenset anmodning der er svaer at sige nej til. Faar han nej, koerer han samme vaerktoej mod sit eget dev-tenant og fremviser metoden - artefaktet eksisterer alligevel. ADVARSEL: koer aldrig scanningsvaerktoejer mod firmaets produktionstenant uden eksplicit aftale. Det er det ene sted i hele dette emne hvor en junior kan komme i alvorlige problemer i stedet for at fremme sin karriere.",
+  "Foreslaa den mindste mulige guardrail i det vaerktoej teamet allerede bruger. Ikke en policy-platform - én branch-regel. Ikke en supply chain-strategi - én linje i Directory.Packages.props. Ikke et sikkerhedsprogram - secret scanning med push protection slaaet til, som er verdens bedste eksempel paa en guardrail frem for en gatekeeper: den blokerer ved push, fortaeller praecis hvorfor, og tilbyder en omgaaelse med en registreret begrundelse.",
+  "Stil ét spoergsmaal i hver design- eller refinement-samtale han er med i: 'er det her en two-way door?' Det er Bezos-filteret paa reversibilitet, og det goer to ting paa én gang: det fremskynder de billige beslutninger, og det signalerer arkitektonisk taenkning uden at han skal have ret i noget som helst.",
+  "Foer en privat log over signaler til beslutningspunktet i maaned 6. Positive signaler: nogen beder ham kigge paa noget uden for hans tickets; han inviteres ind i en designsamtale FOER ticketen findes; en anden refererer til en af hans ADR'er; han faar Reader eller mere paa et abonnement; han bliver bedt om at hjaelpe med et spoergeskema eller en audit; en regel han foreslog bliver vedtaget. Negative signaler: hans artefakter bliver takket for og ignoreret tre gange i traek; der findes ingen arkitektrolle over ham og ingen hensigt om at skabe en; 'saadan goer vi ikke her' uden en begrundelse; hvert forslag udskydes til en person der aldrig har tid. Tre negative i traek uden et positivt er data, ikke pessimisme."
+ ],
+ "faldgruber": [
+  "At forveksle governance med at laere vaerktoejer. Azure Policy-syntaks er en eftermiddag. At vide hvilke fire regler der er vaerd at haandhaeve er aarevis. Hans tid skal gaa til det andet, og spikes skal designes saa de tvinger valg frem, ikke saa de tvinger konfiguration frem.",
+  "At bygge en fuld enterprise landing zone i en spike. Det tager tre uger, og det laerer ham deployment-fejlfinding, ikke governance. Byg miniaturen og skriv scope-listen over det udeladte foer han begynder. Det udeladte og begrundelsen er det arkitektoniske artefakt - ikke det byggede.",
+  "Certificeringsfaelden: TOGAF plus ITIL plus COBIT ser paa et CV ud som en arkitektuddannelse og er en ordbog. De koster omkring hundrede timer og flytter ham ikke en meter i en dansk SaaS-produktvirksomhed. Han er junior med reel ingenioerkredibilitet - hans knappe ressource er dybde, ikke signalering.",
+  "At foreslaa Deny som det foerste. Én blokeret deployment for en anden udvikler en fredag eftermiddag, og han er 'ham med policyerne' i to aar. Audit foerst, altid, uden undtagelse.",
+  "At skrive et governance-dokument ingen har bedt om og aflevere det i et moede. Det bliver ikke laest. Aflevér i stedet ét lille virkende guardrail plus tallene fra audit-perioden.",
+  "Purview-faelden: at bruge to uger paa at rejse et enterprise-datagovernance-produkt i et gratis abonnement. Det virker ikke i den skala, koster licenser han ikke har, og laerer ham intet arkitektonisk. Byg klassificering og retention i applikations- og storagelaget i stedet.",
+  "At tro at ADR'er er dokumentation. De er beslutningshistorik med kontekst og konsekvenser, skrevet paa beslutningstidspunktet, uforanderlige efter accept, og afloest frem for redigeret. Skriver han dem som dokumentation, forældes de og doer inden for et halvt aar.",
+  "At registrere kun den valgte option i en ADR. Vaerdien ligger i de AFVISTE alternativer og hvorfor. Det er den del fremtidens laeser har brug for, og den del der forhindrer at samme diskussion tages om ni maaneder.",
+  "At maale teknisk gaeld som en SonarQube debt ratio og praesentere den for ledelsen. Ingen handler paa et abstrakt gaeldstal. De handler paa en dato og et beloeb. Brug i stedet hotspots (filer der aendres ofte OG er komplekse - kan tilnaermes gratis med git log plus en kompleksitetsmetrik) og udtryk konsekvensen i leveringstid, incidents eller kontraktrisiko.",
+  "Secure Score som maal. Det er et relativt tal, det er let at spille, og det indeholder anbefalinger man rationelt aldrig foelger. Brug tendensen, aldrig tallet. Goodhart's lov rammer haardt her.",
+  "At starte et Architecture Review Board. Faar han nogensinde lov at designe en proces, er hans foerste instinkt sandsynligvis at samle folk til et review-moede. Det er den forkerte refleks og den der gør arkitekter til flaskehalse. Koen er problemet, ikke deltagerne.",
+  "At koere vaerktoejer mod firmaets rigtige tenant uden aftale. Det er den ene ting i hele dette emne der kan koste ham jobbet i stedet for at fremme karrieren. Bed om Reader paa ét abonnement, vis outputtet foerst, og koer aldrig noget bredt uden skriftlig accept.",
+  "For mange obligatoriske tags. Fire er meget. Otte er nul. Hver ekstra obligatorisk tag halverer efterlevelsen. Og reglen der oftest overtraedes: et tag uden en forbruger er spild - kan han ikke navngive rapporten eller automatiseringen der LAESER owner-tagget, skal tagget vaek.",
+  "At tro at SBOM-generering er supply chain-sikkerhed. Uden en forespoergselssti - hvilke releases i produktion indeholder pakke X - er en SBOM en fil ingen aabner. Spiken skal indeholde forespoergslen, ellers er den compliance-teater.",
+  "At laere Terraform og Bicep samtidig fra nul. Vaelg ét til flydende beherskelse, og tag det andet som en bevidst sammenligningsspike i maaned 5-7. To halvt kunnede IaC-sprog er vaerre end ét kunnet i et interview.",
+  "At undervurdere hvor stor en del af arkitektrollen der er at skrive og facilitere. Han er ingenioer; fristelsen er at loese governance teknisk. Cirka halvdelen af det er sociale protokoller - advice process, det at faa andre til at skrive ADR'er, at oversaette mellem revisor, kunde og ledelse. Den halvdel oeves kun ved at goere den, ikke ved at laese om den.",
+  "Governance-gaeld: at tilfoeje regler uden ejer og udloebsdato. Hver regel han indfoerer skal have begge dele, ogsaa hans egne. Og exemptions er sundhedssignalet - en policy med to hundrede undtagelser er ikke en policy, det er en loegn med revisionsspor. Antal og alder paa undtagelser boer maales som foersteklasses metrik.",
+  "At bygge en tech radar for LeanLinking som ingen har bedt om. For en virksomhed paa deres stoerrelse er den fulde radar sandsynligvis overkill og laeses som ceremoni. 80-procent-versionen er en TECH-CHOICES.md med tre lister: Default, Tilladt med en ADR, og Start ikke nyt arbejde med dette. Hold-listen er den eneste ring der reelt betyder noget, fordi den er den letteste maade en organisation nogensinde faar sagt 'stop med at starte nyt med X'.",
+  "At oversaette 'governance' til 'flere godkendelser'. Hvis hans forslag goer den compliante vej langsommere, har han bygget en skat. Testen er brutal og simpel: er tid-til-compliant-miljoe naer tid-til-non-compliant-miljoe? Er den ikke det, er designet forkert - uanset hvor korrekt reglen er.",
+  "At bruge for meget af det samlede timebudget paa governance. Det er hans ANDET fokusomraade. Realistisk boer det have en tredjedel af de 10-15 timer i maaned 1-6, altsaa 3-5 timer om ugen. Det betyder at han skal vaelge cirka fem spikes fra listen, ikke elleve. Anbefalet raekkefoelge: G1, saa G2 (som promoveres til drift), saa G5 og G9 parallelt med det tekniske, saa G4, og derefter én af G6/G7/G8/G11 alt efter hvor han vil differentiere sig. Resten er en menu, ikke en plan."
+ ],
+ "maalepunkter": [
+  "Han kan tegne et management group-hierarki med abonnementsopdeling paa et whiteboard paa under fem minutter uden noter, og forsvare hvorfor hver graense ligger hvor den ligger - herunder hvorfor der IKKE assignes paa Tenant Root Group.",
+  "Han har et git-repo med mindst otte ADR'er, hvoraf mindst tre dokumenterer et FRAVALG med navngivne afviste alternativer og begrundelse, og hvoraf mindst én er afloest af en senere ADR frem for redigeret.",
+  "Mindst én policy-initiative ligger i version control, er deployet til et rigtigt testtenant, og har en dokumenteret audit-modify-deny-progression med compliance-tal foer og efter og en maalt varighed paa remediation task.",
+  "Han kan uden toeven forklare forskellen paa control plane og data plane i Azure RBAC og give et konkret eksempel hvor Owner ikke er nok - typisk at Owner paa en storage account ikke giver blob-laeseadgang uden en data-rolle.",
+  "Mindst ét guardrail er kommet ind i LeanLinkings faktiske pipeline eller repo: en branch policy, en required template, en pakkeversion laast centralt, secret scanning med push protection, eller en fitness-function-test. Ikke foreslaaet - indfoert og i brug.",
+  "Han har et enkeltside-notat 'hvorfor Bicep frem for Terraform (eller omvendt) hos os' hvor begge sider er argumenteret med konkrete erfaringer fra at have bygget det samme to gange, og hvor anbefalingen er knyttet til en beskrevet organisationssituation frem for til en praeference.",
+  "Han har besvaret eller bidraget til mindst ét rigtigt kundesikkerhedsspoergeskema, og kan navngive de tre spoergsmaal LeanLinking havde svaerest ved at besvare.",
+  "Han kan producere et estimat for omkostning pr. lejer med en metode han kan forsvare, og kan angive hvor stor en andel der er direkte henfoerbar versus allokeret. At kunne sige 'tres procent er maalt, fyrre procent er allokeret efter API-kald, og her er hvorfor jeg fravalgte allokering efter brugerantal' er maalet.",
+  "Han har sagt 'det her er en two-way door, vi behoever ikke et moede om det' i en rigtig samtale og faaet det accepteret.",
+  "Hans policy-exemption-liste - eller enhver regelsamling han har indfoert - har en navngiven ejer og en udloebsdato pr. post. Ingen undtagelser, heller ikke hans egne.",
+  "Han kan paa tres sekunder forklare hvad han ville FJERNE fra en eksisterende governance-proces og hvorfor. Det er smagstesten: viden om governance er let at erhverve, doemmekraft om hvad der skal vaek er sjaelden.",
+  "Nogen har spurgt HAM om raad eller om lov i stedet for omvendt. Det er det egentlige skift fra ticket-taker til arkitekt, og det er observerbart: det sker i en kalenderinvitation, en Slack-besked eller en pull request-anmodning.",
+  "Han har en incident-log fra det driftede miljoe med mindst fire registrerede haendelser over mindst seks maaneder, inklusive mindst én breaking change han selv indfoerte med en dokumenteret migrationssti. Det er portefoeljens staerkeste enkeltartefakt.",
+  "Han kan navngive en governance-regel han selv har indfoert og siden FJERNET igen fordi den ikke betalte sig. Ingen kan det efter tolv maaneder medmindre de faktisk har maalt.",
+  "Han kan forklare en revisor eller en kunde hvordan et konkret krav opfyldes i Azure og hvordan beviset eksporteres, uden at bruge ordet politik.",
+  "AZ-305 er bestaaet, eller der er en booket eksamensdato inden for otte uger. Certifikatet er ikke maalet - deadline-motoren er, og en ubooket eksamen er ikke en deadline."
+ ],
+ "kompetencer": [
+  {
+   "navn": "At skelne guardrail fra gatekeeper og designe efter det",
+   "hvorfor": "Det er den ene skelnen der goer forskellen paa en arkitekt folk soeger raad hos og en arkitekt folk ruter uden om. Alle andre kompetencer i emnet er anvendelser af den.",
+   "hvordan_traenes": "Ved hver eneste governance-idé han faar, tvinges han til at skrive to saetninger: hvordan goer det her den rigtige vej hurtigere, og hvad koster det den forkerte vej? Kan han ikke besvare den foerste, er ideen en skat. Spike G4 traener det direkte ved at kraeve at den compliante pipeline maales som hurtigere end den naive.",
+   "niveauskala": "NYBEGYNDER: bruger ordene, men foreslaar i praksis altid en godkendelse eller et review-moede naar der opstaar et problem. KOMPETENT: foreslaar konsekvent automatiserede begraensninger frem for menneskelige porte, og kan navngive hvilke faa beslutninger der reelt kraever et menneske. STAERK: designer bevidst sig selv ud af den kritiske sti, kan pege paa en proces han har fjernet, og maaler forskellen paa tid-til-compliant og tid-til-non-compliant som en foersteklasses metrik."
+  },
+  {
+   "navn": "Azure-kontrolplanet som ét sammenhaengende design: management groups, policy, RBAC og PIM",
+   "hvorfor": "De fire ting undervises hver for sig og fejler kun sammen. Et hierarki der ikke er designet som scope for arv af policy og adgang er blot et organisationsdiagram i Azure, og det er den hyppigste rodfejl i danske Azure-opsaetninger.",
+   "hvordan_traenes": "Spike G1, G2 og G3 i raekkefoelge, hvor hver bygger paa den foregaaendes hierarki. Derefter AzGovViz-rapporten som spejl: den viser alle fire dimensioner paa én gang og afsloerer hvor designet ikke haenger sammen. Suppleret med at laese ALZ-biblioteket for at se hvordan en gennemtaenkt arketype ser ud.",
+   "niveauskala": "NYBEGYNDER: kan oprette en management group og assigne en indbygget policy fra portalen. KOMPETENT: designer et hierarki ud fra hvad der skal arves frem for ud fra organisationsdiagrammet, kender forskellen paa control plane og data plane, assigner til grupper og ikke brugere, og ved hvorfor der ikke assignes paa Tenant Root Group. STAERK: kan tegne hierarkiet for en ukendt virksomhed efter tyve minutters spoergsmaal, forklare hvor abonnementsgraenserne skal ligge og hvorfor, og navngive de tre steder designet vil begynde at goere ondt om to aar."
+  },
+  {
+   "navn": "Policy-as-code og progressiv haandhaevelse",
+   "hvorfor": "Det er den tekniske kerne i cloud governance OG den sociale manoeuvre der giver en junior mandat. Audit foerst, maal, vis tal, haandhaev derefter - det virker paa policy, branch-regler, licenser og teknisk gaeld i praecis samme form.",
+   "hvordan_traenes": "Spike G1 med enforcementMode DoNotEnforce som obligatorisk foerste trin, derefter maaling, derefter modify med remediation task, og kun til allersidst deny paa én enkelt regel. Suppleret med at laese rigtige policies i Azure/Community-Policy frem for referencedokumentation.",
+   "niveauskala": "NYBEGYNDER: kan skrive en audit-policy og assigne den. KOMPETENT: bygger initiativer med parametre, bruger modify og deployIfNotExists med korrekt managed identity og rolle, koerer remediation tasks, og haandhaever aldrig foer der foreligger tal. STAERK: kan afgoere hvilke faa regler der er vaerd at haandhaeve overhovedet, saetter ejer og udloebsdato paa hver enkelt, maaler exemptions som en sundhedsmetrik, og har fjernet mindst én regel igen fordi den ikke betalte sig."
+  },
+  {
+   "navn": "Identitet og hemmeligheder: managed identity, workload identity federation, Key Vault og rotation",
+   "hvorfor": "Den stoerste enkeltforbedring de fleste organisationer kan lave er gratis og bestaar i at slette hemmeligheder frem for at rotere dem bedre. Samtalen om rotation skal altid begynde med 'kan vi fjerne denne hemmelighed helt?'",
+   "hvordan_traenes": "Spike G3: faa en deployment igennem med nul hemmeligheder i pipelinen via federated credentials. Derefter i spike G7 haandtere de hemmeligheder der IKKE kan fjernes - tredjepartsnoegler til leverandoerportaler og kreditdataudbydere - med to-slot-rotation, udloebsdatoer og en Event Grid-notifikation paa naert forestaaende udloeb. Paa arbejdet: erstat én connection string med en managed identity naeste gang han roerer konfigurationen.",
+   "niveauskala": "NYBEGYNDER: laegger hemmeligheder i Key Vault i stedet for i appsettings og betragter opgaven som loest. KOMPETENT: bruger managed identities og workload identity federation som standard, kender Key Vaults RBAC-model frem for de gamle access policies, og forstaar failure-moenstrene i DefaultAzureCredential paa tvaers af lokal, CI og produktion. STAERK: designer saa hemmeligheder ikke opstaar, kan forklare hvorfor to-slot-rotation er den eneste rotation der er nedetidsfri, og har en dokumenteret break-glass-model med overvaagede noedkonti."
+  },
+  {
+   "navn": "IaC-flydenhed i ét sprog plus en argumenteret holdning til det andet",
+   "hvorfor": "Al moderne governance er kode. Uden flydende infrastruktur-kode kan han hverken bygge guardrails eller reviewe andres. Og evnen til at argumentere trade-offet mellem Bicep og Terraform er en af de faa ting der direkte skiller senior fra junior i en samtale.",
+   "hvordan_traenes": "Bicep til flydende gennem G1 og G2, derefter G10 som bevidst sammenligningsspike i Terraform i maaned 5-7. Aldrig begge fra nul samtidig. Brug AVM-moduler frem for at haandrulle - man laerer mere af at laese Microsofts modulinterfaces end af at genopfinde dem.",
+   "niveauskala": "NYBEGYNDER: kan aendre en eksisterende template og faa den deployet. KOMPETENT: strukturerer moduler og parametre saa en anden kan genbruge dem, bruger what-if eller plan som review-artefakt, og haandterer miljoeforskelle uden at kopiere filer. STAERK: kan bygge det samme to gange i to sprog, navngive praecis hvor de tvinger forskellige beslutninger frem, og give en anbefaling der er knyttet til en konkret organisationssituation frem for til en praeference."
+  },
+  {
+   "navn": "Pipeline-guardrails: environments, approvals, checks og required templates",
+   "hvorfor": "Required template i Azure DevOps environments er den hoejest forrentede governance-mekanisme der findes: i stedet for at reviewe hver pipeline goer man det umuligt at deploye til prod uden at udvide en template man kontrollerer. Det er guardrail-taenkning anvendt paa CI/CD, og det goer governance til en compile-time-egenskab frem for en review-time-egenskab.",
+   "hvordan_traenes": "Spike G4, inklusive det obligatoriske forsoeg paa at omgaa sin egen kontrol. Paa arbejdet: foreslaa én branch policy - typisk 'nulstil stemmer ved nyt push', som er slaaet fra som default og som naesten alle glemmer.",
+   "niveauskala": "NYBEGYNDER: kan tilfoeje en manuel godkendelse til en release. KOMPETENT: bruger environments med checks, branch control og automatiserede gates, forstaar hvorfor path-baserede required reviewers er en skalpel og CODEOWNERS paa hele repoet er en flaskehals, og maaler review-ventetid frem for antal godkendelser. STAERK: designer den compliante vej saa den er hurtigere end den naive, kan implementere funktionsadskillelse som en automatisk kontrol med eksporterbart bevis, og har testet sin egen kontrol ved at forsoege at bryde den."
+  },
+  {
+   "navn": "Supply chain-governance med en forespoergselssti",
+   "hvorfor": "SBOM'er, dependency-scanning og licenschecks er blevet obligatoriske i enterprise-indkoeb, og de fleste implementeringer er teater. Forskellen paa teater og kapacitet er om nogen kan STILLE et spoergsmaal til dataene naar en CVE lander.",
+   "hvordan_traenes": "Spike G8. Og de tre kedelige .NET-ting der betyder mest: Central Package Management, lock files med locked-mode i CI, og ét kontrolleret feed med upstream sources. Paa arbejdet: skriv licenspolitikken paa én side og aflevér den - den er direkte anvendelig og ingen ejer den.",
+   "niveauskala": "NYBEGYNDER: har slaaet Dependabot til og lukker pull requests naar de dukker op. KOMPETENT: genererer SBOM'er pr. release, laaser versioner centralt, har et licens-allow-og-deny-saet med en undtagelsesvej, og kan forklare dependency confusion. STAERK: kan besvare 'hvilke releases i produktion indeholder pakke X under version Y' paa under fem minutter fra gemte data, og har en holdning til hvor meget provenance-arbejde der faktisk betaler sig for netop denne virksomhed."
+  },
+  {
+   "navn": "Beslutningsregistrering og advice process",
+   "hvorfor": "Det er kernen i arkitekturgovernance, det kraever nul mandat, og det er den enkeltvane der hurtigst forvandler en ticket-taker til den person beslutninger gaar igennem. Advice process er desuden det bedst kendte svar paa hvordan man styrer arkitektur uden et review board.",
+   "hvordan_traenes": "Spike G5 med simuleret raadgivning fra tre skeptiske parter, hvor selve REGISTRERINGEN af raadet er artefaktet. Paa arbejdet: Y-saetningen efter hvert moede, og den én-afsnits ADR i pull request-beskrivelsen. Skriv de foerste fem ADR'er om beslutninger der ALLEREDE er truffet, saa folk ser formatet og maerker vaerdien af arkaeologien foer de skal skrive selv.",
+   "niveauskala": "NYBEGYNDER: skriver ADR'er naar nogen beder om det, typisk bagudrettet for at tilfredsstille en checkliste. KOMPETENT: skriver dem paa beslutningstidspunktet, paa under 45 minutter, med afviste alternativer, med et statuslivsforloeb, i det repo beslutningen begraenser, og med en skreven trigger for hvornaar en ADR kraeves. STAERK: faar ANDRE til at skrive dem uden at goere det til en port, faciliterer raadgivning omkring beslutninger han ikke selv ejer, og kan pege paa en ADR nogen anden refererede til i en diskussion han ikke deltog i."
+  },
+  {
+   "navn": "Principper omsat til regler omsat til fitness functions",
+   "hvorfor": "Det er broen mellem den bloede og den haarde halvdel af emnet. Et princip der aldrig producerer en automatiseret check er sandsynligvis ikke operativt, og et regelsaet uden principper bag er vilkaarligt.",
+   "hvordan_traenes": "Spike G9, hvor hver check bevises ved at indfoere en overtraedelse og se den fejle. Testen paa om et princip er operativt: kan han navngive en beslutning princippet ville faa ham til at AFVISE? Kan han ikke det, skal princippet slettes.",
+   "niveauskala": "NYBEGYNDER: kan skrive en liste af principper der lyder rigtige og ikke afviser noget. KOMPETENT: skriver principper med rationale, konsekvens OG de situationer hvor de ikke gaelder, og kan automatisere de fleste af dem. STAERK: ved hvilke principper der IKKE kan automatiseres og har en eksplicit plan for dem, holder antallet paa fem til otte saa de kan huskes i oejeblikket hvor de betyder noget, og har slettet principper der viste sig at vaere plakater."
+  },
+  {
+   "navn": "Cost governance og unit economics",
+   "hvorfor": "Det er det omraade hvor arkitektur moeder forretning mest direkte, og det er den kompetence naesten ingen paa hans niveau har. For en SaaS er cost per tenant ikke en driftsmetrik, det er en produktbeslutning der afgoer prissaetning og segmentering.",
+   "hvordan_traenes": "Spike G6. Laer FOCUS-kolonnerne, deploy en FinOps hub timeboxet, og loes det aegte problem: at tags ikke loeser cost-per-tenant naar infrastrukturen er delt. Laer ordforraadet showback versus chargeback og hold fast i at showback kommer foerst - chargeback uden praecis allokering skaber politisk krig.",
+   "niveauskala": "NYBEGYNDER: kan laese Cost Analysis i portalen og saette et budget. KOMPETENT: eksporterer omkostningsdata i FOCUS-format, allokerer delte omkostninger efter en dokumenteret regel, og kan producere en showback-rapport en ikke-teknisk person forstaar. STAERK: kan udtrykke omkostning som unit economics - kroner pr. onboardet leverandoer, pr. lagret auditdokument - angive hvor stor en andel der er maalt versus allokeret, og bruge tallet til at argumentere en arkitekturaendring."
+  },
+  {
+   "navn": "Data governance i et multi-tenant SaaS: ejerskab, klassificering, retention og provenance",
+   "hvorfor": "Det er LeanLinkings produkt sat paa formel. De opbevarer andre virksomheders leverandoerbevismateriale, hvilket goer dem til databehandler for kundernes data, mens kunderne selv er under leverandoerkaede-krav. Hver arkitekturbeslutning om isolation, sletning og bevisintegritet er derfor ogsaa en kontraktbeslutning.",
+   "hvordan_traenes": "Spike G7 og G5 tilsammen. Den skarpeste enkelt-oevelse: skriv slettestien ud for ét dokument gennem ALLE lagre - primaert storage, soft delete, versioner, backup, soegeindeks, logs, datawarehouse - og skriv testen der beviser det. Antallet af steder han opdager at data laa som han havde glemt, er hele laeringen.",
+   "niveauskala": "NYBEGYNDER: ved at GDPR findes og at data skal krypteres. KOMPETENT: kan skelne ejer, forvalter og kustode, kan definere klassificeringsniveauer med HAANDTERINGSREGLER frem for blot etiketter, kan implementere retention med metadata og et udloebsjob, og ved at klassificering ogsaa bestemmer hvad der maa staa i telemetri. STAERK: kan raesonnere hoejt om konflikten mellem immutabelt revisionsbevis og ret til sletning, kan koble isolationsmodel til sletbarhed, datalokalisering, kundeadministrerede noegler og maalbar omkostning pr. lejer, og kan besvare en enterprise-kundes indkoebsspoergsmaal om hvor data ligger med et diagram."
+  },
+  {
+   "navn": "Rammevaerks-oversaettelse: at tale med revisor, kunde og ledelse uden at certificere sig",
+   "hvorfor": "Det er selve arkitektjobbet. En arkitekt der kun kan rammevaerk er konsulent; en der kun kan teknologi er lead developer. Jobbet er oversaettelseslaget, og oversaettelsen virker kun hvis man er trovaerdig paa begge sider. For Simon er dette desuden den hurtigste vej til synlighed, fordi ingen andre i teamet gider det.",
+   "hvordan_traenes": "Spike G11: ti rigtige kontroller mappet til Azure-konfiguration og eksporterbart bevis. Paa arbejdet: meld dig paa naeste kundesikkerhedsspoergeskema. Laer ITIL 4's skelnen mellem incident, problem og change plus change enablement med standard-, normal- og emergency-klasser - og laer at kunne sige at et CAB der godkender standard changes er negativ-vaerdi-arbejde, formuleret i ITIL's egen terminologi. Det er et rumvindende traek.",
+   "niveauskala": "NYBEGYNDER: kan navnene paa rammevaerkerne og tror certificeringerne betyder kompetence. KOMPETENT: kan oversaette et compliance-krav til en konkret Azure-konfiguration og en eksporterbar log, og ved hvad en revisor accepterer som bevis. STAERK: kan sidde i et rum med Risk, salg og en kunde og formulere det samme forhold tre gange paa tre sprog, og kan sige praecist hvornaar et rammevaerk er relevant og hvornaar det er bureaukrati - uden at vaere afvisende paa forhaand."
+  },
+  {
+   "navn": "Teknisk gaeld formuleret som risiko med dato og beloeb",
+   "hvorfor": "Teknisk gaeld bliver ikke finansieret fordi ingenioerer formulerer den som kodekvalitet. Den bliver finansieret naar den har en dato, et beloeb og en kontraktkonsekvens. Det er en ren formuleringskompetence og den betaler sig med det samme.",
+   "hvordan_traenes": "Adskil de fire ting der kaldes teknisk gaeld: bevidst gaeld med tilbagebetalingsplan (den eneste aegte gaeld), entropi fra aendrede krav, obsolescens (EOL-runtimes og uvedligeholdte biblioteker - denne har en DATO, hvilket goer den finansierbar), og videnskoncentration med lav bus factor. Byg derefter et gaeldsregister med maksimalt ti poster, hver med konsekvens, rente og ejer. En liste paa to hundrede poster er en maade at lade vaere med at beslutte.",
+   "hvordan_traenes_supplement": "",
+   "niveauskala": "NYBEGYNDER: siger at kodebasen har meget teknisk gaeld og peger paa et SonarQube-tal. KOMPETENT: skelner de fire typer, bruger hotspots (ofte aendrede OG komplekse filer) frem for globale metrikker, og udtrykker konsekvensen i leveringstid eller incidents. STAERK: formulerer den enkelte post som risiko med dato og beloeb - 'denne runtime mister support paa dato D, derefter kan vi ikke patche CVE'er, vores enterprise-kunders sikkerhedsspoergeskemaer kraever understoettede runtimes' - og faar den prioriteret uden at have mandat til at prioritere."
+  }
+ ],
+ "web_verifikation": "VIGTIG BEGRAENSNING FOR SKRIVE-AGENTEN: WebSearch-budgettet for denne session var opbrugt paa forhaand (200/200), og egress-proxyen blokerede alle domaener paa naer github.com. Konkret blokeret: learn.microsoft.com, docs.github.com, azure.github.io, adr.github.io, opengroup.org, thoughtworks.com, oreilly.com, en.wikipedia.org. Al verifikation nedenfor er derfor foretaget mod github.com via WebFetch. Alt der ikke staar paa listen over verificerede fund, skal behandles som traeningsviden og skal ENTEN markeres som uverificeret i den faerdige tekst ELLER verificeres af skrive-agenten hvis den har web-adgang.\n\nVERIFICERET 10. SEPTEMBER 2026 (haardt belaeg, direkte fra github.com):\n- Bicep er meget aktivt: seneste release v0.47.16 den 8. september 2026. Tidligere: v0.46.1 (30. juli 2026), v0.45.6 (10. juli 2026). Nye features: docs-generering, extends-konfigurationsarv, linter-regler for beskrivelser paa parametre/variabler/outputs/typer, OCI-registry-publicering af extensions, @retryOn promoveret til GA.\n- Terraform azurerm-provideren: v5.4.0 (3. september 2026), v5.3.0 (27. august), v5.2.0 (20. august). 5.x er en major med fjernede deprecated felter.\n- OpenTofu lever: v1.12.6 (19. august 2026), v1.13.0-beta1 (27. august 2026), understoettelsesperiode for 1.13.x angivet til 1. august 2027.\n- STOERSTE ENKELTFUND: ALZ-Bicep \"Classic\" er under udfasning. Repoets egen tidslinje: Bicep AVM er nu default starter module i ALZ Accelerator; classic-modulet fjernet fra Accelerator 16. februar 2026; repoet arkiveres 16. februar 2027; bugfixes, sikkerhedspatches og policy-refreshes i 12 maaneder efter februar 2026. Enhver vejledning der peger paa ALZ-Bicep Classic er foraeldet.\n- Azure/bicep-registry-modules erklaerer ordret: \"Azure Verified Modules (AVM) is the single Microsoft standard for Bicep modules.\" 2.813 commits, 736 stars.\n- Azure/ALZ-PowerShell-Module understoetter tre starter-varianter: Terraform, Bicep (alz-bicep-accelerator bygget paa AVM) og Bicep-Classic. Deploy-Accelerator er indgangskommandoen.\n- Azure/terraform-azurerm-avm-ptn-alz er aktiv (178 commits), deployer management groups, policy-definitioner/assignments/initiativer, RBAC-rolletildelinger til policy og subscription placement. Kraever Terraform >= 1.12 og bruger azapi ~> 2.12 plus en dedikeret alz-provider (~> 0.21) - IKKE azurerm alene.\n- Azure/Azure-Landing-Zones-Library eksisterer og er det faelles aktivbibliotek (154 stars, 150 commits).\n- Azure/enterprise-azure-policy-as-code (EPAC) er aktiv: 942 commits, 20 aabne issues. Dokumentation henvist til aka.ms/epac (link citeret fra repoet).\n- Azure/azure-policy indeholder de indbyggede definitioner som direkte repraesentation af det publicerede (735 commits). Azure/Community-Policy er aktiv (1.313 commits) og indeholder custom definitions og policySetDefinitions - med repoets egen advarsel om at de IKKE er testet eller valideret af Azure Policy-teamet.\n- Azure/review-checklists er aktiv (2.514 commits, 22 aabne PR'er). Indeholder bl.a. Azure Landing Zone, Cost Management, Multitenancy, Azure DevOps, AI Landing Zone (preview). Konsumeres som Excel, Azure Resource Graph-queries eller via git.\n- Azure Governance Visualizer (JulianHayward/Azure-MG-Sub-Governance-Reporting): v6.7.3 udgivet 18. maj 2026, aktiv (679 commits). Rapporterer paa management group-hierarki, Azure Policy (definitioner, assignments, exemptions, compliance), RBAC, PIM-berettigelser, Defender for Cloud, Entra ID service principals og grupper, tags og omkostninger. Output i HTML, CSV, Markdown og JSON. Nyere features inkluderer ALZ policy checker og OIDC-token-haandtering.\n- microsoft/finops-toolkit: v14 udgivet 29. april 2026 (v13 den 31. januar 2026, v12 den 17. juli 2025). v14 tilfoejer Advisor-anbefalinger og Resource Graph-queries til FinOps hubs. v12 introducerede FOCUS 1.2-skema.\n- FOCUS-specifikationen (FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec): seneste stabile v1.4 (4. juni), aktivt arbejdsudkast, 320 stars.\n- microsoft/PSRule.Rules.Azure: v1.47.0 fra 8. januar 2025, prerelease v1.48.0-B0228 fra 22. juni 2026. Stadig levende, men kadencen er tydeligt faldet - det boer naevnes aerligt.\n- Checkov (bridgecrewio/checkov): AKTIV med commits helt frem til 10. september 2026. Bemaerk faelde: releases-siden gav et misvisende indtryk af stagnation; commit-historikken er den paalidelige indikator.\n- Trivy (aquasecurity/trivy): v0.74.0 den 14. august 2026, aktiv.\n- Syft (anchore/syft): v1.51.1 den 27. august 2026, aktiv, med dokumenteret .NET-understoettelse (deps.json-cataloger, PE-cataloger, single-file bundles).\n- microsoft/sbom-tool: producerer SPDX 2.2 (default) og SPDX 3.0 (via -mi SPDX:3.0). Installeres som .NET global tool (Microsoft.Sbom.DotNetTool) og har dokumenteret Azure DevOps-pipelineopsaetning. 2.1k stars, 591 commits.\n- MADR (adr/madr): v4.0.0 er seneste release (forudgaaet af 4.0.0-beta), aktivt vedligeholdt, 2.5k stars, 383 commits paa develop. Fire skabelonvarianter: full, minimal, bare, bare-minimal. BEMAERK: aarstallet for 4.0.0 kunne ikke aflaeses entydigt fra releases-siden - angiv version uden aarstal, eller verificér.\n- npryce/adr-tools: VERIFICERET DOEDT. Seneste commit 30. marts 2020. Foregaaende commits: september 2019, oktober 2018, juli 2018. 32 aabne issues, 37 aabne PR'er ubehandlet.\n- thomvaill/log4brains: VERIFICERET STAGNERET. Seneste commits paa develop er fra 17. december 2024. 45 aabne issues.\n- thoughtworks/build-your-own-radar: AKTIV, 826 commits. Input via Google Sheets, CSV eller JSON med kolonnerne name, ring, quadrant, isNew, description plus valgfri status. Docker-images tilgaengelige.\n- CycloneDX/specification: seneste angivet som 1.7.1. ADVARSEL: datoerne i det hentede resumé var internt inkonsistente (1.7.1 angivet til juni 2024, 1.7 til oktober 2023) - versionsnummeret boer verificeres foer det citeres, eller udelades helt, da det er lavt vaegtende for planen.\n- CERTIFICERINGER - alle verificeret levende via de officielle MicrosoftLearning-kursusrepoer: AZ-305 \"Designing Microsoft Azure Infrastructure Solutions\" (repo senest opdateret 21. januar 2026, 385 stars); AZ-104 \"Microsoft Azure Administrator\" (aktivt, 2.772 commits); AZ-500 \"Azure Security Technologies\" (senest opdateret 2. september 2026); SC-300 \"Identity and Access Administrator\" (senest opdateret 17. august 2026, 351 stars); SC-401 \"Information Security Administrator\" (senest opdateret 3. september 2026 - et NYERE kursus, sandsynligvis afloeser for SC-400, hvilket boer verificeres).\n- AZ-400: de gamle lab-repoer (AZ400-DesigningandImplementingMicrosoftDevOpsSolutions og alle sprogvarianter) er ARKIVERET. Hovedrepoet baerer noten \"This repository will be archived on November 14, 2025. The new repository for DevOps labs can be found here: MicrosoftLearning/mslearn-devops\" og blev arkiveret af ejeren 21. januar 2026. mslearn-devops eksisterer, daekker DevOps, DevSecOps, SRE og platform engineering, 182 commits. Konklusion: eksamen er ikke nedlagt, men materialet er flyttet og omstruktureret - aeldre AZ-400-studievejledninger er mistaenkelige.\n- aka.ms-links citeret DIREKTE fra verificerede repo-sider (og derfor semi-verificerede): aka.ms/alz/techdocs, aka.ms/alz/aac#platform, aka.ms/AVM, aka.ms/AVM/ModuleIndex/Bicep, aka.ms/epac.\n\nIKKE VERIFICERET - SKAL MARKERES ELLER EFTERPROEVES AF SKRIVE-AGENTEN:\n- TOGAF's aktuelle udgave (min traeningsviden siger 10. udgave fra 2022) og certificeringsstrukturen samt priser. opengroup.org var blokeret.\n- ArchiMates aktuelle version (traeningsviden: 3.2). Blokeret.\n- ITIL 4's aktuelle certificeringsskema hos PeopleCert. Blokeret.\n- COBIT's aktuelle udgave (traeningsviden: COBIT 2019 med senere opdateringer). ISACA blokeret.\n- Microsoft Purviews produktstruktur og SKU'er i 2026 (traeningsviden: samlet i 2025 til at daekke data governance, information protection og compliance). learn.microsoft.com blokeret.\n- ALLE bogtitler, forfattere, udgaver og aarstal. Samtlige forhandler- og forlagsdomaener var blokeret. Det gaelder saerligt \"Facilitating Software Architecture\" (Andrew Harmel-Law), \"Building Evolutionary Architectures\" 2. udgave, \"Fundamentals of Software Architecture\" 2. udgave, \"Data Management at Scale\" 2. udgave og \"Accelerate\". Angiv titel og forfatter, markér udgave/aarstal som uverificeret, og opfind ingen URL'er.\n- GitHub rulesets versus classic branch protection: min beskrivelse (rulesets som organisationsniveau-lag med bypass-lister og evaluate-tilstand, daekkende branches og tags, required status checks, reviews, signed commits, deployment environments, merge queue og push rules) hviler paa traeningsviden. docs.github.com var blokeret.\n- Azure DevOps' strategiske retning hos Microsoft, samt navneskiftet af GitHub Advanced Security til separate Secret Protection- og Code Security-produkter (traeningsviden: april 2025). Blokeret.\n- Azure Deployment Stacks' GA-status og deny settings. Blokeret.\n- Azure Policy-detaljer som evalueringscyklussens laengde, tag-graenser (50 tags pr. ressource) og graenser for management group-dybde (6 niveauer) samt antal storage accounts pr. abonnement. Alle fra traeningsviden - lad Simon slaa dem op i spiken frem for at citere dem som fakta i guiden.\n- EU-REGULERING, HOEJ RELEVANS FOR LEANLINKING OG HELT UVERIFICERET: NIS2's danske implementering (min viden: den danske cybersikkerhedslov traadte i kraft 1. juli 2025 - status, sektoromfang og bekendtgoerelser skal verificeres); CSRD og CSDDD efter Omnibus- og \"stop-the-clock\"-pakken i 2025, som udskoed rapporteringsboelger og CSDDD-implementering (datoerne SKAL verificeres foer noget specifikt skrives); EU AI Actens faseinddelte anvendelse og de 2025-2026-diskussioner om udskydelse af dele af den; DORA for finanssektoren. Disse er kommercielt relevante for LeanLinkings forretning og boer naevnes som forretningskontekst, men ingen konkrete datoer boer publiceres uverificeret.\n- Danske arbejdsmarkedsforhold: udbredelsen af TOGAF, ITIL og SAFe i danske stillingsopslag, loenniveauer og hvor solution architect-roller findes. Alle danske kilder var blokeret. Mine udsagn om at TOGAF/COBIT bruges i offentlig sektor, finans, energi og konsulenthuse mens de er fravaerende i danske SaaS-produktvirksomheder, er velfunderet erfaringsviden men er IKKE verificeret mod data.\n- FinOps Certified Practitioner: pris, format og aktuel status. finops.org blokeret.\n- CIS Controls og NIST CSF's aktuelle versionsnumre. Blokeret."
+}

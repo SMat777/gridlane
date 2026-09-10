@@ -1,0 +1,591 @@
+{
+ "kernepointer": [
+  "Multi-tenancy er ikke ET valg, men 5-6 uafhaengige valg: compute, data, storage, identity, deployment og networking kan hver isaer vaere shared eller siloed. 'Shared schema vs database-per-tenant' er en falsk dikotomi som interviewere bruger til at afsloere folk der har laest et blogindlaeg. Det rigtige svar er altid hybrid, og det interessante spoergsmaal er: hvilken akse siloerer du foerst, naar den foerste enterprise-kunde kraever det, og hvad koster det at flytte EN tenant uden at roere de andre.",
+  "Migrationsvejen MELLEM tenancy-modeller er den reelle arkitektkompetence, ikke modelvalget. Et nyt system kan vaelge frit. LeanLinking har levende kunder i produktion. Vejen shared schema -> schema-per-tenant -> database-per-tenant er teknisk fremkommelig (dual-write, backfill, cutover pr. tenant). Vejen tilbage er naesten umulig, fordi tenants naar at divergere i schema, konfiguration og forventning. Det asymmetriske i den vej er selve pointen, og det er det Simon skal kunne tegne paa et whiteboard paa ti minutter.",
+  "At-least-once er praksis. Exactly-once findes ikke over en netvaerksgraense - kun exactly-once *processing* som effekt af idempotens plus at-least-once levering. Idempotensnoeglen skal vaere en business key (leverandoer-id + dokumenttype + kundens versionsstempel), ikke et message-id, fordi det samme forretningsfaktum ofte ankommer gennem to forskellige kanaler med to forskellige message-id'er. Det er den enkeltindsigt der oftest skiller en senior udvikler fra en arkitekt i et interview.",
+  "Outbox pattern er det mest oversete moenster i B2B SaaS, og fejlen opdages foerst i produktion. Dual write (gem i DB, publicér derefter besked) fejler stille: transaktionen committer, processen doer, beskeden kommer aldrig. I et supplier-compliance-domaene betyder det at et certifikat er godkendt i databasen, men kunden faar aldrig besked, og revisionssporet er inkonsistent. Simon skal haand-rulle en outbox EN gang uden framework foer han bruger et framework - ellers laerer han API'et og ikke problemet.",
+  "Sagaer er ikke transaktioner, og kompensation er en forretningsbeslutning. 'Rollback' af en leverandoeronboarding betyder ikke DELETE - det betyder maaske 'saet status til Afvist, behold dokumenterne, notificér indkoeberen, og log hvorfor'. De fleste microservice-tutorials viser kompensation som teknisk annullering. Den vigtigste oevelse er at finde de kompensationer der IKKE kan automatiseres og skal eskaleres til et menneske.",
+  "Eventual consistency forklares til forretningen med tid og observerbarhed, aldrig med teori. Forkert: 'systemet er eventually consistent'. Rigtigt: 'naar indkoeberen godkender, er det gemt med det samme; kundens ERP har det inden for 60 sekunder i 99% af tilfaeldene; hvis det tager laengere, kan I se det i statusfeltet, og vi faar alarm efter 5 minutter'. Det er en SLO, ikke en undskyldning. Evnen til at oversaette den saetning er halvdelen af solution architect-rollen.",
+  "CAP er praktisk talt ubrugelig som beslutningsvaerktoej i 2026. Kleppmann har vist at teoremet kun gaelder for en enkelt read-write register under total partition, at det ikke siger noget om transaktioner over flere objekter, og at ingen reel database entydigt kan klassificeres som CP eller AP. Brug PACELC-rammen i stedet: der er en konsistens/latens-afvejning ogsaa naar netvaerket er sundt. Hvis Simon citerer CAP i et interview som beslutningsgrundlag, afsloerer han laerebogsviden uden praksis.",
+  "DDD: strategisk design giver 80% af vaerdien, taktisk design giver 80% af skaderne. Ubiquitous language, bounded contexts, context mapping og anti-corruption layers er direkte anvendelige paa LeanLinkings domaene og kraever ingen kodeaendringer for at oeve. Event sourcing og CQRS anvendt tidligt er den klassiske cargo cult: dokumenterede 2025-2026-erfaringer beskriver upcasting-kode paa 300 linjer nestede if's, fire samtidige event-schemaer og read models med otte indekser der goer skrivninger langsommere. Regel: brug event sourcing kun naar revisionssporet ER forretningskravet, og saa kun i EN bounded context.",
+  "Modulaer monolit er 2026-defaulten, og det er ikke laengere kontroversielt. CNCF-tal citeret bredt i 2026 angiver at ~42% af organisationer har konsolideret mindst nogle microservices tilbage. Microservices betaler sig foerst ved organisatorisk skala (Conway, 100+ udviklere) eller ved genuint divergerende skaleringsbehov. En junior der foreslaar at splitte op, taber rummet oejeblikkeligt. Den vindende position: 'jeg vil have modulgraenser haandhaevet af compileren nu, saa vi kan splitte om to aar hvis vi faar brug for det - og her er arkitekturtesten der haandhaever det'.",
+  "Dokumenthaandtering i skala er 90% metadata, retention, adgangskontrol og lifecycle - kun 10% at gemme bytes. I LeanLinkings domaene: certifikater med udloebsdatoer, audit-dokumenter der ikke maa aendres (immutable containers + legal hold), sletning efter opbevaringspligt, malware-scanning af upload fra fremmede leverandoerer, og adgang der ikke laekker paa tvaers af tenants selv naar et link deles. Direkte upload med kortlivet user delegation SAS uden om API-processen er standardsvaret - og de fleste juniorer har aldrig hoert om det.",
+  "Bagudkompatibilitet er organisatorisk disciplin, ikke teknik. Stripe har over ti aars bagudkompatibilitet ved at pinne hver konto til den version den foerst brugte og lade transformationslag oversaette mod EN intern model. Det dyre er ikke koden - det er deprecation-politikken, telemetrien der viser hvem der stadig bruger v1, og kunde-kommunikationen. Simon kan traene praecis dette alene, og det er et af de faa omraader hvor en junior kan producere noget der ser senior ud.",
+  "Integration mod kunders ERP er B2B SaaS' vanskeligste disciplin, og den er sjaeldent teknisk svaer - den er kontraktuel. Kunden opgraderer sit SAP eller Business Central uden at spoerge, felttyper aendrer sig, pagineringen er ustabil, og du kan ikke bede om aendringer. Anti-corruption layer, raw landing zone (gem payload praecis som modtaget), canonical model og reconciliation-koersel er svaret. Det er ogsaa den viden der er mest transferabel til enhver anden B2B SaaS-arbejdsgiver.",
+  "Arkitektkompetence maales i skrevne trade-offs, ikke i moensterkendskab. Interviewere til solution architect-roller spoerger ikke 'hvad er saga pattern' - de spoerger 'fortael om en beslutning du traf, hvad du valgte fra, og hvad det kostede dig'. Derfor er ADR'en (Architecture Decision Record) det egentlige artefakt i hele oevebanen, ikke koden. Tolv ADR'er med reelt fravalgte alternativer er mere vaerd i et interview end tolv koerende prototyper.",
+  "Domaeneviden om HVORFOR kunderne har travlt er den hurtigste vej fra ticket-taker til at blive spurgt til raads. EU-omnibusdirektivet (i kraft 18. marts 2026) indsnaevrede CSDDD kraftigt - nu 5.000 ansatte og 1,5 mia. EUR omsaetning, transponering udskudt til 26. juli 2028, anvendelse fra 26. juli 2029. Samtidig gaar Danmark fra OIOUBL til NemHandel BIS 4 (Peppol) frem mod ~2029. En udvikler der kan forklare hvad de aendringer goer ved LeanLinkings kunders indkoebsafdelinger, bliver behandlet anderledes end en der kun kan sit repo."
+ ],
+ "kompetencer": [
+  {
+   "navn": "Tenancy-modellering og isolationsniveauer",
+   "hvorfor": "Det er selve kernen i B2B SaaS-arkitektur og det foerste en interviewer til en SaaS-arkitektrolle proever. LeanLinking lever af det, og enhver diskussion om pris, compliance, performance-isolation og enterprise-salg ender her. Uden denne kompetence kan man ikke deltage i de samtaler der giver mandat.",
+   "hvordan_traenes": "Spike 1 og 12. Laes Azure Architecture Centers multitenancy-guide (tenancy models + architectural approaches for storage/data) OG AWS Well-Architected SaaS Lens (silo/pool/bridge) - de to kilder er uenige nok til at tvinge dig til at tage stilling. Byg derefter faktisk en migration af en tenant fra shared schema til dedikeret database med maalt cutover-vindue. Traen at tegne tre modeller og migrationsvejen mellem dem paa 10 minutter uden noter.",
+   "niveauskala": "Nybegynder: kan navngive shared schema / schema-per-tenant / database-per-tenant. Kompetent: kan for hver model angive konsekvens for cost, blast radius, noisy neighbor, restore, compliance og operationel byrde. Staerk: kan designe migrationsvejen mellem dem paa levende kunder, angive cutover-vinduet i minutter, og forklare hvornaar en tenant boer promoveres til silo baseret paa maalte tal og ikke paa kundens toneleje."
+  },
+  {
+   "navn": "Integrationsvalg og kontraktdesign mod eksterne parter",
+   "hvorfor": "LeanLinking er en integrationsvirksomhed forklaedt som en produktvirksomhed. Valget mellem batch, filoverfoersel, API, messaging og event streaming - og evnen til at forsvare det - er den daglige arkitektbeslutning. Det er ogsaa den mest transferable kompetence hvis han skal skifte job.",
+   "hvordan_traenes": "Spike 2 og 7. Brug Hohpes Enterprise Integration Patterns som OPSLAGSVAERK (ikke laesning forfra): udpeg for hvert integrationsproblem hvilke 3-4 moenstre der er kandidater. Laes SAP's API_BUSINESS_PARTNER OData-dokumentation og Business Centrals API-dokumentation som virkelige eksempler paa kontrakter du ikke kontrollerer. Byg en puller mod en API du ikke ejer og haandtér at den opfoerer sig daarligt.",
+   "niveauskala": "Nybegynder: 'vi bruger REST'. Kompetent: kan for et konkret behov argumentere for batch vs. API vs. messaging ud fra latenskrav, volumen, kobling og hvem der ejer fejlhaandteringen. Staerk: designer anti-corruption layer og raw landing zone som standard, kan sige hvad der sker naar kunden opgraderer sit ERP, og har en reconciliation-strategi for naar de to systemer alligevel divergerer."
+  },
+  {
+   "navn": "Messaging-semantik og fejlhaandtering i drift",
+   "hvorfor": "Det er her juniorer systematisk bliver afsloeret. At-least-once, idempotens, outbox, DLQ, ordering, poison messages og replay er ikke teori - de er de fejl der vaekker folk kl. 3 om natten. En arkitekt der ikke har ramt dem selv, designer systemer andre skal drifte.",
+   "hvordan_traenes": "Spike 3 og 4, og fastholdt i den promoverede spike gennem maaneder. Haand-rul outbox EN gang uden framework. Draeb processen med kill -9 i tre forskellige vinduer og MAAL tab og dubletter. Laes de fire Azure Service Bus-dokumentationssider (message-sessions, duplicate-detection, dead-letter-queues, message-loss-and-duplicates) faktisk igennem - ikke som overblik.",
+   "niveauskala": "Nybegynder: kender ordet idempotens. Kompetent: kan designe en idempotensnoegle for et konkret forretningsfaktum og forklare hvorfor message-id ikke duer. Staerk: har selv ramt ordering-bruddet ved DLQ-replay, kan sige hvad Service Bus' duplicate detection IKKE loeser (10 min default vindue, max 7 dage, kun paa MessageId), og har et replay-vaerktoej der ikke skaber dubletter."
+  },
+  {
+   "navn": "Konsistensmodellering og oversaettelse til forretningen",
+   "hvorfor": "Halvdelen af solution architect-rollen er at staa foran en produktchef eller en kunde og forklare hvorfor systemet opfoerer sig som det goer, uden at bruge ordet 'eventual'. Det er ogsaa den kompetence der er sværest at fake, og den der oftest afgoer om nogen faar titlen.",
+   "hvordan_traenes": "Spike 5 og 9. Definér tre SLI'er og et SLO for en asynkron proces du selv bygger, og skriv den kundevendte formulering. Laes Kleppmanns 'Please stop calling databases CP or AP' og hold op med at bruge CAP. Traen den 3-minutters forklaring paa en ikke-teknisk person - bogstaveligt, paa en person, ikke i hovedet.",
+   "niveauskala": "Nybegynder: siger 'eventual consistency' som forklaring. Kompetent: kan angive konsistensvinduet i sekunder, hvad brugeren ser i mellemtiden, og hvornaar der alarmeres. Staerk: har forhandlet et konsistenskrav ned med forretningen ved at vise hvad det staerkere krav koster i latens og kroner, og har dokumenteret aftalen som et SLO."
+  },
+  {
+   "navn": "Strategisk DDD: graensedragning og ubiquitous language",
+   "hvorfor": "Det er den eneste DDD-del der giver afkast for en person uden mandat, og det er praecis den kompetence der goer at man bliver inviteret ind i designdiskussioner. Man behoever ikke lov til at laere hvad ordene betyder for forretningen.",
+   "hvordan_traenes": "Spike 10 (papir-spike, ingen kode). Khononov del I-II. ddd-crew's context-mapping og bounded-context-canvas som konkrete skabeloner. Byg kortet ud fra LeanLinkings faktiske kode, kundedokumentation og supportsager, og verificér mindst tre paastande ved at spoerge en kollega om et ord betyder det samme to steder.",
+   "niveauskala": "Nybegynder: bruger 'domain model' som synonym for datamodel. Kompetent: kan navngive 5+ bounded contexts i sit eget domaene og angive relationstypen mellem dem. Staerk: kan pege paa et konkret sted hvor en delt model koster teamet tid hver maaned, kan sige hvilken context der er core domain og dermed hvor investeringen boer ligge, og har faaet en forretningsperson til at nikke genkendende til kortet."
+  },
+  {
+   "navn": "Nedbrydningsdisciplin: modulaer monolit og hvornaar man IKKE splitter",
+   "hvorfor": "Fordi den forkerte version af denne kompetence er det hyppigste selvmaal for ambitiøse juniorer. At kunne forsvare IKKE at splitte - med haandhaevede graenser som alternativ - er et stærkere arkitektsignal end at kunne tegne et microservice-landskab.",
+   "hvordan_traenes": "Spike 8. Laes Fowlers MonolithFirst og MicroservicePremium (til sammen under en time). Brug Grzybeks modular-monolith-with-ddd som struktur-reference, men vaer opmaerksom paa at repoet staar paa .NET 8 - port moenstrene, ikke koden. Haandhaev graenserne med arkitekturtests saa overtraedelse giver byggefejl, ikke en review-kommentar. Traek derefter faktisk et modul ud og maal hvad det kostede.",
+   "niveauskala": "Nybegynder: 'microservices er moderne'. Kompetent: kan forklare hvorfor modulaer monolit er default og hvad der skal vaere sandt foer man splitter. Staerk: har haandhaevet modulgraenser i kode, har gennemfoert et udtraek og kan sige praecis hvor mange timer det tog og hvad der braekkede - altsaa har tal i stedet for holdninger."
+  },
+  {
+   "navn": "Dokument- og filarkitektur i skala",
+   "hvorfor": "Det er LeanLinkings faktiske volumen-problem og et omraade hvor de fleste udviklere kun har set 'gem filen i blob storage'. Retention, legal hold, malware, lifecycle-tiering, soegbar metadata og laekagesikker adgang er hvor omkostningerne og risiciene faktisk ligger.",
+   "hvordan_traenes": "Spike 6. Laes Azure-dokumentationen for blob index tags, lifecycle management, immutable storage/legal hold, user delegation SAS og Defender for Storage on-upload scanning. Byg cost-modellen for tre tier-strategier og sammenlign soegetid for 'certifikater der udloeber om 30 dage' via index tags vs. databasemetadata.",
+   "niveauskala": "Nybegynder: uploader gennem sin egen API og gemmer stien i en tabel. Kompetent: bruger direkte upload med kortlivet SAS, adskiller metadata fra indhold og har en lifecycle-politik. Staerk: kan prissaette arkivet pr. TB pr. maaned i tre scenarier, kan bevise at en udloebet SAS faktisk ikke virker, og har taget stilling til hvad der sker naar en kunde kraever alle sine data slettet mens en audit loeber."
+  },
+  {
+   "navn": "Bagudkompatibilitet og API-livscyklus mod eksterne parter",
+   "hvorfor": "B2B SaaS lever af at kundernes integrationer ikke braekker. Det er ogsaa et af de faa omraader hvor en person uden mandat kan producere noget der ligner en arkitektbeslutning: en deprecation-politik er et dokument, ikke en organisatorisk tilladelse.",
+   "hvordan_traenes": "Spike 7. Laes Stripes versioneringsdokumentation og deres blogindlaeg 'APIs as infrastructure' - det er stadig den bedste beskrevne model der findes. Implementér med Asp.Versioning (10.x paa .NET 10) og sammenlign URL-, header- og datobaseret versionering. Gennemfoer et bevidst breaking change med telemetri der viser hvem der stadig bruger den gamle version.",
+   "niveauskala": "Nybegynder: /api/v2 uden plan for v1. Kompetent: har en versioneringsstrategi og et transformationslag mod EN intern model. Staerk: kan svare paa hvem der bruger hvilken version lige nu, har en skreven deprecation-politik med varslingsperiode, og har faktisk gennemfoert en udfasning uden at braekke nogen."
+  },
+  {
+   "navn": "Trade-off-artikulation og beslutningsdokumentation",
+   "hvorfor": "Det er den kompetence titlen faktisk belønner. Mønsterkendskab er en råvare; evnen til at skrive 'vi valgte A, vi fravalgte B og C, her er hvad det koster os, her er hvad der ville få os til at ombestemme os' er produktet. Det er ogsaa det eneste artefakt fra oevebanen der kan vises i et interview uden at skulle forklare kode.",
+   "hvordan_traenes": "Skriv en ADR for hver spike, FOER beslutningen - ikke bagefter som dokumentation. Brug MADR-skabelonen (adr.github.io/madr) uaendret; opfind ikke din egen. Skriv ogsaa ADR'er til dig selv for arbejdstickets der har mere end én mulig loesning. Efter 6 maaneder har du 30+ og et sprog du ikke havde.",
+   "niveauskala": "Nybegynder: dokumenterer hvad der blev bygget. Kompetent: dokumenterer hvorfor, med navngivne alternativer. Staerk: dokumenterer den betingelse der ville gøre beslutningen forkert, og har mindst én ADR hvor han senere skrev opfølgningen 'betingelsen indtraf, vi ombestemte os'."
+  },
+  {
+   "navn": "Maaling: at kunne bevise sin egen paastand",
+   "hvorfor": "En spike uden tal er et blogindlaeg. Forskellen paa en udvikler med meninger og en arkitekt er at arkitekten har maalt. Det er ogsaa den disciplin der beskytter mod selvbedrag i den kompetenceport der ligger omkring maaned 9-10.",
+   "hvordan_traenes": "Hver eneste spike skal have mindst ét tal: p95-latens, dubletrate, cutover-vindue i sekunder, kroner pr. TB pr. maaned, tid-til-diagnose i en blindtest, timer brugt paa et modul-udtraek. Instrumentér med OpenTelemetry .NET og Azure Monitor OpenTelemetry Distro (den klassiske Application Insights SDK er deprecated - brug den ikke). Indfoer bevidst en regression og maal hvor lang tid det tager at finde den.",
+   "niveauskala": "Nybegynder: 'det virker'. Kompetent: har et foer/efter-tal paa en aendring han selv lavede. Staerk: har estimeret et tal FOER maalingen, maalt bagefter, og skrevet ned hvorfor han tog fejl - og har gjort det nok gange til at estimaterne er blevet bedre."
+  }
+ ],
+ "ressourcer": [
+  {
+   "titel": "Designing Data-Intensive Applications, 2. udgave (Martin Kleppmann & Chris Riccomini, O'Reilly, marts 2026)",
+   "type": "bog",
+   "prioritet": "kerne",
+   "url": "https://martin.kleppmann.com/2026/03/24/designing-data-intensive-applications-2e.html",
+   "tidsforbrug": "25-35 timer over 4-5 maaneder, selektivt",
+   "verificeret": true,
+   "hvorfor": "Den ene bog der ikke kan erstattes. 2. udgaven udkom marts 2026 og har nye kapitler om trade-offs i data systems architecture og om at definere nonfunctional requirements - praecis det sprog en solution architect maales paa. Den giver ham fundamentet under replikation, partitionering, konsistens og distribuerede fejl, som alle spikes hviler paa.",
+   "hvad_springes_over": "Laes IKKE forfra til bagfra. Prioritér: nonfunctional requirements, replikation, partitionering/sharding, transaktioner, 'The Trouble with Distributed Systems', konsistens og consensus. Spring batch processing og de dybe stream processing-kapitler over foerste gang - de er fremragende, men ikke det han maales paa inden for 12 maaneder. Den samlede bog er ca. 600+ sider; laeser han den lineaert, spiser den to maaneder af budgettet."
+  },
+  {
+   "titel": "Learning Domain-Driven Design (Vlad Khononov, O'Reilly, 2021, revideret oplag 2024)",
+   "type": "bog",
+   "prioritet": "kerne",
+   "url": "https://www.oreilly.com/library/view/learning-domain-driven-design/9781098100124/",
+   "tidsforbrug": "12-15 timer",
+   "verificeret": true,
+   "hvorfor": "Den bedste indgang til strategisk DDD der findes, og markant mere anvendelig end Evans' blaa bog for en person med 10-15 timer om ugen. Del I (strategisk design: subdomains, bounded contexts, context mapping) og del II (taktisk design) er direkte anvendelige paa LeanLinkings domaene. Ingen 2. udgave findes - 2024 var et revideret oplag, ikke en ny udgave.",
+   "hvad_springes_over": "Kapitlet om event sourcing og event-sourced domain models laeses som ADVARSEL, ikke som opskrift - forstaa hvornaar det er forkert. Spring de mere implementeringsnaere kodeeksempler let henover; det er ikke der vaerdien ligger."
+  },
+  {
+   "titel": "Fundamentals of Software Architecture, 2. udgave (Mark Richards & Neal Ford, O'Reilly, 23. september 2025)",
+   "type": "bog",
+   "prioritet": "kerne",
+   "url": "https://www.oreilly.com/library/view/fundamentals-of-software/9781098175504/",
+   "tidsforbrug": "10-12 timer, selektivt",
+   "verificeret": true,
+   "hvorfor": "2. udgaven er ny nok til at vaere aktuel og indeholder fem nye kapitler, bl.a. om governance, diagramming og team topologies. Den er den bedste kilde til det sprog en arkitekt forventes at bruge: architectural characteristics, fitness functions, trade-off-analyse. Det er sproget, ikke teknikken, der mangler hos en dygtig junior.",
+   "hvad_springes_over": "Kapitlerne om generative AI og de bredere karriere/soft skills-afsnit er tynde. Prioritér: architectural characteristics, arkitekturmoenstre-oversigten, component determination, diagramming, governance og fitness functions."
+  },
+  {
+   "titel": "Software Architecture: The Hard Parts (Ford, Richards, Sadalage, Dehghani, O'Reilly)",
+   "type": "bog",
+   "prioritet": "stoette",
+   "url": "https://www.oreilly.com/library/view/software-architecture-the/9781492086888/",
+   "tidsforbrug": "8-10 timer, kun udvalgte kapitler",
+   "verificeret": true,
+   "hvorfor": "Den eneste bog der systematisk behandler distribuerede transaktioner, data ownership, service granularity og contract decoupling som TRADE-OFFS uden facit. Det er praecis den taenkemaade solution architect-interviews proever. Kapitlerne om data ownership og distribuerede transaktioner er de bedste der findes paa emnet.",
+   "hvad_springes_over": "Sysops Squad-narrativet i anden halvdel er langtrukkent og kan skimmes haardt. Laes: service granularity (integrators/disintegrators), data ownership og distributed data access, distribuerede transaktioner/sagaer, contract decoupling. Resten kan vente."
+  },
+  {
+   "titel": "Azure Architecture Center - Architect multitenant solutions on Azure (hele guiden)",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/overview",
+   "tidsforbrug": "8-10 timer, laest ordentligt",
+   "verificeret": true,
+   "hvorfor": "Den mest direkte relevante kilde til LeanLinkings problem, og den er skrevet af Microsoft til praecis den type ISV. Kernesider: 'Tenancy models for a multitenant solution', 'Architectural approaches for storage and data', 'Architectural approaches for tenant integration and data access', 'Architectural approaches for governance and compliance', 'Pricing models for a multitenant solution' og 'Organize Azure resources in multitenant solutions'. Sidstnaevnte to er dem juniorer aldrig laeser og arkitekter altid bliver spurgt om.",
+   "hvad_springes_over": "Service-specific guidance-sektionen laeses kun for de tjenester han faktisk bruger (SQL Database, Blob Storage, Service Bus, App Service/Container Apps). AI/ML- og IoT-siderne er irrelevante for hans rolle."
+  },
+  {
+   "titel": "AWS Well-Architected SaaS Lens (silo/pool/bridge, tenant isolation, control plane vs. application plane)",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/wellarchitected-saas-lens.pdf",
+   "tidsforbrug": "4-5 timer",
+   "verificeret": true,
+   "hvorfor": "Ja, han arbejder paa Azure. Laes den alligevel. AWS' SaaS-materiale er sprogligt skarpere end Microsofts paa netop tenant isolation, onboarding-automatisering og adskillelsen mellem control plane og application plane - to begreber der oejeblikkeligt hæver niveauet i en samtale om multi-tenancy. At kunne tale om SaaS-arkitektur uafhaengigt af cloud-leverandoer er i sig selv et arkitektsignal.",
+   "hvad_springes_over": "Alle AWS-tjenestespecifikke anbefalinger. Laes koncepterne, ignorér Cognito/DynamoDB/Lambda-detaljerne."
+  },
+  {
+   "titel": "Azure Well-Architected Framework - SaaS workload guidance",
+   "type": "dokumentation",
+   "prioritet": "stoette",
+   "url": "https://learn.microsoft.com/en-us/azure/well-architected/saas/get-started",
+   "tidsforbrug": "3-4 timer + assessment",
+   "verificeret": true,
+   "hvorfor": "Nyere end multitenancy-guiden og skrevet direkte til ISV'er der hoster deres eget SaaS - altsaa LeanLinkings situation praecist. Design methodology og resource organization er de nyttige sider. Der findes en tilhoerende assessment som han kan koere paa et fiktivt (eller reelt) workload og bruge som checkliste.",
+   "hvad_springes_over": "Ikke noget kritisk, men laes den EFTER multitenancy-guiden - den forudsaetter begreberne derfra."
+  },
+  {
+   "titel": "Azure Cloud Design Patterns-katalog",
+   "type": "moensterkatalog",
+   "prioritet": "stoette",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/",
+   "tidsforbrug": "2 timer foerste gennemløb, derefter opslag",
+   "verificeret": true,
+   "hvorfor": "Rent opslagsvaerk. Vaerdien er at kunne navngive et moenster han allerede har brugt. Relevante for hans domaene: Deployment Stamps, Claim Check, Competing Consumers, Circuit Breaker, Retry, Queue-Based Load Leveling, Anti-Corruption Layer, Strangler Fig, Throttling, Valet Key (praecis SAS-moenstret til dokumentupload).",
+   "hvad_springes_over": "Laes IKKE alle ~40 moenstre. Skim listen én gang, laes de ti ovennaevnte, og brug resten som opslag naar et problem opstaar."
+  },
+  {
+   "titel": "microservices.io - pattern language (Chris Richardson)",
+   "type": "moensterkatalog",
+   "prioritet": "stoette",
+   "url": "https://microservices.io/patterns/",
+   "tidsforbrug": "2-3 timer",
+   "verificeret": true,
+   "hvorfor": "Den kanoniske og kortfattede beskrivelse af Transactional Outbox, Saga, API Composition, Database per Service og CQRS. Laes disse fem sider - de er korte og praecise, og de er de referencer folk i branchen citerer.",
+   "hvad_springes_over": "Bootcamp'en og Eventuate-produktsiderne er salg. Bogen 'Microservices Patterns' er god, men koeb den ikke inden for de foerste 12 maaneder - moenstersiderne daekker behovet."
+  },
+  {
+   "titel": "Enterprise Integration Patterns (Hohpe & Woolf, 2003) + enterpriseintegrationpatterns.com",
+   "type": "moensterkatalog",
+   "prioritet": "stoette",
+   "url": "https://www.enterpriseintegrationpatterns.com/",
+   "tidsforbrug": "3-4 timer som opslag, aldrig som laesning forfra",
+   "verificeret": true,
+   "hvorfor": "Bogen er fra 2003 og moenstrene er stadig gaeldende - transporten er skiftet fra MQ-middleware til Kafka og cloud-brokere, men Message Channel, Message Router, Splitter, Aggregator, Content Enricher, Claim Check, Idempotent Receiver og Dead Letter Channel hedder stadig det samme. Vaerdien er ordforraadet: at kunne sige 'det er en Content Enricher med en Idempotent Receiver' i stedet for at beskrive det i tre saetninger.",
+   "hvad_springes_over": "Laes ALDRIG bogen forfra - den er 700 sider og skrevet til en anden aera. Brug hjemmesidens moensteroversigt. Spring ogsaa Vol 2 (Conversation Patterns, udkom april 2025) helt over: interessant, akademisk, ingen afkast inden for 12 maaneder."
+  },
+  {
+   "titel": "Azure Service Bus-dokumentation: message sessions, duplicate detection, dead-letter queues, message loss and duplicates",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-message-loss-and-duplicates",
+   "tidsforbrug": "3-4 timer, laest linje for linje",
+   "verificeret": true,
+   "hvorfor": "Disse fire sider indeholder de konkrete tal og begraensninger han skal kunne citere: duplicate detection findes ikke i Basic-tier, default historikvindue er 10 minutter (min 20 sekunder, max 7 dage) og virker kun paa MessageId; default MaxDeliveryCount er 10 foer dead-lettering; og - vigtigst - at et dead-letteret sessionsbeskeds oprindelige raekkefoelge er tabt ved replay fordi den faar nyt enqueue-tidspunkt og sekvensnummer. Det sidste er en praesenterbar indsigt.",
+   "hvad_springes_over": "Ingenting her. Til gengaeld: brug Azure.Messaging.ServiceBus-SDK'et, ikke de aeldre biblioteker - de gamle Service Bus SDK'er og SBMP-protokollen er paa vej ud (retirement annonceret til 30. september 2026; verificér selv datoen inden du citerer den)."
+  },
+  {
+   "titel": "Stripe: versioning-dokumentation + blogindlaegget 'APIs as infrastructure: future-proofing Stripe with versioning'",
+   "type": "artikel + dokumentation",
+   "prioritet": "kerne",
+   "url": "https://stripe.com/blog/api-versioning",
+   "tidsforbrug": "2 timer",
+   "verificeret": true,
+   "hvorfor": "Den bedst dokumenterede API-versioneringsmodel i branchen, og den er direkte anvendelig paa B2B SaaS med eksterne integratorer. Kernemekanikken: datobaserede versioner, konti pinnes automatisk til den version de foerst brugte, og transformationsmoduler oversaetter mod EN intern model saa forretningslogikken ikke duplikeres. Deres liste over hvad der TAELLER som bagudkompatibelt (nye felter, ny raekkefoelge, aendret laengde paa opaque strings) er en faerdig checkliste han kan genbruge.",
+   "hvad_springes_over": "SDK-versioneringspolitikken er mindre interessant. Fokusér paa API-versionering og hvad de definerer som breaking."
+  },
+  {
+   "titel": "Martin Fowler bliki: MonolithFirst, MicroservicePremium, BoundedContext, StranglerFigApplication",
+   "type": "artikel",
+   "prioritet": "kerne",
+   "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+   "tidsforbrug": "1 time samlet",
+   "verificeret": true,
+   "hvorfor": "Fire korte artikler der giver ham et autoritativt sprog til at afvise microservices uden at lyde konservativ. 'Almost all the successful microservice stories have started with a monolith that got too big' er en saetning man kan citere i et interview. Billigste afkast i hele listen.",
+   "hvad_springes_over": "Resten af bliki'en er en tidsfaelde - der er hundredvis af indlaeg. Laes de fire."
+  },
+  {
+   "titel": "Martin Kleppmann: 'Please stop calling databases CP or AP' (2015)",
+   "type": "artikel",
+   "prioritet": "kerne",
+   "url": "https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html",
+   "tidsforbrug": "30 minutter",
+   "verificeret": true,
+   "hvorfor": "Fjerner en af de mest udbredte misforstaaelser hos folk der forbereder sig paa arkitektinterviews. CAP er bevist for en enkelt read-write register under total partition, siger intet om multi-objekt-transaktioner, og modellerer ikke den konsistens/latens-afvejning der gaelder ogsaa naar netvaerket er sundt (PACELC). At kunne sige det praecist er et niveauskift.",
+   "hvad_springes_over": "Den tilhoerende arXiv-artikel 'A Critique of the CAP Theorem' er valgfri og kan springes over."
+  },
+  {
+   "titel": "kgrzybek/modular-monolith-with-ddd (GitHub)",
+   "type": "referencekode",
+   "prioritet": "kerne",
+   "url": "https://github.com/kgrzybek/modular-monolith-with-ddd",
+   "tidsforbrug": "6-8 timer laesning + brug som skabelon",
+   "verificeret": true,
+   "hvorfor": "Den bedste .NET-referenceimplementering af en modulaer monolit med DDD der findes - modulgraenser, integration events mellem moduler, separate schemas, arkitekturtests. Naesten 14.000 stjerner. Struktur og begrundelser er praecis det Simon skal kunne argumentere for.",
+   "hvad_springes_over": "VIGTIGT: repoet stod paa .NET 8 senest verificeret (juli 2026), ikke .NET 10. Kopiér ikke koden - port moenstrene. Laes ogsaa hans artikelserie 'Modular Monolith: A Primer' paa kamilgrzybek.com; den er kortere end koden og siger det vaesentlige."
+  },
+  {
+   "titel": "dotnet/eShop (GitHub)",
+   "type": "referencekode",
+   "prioritet": "stoette",
+   "url": "https://github.com/dotnet/eShop",
+   "tidsforbrug": "3-4 timer",
+   "verificeret": true,
+   "hvorfor": "Microsofts aktuelle referenceapplikation, paa .NET 10 med Aspire. Nyttig til at se hvordan Aspire, service discovery og telemetri haenger sammen i praksis, og til at forstaa hvad Microsoft selv anbefaler lige nu.",
+   "hvad_springes_over": "Laes den som DEMO, ikke som produktionsarkitektur - den er bygget til at vise features frem, ikke til at overleve fem aar med betalende kunder. Den gamle e-bog '.NET Microservices: Architecture for Containerized .NET Applications' hoerer til eShopOnContainers-aeraen (.NET 7-8) og kan springes over."
+  },
+  {
+   "titel": "The C4 Model: Visualizing Software Architecture (Simon Brown, O'Reilly, september 2026)",
+   "type": "bog",
+   "prioritet": "kerne",
+   "url": "https://www.oreilly.com/library/view/the-c4-model/9798341660113/",
+   "tidsforbrug": "4-5 timer (ca. 150-180 sider)",
+   "verificeret": true,
+   "hvorfor": "Ny O'Reilly-udgivelse (september 2026) af den notation branchen faktisk bruger. Kort nok til at laese paa en weekend. Diagram-disciplin er uforholdsmaessigt vaerdifuld for en person uden mandat: et godt context- og container-diagram er den billigste maade at blive taget alvorligt paa. Gratis alternativ hvis budgettet er stramt: c4model.com.",
+   "hvad_springes_over": "Structurizr DSL og tooling er valgfrit - han kan tegne i hvad som helst. Vaerdien er abstraktionsniveauerne, ikke vaerktoejet."
+  },
+  {
+   "titel": "MADR - Markdown Architectural Decision Records (adr.github.io/madr)",
+   "type": "skabelon",
+   "prioritet": "kerne",
+   "url": "https://adr.github.io/madr/",
+   "tidsforbrug": "30 minutter",
+   "verificeret": true,
+   "hvorfor": "ADR'erne er hele oevebanens egentlige output. MADR er den mest udbredte skabelon; version 4 introducerede en minimal variant, og der findes nu ogsaa en YAML-variant (YADR, marts 2026). Brug den minimale variant uaendret - opfind ikke sin egen.",
+   "hvad_springes_over": "Alle diskussioner om ADR-tooling og automatisering. En mappe med markdown-filer i git er nok i tolv maaneder."
+  },
+  {
+   "titel": "ddd-crew: bounded-context-canvas og context-mapping (GitHub)",
+   "type": "vaerktoej",
+   "prioritet": "kerne",
+   "url": "https://github.com/ddd-crew/context-mapping",
+   "tidsforbrug": "2 timer + brug i spike 10",
+   "verificeret": true,
+   "hvorfor": "Konkrete, gratis skabeloner til det arbejde Khononov beskriver teoretisk. Context-mapping-repoet giver ni relationsmoenstre og tre teamrelationer med korte definitioner - praecis det han skal bruge for at lave et brugbart context map over LeanLinkings domaene uden at skulle laese en hel bog foerst.",
+   "hvad_springes_over": "Resten af ddd-crew's mange repos (event storming-skabeloner osv.) - kom tilbage til dem hvis han faar mandat til at facilitere workshops."
+  },
+  {
+   "titel": "Understanding Distributed Systems, 2. udgave (Roberto Vitillo)",
+   "type": "bog",
+   "prioritet": "stoette",
+   "url": "https://www.goodreads.com/book/show/121101522-understanding-distributed-systems-2nd-edition-paperback",
+   "tidsforbrug": "12-15 timer",
+   "verificeret": true,
+   "hvorfor": "Kortere og mere praktisk anlagt end DDIA, med staerkere fokus paa fejlhaandtering, resilience og observability. 2. udgaven er en fuld gennemskrivning. Rimeligt valg hvis DDIA foles for tung, eller som supplement til DDIA's teoretiske dele.",
+   "hvad_springes_over": "VAELG EN af DDIA og denne som primaer. At laese begge fuldt ud er en af de mest sandsynlige maader at braende tidsbudgettet paa uden ekstra afkast. Anbefaling: DDIA som primaer, denne som opslag paa resilience-kapitlerne."
+  },
+  {
+   "titel": "Building Microservices, 2. udgave (Sam Newman, O'Reilly, 2021)",
+   "type": "bog",
+   "prioritet": "stoette",
+   "url": "https://samnewman.io/books/building_microservices_2nd_edition/",
+   "tidsforbrug": "5-6 timer, kun udvalgte kapitler",
+   "verificeret": true,
+   "hvorfor": "Ingen 3. udgave findes (verificeret). Kapitlerne om integration, kontrakter, og deployment er stadig blandt de bedste beskrivelser af koblingstyper og kontraktdesign. Newman er ogsaa nyttig fordi han selv er skeptisk over for microservices - han er ikke en saelger.",
+   "hvad_springes_over": "Alt om Kubernetes, service mesh og organisatorisk skalering. Laes kapitlerne om kobling/kontrakter og om at splitte monolitten. 'Monolith to Microservices' (samme forfatter) er relevant senere, hvis LeanLinking faktisk gaar den vej - ikke nu."
+  },
+  {
+   "titel": "Architecture Modernization: Socio-technical alignment of software, strategy, and structure (Nick Tune, Manning, 2025)",
+   "type": "bog",
+   "prioritet": "senere",
+   "url": "https://www.manning.com/books/architecture-modernization",
+   "tidsforbrug": "10-12 timer",
+   "verificeret": true,
+   "hvorfor": "Fremragende bog om at forbinde DDD, event storming og Wardley mapping med organisatorisk forandring - med eksempler fra bl.a. Danske Bank. Men den forudsaetter mandat til at faa noget ændret. Den er den rigtige bog fra maaned 8-9, naar han enten HAR faaet mandat eller forbereder sig paa at kunne tale om organisatorisk modenhed i interviews.",
+   "hvad_springes_over": "Ikke i maaned 1-7. At laese den for tidligt giver ham et sprog han ikke kan bruge, og en frustration han ikke kan handle paa."
+  },
+  {
+   "titel": "System Design Interview vol. 1 og 2 (Alex Xu)",
+   "type": "bog",
+   "prioritet": "spring over",
+   "url": "https://www.goodreads.com/book/show/54109255-system-design-interview-an-insider-s-guide",
+   "tidsforbrug": "0 timer nu; evt. 2 dage i maaned 9-10",
+   "verificeret": true,
+   "hvorfor": "SPRING OVER som laeringsressource. Anmeldelser fra erfarne ingenioerer er konsistente: kapitlerne er for overfladiske, ogsaa deep dive-afsnittene, forfatteren skriver ofte 'brug teknologi X for at faa egenskab Y' uden at forklare hvorfor, og boegerne er skrevet til at bestaa interviews - ikke til at bygge systemer. De laerer ham desuden den forkerte type systemdesign: hyperscale consumer-systemer (design Twitter, design TinyURL), ikke B2B SaaS med integrationstunge kunder. Hans domaene er ikke skala - det er kobling, kontrakter og compliance.",
+   "hvad_springes_over": "Hele boegerne indtil maaned 9-10. HVIS han til den tid skal til whiteboard-interviews hos en stoerre virksomhed, kan han bruge to dage paa vol. 1 som ren formattraening. Ikke foer."
+  },
+  {
+   "titel": "Eric Evans 'Domain-Driven Design' (blaa bog, 2003) og Vaughn Vernon 'Implementing DDD' (roed bog)",
+   "type": "bog",
+   "prioritet": "spring over",
+   "tidsforbrug": "0 timer",
+   "verificeret": true,
+   "hvorfor": "Begge er vigtige boeger og begge er forkert investering paa et budget paa 10-15 timer om ugen i tolv maaneder. Den blaa bog er 560 sider fra 2003 med et sprog der kraever oversaettelse; den roede er 600+ sider taktisk implementering i en aera foer moderne .NET. Khononov daekker 80% af den anvendelige vaerdi paa en tredjedel af tiden. Hvis han om tre aar vil dybere ned, ligger de der stadig.",
+   "hvad_springes_over": "Begge, fuldstaendigt. Naevn dem gerne i interviews som 'kender referencerne, har prioriteret Khononov af tidshensyn' - det er et aerligt og modent svar."
+  },
+  {
+   "titel": "TOGAF, ArchiMate og enterprise architecture-certificeringer",
+   "type": "certificering",
+   "prioritet": "spring over",
+   "tidsforbrug": "0 timer",
+   "verificeret": false,
+   "hvorfor": "Forkert disciplin. TOGAF er enterprise architecture (organisationsdaekkende IT-landskabsstyring), ikke solution architecture i et produkthus. I dansk SaaS signalerer TOGAF paa et CV ofte konsulent-/rammeverksorientering snarere end teknisk dybde, og det er det modsatte af hvad LeanLinking-typen af virksomhed koeber. Fravaelg det eksplicit og kunne begrunde hvorfor - det i sig selv er et modenhedssignal.",
+   "hvad_springes_over": "Alt. Samme gaelder iSAQB CPSA-F medmindre en konkret arbejdsgiver eksplicit efterspoerger det."
+  },
+  {
+   "titel": "ByteByteGo-abonnement og lignende system design-nyhedsbreve",
+   "type": "kursus",
+   "prioritet": "spring over",
+   "tidsforbrug": "0 timer",
+   "verificeret": false,
+   "hvorfor": "Foles produktivt, er det ikke. Formatet (korte illustrerede opslag om hvordan Netflix skalerer) giver moensterkendskab uden trade-off-forstaaelse, og det er praecis den type viden der falder fra hinanden ved det andet opfoelgende spoergsmaal i et interview. Timerne er bedre brugt paa en spike med et maalt tal.",
+   "hvad_springes_over": "Alle abonnementstjenester i denne kategori. Hvis han vil have loebende input, foelg i stedet enkeltpersoner der skriver om reelle systemer."
+  },
+  {
+   "titel": "Azure Verified Modules + Azure Landing Zones (Bicep)",
+   "type": "dokumentation",
+   "prioritet": "senere",
+   "url": "https://azure.github.io/Azure-Landing-Zones/bicep/",
+   "tidsforbrug": "6-8 timer, kun i IaC-spiken",
+   "verificeret": true,
+   "hvorfor": "Relevant for governance-sporet og for spike 12. VIGTIG AKTUALITET: den klassiske ALZ-Bicep blev fjernet fra acceleratoren 16. februar 2026 og arkiveres 16. februar 2027. Bicep Azure Verified Modules for Platform Landing Zone blev generelt tilgaengelige i januar 2026 og er nu den anbefalede vej. Hvis han laerer den gamle ALZ-Bicep, laerer han noget der udgaar.",
+   "hvad_springes_over": "Hele den klassiske ALZ-Bicep-dokumentation. Gaa direkte til AVM. Og byg ikke en fuld landing zone - byg én stamp, prissæt den, stop."
+  },
+  {
+   "titel": "Azure Monitor OpenTelemetry Distro + OpenTelemetry .NET",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-enable",
+   "tidsforbrug": "4-5 timer + brug i spike 9",
+   "verificeret": true,
+   "hvorfor": "De klassiske Application Insights NuGet-pakker er deprecated - Microsoft investerer udelukkende i OpenTelemetry. Azure.Monitor.OpenTelemetry.AspNetCore er vejen. Observability er et af hans erklaerede sekundaere interesser og et af de omraader hvor han kan levere synlig vaerdi paa arbejdet uden mandat.",
+   "hvad_springes_over": "Migrationsvejledningen fra klassiske SDK'er er kun relevant hvis LeanLinkings kodebase stadig bruger dem - tjek det, for hvis den goer, er DET en ticket han kan tage."
+  },
+  {
+   "titel": "Testcontainers for .NET + Azure Service Bus emulator",
+   "type": "vaerktoej",
+   "prioritet": "stoette",
+   "url": "https://dotnet.testcontainers.org/modules/servicebus/",
+   "tidsforbrug": "3-4 timer",
+   "verificeret": true,
+   "hvorfor": "Goer messaging-spikes gratis og hurtige: Service Bus-emulatoren i en container betyder at han kan koere realistiske koe-tests lokalt uden Azure-regning. Bemaerk at Testcontainers' Service Bus-modul selv starter en MsSql-container - koer ikke to ved et uheld.",
+   "hvad_springes_over": "Ingenting, men brug det som middel. Byg ikke en testinfrastruktur som selvstaendigt projekt."
+  },
+  {
+   "titel": "ArchUnitNET / NetArchTest.eNhancedEdition (arkitekturtests i .NET)",
+   "type": "vaerktoej",
+   "prioritet": "stoette",
+   "url": "https://github.com/BenMorris/NetArchTest",
+   "tidsforbrug": "2-3 timer",
+   "verificeret": true,
+   "hvorfor": "Vaerktoejet der goer modulgraenser til byggefejl i stedet for review-kommentarer - selve pointen i spike 8. VIGTIGT: original NetArchTest ser ikke ud til at vaere vedligeholdt siden 2023; brug ArchUnitNET eller NetArchTest.eNhancedEdition (naesten identisk fluent API, rettede fejl).",
+   "hvad_springes_over": "Ingenting. Dette er ogsaa en af de faa ting han kan foresla paa arbejdet med lav risiko: en arkitekturtest der fejler paa en regel alle allerede er enige om, er svaer at sige nej til."
+  },
+  {
+   "titel": "Finbuckle.MultiTenant",
+   "type": "vaerktoej",
+   "prioritet": "stoette",
+   "url": "https://www.finbuckle.com/multitenant",
+   "tidsforbrug": "3-4 timer",
+   "verificeret": true,
+   "hvorfor": "Det etablerede .NET-bibliotek til tenant resolution og per-tenant datastrategier - over 4 mio. NuGet-downloads, understoetter .NET 10, og fra v10 foelger versionsnumre .NET's. Bruger EF Cores named global query filters (nye i .NET 10). God stilladsering til spike 1, saa han kan bruge tiden paa migrationsproblemet i stedet for plumbing.",
+   "hvad_springes_over": "Laer hvad biblioteket goer FOR ham, saa han kan svare paa hvad der sker uden det. Et bibliotek der skjuler tenant-filtrering er ogsaa et bibliotek der kan svigte tenant-filtrering."
+  },
+  {
+   "titel": "Messaging-bibliotek til .NET: licensstatus",
+   "type": "vaerktoej",
+   "prioritet": "kerne",
+   "url": "https://milanjovanovic.tech/blog/mediatr-and-masstransit-going-commercial-what-this-means-for-you",
+   "tidsforbrug": "30 minutter research, én gang",
+   "verificeret": true,
+   "hvorfor": "Aktualitet han SKAL kende, fordi den kommer op paa jobbet: MassTransit v9 udkom januar 2026 med kommerciel licens (runtime license key; organisationer under 1 mio. USD omsaetning kan kvalificere sig til fuld rabat uden support; ellers fra ca. 400 USD/maaned). v8 forbliver Apache-2.0 permanent men mister support ved udgangen af 2026. Alternativer under MIT: Wolverine (indbygget inbox/outbox og sagaer, understoetter SQL Server, PostgreSQL m.fl.), Rebus, Brighter. NServiceBus er kommerciel med en Community-udgave (3 endpoints, 10.000 beskeder/dag).",
+   "hvad_springes_over": "Brug INGEN af dem i spike 3 - haand-rul outbox'en én gang mod Azure.Messaging.ServiceBus direkte. Tag foerst Wolverine ind i den promoverede spike, naar han har foelt problemet frameworket loeser. Til gengaeld: at kunne fremlaegge licensanalysen ovenfor for sit team paa arbejdet er en gratis, konkret og synlig vaerdilevering uden mandat."
+  },
+  {
+   "titel": "IETF draft-ietf-httpapi-idempotency-key-header-07",
+   "type": "specifikation",
+   "prioritet": "stoette",
+   "url": "https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header-07",
+   "tidsforbrug": "30-45 minutter",
+   "verificeret": true,
+   "hvorfor": "Definerer Idempotency-Key-headeren til at goere POST/PATCH fejltolerante. Version 07 blev publiceret 15. oktober 2025 med Standards Track som maal. VIGTIGT nuance han skal kunne sige hoejt: det er stadig et draft, ikke en RFC. At kende forskellen - og at sige den - er et af de smaa signaler der adskiller praecision fra papegoejesnak.",
+   "hvad_springes_over": "Tidligere draft-versioner. Laes 07 og noter hvad den IKKE loeser (den siger ikke hvor laenge du skal huske noeglen, og det er hele det svaere)."
+  },
+  {
+   "titel": "EU-regulatorisk kontekst for LeanLinkings domaene: Omnibus I (CSRD/CSDDD), NIS2, Peppol/NemHandel BIS 4",
+   "type": "domaeneviden",
+   "prioritet": "kerne",
+   "url": "https://www.cov.com/en/news-and-insights/insights/2026/02/eu-csddd-csrd-omnibus-published-in-official-journal-transposition-delegated-acts-and-guidelines-are-next",
+   "tidsforbrug": "3-4 timer, én gang, og derefter 20 min/maaned",
+   "verificeret": true,
+   "hvorfor": "Dette er hans hurtigste vej ud af ticket-taker-rollen, og det staar ikke i nogen arkitekturbog. Aktuelle fakta: Omnibus I blev offentliggjort i EU-Tidende 26. februar 2026 og traadte i kraft 18. marts 2026; CSDDD's anvendelsesomraade er indsnaevret til 5.000 ansatte og 1,5 mia. EUR omsaetning; transponering udskudt til 26. juli 2028 og anvendelse til 26. juli 2029; EU-harmoniseret erstatningsansvar er fjernet og boeder loftlagt ved 3% af global omsaetning; revideret ESRS-delegeret retsakt ventedes vedtaget omkring 18. september 2026 med anvendelse fra regnskabsaaret 2027. Parallelt: Danmark opgiver OIOUBL 3.0 og gaar mod NemHandel BIS 4 baseret paa Peppol, med fuld overgang forventet omkring midten af 2029, og har i august 2026 foreslaaet 'e-fakturering som standard' uden et egentligt B2B-mandat. En udvikler der kan forklare hvad det goer ved kundernes indkoebs- og compliance-afdelinger, bliver spurgt til raads.",
+   "hvad_springes_over": "Gaa ikke i dybden med selve regnskabsstandarderne. Han skal kunne besvare tre spoergsmaal: hvem er omfattet, hvornaar, og hvilke dokumenter og datapunkter skal derfor kunne indsamles og opbevares. Det er nok."
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "Spike 1: Tenancy-modellen under migrationspres",
+   "problem": "Et system har 400 tenants i shared schema (én database, TenantId-kolonne overalt). Tre kunder kraever nu hver isaer: (a) data i egen database af compliance-grunde, (b) point-in-time restore af egne data uden at roere andre tenants, (c) egen krypteringsnoegle. KRAV: ingen tenant maa opleve mere end 15 minutters nedetid; kodebasen maa ikke forgrenes pr. tenant; migreringen skal kunne rulles tilbage midtvejs; systemet skal fortsat kunne koere nye tenants ind i shared schema. BEGRAENSNING: ét team, og driftsomkostningen maa ikke fordobles. Design vejen fra ren shared schema til hybrid (pool for de 397, silo for de 3) og BEVIS at den virker paa tre tenants med syntetiske data.",
+   "fremgangsmaade": "Minimal .NET 10-app med Finbuckle.MultiTenant og EF Core. Seed tre tenants med ca. 1 mio. raekker hver. Implementér tenant resolution, per-tenant connection-strategi, og et migrationsjob der flytter EN tenant: dual-write-fase, backfill, konsistenstjek, cutover, rollback-sti. Maal cutover-vinduet i sekunder og datadrift under dual-write. Proev bevidst at rulle tilbage efter cutover og se hvad der gaar galt. Laes Azure Architecture Centers 'Tenancy models' og 'Architectural approaches for storage and data' FOER du bygger, og AWS SaaS Lens' silo/pool/bridge bagefter - noter hvor de to kilder er uenige.",
+   "artefakter": "ADR: 'Tenancy-model og migrationsvej' med mindst tre fravalgte alternativer og den betingelse der ville aendre beslutningen. C4 container-diagram plus sekvensdiagram for cutover. Maaletal: cutover-vindue (sekunder), backfill-hastighed (raekker/sek), observeret datadrift under dual-write, rollback-tid. Retrospektiv: hvad braekker ved 40 tenants i stedet for 3, og hvad koster silo-tenants pr. maaned.",
+   "kompetence": "Tenancy-modellering og migration under drift",
+   "svaerhed": "Svaer",
+   "tid": "2 uger"
+  },
+  {
+   "titel": "Spike 2: Idempotent ingest fra et ERP du ikke kontrollerer",
+   "problem": "En kunde eksponerer leverandoerstamdata via en pull-API du ikke har indflydelse paa. API'et paginerer ustabilt (samme record kan optraede paa to sider), har intet paalideligt aendringstidsstempel, leverer af og til dubletter i samme koersel, og aendrer felttyper uden varsel. KRAV: ingen dubletter i dit system; ingen tabte opdateringer; koerslen skal kunne genstartes fra vilkaarligt punkt uden at starte forfra; du skal bagefter kunne bevise praecis hvad du modtog og hvornaar. BEGRAENSNING: du maa ikke bede kunden om at aendre noget, og du maa ikke gemme kundens raadata laengere end 90 dage.",
+   "fremgangsmaade": "Byg en puller mod en aaben offentlig API som stand-in for ERP'et (fx et offentligt datasaet med paginering). Implementér: raw landing zone (gem payload praecis som modtaget i blob med indholds-hash og modtagelsestidspunkt), oversaettelse til canonical model gennem et eksplicit anti-corruption layer, idempotens paa business key (ikke message-id), optimistic concurrency paa skrivning, checkpointing af koerslen, og en reconciliation-koersel der finder afvigelser mellem kilde og maal. Injicér derefter fejl bevidst: dubletter, afbrudt koersel midt i en side, aendret felttype, og en record der forsvinder fra kilden. Laes SAP's API_BUSINESS_PARTNER-dokumentation og Business Centrals OData-dokumentation for at se hvordan rigtige ERP-kontrakter ser ud.",
+   "artefakter": "ADR: 'Idempotensnoegle - hvorfor business key og ikke message-id', med den konkrete noeglesammensaetning og hvad der sker naar kunden aendrer et felt der indgaar i noeglen. Fejlinjektions-testsuite der koerer i CI. Maalt dubletrate og tabsrate foer og efter idempotenslaget. Dataflow-diagram raw -> canonical -> domaene. Retrospektiv: hvilke af de fire fejltyper var du ikke forberedt paa.",
+   "kompetence": "Integrationsmoenstre, idempotens, anti-corruption layer",
+   "svaerhed": "Middel-svaer",
+   "tid": "2 uger"
+  },
+  {
+   "titel": "Spike 3: Outbox uden framework",
+   "problem": "To ting skal ske sammen: gem en certifikatgodkendelse i databasen OG publicér en besked som kundens ERP-integration abonnerer paa. KRAV: ingen besked maa publiceres for en transaktion der rullede tilbage; ingen commit maa ende uden at beskeden til sidst bliver publiceret; systemet skal overleve at processen doer i vilkaarligt oejeblik mellem commit og publish; raekkefoelgen af beskeder pr. leverandoer skal bevares. BEGRAENSNING: ingen distribuerede transaktioner (ingen MSDTC, ingen 2PC), og INGEN messaging-framework der skjuler mekanikken - haand-rul den. Ingen MassTransit, NServiceBus eller Wolverine i denne spike.",
+   "fremgangsmaade": "SQL Server + EF Core + Azure.Messaging.ServiceBus direkte. Outbox-tabel i samme transaktion som domaeneaendringen. Relay-proces der poller, publicerer at-least-once og markerer sendt. Service Bus sessions med leverandoer-id som SessionId for at bevare raekkefoelge. Draeb relay-processen med kill -9 i tre praecise vinduer: (1) efter commit foer publish, (2) efter publish foer markering, (3) midt i en batch. Maal i hvert tilfaelde hvor mange beskeder der gik tabt og hvor mange der blev dubletter. Test lokalt med Service Bus-emulatoren via Testcontainers saa det ikke koster noget. Laes derefter Service Bus' duplicate detection-dokumentation og afgoer om den ville have hjulpet (spoiler: ikke paa forretningsniveau).",
+   "artefakter": "ADR: 'Outbox vs. dual write vs. change data capture' med latens- og driftskonsekvens for hver. Maaletabel over tab og dubletter i de tre kill-scenarier, foer og efter outbox. Sekvensdiagram over commit -> outbox -> relay -> broker -> forbruger med fejlvinduerne markeret. Retrospektiv: hvad koster relay'et i ekstra latens og databasebelastning, og ved hvilken beskedvolumen holder polling op med at duere.",
+   "kompetence": "Messaging-semantik, transaktionel integritet",
+   "svaerhed": "Middel",
+   "tid": "1-2 uger"
+  },
+  {
+   "titel": "Spike 4: Poison messages, dead letter og replay",
+   "problem": "0,3% af indkommende beskeder kan ikke behandles. Tre forskellige aarsager blandes: permanent oedelagte payloads, midlertidigt nedbrud i et downstream-system, og en enkelt tenant der har misdesignet sine data. KRAV: systemet maa ikke stoppe eller blive langsomt af de 0,3%; permanent fejlede beskeder skal kunne inspiceres og genafspilles efter et fix; genafspilning maa ikke skabe dubletter; du skal kunne besvare 'hvad fejlede for tenant 12 i gaar mellem 14 og 16' paa under to minutter. BEGRAENSNING: du maa ikke bare slette, og du maa ikke lade en enkelt tenants daarlige data blokere de andres.",
+   "fremgangsmaade": "Azure Service Bus med DLQ. Implementér klassificering af transient vs. permanent fejl, retry med exponential backoff og jitter for transient, oejeblikkelig dead-lettering for permanent. Justér MaxDeliveryCount bevidst og observér effekten. Byg en replay-CLI der kan genafspille fra DLQ med filtrering paa tenant og tidsrum, og som respekterer idempotenslaget fra spike 3. UNDERSOEG SAERSKILT: hvad sker der med raekkefoelgen naar en sessionsbesked dead-letteres og genafspilles - dokumentér at den oprindelige ordering er tabt fordi beskeden faar nyt enqueue-tidspunkt og sekvensnummer. Blindtest til sidst: lad en kollega eller en scriptet joker injicere en fejl, og tag tid paa hvor laenge du er om at finde den.",
+   "artefakter": "ADR: 'Retry- og DLQ-politik' med den konkrete klassifikation af fejltyper og begrundelsen for MaxDeliveryCount. Koerende replay-vaerktoej. Maalt tid-til-diagnose i blindtesten. Dokumenteret og reproduceret ordering-brud ved DLQ-replay, med den forretningsmaessige konsekvens beskrevet i klartekst. Retrospektiv: hvilke fejl kan IKKE klassificeres automatisk.",
+   "kompetence": "Fejlmoenstre i drift, operationel arkitektur",
+   "svaerhed": "Middel",
+   "tid": "1-2 uger"
+  },
+  {
+   "titel": "Spike 5: Saga med kompensation der kan accepteres af forretningen",
+   "problem": "Onboarding af en ny leverandoer bestaar af fem trin: (1) opret leverandoer, (2) anmod om fire certifikater, (3) validér mod en ekstern registerservice, (4) opret leverandoeren i kundens ERP, (5) aktivér. Trin 3 og 4 er eksterne og kan fejle, time out eller svare langsomt. KRAV: ingen leverandoer maa ende halvt oprettet; fejler trin 4, skal trin 1-3 kompenseres paa en maade forretningen kan acceptere - hvilket IKKE noedvendigvis er sletning; processen kan tage dage fordi et menneske skal uploade certifikater; du skal paa ethvert tidspunkt kunne svare paa hvor en given leverandoer er i flowet og hvorfor den staar stille. BEGRAENSNING: ingen distribueret transaktion. Vaelg orchestration eller choreography og forsvar valget med noget andet end smag.",
+   "fremgangsmaade": "Byg BEGGE varianter i lille skala: en med Azure Durable Functions som orchestrator, en med ren event-choreography over Service Bus topics. Injicér timeout i trin 4 og en fejl i trin 3. Maal det afgoerende: hvor mange steder skal du kigge for at finde en haengende saga i hver variant, og hvor lang tid tager det. Skriv derefter kompensationslogikken for hvert trin ned i klartekst og udpeg dem der IKKE kan automatiseres - fx 'certifikater der allerede er anmodet hos leverandoeren kan ikke uanmodes; leverandoeren skal have besked af et menneske'. Laes 'The Hard Parts' kapitel om distribuerede transaktioner og microservices.io's saga-side FOER du bygger.",
+   "artefakter": "ADR: 'Orchestration vs. choreography for leverandoeronboarding' med de to maalte diagnosetider som begrundelse. To koerende prototyper. State-diagram over sagaen inkl. alle kompensationsstier og de menneskelige eskaleringspunkter. Liste over kompensationer der kraever et menneske, med den foreslaaede forretningsproces. Retrospektiv: hvilket trin var svaerest at kompensere og hvorfor.",
+   "kompetence": "Distribuerede transaktioner, sagaer, forretningsoversaettelse",
+   "svaerhed": "Svaer",
+   "tid": "2 uger"
+  },
+  {
+   "titel": "Spike 6: Dokumentarkiv i skala med retention og legal hold",
+   "problem": "20 mio. dokumenter, 40 TB, 1.200 tenants. KRAV: en tenant maa aldrig kunne tilgaa en andens dokument - heller ikke via et delt eller laekket link; dokumenter der indgaar i en loebende audit maa hverken aendres eller slettes; alt aeldre end syv aar skal slettes automatisk medmindre der er legal hold; upload af en 500 MB fil maa ikke gaa gennem din API-proces; du skal kunne finde alle certifikater der udloeber inden for 30 dage UDEN at scanne 20 mio. blobs; uploadede filer kommer fra fremmede leverandoerer og kan indeholde malware. BEGRAENSNING: budgettet taaler ikke hot tier for alt, og du maa ikke tilfoeje en tjeneste du ikke har prissat.",
+   "fremgangsmaade": "Azure Blob Storage. Direkte browser-upload med kortlivet user delegation SAS (Valet Key-moenstret) uden om API-processen. Sammenlign to metadata-strategier: blob index tags vs. metadata i databasen - maal svartid for 'udloeber om 30 dage'-forespoergslen i begge, og noter begraensningen paa maks 10 index tag-betingelser pr. lifecycle-regel. Immutable containers med time-based retention plus legal hold for audit-dokumenter; test at sletning faktisk afvises, og opdag at lifecycle-slettehandlinger ikke virker paa immutable containere. Defender for Storage on-upload scanning (ca. 0,15 USD pr. GB for de foerste 50 TB/maaned, med default-loft paa 10.000 GB pr. maaned pr. storage account - verificér selv aktuelle priser). Byg cost-modellen for tre tier-strategier. Forsoeg til sidst aktivt at bryde din egen isolation: kan tenant A gaette tenant B's blob-URL, og virker en udloebet SAS faktisk ikke?",
+   "artefakter": "ADR: 'Metadata i database vs. blob index tags' med de to maalte svartider. Cost-model i regneark: kroner pr. TB pr. maaned i tre tier-strategier, med scanningsomkostningen adskilt. Dokumenteret retention- og legal hold-design, inkl. hvad der sker naar en kunde kraever sletning mens en audit loeber (den konflikt SKAL adresseres). Bevist eller afkraeftet SAS-isolation. Retrospektiv.",
+   "kompetence": "Dokument- og filarkitektur i skala, compliance-design",
+   "svaerhed": "Middel-svaer",
+   "tid": "2 uger"
+  },
+  {
+   "titel": "Spike 7: Et bevidst breaking change gennemfoert ordentligt",
+   "problem": "Dit offentlige API har tre eksterne integratorer. Du skal aendre feltet supplierStatus fra fritekststreng til et lukket enum, og splitte address i strukturerede felter. KRAV: ingen integrator maa braekke uanmeldt; gamle klienter skal fungere i mindst seks maaneder efter varsling; du skal paa ethvert tidspunkt kunne se hvem der stadig kalder den gamle version og hvor meget; aendringen skal kunne rulles tilbage. BEGRAENSNING: forretningslogikken maa ikke duplikeres pr. version - der maa kun vaere én intern model.",
+   "fremgangsmaade": "ASP.NET Core paa .NET 10 med Asp.Versioning (10.x). Implementér foerst med URL-versionering, sammenlign derefter med header- og datobaseret versionering ved faktisk at bygge den datobaserede variant i lille skala - laes Stripes model foerst. Byg transformationslag ind og ud af én intern model. Instrumentér forbrug pr. version med OpenTelemetry saa du har et dashboard der viser hvem der bruger hvad. Skriv den kundevendte deprecation-notits som en rigtig kunde kunne laese - inklusive dato, migrationsvejledning og hvad der sker hvis de ikke reagerer. Gennemfoer derefter faktisk udfasningen mod dine tre simulerede integratorer, hvoraf én bevidst ikke reagerer.",
+   "artefakter": "ADR: 'Versioneringsstrategi og deprecation-politik' med begrundet valg mellem URL, header og dato, og en skreven varslingsperiode. Koerende API med to samtidige versioner mod én intern model. Dashboard med forbrug pr. version. Kundevendt deprecation-notits (det er et skriveartefakt - det taeller). Retrospektiv: hvad kostede transformationslaget, og ved hvor mange samtidige versioner braender modellen sammen.",
+   "kompetence": "Bagudkompatibilitet, API-livscyklus, ekstern kontraktstyring",
+   "svaerhed": "Middel",
+   "tid": "1-2 uger"
+  },
+  {
+   "titel": "Spike 8: Modulaer monolit med graenser haandhaevet af compileren",
+   "problem": "Ét deployment, fire moduler: Suppliers, Documents, Audits, Notifications. KRAV: intet modul maa kalde et andet moduls interne typer eller laese dets tabeller; al kommunikation gaar gennem publicerede kontrakter (integration events eller eksplicitte modul-API'er); det skal senere vaere muligt at traekke Notifications ud som selvstaendig service paa under en uge; og en udvikler der bryder graensen skal faa en BYGGEFEJL, ikke en kommentar i code review. BEGRAENSNING: én database (indtil videre, men med separate schemas pr. modul), ingen microservices, og du maa ikke indfoere en message broker mellem moduler der koerer i samme proces.",
+   "fremgangsmaade": "Struktur efter Grzybeks modular-monolith-with-ddd - men repoet staar paa .NET 8, saa port moenstrene og ikke koden. Separate schemas pr. modul i samme database. In-process integration events mellem moduler. Haandhaev graenserne med arkitekturtests (ArchUnitNET eller NetArchTest.eNhancedEdition - den originale NetArchTest ser ikke ud til at vaere vedligeholdt siden 2023). Skriv testene FOER modulerne er faerdige, saa de faktisk fejler undervejs. TRAEK DEREFTER FAKTISK Notifications ud som selvstaendig service og tag tid paa det. Laes Fowlers MonolithFirst og MicroservicePremium foerst.",
+   "artefakter": "ADR: 'Modulaer monolit frem for services - og de konkrete betingelser der ville udloese et split' (fx teamstoerrelse, deploy-frekvenskonflikt, divergerende skaleringsbehov - med taerskelvaerdier, ikke vibes). Arkitekturtests der fejler ved overtraedelse, koerende i CI. Maalt indsats i timer for det faktiske udtraek af Notifications, og en liste over hvad der braekkede. C4 component-diagram foer og efter. Retrospektiv.",
+   "kompetence": "Nedbrydningsdisciplin, modulgraenser, evolutionaer arkitektur",
+   "svaerhed": "Middel-svaer",
+   "tid": "2 uger"
+  },
+  {
+   "titel": "Spike 9: Observability med tenant-dimension - og hvad den koster",
+   "problem": "En kunde ringer: 'uploads er langsomme siden i morges'. KRAV: du skal kunne svare inden for 10 minutter med tal, ikke fornemmelser; du skal kunne se p50/p95/p99 pr. tenant og pr. endpoint; du skal kunne foelge én enkelt upload gennem API -> koe -> worker -> blob som ét samlet trace; du maa ikke logge personhenfoerbare data eller dokumentindhold; og telemetrien maa ikke koste mere end 10% af driftsomkostningen. BEGRAENSNING: du maa ikke aendre alle handlers manuelt, og du maa ikke tilfoeje TenantId som fritekst i logbeskeder.",
+   "fremgangsmaade": "OpenTelemetry .NET med Azure Monitor OpenTelemetry Distro (Azure.Monitor.OpenTelemetry.AspNetCore). De klassiske Application Insights-pakker er deprecated - brug dem ikke. TenantId som span-attribut via middleware, ikke i logtekst. Propagér W3C trace context gennem Service Bus saa traces ikke braekker ved koegraensen (det braekker som standard - find ud af hvorfor). Definér tre SLI'er og ét SLO med error budget. Indfoer derefter BEVIDST en 300 ms regression i én kodesti og lad en blindtest afgoere hvor lang tid du er om at finde den. Undersoeg til sidst cardinality-omkostningen: hvad koster det at have TenantId som dimension ved 1.200 tenants, og hvornaar skal du sampleere.",
+   "artefakter": "ADR: 'Hvad instrumenterer vi, hvad koster det, og hvad sampler vi vaek' - med det konkrete cardinality-regnestykke. Tre dashboards (tenant-oversigt, endpoint-latens, end-to-end trace). SLO-definition med error budget. Maalt tid-til-diagnose i blindtesten. Retrospektiv om trace-propagering over koegraensen. DENNE SPIKE ER HOVEDKANDIDAT TIL PROMOVERING - se noten om den driftede spike.",
+   "kompetence": "Observability, operationel arkitektur, maaledisciplin",
+   "svaerhed": "Middel",
+   "tid": "1-2 uger"
+  },
+  {
+   "titel": "Spike 10: Bounded contexts paa LeanLinkings faktiske domaene (papir-spike, ingen kode)",
+   "problem": "Kortlaeg supplier management-domaenet som det faktisk ser ud hos LeanLinking: onboarding, kvalifikation, audit, certifikathaandtering, performance-scoring, risikovurdering, kontrakter, notifikationer. KRAV: navngiv mindst fem bounded contexts; for hver angiv dens ubiquitous language med mindst ti termer, herunder mindst tre termer der betyder NOGET FORSKELLIGT i to contexts; tegn et context map med eksplicit relationstype for hver kobling (Customer-Supplier, Conformist, Anti-Corruption Layer, Partnership, Shared Kernel, Published Language); udpeg det ene sted hvor en delt model i dag koster teamet tid; og klassificér hver context som core domain, supporting eller generic. BEGRAENSNING: du maa IKKE bruge tekniske servicenavne eller databasetabeller som contextnavne. Ingen kode i denne spike overhovedet.",
+   "fremgangsmaade": "Khononov del I som teori. ddd-crew's context-mapping-repo for relationsmoenstrene og bounded-context-canvas som skabelon pr. context. Byg kortet fra tre kilder: koden du har adgang til, den kundevendte dokumentation, og supportsager (supportsager er den bedste og mest oversete kilde til hvor modellen ikke passer). Verificér derefter mindst tre af dine paastande empirisk ved at spoerge en kollega noget helt konkret: 'betyder supplier status det samme i onboarding-modulet og i audit-modulet?' Det er et fagligt spoergsmaal, ikke en anmodning om mandat - noter hvad svaret afsloerer.",
+   "artefakter": "Context map paa én side. Fem bounded context canvases. Ordliste over termkollisioner med det konkrete eksempel paa hvor de forvirrer. ADR: 'Hvor ville jeg traekke den foerste reelle graense, og hvad ville det koste' - skrevet som et forslag, ikke som en beslutning. Retrospektiv: hvilke tre ting tog du fejl af, og hvordan opdagede du det.",
+   "kompetence": "Strategisk DDD, graensedragning, domaeneforstaaelse",
+   "svaerhed": "Middel",
+   "tid": "1-2 uger"
+  },
+  {
+   "titel": "Spike 11: Trusselsmodel paa et multi-tenant dokumentflow",
+   "problem": "STRIDE-modellér hele flowet: leverandoer uploader et certifikat -> API -> koe -> worker -> blob -> notifikation til kundens indkoeber -> visning i kundens portal. KRAV: mindst 12 identificerede trusler; for hver skal angives sandsynlighed, konsekvens og enten en konkret mitigation eller en eksplicit accept med begrundelse; mindst tre trusler skal vaere tenant-krydsende (tenant A ser tenant B's data); mitigationer skal vaere navngivne Azure-kontroller eller kodeaendringer, ikke floskler som 'vi validerer input'. BEGRAENSNING: du maa ikke foreslaa et produkt du ikke har prissat, og du skal bevise mindst to af dine mitigationer eksperimentelt.",
+   "fremgangsmaade": "OWASP Threat Dragon eller blot et dataflow-diagram plus et regneark - vaerktoejet er ligegyldigt, disciplinen er ikke. Gaa STRIDE systematisk igennem pr. dataflow og pr. lagerplads. Test derefter faktisk to mitigationer: virker en udloebet user delegation SAS reelt ikke, og kan en autentificeret tenant A tilgaa tenant B's ressource ved at aendre et id i en URL (IDOR)? Skriv resultatet ned uanset hvad det viser. Bemaerk at Microsofts eget Threat Modeling Tool ikke laengere er den aabenlyse foerstevalg - verificér selv dets status foer du anbefaler det til nogen.",
+   "artefakter": "Trusselsmodel-diagram med tillidsgraenser tegnet ind. Trusselstabel med 12+ raekker og en eksplicit beslutning pr. raekke. To eksperimentelt beviste eller afkraeftede mitigationer med det faktiske output. ADR: 'Accepterede risici og hvorfor' - den er svaerere at skrive end den lyder, og den er praecis den slags dokument en solution architect forventes at kunne producere. Retrospektiv.",
+   "kompetence": "Sikkerhedsarkitektur, tenant isolation, risikoartikulation",
+   "svaerhed": "Middel",
+   "tid": "1 uge"
+  },
+  {
+   "titel": "Spike 12: Cost-model, stamps og landing zone",
+   "problem": "Forretningen spoerger: 'hvad koster det os at tage 200 nye tenants ind, og hvornaar tjener vi penge paa dem?' KRAV: svar med et interval og de tre variable der driver det; modellen skal skelne faste platformomkostninger fra marginale omkostninger pr. tenant; du skal kunne vise ved hvilken stoerrelse en silo-tenant bliver ulønsom paa den nuvaerende pris; infrastrukturen skal vaere beskrevet som kode saa du kan prissaette en ekstra stamp uden at gaette; og du skal maale din egen fejlmargin bagefter. BEGRAENSNING: du maa ikke svare 'det afhaenger', og du maa ikke bygge en fuld landing zone - én stamp er nok.",
+   "fremgangsmaade": "Bicep med Azure Verified Modules. VIGTIG AKTUALITET: klassisk ALZ-Bicep blev fjernet fra acceleratoren 16. februar 2026 og arkiveres 16. februar 2027; Bicep AVM for Platform Landing Zone blev GA i januar 2026 - laer AVM, ikke det gamle. Deploy én minimal stamp efter Deployment Stamps-moenstret, i sin egen resource group, med konsekvent tagging (tenant/cost center/environment). Byg cost-modellen i et regneark paa faktiske Azure-priser. Udnyt Container Apps' gratis maanedlige tildeling (foerste 180.000 vCPU-sekunder, 360.000 GiB-sekunder og 2 mio. requests pr. abonnement) og saet minReplicas til 0 - saa koster spiken reelt nul saa laenge der ikke er trafik. Saet et budget alert paa dag ét. Sammenhold efter 30 dage din model med den faktiske faktura og skriv afvigelsen ned. Laes Azure Architecture Centers 'Pricing models for a multitenant solution' foerst.",
+   "artefakter": "Bicep-modul for én stamp, deployerbart. Cost-model i regneark med fast/marginal opdeling og de tre drivere navngivet. Break-even-beregning for silo-tenants. Maalt afvigelse mellem model og faktura, i procent. ADR: 'Konsekvenser af tenancy-valget for prismodellen' - koblingen mellem arkitektur og forretningsmodel er hvor solution architects tjener deres titel. Retrospektiv om hvor du gaettede forkert.",
+   "kompetence": "Cost-modellering, IaC, governance, forretningskobling",
+   "svaerhed": "Middel-svaer",
+   "tid": "2 uger"
+  },
+  {
+   "titel": "DEN PROMOVEREDE SPIKE: Supplier Feed Service - deployeret og driftet i 6+ maaneder",
+   "problem": "Vaelg spike 2, 3, 4, 7 og 9 og saet dem sammen til én tjeneste der faktisk KOERER: en service der loebende henter leverandoer- eller certifikatlignende data fra en offentlig API du ikke kontrollerer, normaliserer dem gennem et anti-corruption layer, publicerer forretningshaendelser via outbox, eksponerer et versioneret offentligt API, og er fuldt instrumenteret pr. 'tenant'. KRAV til driften - det er her laeringen ligger: den skal koere uafbrudt i mindst seks maaneder; du skal gennemfoere mindst ét bevidst breaking change med varsling og udfasning; du skal have mindst tre reelle incidents (de kommer af sig selv - kilden aendrer sig, certifikater udloeber, kvoter rammes); du skal have maalt uptime og p95; og du maa ikke lade den koste mere end ca. 50-100 kr./maaned. BEGRAENSNING: INGEN UI ud over det absolut minimale, og ingen features der ikke tjener et arkitekturformaal. Foerste gang du faar lyst til at bygge en dashboardside, er det signalet om at du er ved at bygge et produkt i stedet for at laere arkitektur.",
+   "fremgangsmaade": "Azure Container Apps med minReplicas 0 (gratis inden for den maanedlige tildeling), Azure SQL Database serverless eller PostgreSQL flexible server i mindste stoerrelse, Azure Service Bus Standard-tier (Basic har hverken topics eller duplicate detection - prissaet det, det er den eneste faste maanedlige udgift), Blob Storage. Budget alert paa dag ét, uden undtagelse. Foer hver aendring: skriv ADR'en foerst. Efter hver incident: skriv en kort postmortem med tidslinje, rodaarsag og det moenster der manglede. Efter seks maaneder har han noget de fleste ansoegere til arkitektroller IKKE har: en tjeneste han selv har brudt, rettet og levet med.",
+   "artefakter": "Koerende tjeneste med offentlig URL. Uptime- og p95-maalinger over hele perioden. Mindst tre postmortems med rodaarsag og manglende moenster navngivet. Dokumenteret gennemfoert breaking change med varsling, telemetri paa versionsforbrug og faktisk udfasning. Loebende ADR-log (forvent 15-25 stk. over perioden). Maanedlig faktisk omkostning holdt op mod estimatet fra spike 12. Én afsluttende side: 'hvad jeg ville goere anderledes hvis jeg startede forfra' - det dokument er det staerkeste interviewmateriale i hele planen.",
+   "kompetence": "Drift, bagudkompatibilitet, fejlmoenstre, alt det de andre spikes kun simulerer",
+   "svaerhed": "Svaer (i udholdenhed, ikke i teknik)",
+   "tid": "Loebende fra ca. maaned 3, 2-3 timer/uge efter etablering"
+  }
+ ],
+ "paa_jobbet": [
+  "Skriv en ADR til dig selv for hver ticket der har mere end én mulig loesning. Ikke i repoet, ikke til review - i din egen mappe, MADR-skabelonen, 15 minutter. Notér det du valgte, de to du fravalgte, og hvad der ville have aendret dit valg. Efter tre maaneder har du 25-30 og et sprog du ikke havde. Efter tolv har du interviewmateriale ingen kan bestride. Ingen skal give lov til dette.",
+  "Kortlaeg systemets faktiske integrationer ved at LAESE KODE: hvilke eksterne systemer er der, hvilken transport bruges, hvem ejer fejlhaandteringen, hvad sker der hvis kaldet timer ud. Ingen spoerger om lov til at laese kode i et repo man allerede har adgang til. Efter to uger ved du sandsynligvis mere om systemets integrationslandskab end de fleste i teamet, fordi ingen andre har set paa det samlet.",
+  "Tegn et C4 context- og container-diagram over den del af systemet du har adgang til. Vis det til én senior med den praecise formulering: 'jeg har proevet at forstaa hvordan det haenger sammen - hvad har jeg misforstaaet?' Det er et fagligt spoergsmaal og en anmodning om rettelse, ikke om mandat. Det er ogsaa den billigste maade at blive opfattet som en der taenker paa systemniveau.",
+  "Foer en fejlmoenster-journal. For hver produktionsfejl du roerer ved: hvad fejlede, hvad var rodaarsagen, og hvilket arkitekturmoenster manglede (idempotens? timeout? retry med backoff? backpressure? circuit breaker? outbox?). Efter tolv maaneder kan du sige 'jeg har set denne fejlklasse elleve gange, og i otte af dem manglede der idempotens paa forbrugersiden'. Det er praecis den type udsagn der adskiller arkitekter fra folk der har laest om arkitektur.",
+  "Naar du faar en ticket der roerer en integration: find ud af hvad der sker hvis beskeden eller kaldet kommer to gange, og SKRIV SVARET I PR-BESKRIVELSEN. Det er ikke at bestemme noget - det er at dokumentere en egenskab ved den kode du alligevel leverer. Efter tyve PR'er er du blevet den der taenker over det, og folk begynder at spoerge dig foer de skriver koden.",
+  "Laes de sidste tolv maaneders incidents og postmortems hvis de findes. Hvis de ikke findes: laes de sidste 50 hotfix-commits og deres commit-beskeder. Det er den hurtigste tilgaengelige kilde til hvor systemets faktiske arkitekturgaeld ligger, og det kraever ingen tilladelse.",
+  "Find ud af hvor mange tenants systemet har, hvordan de er isoleret i dag, hvem den stoerste er, og hvor stor spredningen er. Spoerg supportafdelingen og customer success, ikke arkitekterne - de har tallene, de er glade for at nogen fra udvikling spoerger, og du faar samtidig et netvaerk uden for udviklingsafdelingen. Det netvaerk er det der senere goer at nogen naevner dit navn i en diskussion du ikke selv er med i.",
+  "Spoerg din PO eller product manager: 'hvad kostede det os sidst en kunde ikke kunne uploade dokumenter i fire timer?' Du beder ikke om noget - du laerer at oversaette teknik til forretning, og du signalerer at du taenker i den retning. Gentag med varianter hver anden maaned.",
+  "Tilbyd at skrive den tekniske del af et kundevendt integrationsdokument eller en API-vejledning. Ingen siger nej til at faa skrevet dokumentation gratis, og det er en af de faa opgaver hvor en junior legitimt faar lov at definere hvordan systemet FREMSTAAR udadtil. Det er ogsaa den korteste vej til at komme i kontakt med kundernes tekniske folk.",
+  "Bliv den der konsekvent stiller ét spoergsmaal i code review: 'hvad sker der ved rollback?' eller 'hvad sker der hvis den her koeres to gange?'. Det er gratis, det er altid legitimt, og det bygger et ry som den der taenker et skridt laengere. Efter et par maaneder begynder folk at besvare spoergsmaalet FOER du stiller det - og det er det oejeblik hvor du har paavirket arkitekturen uden at have faaet mandat.",
+  "Laes dine kunders ERP-dokumentation. SAP's API_BUSINESS_PARTNER OData-service, Dynamics 365 Business Centrals API'er, hvad de kan og ikke kan. Ingen forventer at du goer det, alle faar gavn af at nogen har gjort det, og naeste gang der er en integrationsdiskussion, er du den eneste i rummet der har laest specifikationen.",
+  "Foelg det regulatoriske pres paa kunderne: Omnibus I traadte i kraft 18. marts 2026 og indsnaevrede CSDDD kraftigt med anvendelse udskudt til juli 2029; Danmark gaar fra OIOUBL til NemHandel BIS 4 (Peppol) frem mod ca. 2029. 20 minutter om maaneden. Naar du kan forklare HVORFOR kundernes indkoebs- og compliance-afdelinger har travlt - og hvad det betyder for hvilke dokumenter og datapunkter systemet skal kunne haandtere - holder folk op med at behandle dig som en der leverer tickets.",
+  "Naar du har lavet en spike faerdig og den er relevant for arbejdet: brug den praecise formulering 'jeg har brugt nogle aftener paa at undersoege X i mit eget miljoe - maa jeg vise det paa 20 minutter fredag?'. Det er den vigtigste enkeltsaetning i hele planen. Du beder ikke om mandat, ressourcer eller beslutninger - du beder om 20 minutter. Det er naesten umuligt at sige nej til, og det er den mekanisme hvormed dit arbejde uden for jobbet bliver til indflydelse paa jobbet. Regn med at goere det 4-6 gange over tolv maaneder. Hvis du efter tre forsoeg ingen reaktion faar, er DET signalet i jobskifte-beslutningen ved maaned 6 - ikke om du foeler dig vaerdsat.",
+  "Foreslaa én arkitekturtest paa en regel alle allerede er enige om (fx 'domaenelaget maa ikke referere til infrastrukturlaget'). Det er en lille, konkret, lavrisiko-PR som er svaer at afvise, og som gemmer en principiel foraendring i noget der ligner en teknikalitet: fra nu af er den regel haandhaevet af CI i stedet for af hukommelsen. Det er governance i praksis, og det er noget en ticket-taker faktisk kan gennemfoere.",
+  "Praesentér licensanalysen af messaging-biblioteker for dit team hvis I bruger MassTransit: v9 blev kommerciel i januar 2026, v8 forbliver Apache-2.0 men mister support ved udgangen af 2026, og der findes MIT-alternativer (Wolverine, Rebus, Brighter). Det er konkret, aktuelt, forretningsrelevant og fuldstaendig uden for din formelle rolle - og praecis derfor virker det. At bringe et problem ind som ingen havde set, med tre analyserede muligheder, er hvad en arkitekt goer."
+ ],
+ "faldgruber": [
+  "MICROSERVICE-SVARET. Det enkeltsvar der hurtigst diskvalificerer en junior til en arkitektrolle er 'vi burde splitte det op i services'. 2026-konsensus er den modsatte, og folk med erfaring hoerer det som naivitet. Det vindende svar er altid: 'modulaer monolit med haandhaevede graenser nu, og her er de konkrete taerskelvaerdier der ville faa mig til at splitte'.",
+  "EVENT SOURCING I SPIKE 1. Det ser arkitektonisk ud, foles avanceret og laerer ham intet om det problem han faktisk skal loese. Dokumenterede 2025-2026-erfaringer: 300 linjers upcasting-kode, fire samtidige event-schemaer, read models der gjorde skrivninger langsommere. Regel: event sourcing kun naar revisionssporet ER forretningskravet, og saa kun i én bounded context. Han skal kunne forklare hvornaar det er forkert - ikke demonstrere at han kan bygge det.",
+  "AT BYGGE ET PRODUKT I STEDET FOR EN SPIKE. Den mest sandsynlige maade hele planen fejler paa. CRUD, brugerhaandtering, en pæn frontend og 'jeg mangler bare lige at rydde op' aeder 80% af timerne og laerer ham nul om arkitektur. Symptomet er praecist: foerste gang han faar lyst til at bygge en dashboardside eller en indstillingsskaerm, er han holdt op med at laere arkitektur. Haard regel: hver spike lukkes ned efter maks to uger, uanset om den foles faerdig. En ufaerdig spike med en maaling og en ADR er mere vaerd end en faerdig uden.",
+  "AT LAESE DDIA FRA ENDE TIL ANDEN. Bogen er 600+ sider. Laest lineaert spiser den to maaneder af et budget paa tolv, og de sidste kapitler (batch og stream processing) er de mindst relevante for hans rolle. Selektiv laesning er ikke doventskab her - det er prioritering, og prioritering er arkitektarbejde.",
+  "AT FORVEKSLE CERTIFICERING MED KOMPETENCE. AZ-305 giver ham vokabular og en deadline. Den goer ham ikke til arkitekt, og alle der ansaetter arkitekter ved det. Bemaerk desuden det formelle: AZ-104 er en haard forudsaetning for at faa selve Azure Solutions Architect Expert-badget - man kan bestaa AZ-305 alene, men badget udstedes ikke, og udloeber AZ-104, udloeber Expert-betegnelsen med den. Microsoft opdaterede AZ-305's domaevaegtning 17. april 2026, saa kob ikke gammelt materiale.",
+  "AT FORVEKSLE MOENSTERKENDSKAB MED ARKITEKTKOMPETENCE. Han vil kunne navngive 40 moenstre efter tre maaneder. Interviewere til solution architect-roller spoerger ikke 'hvad er saga pattern' - de spoerger 'fortael om en beslutning du traf, hvad du fravalgte, og hvad det kostede dig'. Hvis alle hans svar er hypotetiske, er han stadig junior uanset hvor mange moenstre han kender.",
+  "AT TRO CAP ER ET BESLUTNINGSVAERKTOEJ. Det bliver stadig undervist saadan og er stadig forkert. Hvis han i et interview siger 'vi valgte AP frem for CP', vil enhver rigtig arkitekt vide at han har laest en systemdesignguide og ikke bygget noget. Rigtigt svar: konsistens/latens-afvejningen (PACELC) gaelder ogsaa naar netvaerket er sundt, og det er dét der styrer designet til daglig.",
+  "AT BRUGE MASSTRANSIT UDEN AT TJEKKE LICENSEN. v9 udkom januar 2026 med kommerciel licens og runtime license key; v8 forbliver Apache-2.0 men mister support ved udgangen af 2026. Det er en aktiv beslutning for enhver .NET-butik lige nu. At gaa i gang med v9 i et personligt projekt uden at forstaa licensmodellen er pinligt; at IKKE vide det paa arbejdet er en misset mulighed for at levere synlig vaerdi.",
+  "AT KOPIERE eShop SOM PRODUKTIONSARKITEKTUR. Microsofts referenceapps er bygget til at demonstrere features, ikke til at overleve fem aar med betalende kunder og en ERP-integration der aendrer sig. Laes den for at forstaa hvad Microsoft anbefaler; kopiér den ikke.",
+  "IKKE AT MAALE. En spike uden et tal er et blogindlaeg. 'Det virker' er ikke et resultat. Hvis han efter tolv maaneder har tolv koerende prototyper og nul maalinger, har han ikke traenet arkitektkompetence - han har traenet at bygge prototyper. Hver eneste spike SKAL producere mindst ét tal han kan naevne i en samtale.",
+  "AT DEPLOYERE NOGET DER KOSTER PENGE OG GLEMME DET. Budget alert paa dag ét, uden undtagelse. Container Apps med minReplicas 0 koster reelt nul inden for den maanedlige gratistildeling - men saetter han minReplicas til 2 for at undgaa cold start, betaler han for to replicas alle 730 timer i maaneden uanset trafik. Service Bus Standard er en fast maanedlig udgift (Basic har hverken topics eller duplicate detection). Prissaet FOER han deployerer, ikke efter.",
+  "AT BYGGE MULTI-TENANCY UDEN AT KUNNE SVARE PAA MIGRATIONSSPOERGSMAALET. Han kan ende med en flot demo af tre tenancy-modeller og stadig staa uden svar naar nogen spoerger 'okay, men hvordan flytter I tenant 4 til sin egen database i naeste uge uden at roere de andre?'. Migrationsvejen ER kompetencen. Modellen alene er en tegning.",
+  "AT SKRIVE ADR'ER BAGEFTER SOM DOKUMENTATION. Hele pointen er at ADR'en er et beslutningsvaerktoej der tvinger alternativerne frem FOER valget. Skrevet bagefter bliver den en retfaerdiggoerelse, og den laerer ham intet. Symptomet: hvis han aldrig har skiftet mening midt i at skrive en ADR, skriver han dem paa det forkerte tidspunkt.",
+  "AT TRO 'ARKITEKT' ER EN REN TEKNISK ROLLE. Mindst halvdelen er at skrive og tale: forklare eventual consistency til en produktchef, skrive en deprecation-notits en kunde kan handle paa, forsvare et fravalg over for en sælger der har lovet noget. Hvis han bruger tolv maaneder udelukkende paa teknik og nul paa skriftlig og mundtlig formidling, er han velforberedt til at blive senior udvikler og uforberedt paa titlen han gaar efter.",
+  "KUN AT BRUGE MICROSOFT-KILDER FORDI HAN ER PAA AZURE. AWS' SaaS Lens er sprogligt skarpere paa tenant isolation og adskillelsen mellem control plane og application plane end Microsofts tilsvarende materiale. En arkitekt der kun kan sin egen leverandoers ordforraad, afsloerer sig i det oejeblik han taler med nogen fra en anden stack.",
+  "AT VAELGE BAADE DDIA OG VITILLO SOM PRIMAER. De overlapper betydeligt. At laese begge fuldt ud er en af de mest sandsynlige maader at braende 30 timer uden ekstra afkast. Vaelg DDIA som primaer, brug Vitillo som opslag paa resilience.",
+  "AT LADE DEN PROMOVEREDE SPIKE DOE STILLE I MAANED 5. Den er den vaerdifuldeste del af hele planen og ogsaa den kedeligste, fordi drift er kedeligt - det er hele pointen. Der er ingen dopamin i at holde noget koerende. Modtraek: en fast kalenderaftale hver anden uge paa 60 minutter der KUN handler om den driftede tjeneste, og en regel om at hver incident skal have en skreven postmortem inden 48 timer, uanset hvor triviel den var."
+ ],
+ "maalepunkter": [
+  "Han har mindst 12 ADR'er hvor alternativerne er navngivne, konsekvenserne er konkrete, og mindst tre af dem indeholder en eksplicit 'dette ville faa mig til at ombestemme mig'-betingelse. Kontroltest: mindst én ADR hvor han senere har skrevet opfoelgningen 'betingelsen indtraf, vi ombestemte os'.",
+  "Han kan paa 10 minutter og et whiteboard, uden noter, tegne tre tenancy-modeller, angive konsekvens for blast radius, restore, noisy neighbor, cost og operationel byrde for hver, OG tegne migrationsvejen mellem to af dem inklusive hvad der gaar galt undervejs.",
+  "Den promoverede tjeneste har koert i mere end 90 dage med maalt uptime, og han kan fremvise mindst tre reelle incidents med skreven postmortem: tidslinje, rodaarsag, og navnet paa det arkitekturmoenster der manglede.",
+  "Han har gennemfoert mindst ét bevidst breaking change paa et offentligt API med varsling, udfasningsperiode og telemetri der viser hvem der stadig brugte den gamle version - og kan fremvise den kundevendte deprecation-notits han selv skrev.",
+  "Han kan fremvise et konkret p95-tal foer og efter en aendring han selv lavede, og forklare hvorfor det aendrede sig. Ikke et estimat. Et maalt tal fra et dashboard.",
+  "Mindst to kolleger har af egen drift spurgt ham til raads om et designvalg de ikke selv havde givet ham som ticket. Dette er det vigtigste enkeltmaalepunkt for om intern positionering virker, og det er observerbart: enten er det sket, eller det er ikke.",
+  "Han er blevet inviteret ind i mindst én designdiskussion han ikke selv opsoegte. DETTE ER SIGNALET TIL JOBSKIFTE-BESLUTNINGEN VED MAANED 6. Er det ikke sket efter 4-6 gennemfoerte 20-minutters fremlaeggelser af eget arbejde, er det ikke et tegn paa at han ikke er god nok - det er et tegn paa at organisationen ikke har en vej for ham, og strategien skal skifte til jobsoegning.",
+  "Han kan forklare eventual consistency til en ikke-teknisk person paa under tre minutter uden at bruge ordet 'eventual', og personen kan bagefter gengive konsekvensen korrekt. Test det paa en rigtig person - ikke i hovedet.",
+  "Han har skrevet mindst ét dokument som en ikke-udvikler har HANDLET paa: en integrationsvejledning en kunde brugte, en deprecation-notits nogen reagerede paa, et beslutningsoplaeg der aendrede en prioritering.",
+  "Han har estimeret Azure-omkostningen for et design og bagefter maalt den faktiske faktura, og afvigelsen er inden for 30%. Har han aldrig maalt sin egen fejlmargin, kan han ikke paastaa at kunne cost-modellere.",
+  "Han kan uden forberedelse navngive fem konkrete fejlmoenstre han selv har ramt i drift - ikke laest om - og for hver sige hvilket moenster der manglede.",
+  "Han har en fejlmoenster-journal fra arbejdet med mindst 20 poster, og kan derfra uddrage et udsagn i formen 'i N af M tilfaelde manglede der X'. Det er forskellen paa anekdote og moenstergenkendelse.",
+  "Han kan redegoere for mindst tre steder hvor han bevidst FRAVALGTE en teknik der ville have set imponerende ud (event sourcing, microservices, CQRS, en service mesh) og forklare fravalget i forretningstermer. Fravalgene er stærkere signal end tilvalgene.",
+  "Ved kompetenceporten omkring maaned 9-10: Kan han gennemfoere en 45-minutters ustruktureret arkitektursamtale med en fremmed senior arkitekt om et af sine egne spike-problemer, hvor han bliver presset paa trade-offs, uden at falde tilbage paa lærebogsformuleringer? Arrangér det faktisk - en person fra netvaerket, en meetup, en betalt mentortime. Kan han ikke det, er svaret paa porten nej, og et aar mere er det rigtige valg. Dette er det eneste maalepunkt der ikke kan bedoemmes indefra, og derfor det vigtigste."
+ ],
+ "web_verifikation": "VERIFICERET I DENNE SESSION (via WebSearch, september 2026): DDIA 2. udgave udkom marts 2026 med Kleppmann og Riccomini som forfattere, inkl. nye kapitler om trade-offs i data systems architecture og nonfunctional requirements. Fundamentals of Software Architecture 2. udgave udkom 23. september 2025 med fem nye kapitler. The C4 Model (Simon Brown, O'Reilly) udkom omkring september 2026, ca. 150-180 sider. Learning Domain-Driven Design har INGEN 2. udgave - 2024 var et revideret oplag af 2021-udgaven. Building Microservices har INGEN 3. udgave; 2. udgave (2021) er stadig den nyeste. Enterprise Integration Patterns Vol 2 (Conversation Patterns) udkom april 2025. Architecture Modernization (Nick Tune, Manning) er udkommet. Understanding Distributed Systems 2. udgave findes og er en fuld gennemskrivning.\n\nMASSTRANSIT: v9 annonceret april 2025, shippet januar 2026 med kommerciel licens og runtime license key; organisationer under 1 mio. USD omsaetning kan kvalificere til fuld rabat uden support; ellers fra ca. 400 USD/maaned. v8 forbliver Apache-2.0 permanent men mister support ved udgangen af 2026. MIT-alternativer: Wolverine (inbox/outbox, sagaer, SQL Server/PostgreSQL/MySQL/SQLite/Oracle/RavenDB/CosmosDB), Rebus, Brighter. NServiceBus kommerciel med Community-udgave (3 endpoints, 10.000 beskeder/dag).\n\n.NET-STACK: .NET 10 er LTS, udkom november 2025, supporteret til 10. november 2028. EF Core 10 tilsvarende. Aspire er paa 13.x. Asp.Versioning er paa 10.2 (august 2026) og er det korrekte pakkenavn - de gamle Microsoft.AspNetCore.Mvc.Versioning-pakker er samme projekt foer omdoebningen i v6.0 (slut 2022). dotnet/eShop staar paa .NET 10 med Aspire. Finbuckle.MultiTenant understoetter .NET 10 og foelger fra v10 .NET's versionsnumre. NetArchTest (original) ser ikke ud til at vaere vedligeholdt siden 2023; brug ArchUnitNET eller NetArchTest.eNhancedEdition. Grzybeks modular-monolith-with-ddd stod paa .NET 8 senest verificeret (juli 2026), ca. 13.900 stjerner.\n\nAZURE: AZ-104 er haard forudsaetning for Azure Solutions Architect Expert-badget (AZ-305 alene giver ikke badget; udloeber AZ-104, udloeber Expert). AZ-305's domaevaegtning blev opdateret 17. april 2026. Service Bus: duplicate detection findes ikke i Basic-tier, default historikvindue 10 min (min 20 sek, max 7 dage), default MaxDeliveryCount 10, ordering tabes ved DLQ-replay. Klassiske Application Insights SDK'er er deprecated - Azure Monitor OpenTelemetry Distro er vejen. Klassisk ALZ-Bicep fjernet fra acceleratoren 16. februar 2026, arkiveres 16. februar 2027; Bicep Azure Verified Modules for Platform Landing Zone GA januar 2026. Container Apps gratis maanedlig tildeling: 180.000 vCPU-sekunder, 360.000 GiB-sekunder, 2 mio. requests pr. abonnement; minReplicas over 0 faktureres alle 730 timer. Defender for Storage on-upload malware scanning ca. 0,15 USD/GB for foerste 50 TB/maaned, default-loft 10.000 GB/maaned pr. storage account. EU Data Boundary er faerdiggjort for Azure, M365, Dynamics 365 og Power Platform.\n\nDOMAENE/REGULATORISK: Omnibus I-direktivet (aendring af CSRD og CSDDD) offentliggjort i EU-Tidende 26. februar 2026, i kraft 18. marts 2026. CSDDD indsnaevret til 5.000 ansatte og 1,5 mia. EUR omsaetning; transponering udskudt til 26. juli 2028, anvendelse fra 26. juli 2029; EU-harmoniseret erstatningsansvar fjernet, boeder loftlagt ved 3% af global omsaetning. Revideret ESRS-delegeret retsakt ventedes omkring 18. september 2026, anvendelse fra regnskabsaaret 2027. Danmark: OIOUBL 3.0 opgivet til fordel for NemHandel BIS 4 (Peppol-baseret), fuld overgang forventet omkring midten af 2029; forslag fra august 2026 om 'e-fakturering som standard' uden generelt B2B-mandat.\n\nANDET: IETF draft-ietf-httpapi-idempotency-key-header-07 publiceret 15. oktober 2025, Standards Track som maal, STADIG ET DRAFT og ikke en RFC. MADR 4.x er aktuel; YAML-variant (YADR) introduceret marts 2026. Stripes aktuelle API-version er datobaseret (2026-08-26.dahlia observeret).\n\nIKKE VERIFICERET / FORBEHOLD: learn.microsoft.com er blokeret af netvaerks-proxyen i dette miljoe, saa alle Microsoft Learn-URL'er er bekraeftet via soegeresultater (titel + URL fremgik af soegemaskinens indeks) men ikke hentet direkte. De er med stor sandsynlighed korrekte, men indholdsdetaljer fra Microsoft Learn stammer fra soegeresultaternes uddrag. Retirement-datoen 30. september 2026 for aeldre Azure Service Bus SDK'er og SBMP-protokollen fremgik af et soegeuddrag og boer verificeres selvstaendigt foer den citeres. CNCF-tallet om at ca. 42% har konsolideret microservices tilbage cirkulerer bredt i 2026-kilder, men jeg har ikke set den primaere CNCF-rapport - brug det som indikation, ikke som citat. Microsoft Threat Modeling Tools praecise status (aktiv/udgaaet) kunne ikke bekraeftes; OWASP Threat Dragon er verificeret aktiv og gratis. Priser paa Azure Service Bus Standard-tier er ikke verificeret og skal slaas op i Azure Pricing Calculator. Priser og gratistildelinger paa Container Apps og Defender for Storage stammer fra sekundaerkilder dateret 2026 og boer bekraeftes i Azures egen prisdokumentation foer de bruges i en cost-model."
+}
