@@ -1,0 +1,571 @@
+{
+ "kernepointer": [
+  "AZ-204 er DOED. Den blev pensioneret 31. juli 2026 og er erstattet af AI-200 (Azure AI Cloud Developer Associate) - en AI-fokuseret exam, ikke en generel .NET-udviklerexam. Enhver plan, blogpost eller AI-genereret raadgivning der siger 'tag AZ-204 foerst' er skrevet foer juli 2026 og skal kasseres. Ruten til Solution Architect er nu praecis to exams: AZ-104 -> AZ-305.",
+  "AZ-104 er ikke valgfri, den er en haard gate. Man kan godt bestaa AZ-305 uden AZ-104, men man faar IKKE titlen 'Microsoft Certified: Azure Solutions Architect Expert' foer AZ-104 er bestaaet OG aktiv. Udloebne certifikater taeller ikke. Det betyder at cert-sporet i praksis er to exams a 165 USD (~1.060 DKK stk.), ikke en.",
+  "Associate- og Expert-certifikater udloeber efter 12 maaneder. Renewal er gratis, unproctored og open-book paa Microsoft Learn, med et 6-maaneders vindue foer udloeb. Konsekvens for planlaegningen: tag ikke AZ-104 i maaned 2 hvis AZ-305 foerst kommer i maaned 11 - saa skal han renewe midt i det hele. Optimal afstand er 3-6 maaneder mellem de to.",
+  "WAF laeres ikke ved at kunne remse de fem pillars op. Alle fem pillars (Reliability, Security, Cost Optimization, Operational Excellence, Performance Efficiency) har nu identisk struktur: design principles, design review checklist, TRADEOFFS, recommendation guides, cloud design patterns. Tradeoffs-siderne er det eneste sted juniorer aldrig kigger, og praecis der arkitektsamtalen foregaar. At koere et review = tage checklisten linje for linje mod en konkret workload og skrive ned hvor den fejler og hvad det ville koste at rette.",
+  "Reference architectures fra Microsoft er delvist salgsmateriale forklaedt som ingenioerarbejde. De er greenfield, antager en skala over hvad man har, antager et platform team der ikke findes, og optimerer naesten altid Reliability + Security mens Cost og Operational Excellence er efterladt som en oevelse til laeseren. Faerdigheden er ikke at kopiere dem - det er at kunne skrive den mindste version der opfylder 80% af kravene, og prisfastsaette begge.",
+  "En hel spike-serie paa Azure kan realistisk koere for 150-400 DKK/md hvis den designes omkring free tiers. Azure SQL Database free offer er lifetime (100.000 vCore-sekunder + 32 GB pr. database, 10 databaser pr. subscription), Cosmos DB free tier er lifetime (1000 RU/s + 25 GB), Container Apps har et gratis grant (180.000 vCPU-sekunder, 2 mio. requests/md), og Log Analytics giver 5 GB ingestion gratis pr. billing account. Det daekker 80% af oevebanen.",
+  "Fire services kan alene oedelaegge budgettet og skal ALDRIG staa taendt natten over i et lab: Azure Firewall (1,25 USD/time = ~5.900 DKK/md), Application Gateway WAF v2 (~0,443 USD/time = ~2.080 DKK/md), Front Door Premium (330 USD/md = ~2.120 DKK/md) og AKS node pools (control plane er gratis, noderne er ikke). Laer dem paa papir og i pricing-API'et, ikke ved at deploye dem.",
+  "Den farligste knap i Azure: naar man fjerner spending limit for at gaa paa pay-as-you-go, kan man ALDRIG faa den tilbage. Spending limit findes ikke paa PAYG-subscriptions. Derefter er budget alerts den eneste beskyttelse - og de er notifikationer, ikke en bremse. De stopper intet. Anomaly detection er gratis og laerer normalforbruget over 60 dage, men advarer foerst 1-2 dage efter.",
+  "Multi-tenancy er Simons ene reelle hjemmebanefordel. LeanLinking ER multi-tenant SaaS med tenant-isoleret dokumentation og compliance-data. Azure Architecture Center har en komplet multitenant-guide (arkitekturmoenstre, service-specifik vejledning, Deployment Stamps-moenstret). Det er det ene arkitekturemne hvor han kan tale troværdigt om arbejdet uden at have mandat - fordi han allerede ser konsekvenserne af isolationsmodellen i sine tickets.",
+  "To ting i hans sandsynlige laeringsmateriale er allerede paa vej ud og maa ikke laeres: ALZ-Bicep (klassisk) fjernes fra acceleratoren og arkiveres 16. februar 2027 - Azure Verified Modules (AVM) er nu standarden og default i ALZ-acceleratoren siden januar 2026. Og Application Insights classic API SDK 2.x for .NET pensioneres 31. marts 2027 - observability-spiken skal bygges paa Azure Monitor OpenTelemetry Distro, ikke TrackEvent/TelemetryClient.",
+  "Han kan ikke faa produktionsadgang, men han kan naesten sikkert faa Reader. Reader-rollen paa et non-prod subscription aendrer intet, kan ikke oedelaegge noget, og er derfor en af de faa ting en ticket-taker kan bede om og faa. Med Reader kan han koere Azure Advisor, laese resource-topologien, se faktiske SKU'er og bygge sin egen arkitekturtegning af LeanLinkings system. Det er den billigste mandat-uafhaengige adgang der findes.",
+  "Certificeringen beviser ikke arkitektur - den beviser at man kan svare paa multiple choice om arkitektur. AZ-305 er 40-60 spoergsmaal paa 120 minutter med case studies. Den er en deadline-motor og en HR-filter-noegle, ikke et kompetencebevis. Det der overbeviser en ansaettende leder er artefaktsaettet: ADR'er hvor han skiftede mening og skrev hvorfor, maalinger med tal, og én service han faktisk har DREVET i seks maaneder."
+ ],
+ "web_verifikation": "\"Alt certifikat-, pris- og produktstatus er verificeret via WebSearch d. 10. september 2026. learn.microsoft.com og azure.github.io er blokeret af netvaerks-proxy i mit miljoe, saa jeg kunne ikke WebFetch de officielle sider direkte - jeg har i stedet verificeret via soegeresultater hvor Microsoft Learn-sider optraadte med matchende titel og URL, samt via GitHub-mirrors (MicrosoftDocs/azure-docs, MicrosoftDocs/architecture-center, MicrosoftDocs/cloud-adoption-framework, Azure/Azure-Verified-Modules). URLs markeret verificeret=true optraadte verbatim i soegeresultater med matchende sidetitel; de boer stadig aabnes én gang foer de puttes i den faerdige guide.\\n\\nVIGTIGSTE FUND DER MODSIGER TRAENINGSVIDEN FOER MAJ 2026:\\n1. AZ-204 pensioneret 31. juli 2026 -> erstattet af AI-200. AZ-500 pensioneret 31. august 2026 -> SC-500. AI-102 -> AI-103 (30. juni). DP-100 -> AI-300 (1. juni). AI-900 -> AI-901 (30. juni).\\n2. AZ-104 og AZ-305 er IKKE pensioneret. Begge fik opdateret skills-measured d. 17. april 2026. AZ-104-vaegtene skiftede: Identities and Governance steg til 20-25%, Networking faldt til 15-20%.\\n3. AZ-305 skills measured (efter 17. april 2026): Design infrastructure solutions 30-35%, Design identity/governance/monitoring 25-30%, Design data storage 20-25%, Design business continuity 15-20%. 40-60 spoergsmaal, 120 min, 700/1000, 165 USD.\\n4. ALZ-Bicep 'classic' fjernet fra ALZ-acceleratoren 16. februar 2026; repo arkiveres 16. februar 2027. Bicep AVM platform landing zone GA januar 2026 og er nu default.\\n5. Azure Monitor: App Insights classic API SDK 2.x for .NET pensioneres 31. marts 2027. App Insights SDK 3.x (feb 2026) er en bro; OpenTelemetry Distro er den anbefalede vej.\\n6. Service Bus: de gamle SDK-biblioteker (WindowsAzure.ServiceBus, Microsoft.Azure.ServiceBus) og SBMP-protokollen pensioneres 30. september 2026 - dvs. om ca. 3 uger. Brug Azure.Messaging.ServiceBus.\\n7. Azure Functions: Flex Consumption er nu den anbefalede serverless plan. Linux Consumption pensioneres 30. september 2028.\\n8. Visual Studio-abonnementers individuelle maanedlige Azure-credit (50/150 USD) er fra 13. februar 2026 fjernet fra den personlige VS-oplevelse og flyttet til Partner Center som bulk-credits paa organisationsniveau. Regn IKKE med at LeanLinking kan give ham 150 USD/md i personlig Azure-credit via VS Enterprise laengere - det skal verificeres konkret hos dem.\\n9. AKS Automatic GA'ede sent 2025 (automatiseret node provisioning, patching, hardening).\\n10. Azure SQL Database free offer er lifetime, 10 serverless databaser pr. subscription, 100.000 vCore-sek + 32 GB data + 32 GB backup pr. database pr. maaned, med valg mellem auto-pause og fortsat drift til GP serverless-takst.\\n\\nKLAR MISINFORMATION JEG AFVISTE: Flere AI-genererede cert-blogs (bl.a. citizendevelopmentacademy.com og prepmycert.com) paastaar at Microsoft 'pensionerede Expert-tieren i 2025 og samlede alt under Advanced'. Det er FORKERT - jeg krydstjekkede, og 'Microsoft Certified: Azure Solutions Architect Expert' hedder stadig Expert i september 2026, og tier-strukturen er stadig Fundamentals / Associate / Expert (+ Specialty). Cert-nyheds-nichen er i 2026 fuld af SEO-spam med opfundne detaljer; stol kun paa learn.microsoft.com og techcommunity.microsoft.com paa dette omraade.\\n\\nVALUTA: 1 USD = ca. 6,43 DKK (10. sept. 2026). Alle DKK-tal i denne research er regnet med 6,43 og er FOER dansk moms. Azure-forbrug paa en privat konto i Danmark paalaegges 25% moms - laeg det oveni alle DKK-tal nedenfor.\"",
+ "kernepointer_note": "placeholder",
+ "kompetencer": [
+  {
+   "navn": "Trade-off-artikulation (den definerende arkitektkompetence)",
+   "hvorfor": "Forskellen paa en senior udvikler og en arkitekt er ikke at kende flere services. Det er at kunne sige hoejt hvad et valg KOSTER, ikke kun hvad det giver. En junior siger 'vi boer bruge Cosmos DB, det skalerer bedre'. En arkitekt siger 'Cosmos giver os forudsigelig latency ved 10.000 tenants og global replikering, men vi betaler med at miste joins, med RU-modellering som ingen i teamet kan i dag, og med at vores rapporteringsteam skal bygge en separat laesemodel. Ved vores nuvaerende 200 tenants er Azure SQL billigere og enklere - jeg vil revurdere ved 2.000.' Det er hele jobbet.",
+   "hvordan_traenes": "Konkret drill, 20 min pr. gang: tag et hvilket som helst teknisk valg i en ticket paa arbejdet, og skriv tre saetninger - (1) hvad vi faar, (2) hvad vi betaler, (3) ved hvilken maalbar taerskel jeg ville vaelge om. Regel: hvis han ikke kan skrive (2) uden at lyve, har han ikke forstaaet valget. Suppleres med WAF's tradeoffs-sider, som er den eneste systematiske trade-off-litteratur Microsoft har skrevet - laes én tradeoffs-side pr. uge i de foerste fem uger (én pr. pillar) og skriv for hver et eksempel fra LeanLinkings faktiske system.",
+   "niveauskala": "NYBEGYNDER: naevner kun fordele; bruger ord som 'bedre', 'mere skalerbart', 'best practice' uden tal. KOMPETENT: kan naevne mindst én reel ulempe ved sit eget foretrukne valg, uafhjulpet. STAERK: kan argumentere overbevisende FOR det valg han selv er imod, og kan navngive den maalbare taerskel hvor hans anbefaling vender. Kan ogsaa sige 'det ved jeg ikke - det kraever en maaling, og her er maalingen jeg vil koere'."
+  },
+  {
+   "navn": "At koere et Well-Architected review som haandvaerk",
+   "hvorfor": "Alle kan citere de fem pillars. Naesten ingen juniorer har nogensinde koert et review. Det er en afgraenset, laerbar, gentagelig proces der producerer et artefakt - og det er det taetteste man kommer paa 'en arkitekt-arbejdsdag i en oevelse'. Det er ogsaa det bedste interviewsvar der findes til 'hvordan griber du en ny arkitektur an?'",
+   "hvordan_traenes": "Foerst: laes checklist + tradeoffs for ALLE fem pillars (ca. 6-8 timer i alt, ikke mere). Derefter: koer det officielle Azure Well-Architected Review assessment (~60 spoergsmaal) mod sin EGEN drifted spike-service - ikke mod et hypotetisk system, for saa loeber man tom for svar og laerer intet. Eksportér anbefalingerne. Skriv derefter en prioriteret liste hvor hver linje har: fund, hvilken pillar, hvad det koster at rette (timer + DKK/md), og hvad det koster at lade vaere. Gentag hver 3. maaned paa samme service - det er der laeringen ligger, for han kan se sine egne tidligere fejlvurderinger. Fjerde gang koeres det mod en reference architecture han ikke selv har bygget, paa tid: 90 minutter.",
+   "niveauskala": "NYBEGYNDER: kan navngive de fem pillars. KOMPETENT: kan koere assessment mod eget system og producere en prioriteret liste med begrundelser. STAERK: kan koere et review mod en FREMMED arkitektur paa 90 min, stiller de rigtige spoergsmaal for at afdaekke hvad der ikke staar i diagrammet, og kan sige hvilke af assessmentets anbefalinger der IKKE giver mening for netop denne workload - og hvorfor."
+  },
+  {
+   "navn": "Cost-modellering og cost som designparameter",
+   "hvorfor": "Dette er den hurtigste vej til at blive taget alvorligt uden mandat, og den mest underinvesterede kompetence blandt udviklere. Ingen i et udviklingsteam kan typisk svare paa 'hvad koster den her feature om maaneden ved 500 tenants?'. Kan Simon det - med et regneark og en kildehenvisning - bliver han spurgt igen. Cost er ogsaa den ene pillar hvor en junior kan producere reel, ny viden til organisationen paa en eftermiddag, fordi det ikke kraever adgang, kun regnearbejde og Azures offentlige priser.",
+   "hvordan_traenes": "Azure Retail Prices API er uautentificeret og gratis - han kan kalde den fra C# uden nogen adgang overhovedet. Byg et lille .NET-vaerktoej der henter priser og modellerer TCO for en arkitektur ved N tenants. Regel for hver spike: ingen spike afsluttes uden en pris pr. maaned ved tre skalaer (i dag, 10x, 100x). Traenes ogsaa ved at oversaette hver arkitekturbeslutning til DKK/md - inkl. de skjulte: Private Endpoints (~47 DKK/md stk.), log-ingestion (~14,80 DKK/GB efter 5 GB), cross-region egress.",
+   "niveauskala": "NYBEGYNDER: kigger i pricing-kalkulatoren for enkelt-services. KOMPETENT: kan prissaette en hel arkitektur inkl. de skjulte poster (egress, log ingestion, endpoints, backup) og finde brudpunktet mellem to designs. STAERK: bruger cost proaktivt som designargument - 'den her isolationsmodel koster os 340 DKK pr. tenant pr. md i faste omkostninger, hvilket goer smaa kunder tabsgivende under 800 DKK/md i abonnement' - og kan koble arkitektur til forretningsmodel."
+  },
+  {
+   "navn": "Identitets- og adgangsdesign (Entra ID, managed identities, RBAC)",
+   "hvorfor": "Det er 25-30% af AZ-305 (sammen med governance og monitoring), men vigtigere: det er det omraade hvor juniorer laver de dyreste fejl, og hvor multi-tenant SaaS-arkitektur lever eller doer. Hos LeanLinking, hvor kunder uploader compliance-dokumentation og certifikater, ER adgangsmodellen produktet. Og det er praktisk talt den ene ting man aldrig kan rette bagefter uden et migreringsprojekt.",
+   "hvordan_traenes": "Byg det uden secrets. Regel for hele spike-serien: der maa aldrig staa en connection string eller client secret nogen steder. Alt gaar gennem managed identities (system-assigned til at starte, user-assigned naar han skal forstaa hvorfor de findes) og workload identity federation fra Azure DevOps/GitHub Actions. Naar han rammer noget der ikke kan gaa uden secret, er DET spiken. Suppler med at kortlaegge RBAC paa det subscription han har Reader paa - hvem kan hvad, og hvad er for bredt.",
+   "niveauskala": "NYBEGYNDER: bruger connection strings og client secrets; kender ikke forskel paa managed identity og service principal. KOMPETENT: bruger managed identities som standard, kan forklare system- vs user-assigned og hvornaar hver bruges, kan tildele mindst-privilegie-RBAC paa rette scope. STAERK: kan designe adgangsmodellen for et multi-tenant system - hvordan tenant-kontekst propagerer fra bruger til data, hvor den kan omgaas, og hvordan man beviser at tenant A aldrig kan se tenant B's dokumenter."
+  },
+  {
+   "navn": "Netvaerksdesign og hvad isolation faktisk koster",
+   "hvorfor": "Netvaerk er hvor udviklere er svagest, hvor arkitekter forventes at have en mening, og hvor 'sikkert' bliver brugt som argument uden pris. Det er ogsaa den nemmeste maade at braende 6.000 DKK paa en weekend. Simon skal kunne tale om VNet, Private Endpoints, App Gateway og Front Door med praecision - og kunne sige hvornaar man IKKE skal have dem.",
+   "hvordan_traenes": "Deploy Private Endpoints til Azure SQL og Storage én gang i én spike, mål og dokumentér DNS-opløsningen (det er der 90% fejler), riv det ned igen efter fem dage. App Gateway, Azure Firewall og Front Door Premium laeres derimod PAA PAPIR og i Retail Prices API'et - deres pris retfaerdiggoer ikke hands-on i et privat lab. Tegn i stedet hub-spoke-topologien, prissaet den, og forklar hvornaar en organisation faktisk har brug for den (svaret er: senere end de tror).",
+   "niveauskala": "NYBEGYNDER: tror 'Private Endpoint' bare er en checkbox der goer ting sikre. KOMPETENT: kan forklare hvordan trafikken faktisk loeber, hvorfor privat DNS-zone er den svaere del, og hvad det koster pr. endpoint pr. md. STAERK: kan argumentere for hvornaar man skal LADE VAERE - 'vi har fire services og ingen compliance-krav om netvaerksisolation; Private Endpoints koster os 190 DKK/md og en klasse af fejl vi ikke kan debugge kl. 03. Service endpoints og Entra-baseret adgang er nok indtil vi har en kunde der kraever andet.'"
+  },
+  {
+   "navn": "Drift, bagudkompatibilitet og fejlmoenstre",
+   "hvorfor": "Dette er den kompetence der IKKE kan simuleres, og derfor den der adskiller en person med 12 maaneders maalrettet oevelse fra en person med et pensum. Man laerer ikke bagudkompatibilitet af at laese om det - man laerer det af at have brudt noget for sig selv seks maaneder senere. Det er ogsaa den ene ting en interviewer kan hoere forskel paa inden for 90 sekunder.",
+   "hvordan_traenes": "Én spike forfremmes til at koere permanent. Reglerne: den skal have rigtige data der akkumulerer, den skal have et versioneret API-kontrakt, og han maa ALDRIG bryde kontrakten - kun udvide den (expand/contract). Hver maaned foretager han en aendring der tvinger et migreringsvalg (skift datastore, tilfoej et felt, aendr messaging-skema, opgrader .NET-major). Han skriver ned hver gang han braekker noget. Efter 6 maaneder har han et fejl-katalog, og DET er det bedste interviewmateriale han kan eje.",
+   "niveauskala": "NYBEGYNDER: har aldrig oplevet konsekvensen af egen beslutning over tid. KOMPETENT: kan beskrive mindst to gange hvor et tidligere valg gjorde en senere aendring dyr, og hvad han goer anderledes nu. STAERK: designer proaktivt for aendring - versionerer skemaer fra dag ét, laver additive migreringer, og kan forklare expand/contract-moenstret ud fra sin egen praksis frem for fra en bog."
+  },
+  {
+   "navn": "Kritisk laesning af reference architectures og leverandoermateriale",
+   "hvorfor": "En arkitekt der kopierer Microsofts diagrammer er en dyr tegner. Halvdelen af det reelle arbejde er at afvise noget der ser autoritativt ud. Reference architectures er skrevet af en leverandoer med incitament til at du bruger flere services, i en greenfield-verden uden legacy, uden dit budget og uden dit team. Uden denne filter-kompetence bliver han en katalog-arkitekt der foreslaar 14 services til et problem der kraever tre.",
+   "hvordan_traenes": "Fast rutine, 45 min, én reference architecture pr. uge fra Azure Architecture Center. Skriv hver gang: (1) hvilken skala antager den, og hvad er den mindste version der stadig virker? (2) hvilke pillars optimerer den, og hvilke ignorerer den? (3) taeller antal komponenter - hvem patcher, betaler for og forstaar hver af dem kl. 03? (4) hvilken organisation antager den (findes det platform team hos os?) (5) hvad er udeladt: pris, drift, vagtordning, migration fra det eksisterende, data residency, rollback, tenant-onboarding (6) hvor gammel er den - tjek ms.date i GitHub-kilden bag siden. Skriv til sidst den reducerede version og prisfastsaet begge.",
+   "niveauskala": "NYBEGYNDER: laeser reference architectures som facit og gengiver dem. KOMPETENT: kan pege paa hvad der er udeladt og forenkle designet. STAERK: kan paa 20 minutter liste fem indbyggede antagelser i en ukendt reference architecture, sige hvilke af dem der er falske for LeanLinking, og skitsere hvad der saa aendrer sig - inkl. hvad der bliver dyrere, ikke kun hvad der bliver enklere."
+  },
+  {
+   "navn": "Skriftlig beslutningsdokumentation og diagrammering",
+   "hvorfor": "Arkitektur der ikke er skrevet ned findes ikke. Og for en person UDEN mandat er skriftlighed den eneste tilgaengelige indflydelseskanal: han kan ikke bestemme, men han kan skrive noget saa klart at det bliver svaert at ignorere. En ADR i en pull request kraever ingens tilladelse. Det er den mest undervurderede politiske manoevre i hele planen.",
+   "hvordan_traenes": "MADR-template, ét format, hver gang - ikke tolv formater. Minimum: kontekst, mulige loesninger med for/imod, beslutning, konsekvenser (inkl. de negative), og hvornaar vi revurderer. Diagrammer: C4 (context, container, component) - stop paa niveau 3, komponent-niveau er som regel spildt arbejde. Structurizr DSL hvis han vil have diagrams-as-code, ellers draw.io med Azures officielle ikonsaet. Regel: ét diagram pr. spike, og det skal kunne forklares paa 90 sekunder til en ikke-teknisk person. Kan det ikke det, er arkitekturen eller diagrammet forkert.",
+   "niveauskala": "NYBEGYNDER: dokumenterer beslutninger som 'vi valgte X' uden alternativer. KOMPETENT: skriver ADR'er med reelle alternativer og negative konsekvenser. STAERK: har ADR'er hvor han SKIFTEDE mening og skrev et opfoelgende dokument om hvorfor det foerste var forkert - det er det enkeltdokument der overbeviser mest i et interview, fordi det beviser kalibrering frem for selvsikkerhed."
+  },
+  {
+   "navn": "Compute- og datastore-valg med begrundelse frem for vane",
+   "hvorfor": "Det er raa AZ-305-pensum (30-35% infrastructure + 20-25% data storage), men ogsaa den mest almindelige interviewoevelse: 'du skal hoste den her workload - hvad vaelger du og hvorfor?'. Juniorer svarer med hvad de kender. Arkitekter svarer med hvad kravene tvinger frem, og siger hvad de fravalgte.",
+   "hvordan_traenes": "Byg den SAMME .NET-service tre gange (App Service, Container Apps, Functions Flex Consumption) og MÅL: cold start, p95-latency under last, DKK pr. 1.000 requests, og hvor lang tid deployment tager. Tallene er pointen - de er hans egne og kan ikke modsiges. Samme oevelse paa data: samme adgangsmoenster mod Azure SQL og Cosmos DB, mål latency, RU-forbrug og pris. Skriv et beslutningstraeе til sidst med sine egne tal som baggrund.",
+   "niveauskala": "NYBEGYNDER: 'vi bruger App Service, det plejer vi'. KOMPETENT: kan matche workload-karakteristika mod hosting-model og forklare valget. STAERK: har egne maalinger, kender brudpunkterne (hvornaar bliver Container Apps dyrere end App Service? hvornaar retfaerdiggoer AKS sin driftsbyrde? hvornaar er Cosmos' RU-model en faelde?), og kan sige 'AKS er forkert for jer - I har ikke et team der kan drive det, og det er ikke en teknisk indvending, det er den vigtigste indvending'."
+  }
+ ],
+ "ressourcer": [
+  {
+   "titel": "Azure Well-Architected Framework - pillars, checklists og tradeoffs",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/en-us/azure/well-architected/pillars",
+   "prioritet": "kerne",
+   "tidsforbrug": "8-10 timer foerste gennemlaesning, derefter opslagsvaerk hele aaret",
+   "hvorfor": "Rygraden i hele emnet, og gratis. Alle fem pillars har nu samme struktur: design principles, design review checklist, TRADEOFFS, recommendation guides, cloud design patterns. Laes checklist + tradeoffs for hver pillar - spring recommendation guides over i foerste omgang, de er opslagsmateriale. Tradeoffs-siderne (fx /operational-excellence/tradeoffs, /reliability/tradeoffs) er den vigtigste enkeltressource i hele denne research: det er det eneste systematiske sted Microsoft skriver ned hvad et valg KOSTER, og det er praecis det sprog en arkitekt bedoemmes paa.",
+   "hvad_springes_over": "Spring alle service guides over (Azure Well-Architected for Service Bus, for AKS osv.) indtil en spike konkret rammer den service. Spring workload-specifikke assessments over (SAP, AVD, VMware, IoT) - fuldstaendig irrelevante for ham.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Well-Architected Review (officielt assessment, ~60 spoergsmaal)",
+   "type": "assessment/vaerktoej",
+   "url": "https://learn.microsoft.com/en-us/assessments/azure-architecture-review/",
+   "prioritet": "kerne",
+   "tidsforbrug": "90 min pr. gennemloeb, koeres 4 gange over 12 maaneder",
+   "hvorfor": "Gratis, og det eneste vaerktoej der forvandler 'jeg kender WAF' til 'jeg har koert et WAF-review'. Kan integrere Azure Advisor-anbefalinger fra et konkret subscription eller resource group. AFGOERENDE: koer det mod sin egen drifted service, ikke mod et hypotetisk system - ellers loeber han toer for svar efter 15 spoergsmaal og laerer intet. Eksportér anbefalingerne og oversaet dem til en prioriteret liste med pris i timer og DKK.",
+   "hvad_springes_over": "Ikke relevant - det er ét vaerktoej.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Architecture Center - Browse Architectures",
+   "type": "dokumentation/katalog",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/browse/",
+   "prioritet": "kerne",
+   "tidsforbrug": "45 min/uge som fast rutine i 12 maaneder (~35 timer i alt)",
+   "hvorfor": "Raamaterialet til den kritiske laesetraening. Ikke til at kopiere - til at dissekere. Én arkitektur om ugen, med det faste sæt spoergsmaal (hvilken skala antages, hvilke pillars ignoreres, hvor mange komponenter, hvilken organisation antages, hvad er udeladt, hvor gammel er den). Skriv hver gang den reducerede version og prisfastsaet begge.",
+   "hvad_springes_over": "Spring alt hvad der er 'Solution ideas' over - de er marketingskitser uden dybde. Gaa efter 'Reference architectures' og 'Example workloads', som har trade-offs og faktiske overvejelser.",
+   "verificeret": true
+  },
+  {
+   "titel": "Architect multitenant solutions on Azure",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/overview",
+   "prioritet": "kerne",
+   "tidsforbrug": "10-12 timer, laest over 3-4 uger",
+   "hvorfor": "Den hoejest-vaerdi ressource i hele denne research SPECIFIKT for Simon, fordi den overlapper 1:1 med LeanLinkings forretning. Daekker arkitekturtilgange (fuldt delt -> fuldt isoleret og alt derimellem), service-specifik vejledning pr. Azure-service, og Deployment Stamps-moenstret. Naar han har laest den, kan han for foerste gang stille et spoergsmaal paa arbejdet som en arkitekt ville stille - 'hvordan er vores tenants faktisk isoleret paa datalaget, og hvad var trade-offet?' - uden at det lyder som en junior der vil imponere.",
+   "hvad_springes_over": "Spring service-specifik vejledning for services LeanLinking ikke bruger over (IoT, AI/ML, Media). Laes kun compute, data, networking, identity, governance og cost.",
+   "verificeret": true
+  },
+  {
+   "titel": "SaaS and multitenant solution architecture",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/saas-multitenant-solution-architecture/",
+   "prioritet": "kerne",
+   "tidsforbrug": "4-5 timer",
+   "hvorfor": "Supplement til ovenstaaende, med mere forretningsnaer vinkel: tenant lifecycle, onboarding, billing-modeller, kunde-krav om isolation. Det er sproget mellem produkt og arkitektur - praecis det omraade hans sekundaere interesse (Product Owner, governance) moeder hovedsporet. God kilde til at forstaa hvorfor LeanLinkings arkitektur ser ud som den goer.",
+   "hvad_springes_over": "Intet - den er kort nok.",
+   "verificeret": true
+  },
+  {
+   "titel": "AZ-305 officiel study guide (skills measured)",
+   "type": "eksamensmateriale",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-305",
+   "prioritet": "kerne",
+   "tidsforbrug": "1 time foerst, derefter som checkliste hele vejen",
+   "hvorfor": "Den eneste autoritative kilde til hvad der faktisk testes. Opdateret 17. april 2026 - hvilket betyder at ALT tredjepartsmateriale fra foer den dato har drift. Domaenevaegte: Design infrastructure solutions 30-35%, Design identity/governance/monitoring 25-30%, Design data storage 20-25%, Design business continuity 15-20%. Study guiden har en 'change log'-sektion der praecist viser hvad der blev tilfoejet og fjernet i april-opdateringen - laes DEN foerst, det sparer timer.",
+   "hvad_springes_over": "Ikke relevant.",
+   "verificeret": true
+  },
+  {
+   "titel": "Exam AZ-305: Designing Microsoft Azure Infrastructure Solutions",
+   "type": "certificering",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-305/",
+   "prioritet": "kerne",
+   "tidsforbrug": "40-60 timers forberedelse oven paa spike-arbejdet",
+   "hvorfor": "Cert #2 og den der baerer titlen. 165 USD (~1.060 DKK). 40-60 spoergsmaal, 120 minutter, bestaaelse ved 700/1000. Formatet er multiple choice, multiple response, drag-and-drop OG case studies - case studies er det der ligner arkitektarbejde, hvor flere svar ser rigtige ud og kun ét matcher begraensningerne. Engelsk version opdateret 17. april 2026. KRITISK: AZ-305 alene giver IKKE titlen - Azure Solutions Architect Expert kraever aktiv AZ-104 ogsaa.",
+   "hvad_springes_over": "Spring betalte bootcamps over (Firebrand, Training Camp o.l. koster 25.000-45.000 DKK og komprimerer noget der skal modnes). Spring alle exam dumps over - se separat post.",
+   "verificeret": true
+  },
+  {
+   "titel": "Exam AZ-104: Microsoft Azure Administrator",
+   "type": "certificering",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-104/",
+   "prioritet": "kerne",
+   "tidsforbrug": "40-70 timers forberedelse (mindre hvis spike-serien allerede har givet hands-on)",
+   "hvorfor": "Ikke til diskussion - uden aktiv AZ-104 findes titlen ikke. 165 USD (~1.060 DKK), 100 minutter, 40-60 spoergsmaal, 700/1000. Skills measured opdateret 17. april 2026 med aendrede vaegte: Identities and Governance 20-25% (op fra 15-20%), Storage 15-20%, Compute 20-25%, Networking 15-20% (ned fra 20-25%), Monitoring 10-15%. Indeholder typisk en hands-on lab i et live Azure-miljoe - den kan ikke laeses sig til. Den gode nyhed: spike-serien er praecis den forberedelse labben kraever, saa de to spor forstaerker hinanden i stedet for at konkurrere om timer.",
+   "hvad_springes_over": "Spring VM-tunge emner let henover hvis tiden er knap - de er lavest vaegtede for hans profil - men lav dem ikke helt over, de er stadig 20-25%.",
+   "verificeret": true
+  },
+  {
+   "titel": "Microsoft Learn: AZ-305 learning paths (fire officielle stier)",
+   "type": "kursus (gratis)",
+   "url": "https://learn.microsoft.com/en-us/training/paths/design-infranstructure-solutions/",
+   "prioritet": "stoette",
+   "tidsforbrug": "25-35 timer for alle fire stier",
+   "hvorfor": "Gratis, matcher pensum praecist, og er skrevet af dem der skriver eksamen. Fire stier daekker de fire domaener (design infrastructure solutions; design identity, governance and monitor solutions; design data storage solutions; design business continuity solutions), plus en prerequisites-sti. Solid, men toer. ANBEFALING: brug dem som lakuneudfylder EFTER spikes, ikke foer - laes en sti naar en spike har afsloeret at han ikke forstaar emnet. Omvendt raekkefoelge giver ham 30 timers passiv laesning han glemmer.",
+   "hvad_springes_over": "Spring prerequisites-stien over hvis han allerede arbejder dagligt i Azure hos LeanLinking - den er til folk uden nogen Azure-eksponering.",
+   "verificeret": true
+  },
+  {
+   "titel": "Microsoft Learn practice assessment for AZ-305 (gratis)",
+   "type": "oevemateriale",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-305/",
+   "prioritet": "stoette",
+   "tidsforbrug": "3-4 timer i alt, spredt over maaned 8-11",
+   "hvorfor": "Gratis, ligger paa selve exam-siden, og er den eneste oeve-ressource hvor spoergsmaalsformatet er autoritativt. VAER OPMAERKSOM: Microsoft angiver selv at den ikke er aekvivalent med den rigtige eksamen i format og sværhedsgrad - den er lettere og har faerre case studies. Brug den til at kalibrere format, ikke til at maale parathed. Reel parathed maales paa om han kan loese en case study uden at slaa op.",
+   "hvad_springes_over": "Ikke relevant.",
+   "verificeret": true
+  },
+  {
+   "titel": "John Savill's Technical Training - AZ-305 Study Cram + Azure Master Class",
+   "type": "video (gratis, YouTube)",
+   "url": "https://www.youtube.com/playlist?list=PLlVtbbG169nHSnaP4ae33yQUI3zcmP5nP",
+   "prioritet": "stoette",
+   "tidsforbrug": "6-8 timer (cram + udvalgte master class-episoder)",
+   "hvorfor": "Bedste gratis Azure-video-materiale der findes, og Savill forklarer WHY frem for WHERE-TO-CLICK, hvilket er sjaeldent. MEN VAER KRITISK: den mest citerede AZ-305 Study Cram er flere aar gammel, og eksamen blev opdateret 17. april 2026. Han skal derfor bruge crammen til at bygge den mentale model og forbinde emner - IKKE som pensumdaekning. Tjek selv udgivelsesdatoen paa den video han finder, og hold den op mod den officielle study guides change log. Community-vurderingen er i oevrigt konsistent: crammen alene er for hoejt-niveau til at bestaa paa.",
+   "hvad_springes_over": "Spring hele Azure Master Class over som lineaert forloeb - det er 30+ timer. Plukka kun de episoder der matcher en aktuel spike (networking, identity, governance).",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Retail Prices REST API",
+   "type": "vaerktoej/API",
+   "url": "https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices",
+   "prioritet": "kerne",
+   "tidsforbrug": "4-6 timer at bygge et brugbart vaerktoej i C#, derefter genbrug",
+   "hvorfor": "Undervurderet guldgrube og perfekt til hans situation: UAUTENTIFICERET og gratis - kraever ingen Azure-adgang, intet mandat, ingen tilladelse. Han kan bygge et .NET-cost-modelleringsvaerktoej paa en soendag og bruge det resten af aaret. Det er ogsaa den enkeltting der hurtigst goer ham nyttig paa arbejdet uden at bede om noget: naar nogen spoerger 'hvad vil det koste?', har han et svar med kilde.",
+   "hvad_springes_over": "Ikke relevant.",
+   "verificeret": true
+  },
+  {
+   "titel": "Cloud Adoption Framework for Azure - Ready-metodologien og landing zone design areas",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/",
+   "prioritet": "stoette",
+   "tidsforbrug": "8-10 timer (kun Ready + Govern)",
+   "hvorfor": "CAF er stort og for det meste konsulentsprog. Kun to dele er vaerd at laese for ham: Ready (landing zones, subscription vending, management group-hierarki, de otte design areas) og Govern (policy, compliance). Bemaerk 2026-omstrukturering: 'Sequential methodologies' hedder nu 'Foundational' (Strategy, Plan, Ready, Adopt) og 'Continuous' hedder nu 'Operational' (Govern, Secure, Manage) - hvis han laeser gammelt materiale, matcher terminologien ikke. Ready blev ogsaa opdateret med skarpere skel mellem platform- og application landing zones.",
+   "hvad_springes_over": "Spring Strategy, Plan og Adopt HELT over. De er skrevet til CIO'er der skal retfaerdiggoere et cloud-program, og har nul vaerdi for en person der skal laere at designe systemer. Det er den stoerste tidsfaelde i hele CAF.",
+   "verificeret": true
+  },
+  {
+   "titel": "Subscription vending (CAF + Architecture Center implementation guidance)",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/design-area/subscription-vending",
+   "prioritet": "stoette",
+   "tidsforbrug": "3-4 timer",
+   "hvorfor": "Det praeciseste, mest afgraensede governance-emne der findes, og et perfekt spike-emne. Det tvinger ham til at forstaa management group-hierarki (Tenant Root -> Platform: Management/Identity/Connectivity, Landing Zones: Prod/Non-prod, Sandbox, Decommissioned), policy-arv, og RBAC-delegering paa én gang. Og det er et emne hvor han kan lyde meget kompetent i et interview, fordi de fleste udviklere aldrig har hoert om det.",
+   "hvad_springes_over": "Spring den fulde tre-team-proces (platform team / CCoE / app team) over som organisationsteori - han skal forstaa den tekniske model, ikke ceremonien.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Verified Modules (AVM) - Bicep og Terraform",
+   "type": "vaerktoej/repo",
+   "url": "https://github.com/Azure/Azure-Verified-Modules",
+   "prioritet": "stoette",
+   "tidsforbrug": "6-8 timer i IaC-spiken",
+   "hvorfor": "Dette er nu standarden, og det er en aktiv faelde at laere noget andet. Bicep AVM platform landing zone GA'ede januar 2026 og er default starter i ALZ-acceleratoren. Microsoft accepterer ikke laengere forslag til nye ikke-AVM Bicep-moduler. Bicep konsumeres via public registry (br/public:), Terraform via Terraform Registry (Azure/avm-res-<provider>-<resource>/azurerm). VALG: han skal vaelge ÉN - Bicep, fordi LeanLinking er et .NET/Azure-hus og Bicep er Azure-native. Terraform er bredere paa arbejdsmarkedet, men to sprog i én 12-maanedersplan er en fejl.",
+   "hvad_springes_over": "ALZ-Bicep 'classic' - fjernet fra acceleratoren 16. februar 2026 og repoet arkiveres 16. februar 2027. Enhver tutorial der bruger det, laerer ham noget der er doedt. Spring ogsaa Terraform helt over i denne plan.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Landing Zones dokumentation og IaC Accelerator",
+   "type": "dokumentation/vaerktoej",
+   "url": "https://azure.github.io/Azure-Landing-Zones/",
+   "prioritet": "stoette",
+   "tidsforbrug": "1 spike (10-14 timer)",
+   "hvorfor": "Den praktiske indgang til landing zones. Acceleratoren bootstrapper GitHub eller Azure DevOps og deployer en platform landing zone, og daekker efter Microsofts eget udsagn ca. 80% af almindelige kundescenarier. ADVARSEL OM PRIS: en fuld ALZ-deployment inkluderer Azure Firewall og potentielt Application Gateway - det er 6.000-8.000 DKK/md hvis det staar taendt. Han skal deploye en REDUCERET variant (management groups, policies, én landing zone subscription, INGEN firewall/gateway), tage screenshots og ADR'er, og rive den ned inden for 48 timer.",
+   "hvad_springes_over": "Spring den fulde 'complete' starter over. Spring multi-region og connectivity-subscription over.",
+   "verificeret": false
+  },
+  {
+   "titel": "Idempotent Consumer pattern + Cloud Design Patterns (Azure Architecture Center)",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/idempotent-consumer",
+   "prioritet": "kerne",
+   "tidsforbrug": "6-8 timer for de ~12 relevante moenstre",
+   "hvorfor": "Moensterkataloget er den fælles ordforraad arkitekter taler i. Laes de moenstre der er relevante for hans verden og spring resten: Idempotent Consumer, Retry, Circuit Breaker, Outbox/Transactional Outbox, Competing Consumers, Claim-Check (relevant for LeanLinkings dokument-upload!), Deployment Stamps, Bulkhead, Saga, Strangler Fig, Gateway Aggregation, Cache-Aside. VIGTIG NUANCE dokumentationen selv fremhaever: Service Bus' duplicate detection paa broker-niveau supplerer, men ERSTATTER IKKE, idempotent consumer-logik i applikationskoden. Det er praecis den slags nuance der skiller en arkitekt fra en der har laest en blog.",
+   "hvad_springes_over": "Spring de resterende ~30 moenstre over indtil de bliver relevante. Katalogets fuldstaendighed er en faelde.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Monitor OpenTelemetry Distro for .NET",
+   "type": "dokumentation/bibliotek",
+   "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-enable",
+   "prioritet": "kerne",
+   "tidsforbrug": "observability-spiken, 10-14 timer",
+   "hvorfor": "Observability er et af hans erklaerede sekundaere interesser og en reel arkitektkompetence. AFGOERENDE TIMING: Application Insights classic API SDK 2.x for .NET er deprecated og pensioneres 31. marts 2027. Alt gammelt materiale med TelemetryClient og TrackEvent laerer ham noget der doer om 18 maaneder. Azure Monitor OpenTelemetry Distro er én NuGet-pakke plus en connection string. App Insights SDK 3.x (udgivet feb. 2026) er en bro der router classic Track*-kald gennem et OTel-mapping-lag - god at kende til migrationssamtaler, men han skal BYGGE paa Distro'en. Bonus: OpenTelemetry er leverandoerneutralt, saa kompetencen overlever et jobskifte til et ikke-Azure-hus.",
+   "hvad_springes_over": "Spring alle tutorials der bruger TelemetryClient/TrackEvent over. Spring custom metrics-dybden over foerst - start med distributed tracing paa tvaers af HTTP -> Service Bus -> worker, det er hvor indsigten er.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure spending limit + budgets og cost alerts (Microsoft Cost Management)",
+   "type": "dokumentation",
+   "url": "https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/spending-limit",
+   "prioritet": "kerne",
+   "tidsforbrug": "90 minutter, foer noget som helst andet deployes",
+   "hvorfor": "Skal laeses FOERST, foer den foerste ressource oprettes. Det centrale, kontraintuitive faktum: spending limit findes KUN paa free account / credit-baserede subscriptions. Naar man fjerner den for at gaa paa pay-as-you-go, kan den ALDRIG genaktiveres - PAYG-subscriptions har ingen spending limit og Azure viser den ikke engang i portalen. Derefter er budget alerts eneste vaern, og de er notifikationer der ikke stopper noget. Gratis anomaly detection laerer forbrugsmoenstret over 60 dage og advarer typisk 1-2 dage EFTER anomalien - for sent til at redde en weekend med en Azure Firewall taendt.",
+   "hvad_springes_over": "Spring Enterprise Agreement- og Partner Center-scenarier over - irrelevante for en privat konto.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure SQL Database free offer (lifetime)",
+   "type": "dokumentation/tilbud",
+   "url": "https://learn.microsoft.com/en-us/azure/azure-sql/database/free-offer",
+   "prioritet": "kerne",
+   "tidsforbrug": "30 min at forstaa, sparer flere tusinde kroner",
+   "hvorfor": "Den enkeltstaaende bedste oekonomiske nyhed for spike-serien, og den er ikke almindeligt kendt. LIFETIME - ikke 12 maaneder. 100.000 vCore-sekunder compute + 32 GB data + 32 GB backup pr. database pr. maaned, og TI serverless databaser pr. subscription (i alt 1 mio. vCore-sekunder/md gratis). Naar graensen naas kan man vaelge auto-pause til naeste kalendermaaned ELLER fortsat drift til normal GP serverless-takst. VIGTIGT: vaelg AUTO-PAUSE i et laeringsmiljoe. 'Continue using' er praecis den slags checkbox der producerer en uventet regning.",
+   "hvad_springes_over": "Ikke relevant.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Cosmos DB lifetime free tier",
+   "type": "dokumentation/tilbud",
+   "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/free-tier",
+   "prioritet": "stoette",
+   "tidsforbrug": "20 min",
+   "hvorfor": "1000 RU/s + 25 GB gratis for subscriptionens levetid, én free tier-konto pr. subscription. FAELDE han skal kende: free tier gaelder IKKE for serverless-konti - kun provisioned eller autoscale throughput. Man skal aktivt opt-in ved oprettelse, og det kan ikke slaas til bagefter. Det er nok til hele datastore-sammenligningsspiken.",
+   "hvad_springes_over": "Spring multi-region write, dedicated gateway og analytical store over - alt sammen betalt og irrelevant paa hans skala.",
+   "verificeret": true
+  },
+  {
+   "titel": "Designing Data-Intensive Applications, 2. udgave (Kleppmann & Riccomini, O'Reilly, marts 2026)",
+   "type": "bog",
+   "url": "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781098119058/",
+   "prioritet": "kerne",
+   "tidsforbrug": "40-50 timer - laes kapitelvis paralleldt med spikes over 8-10 maaneder",
+   "hvorfor": "2. udgave udkom marts 2026, ~650 sider, med Chris Riccomini som medforfatter. Den vigtigste aendring er praecis relevant for ham: hvor 1. udgaven antog at man selv drev sine datasystemer, er 2. udgaven gennemskrevet omkring hvordan cloud har aendret dataarkitektur. Det er den ene bog der giver ham fundamentet UNDER Azure-services - hvorfor Cosmos DB's konsistensniveauer findes, hvad partitionering faktisk koster, hvorfor exactly-once er en loegn. Uden den bliver han en person der kan Azure-produktnavne.",
+   "hvad_springes_over": "Laes den IKKE lineaert fra ende til anden - det er en klassisk fejl der aeder 50 timer uden retention. Laes replikering, partitionering, transaktioner og konsistens taet paa de spikes der rammer emnerne. Spring batch- og stream-processing-kapitlerne til senere (maaned 9+) - de er fremragende, men ikke paa den kritiske sti mod Solution Architect.",
+   "verificeret": true
+  },
+  {
+   "titel": "Fundamentals of Software Architecture, 2. udgave: A Modern Engineering Approach (Richards & Ford, 2025)",
+   "type": "bog",
+   "url": "https://www.oreilly.com/library/view/fundamentals-of-software/9781098175504/",
+   "prioritet": "kerne",
+   "tidsforbrug": "20-25 timer",
+   "hvorfor": "2. udgave (2025) med fem nye kapitler. Den daekker det Azure-dokumentation ALDRIG daekker: architectural characteristics (det disciplinerede sprog for ikke-funktionelle krav), hvordan man vaelger arkitekturstil, hvordan man diagrammerer, governance, og - vigtigt for ham - team topologies og arkitektens rolle. Det er bogen der giver ham det generelle ordforraad saa han ikke bliver 'Azure-fyren' men en arkitekt der tilfaeldigvis arbejder i Azure. Vigtigt for jobskifte-optionen.",
+   "hvad_springes_over": "Kapitlerne om generative AI er tidsstemplet materiale i en bog om fundamentals - laes dem sidst eller slet ikke. Kapitler om at drive en arkitekturpraksis paa tvaers af mange teams er 3-5 aar for tidligt for ham.",
+   "verificeret": true
+  },
+  {
+   "titel": "The Software Architect Elevator (Gregor Hohpe, O'Reilly)",
+   "type": "bog",
+   "url": "https://www.oreilly.com/library/view/the-software-architect/9781492077534/",
+   "prioritet": "kerne",
+   "tidsforbrug": "12-15 timer",
+   "hvorfor": "Den bog der direkte adresserer Simons STOERSTE begraensning: han er ticket-taker uden mandat. Hohpes centrale idé er at arkitektens vaerdi ligger i at bevaege sig mellem 'maskinrummet' og 'penthouse' - at oversaette mellem teknisk virkelighed og organisatorisk beslutning. Den laerer ham hvordan man faar indflydelse UDEN autoritet, hvilket er den kompetence hele hans 12-maanedersplan staar og falder med. Ingen anden ressource i denne liste rammer det problem. Laes den TIDLIGT (maaned 2-3), ikke sent - den aendrer hvordan han opfoerer sig paa arbejdet fra dag ét.",
+   "hvad_springes_over": "Kapitler om enterprise-transformation og at lede arkitektfunktioner - gem til maaned 10+ eller helt.",
+   "verificeret": false
+  },
+  {
+   "titel": "MADR - Markdown Architectural Decision Records (templates)",
+   "type": "template/vaerktoej",
+   "url": "https://adr.github.io/adr-templates/",
+   "prioritet": "kerne",
+   "tidsforbrug": "1 time at laere, derefter 30-45 min pr. ADR",
+   "hvorfor": "ADR'er er det centrale artefakt i hele spike-serien og den ene ting han kan producere paa arbejdet uden nogens tilladelse. MADR findes i fuld og minimal variant, hver i annoteret og bar form - brug MINIMAL til at starte, ellers bliver det ceremoni. MADR's styrke er at 'considered options' med pro/con er en indbygget del af skabelonen, hvilket tvinger trade-off-taenkning frem i stedet for at goere den valgfri. adr.github.io er ADR-communitys samlingssted og daekker ogsaa tooling.",
+   "hvad_springes_over": "Spring adr-tools (bash-scripts, Nygard-format) over - unoedvendigt vaerktoejslag. En mappe med markdown-filer i git er nok. Spring alle andre ADR-formater over; ét format konsekvent slaar tre formater eksperimentelt.",
+   "verificeret": true
+  },
+  {
+   "titel": "Structurizr + C4-modellen (diagrams as code)",
+   "type": "vaerktoej",
+   "url": "https://docs.structurizr.com/",
+   "prioritet": "stoette",
+   "tidsforbrug": "4-5 timer at laere DSL'en",
+   "hvorfor": "Aktivt vedligeholdt (build 2026.07). Skabt af C4-modellens forfatter og dermed referenceimplementeringen. Styrken er at én model genererer flere diagrammer paa forskellige abstraktionsniveauer, saa de ikke divergerer - det er praecis der haandtegnede arkitekturdiagrammer doer. Kan ogsaa publicere ADR'er og importere MADR-formatet. GOD BESLUTNING: hvis han finder DSL'en for tung, er draw.io med Azures officielle ikonsaet fuldt acceptabelt - diagrammets klarhed betyder mere end vaerktoejet. Vaelg ét og hold fast.",
+   "hvad_springes_over": "Stop paa C4-niveau 3 (component). Niveau 4 (code) er naesten altid spildt arbejde der forældes med naeste commit. Spring Structurizr cloud-abonnementet over - lite/on-premises-versionen er nok.",
+   "verificeret": true
+  },
+  {
+   "titel": "OWASP Threat Dragon",
+   "type": "vaerktoej (gratis, open source)",
+   "url": "https://owasp.org/www-project-threat-dragon/",
+   "prioritet": "stoette",
+   "tidsforbrug": "threat modeling-spiken, 8-10 timer",
+   "hvorfor": "OWASP Production-status, aktivt vedligeholdt, koerer som web- eller desktop-app paa alle platforme, og understoetter STRIDE plus LINDDUN og andre. Version 2.6 tilfoejede GitHub-repo-baseret modellagring, saa threat models kan leve i git ved siden af ADR'erne. Foretraekkes frem for Microsoft Threat Modeling Tool: MS TMT 7.x vedligeholdes stadig (seneste release nov. 2025), men er Windows-only, klodset og laaser modellerne i et proprietaert format uden for git.",
+   "hvad_springes_over": "Spring de kommercielle threat modeling-platforme (ThreatModeler o.l.) helt over. Og vaer aerlig: vaerktoejet er ikke pointen - STRIDE paa et whiteboard med fire personer producerer bedre threat models end noget vaerktoej. Vaerktoejet er til at gemme resultatet.",
+   "verificeret": true
+  },
+  {
+   "titel": "AI-200 (Azure AI Cloud Developer Associate) - erstatningen for AZ-204",
+   "type": "certificering",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/ai-200/",
+   "prioritet": "spring over",
+   "tidsforbrug": "0 timer",
+   "hvorfor": "Vigtig at KENDE, ikke at tage. Lanceret maj 2026 som AZ-204's afloeser, 165 USD, 100 minutter, 700/1000. Men indholdet drejede med: containeriseret hosting, AI-datatjenester (Cosmos DB NoSQL, PostgreSQL med pgvector, Azure Managed Redis, vector search, RAG), event-baseret integration. Det er en AI-udviklercert, ikke en generel Azure-udviklercert. For en maalrolle som Solution Architect med 12 maaneders horisont og et haardt timeloft er den en afsporing der koster 60+ timer og ikke bringer ham taettere paa titlen. Han skal kunne SIGE i et interview at han ved AZ-204 er pensioneret og hvorfor han ikke valgte AI-200 - det er i sig selv et modenhedssignal.",
+   "hvad_springes_over": "Hele exam'en.",
+   "verificeret": false
+  },
+  {
+   "titel": "SC-500, AB-100, AI-103, AZ-900 og oevrige certifikater",
+   "type": "certificering",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/browse/",
+   "prioritet": "spring over",
+   "tidsforbrug": "0 timer",
+   "hvorfor": "Eksplicit fravalg, saa han ikke bruger tid paa at overveje dem hver maaned. SC-500 (Cloud and AI Security Engineer, afloeste AZ-500 31. august 2026): security er vigtigt, men han skal laere det gennem threat modeling-spiken og WAF's security pillar, ikke gennem en exam til 1.060 DKK og 60 timer. AB-100 (Agentic AI Business Solutions Architect, GA januar 2026, skills opdateret 22. juli 2026 med A2A-protokol, MCP og Microsoft Foundry): ny og fristende, men det er Business Applications/agentic AI - en anden karrierevej, ikke Azure-infrastrukturarkitektur. AI-103: samme argument. AZ-900: for basal for en der allerede arbejder i Azure dagligt; at tage den signalerer det modsatte af det han vil signalere.",
+   "hvad_springes_over": "Alle fem.",
+   "verificeret": true
+  },
+  {
+   "titel": "Exam dumps: ExamTopics, ExamCollection, SkillCertPro, CertLibrary, validexamdumps m.fl.",
+   "type": "oevemateriale",
+   "url": "",
+   "prioritet": "spring over",
+   "tidsforbrug": "0 timer",
+   "hvorfor": "Siges direkte: de er en faelde paa tre niveauer. (1) De bryder Microsofts eksamensaftale og kan koste certifikatet permanent. (2) De er ofte forkerte - AZ-305 blev opdateret 17. april 2026 og dump-sites er fyldt med spoergsmaal fra 2023 med forkerte svar oveni. (3) Vigtigst: de underminerer hele projektets formaal. Simon har valgt at han kun vil have titlen hvis han reelt kan baere den. En dump-bestaaet AZ-305 giver ham et certifikat og et interview han ikke kan gennemfoere, og det er praecis det scenarie hans egen maaldefinition er skrevet for at undgaa. Dertil: cert-nyhedsnichen er i 2026 fuld af AI-genereret SEO-spam med opfundne fakta - jeg fandt flere sider der paastod at Microsoft har afskaffet Expert-tieren, hvilket er forkert.",
+   "hvad_springes_over": "Alle sammen.",
+   "verificeret": true
+  },
+  {
+   "titel": "Betalte videokurser: Pluralsight, Whizlabs, Udemy AZ-305-kurser, A Cloud Guru",
+   "type": "kursus",
+   "url": "",
+   "prioritet": "spring over",
+   "tidsforbrug": "0 timer",
+   "hvorfor": "Ikke fordi de er daarlige, men fordi de er REDUNDANTE og tidsdyre. Microsoft Learn daekker pensum gratis og mere akkurat (de skriver eksamen), John Savill daekker den mentale model gratis, og resten af hans timer skal gaa til spikes hvor den reelle kompetence bygges. Et 30-timers videokursus foeles produktivt og er den mest almindelige maade at braende 30 timer paa i denne type plan. Med 10-15 timer/uge og to certifikater plus 12 spikes plus drift er der ingen plads til redundant materiale.",
+   "hvad_springes_over": "Alle sammen. Éne undtagelse: hvis LeanLinking allerede BETALER for Pluralsight, kan enkelt-moduler bruges som lakuneudfylder - aldrig som hovedspor.",
+   "verificeret": false
+  },
+  {
+   "titel": "Terraform, AKS-dybde, CKA og Kubernetes-certificeringer",
+   "type": "kursus/certificering",
+   "url": "",
+   "prioritet": "spring over",
+   "tidsforbrug": "0 timer",
+   "hvorfor": "Alle tre er legitime kompetencer og alle tre er forkerte lige nu. Terraform: bredere paa markedet end Bicep, men to IaC-sprog i én 12-maanedersplan er halv kompetence i begge; LeanLinking er et .NET/Azure-hus, saa Bicep + AVM er det rigtige valg. AKS-dybde og CKA: AKS er en driftsdisciplin der kraever et team, og AKS-noder er den dyreste post i et privat lab. Han skal kunne ARGUMENTERE om AKS (hvornaar det er rigtigt, og at 'jeres team kan ikke drive det' er en gyldig og ofte afgoerende arkitektindvending) - ikke drive det. Bemaerk til argumentet: AKS Automatic GA'ede sent 2025 og automatiserer node provisioning, patching og hardening, hvilket flytter traeskoen noget - det er praecis den slags nuance der klaeder et interviewsvar.",
+   "hvad_springes_over": "Alle tre, indtil efter maaned 12.",
+   "verificeret": true
+  },
+  {
+   "titel": "Azure Friday og Microsoft Azure Architecture-blogs (techcommunity)",
+   "type": "video/blog",
+   "url": "https://techcommunity.microsoft.com/category/azure",
+   "prioritet": "senere",
+   "tidsforbrug": "30 min/uge, kun hvis der er luft",
+   "hvorfor": "God til at holde sig aktuel og fange aendringer som den i denne research (ALZ-Bicep-udfasning, AVM-GA, SDK-pensioneringer blev alle annonceret her foerst). Men det er vedligeholdelse, ikke opbygning. Foerst relevant fra maaned 7-8, hvor han skal kunne tale aktuelt i interviews. Tidligere er det en behagelig maade at foele sig produktiv paa uden at blive bedre.",
+   "hvad_springes_over": "Alt der ikke er Azure Architecture eller Azure Infrastructure. Spring produktannonceringer over medmindre de rammer en aktiv spike.",
+   "verificeret": false
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "Spike 0: Sikker landing - abonnement, budget og en bremse der virker",
+   "problem": "Etablér et Azure-miljoe han kan eksperimentere i i 12 maaneder uden at frygte regningen. KRAV: eget abonnement uafhaengigt af LeanLinking (arbejdsgiverens abonnement maa aldrig bruges til privat laering - det er baade en cost- og en compliance-fejl); budget med alerts paa 50/75/90/100%; forecast-baserede alerts slaaet til; anomaly detection aktiv; naming convention og tagging-standard fastlagt foer foerste ressource; ét resource group pr. spike saa alt kan slettes med én kommando. BEGRAENSNING: maanedligt loft paa 400 DKK, haard alert ved 600 DKK. Beslut EKSPLICIT om spending limit beholdes (free account, ressourcer slukkes automatisk naar credit er brugt) eller fjernes (PAYG, kan aldrig genaktiveres). Skriv beslutningen ned med begrundelse - det er hans foerste rigtige ADR og handler om risikoappetit, hvilket er et arkitektemne.",
+   "artefakter": "ADR-001 om subscription- og spending limit-strategi med eksplicit risikovurdering. Screenshot af budget- og alertkonfiguration. En naming/tagging-standard paa én side. Et teardown-script (az group delete) og en fast regel om hvornaar det koeres. En 'dyre services'-liste han selv har prissat via Retail Prices API: Azure Firewall ~5.870 DKK/md, App Gateway WAF v2 ~2.080 DKK/md, Front Door Premium ~2.120 DKK/md, AKS node pool ~600-1.500 DKK/md, Private Endpoint ~47 DKK/md/stk.",
+   "fremgangsmaade": "Opret free account. Laes spending limit-dokumentationen FOER noget deployes - det centrale er at spending limit forsvinder permanent ved overgang til PAYG, og at budget alerts derefter kun er notifikationer der ikke stopper noget. Aktivér free-tier-tilbuddene bevidst: Azure SQL free offer (vaelg AUTO-PAUSE, ikke 'continue using'), Cosmos DB free tier (skal opt-in ved oprettelse, kan ikke tilfoejes bagefter, gaelder ikke serverless). Saet en fast kalenderpaamindelse den 1. i hver maaned: gennemgaa Cost Analysis, find den dyreste ressource, spoerg om den stadig skal vaere der.",
+   "kompetence": "Cost management, governance-disciplin, risikovurdering",
+   "tid": "4-6 timer, foerste uge",
+   "svaerhed": "Let teknisk, men den vigtigste spike i serien. Springes den over, ender de naeste 11 med en uventet regning og et opgivet projekt."
+  },
+  {
+   "titel": "Spike 1: Multi-tenant isolationsmodel for leverandoerdokumentation",
+   "problem": "Design datalags- og adgangsisolation for et system hvor virksomheder uploader leverandoercertifikater og compliance-dokumentation - LeanLinkings faktiske domaene. KRAV: tenant A maa under ingen omstaendigheder kunne laese tenant B's dokumenter; en enkelt stor kunde kraever kontraktligt at deres data ligger fysisk adskilt; onboarding af ny tenant skal tage under 10 minutter; systemet skal kunne rumme 50 smaa og 3 store tenants. BEGRAENSNING: samlet infrastrukturbudget maa ikke overstige 40 DKK pr. lille tenant pr. maaned. Evaluér mindst tre modeller: fuldt delt database med tenant-kolonne + Row-Level Security, database-pr-tenant, og en hybrid hvor smaa tenants deler pool og store faar silo (bridge-modellen).",
+   "artefakter": "ADR med alle tre modeller, for/imod og eksplicit valgt taerskel for hvornaar en tenant flyttes fra pool til silo. C4 container-diagram. Fungerende .NET-prototype med RLS i Azure SQL DER BEVISER isolationen: en integrationstest der forsoeger at laese paa tvaers af tenants og fejler. Cost-model for alle tre modeller ved 50, 500 og 5.000 tenants. Retrospektiv: hvad overraskede ham.",
+   "fremgangsmaade": "Laes Architect multitenant solutions foerst (approaches/overview + data-sektionen + Deployment Stamps). Byg en minimal .NET-API med to endpoints mod Azure SQL free tier. Implementér Row-Level Security med SESSION_CONTEXT. Skriv den negative test foerst - den der beviser at cross-tenant-laesning fejler. Modellér derefter de to andre varianters pris via Retail Prices API. VIGTIGT: den vaerdifulde del er ikke koden, det er taersklen - hvornaar skifter matematikken?",
+   "kompetence": "Multi-tenancy, datamodellering, cost-modellering, sikkerhedsdesign",
+   "tid": "12-16 timer over 2 uger",
+   "svaerhed": "Middel. Hoejeste jobrelevans i hele serien - dette er den spike der giver ham noget at sige hos LeanLinking."
+  },
+  {
+   "titel": "Spike 2: Compute bake-off - samme service, tre hosting-modeller, rigtige tal",
+   "problem": "Hostningsvalg traeffes typisk paa vane. Traef det paa maalinger. KRAV: byg den samme .NET minimal API (ét endpoint der laeser fra Azure SQL, ét der skriver) og deploy den til App Service B1, Azure Container Apps (consumption, scale-to-zero) og Azure Functions Flex Consumption. Mål for hver: cold start (foerste request efter 30 min inaktivitet), p95-latency ved 50 samtidige requests, DKK pr. 1.000 requests ved tre trafikprofiler (10.000/md, 1 mio./md, 20 mio./md), og deployment-tid. BEGRAENSNING: hold dig inden for free grants hvor muligt; App Service B1 koster ~84 DKK/md og skal slettes efter maaling.",
+   "artefakter": "Én tabel med faktiske maalinger - ikke citerede tal fra en blog. ADR med anbefaling og eksplicit brudpunkt ('Container Apps er billigst under X requests/md, derefter vinder App Service fordi...'). Et beslutningstraeе paa én side. Load-test-scripts (k6 eller bombardier) i repoet saa maalingen kan gentages.",
+   "fremgangsmaade": "Byg servicen én gang, deploy tre gange. Container Apps: udnyt det gratis grant (180.000 vCPU-sek, 360.000 GiB-sek, 2 mio. requests/md) - en app der skalerer til nul og bliver inden for grantet koster nul. Functions: brug Flex Consumption, ikke den gamle Consumption-plan (Linux Consumption pensioneres 30. sept. 2028 og Flex er nu den anbefalede). Mål cold start ved at vente og maale foerste request - det er den maaling folk citerer og aldrig selv foretager. Slet App Service straks efter.",
+   "kompetence": "Compute-valg, performance-maaling, cost-modellering",
+   "tid": "12-16 timer over 2 uger",
+   "svaerhed": "Middel. Producerer det bedste interviewmateriale pr. investeret time i hele serien, fordi egne tal ikke kan modsiges."
+  },
+  {
+   "titel": "Spike 3: Idempotent messaging - naar den samme besked kommer to gange",
+   "problem": "En leverandoer-onboarding udloeser en besked der opretter en compliance-workflow. Beskeden leveres to gange. Systemet maa ikke oprette to workflows. KRAV: implementér end-to-end idempotens over Azure Service Bus; haandtér poison messages med dead-letter queue; bevar raekkefoelge pr. tenant; vis maalt adfaerd under bevidst duplikering og bevidst crash midt i behandlingen. BEGRAENSNING: brug Service Bus Standard (~64 DKK/md - Basic understoetter IKKE duplicate detection); dokumentér praecist hvad broker-niveau duplicate detection daekker og hvad den IKKE daekker.",
+   "artefakter": "ADR om idempotens-strategi der eksplicit adskiller broker-niveau duplicate detection fra applikations-niveau idempotent consumer. Sekvensdiagram over det haarde tilfaelde: crash EFTER databaseskrivning, FOER message completion. Fungerende .NET-kode med Azure.Messaging.ServiceBus (IKKE det gamle SDK - se nedenfor). Testsuite der beviser adfaerden ved duplikering, ved crash, og ved poison message. Maaling af DLQ-adfaerd.",
+   "fremgangsmaade": "Laes Idempotent Consumer-moensteret og Service Bus duplicate detection-dokumentationen. KRITISK OG TIDSKRITISK: brug Azure.Messaging.ServiceBus - de gamle biblioteker (WindowsAzure.ServiceBus, Microsoft.Azure.ServiceBus) og SBMP-protokollen pensioneres 30. september 2026, altsaa naesten oejeblikkeligt. Brug sessions til raekkefoelge pr. tenant (bemaerk: med sessions skal partition key og session ID vaere ens for duplikat-bestemmelse). Implementér en processed-messages-tabel i Azure SQL med message ID som primaernoegle. Injicér derefter fejl bevidst - drab processen midt i - og observér.",
+   "kompetence": "Distribuerede systemer, messaging, fejlmoenstre, testdesign",
+   "tid": "14-18 timer over 2 uger",
+   "svaerhed": "Svaer. Det er den spike hvor han opdager at 'exactly-once' ikke findes, og det er en af de vigtigste erkendelser paa hele rejsen."
+  },
+  {
+   "titel": "Spike 4: Observability-instrumentering med OpenTelemetry (KANDIDAT TIL FORFREMMELSE)",
+   "problem": "Naar en leverandoerupload er langsom, hvor gaar tiden hen? KRAV: instrumentér en kaede paa tre led - HTTP API -> Service Bus -> baggrundsworker - med distributed tracing saa én trace-ID kan foelges hele vejen; tilfoej tenant ID som dimension paa alle spans; byg et dashboard der viser p50/p95/p99 pr. endpoint; opsaet én meningsfuld alert med begrundet taerskel. Indfoer derefter bevidst en flaskehals (kunstig langsom query) og BEVIS at instrumenteringen finder den paa under 5 minutter. BEGRAENSNING: hold log ingestion under 5 GB/md (gratisgraensen pr. billing account) - hvilket i sig selv tvinger ham til at traeffe et arkitektvalg om sampling frem for at logge alt.",
+   "artefakter": "ADR om observability-strategi inkl. eksplicit sampling-beslutning og hvad den koster i tabt indsigt. Screenshot af trace der spaender alle tre led. Dashboard. Alert-definition med begrundelse for taersklen (ikke et tilfaeldigt tal). Foer/efter-maaling af flaskehalsen. Retrospektiv om hvad instrumenteringen IKKE fangede.",
+   "fremgangsmaade": "Brug Azure Monitor OpenTelemetry Distro - én NuGet-pakke plus connection string. BRUG IKKE TelemetryClient/TrackEvent: Application Insights classic API SDK 2.x for .NET pensioneres 31. marts 2027, og alt gammelt tutorialmateriale bruger den. (App Insights SDK 3.x fra feb. 2026 er en bro der router classic Track*-kald gennem et OTel-mapping-lag - god at kende af migrationsgrunde, men byg paa Distro'en.) Den svaere del er trace context-propagering over Service Bus - den lykkes ikke automatisk paa tvaers af async-grænser, og det er praecis der laeringen ligger. Log ingestion koster ~14,80 DKK/GB efter de foerste 5 GB, saa sampling er ikke akademisk.",
+   "kompetence": "Observability, distribuerede systemer, cost-bevidst design",
+   "tid": "14-18 timer over 2 uger",
+   "svaerhed": "Middel-svaer. STAERKESTE KANDIDAT TIL DRIFT-FORFREMMELSE: den har rigtige data over tid, et API-kontrakt der kan versioneres, og en klar drift-dimension. Anbefaling: forfrem denne omkring maaned 4-5 og drift den resten af aaret."
+  },
+  {
+   "titel": "Spike 5: Identitet uden secrets - managed identities og workload identity federation",
+   "problem": "Fjern hver eneste hemmelighed fra systemet. KRAV: ingen connection strings, ingen client secrets, ingen storage account keys nogen steder i kode, konfiguration eller pipeline. API'et tilgaar Azure SQL via managed identity; workeren tilgaar Service Bus og Storage via managed identity; deployment-pipelinen autentificerer via workload identity federation (OIDC) i stedet for en service principal med secret. RBAC tildeles paa mindste meningsfulde scope - dokumentér for hver tildeling hvorfor netop det scope. BEGRAENSNING: naar noget IKKE kan gaa uden secret, skal det dokumenteres eksplicit sammen med hvad der i stedet goeres (Key Vault-reference, rotation, overvaagning).",
+   "artefakter": "ADR om identitetsstrategi inkl. begrundet valg mellem system-assigned og user-assigned managed identity pr. komponent. Diagram over hvilken identitet der tilgaar hvad, med hvilken rolle og paa hvilket scope. Fungerende pipeline med OIDC-federation. En liste over alt der IKKE kunne gaa uden secret, med begrundelse. Et 'foer/efter'-inventar over hemmeligheder.",
+   "fremgangsmaade": "System-assigned foerst (enklest), skift derefter én komponent til user-assigned og skriv ned hvorfor det gav mening (delt identitet paa tvaers af ressourcer, identitet der overlever ressourcegenskabelse). Workload identity federation er nu den anbefalede praksis for Azure DevOps- og GitHub Actions-pipelines - den kombinerer service principal-fleksibiliteten med managed identity'ens secret-frihed. Aktivér Entra-only authentication paa Azure SQL. Overfoerselsvaerdi: praecis samme moenster bruges i LeanLinkings pipelines, saa det er noget han kan genkende og kommentere paa i en PR.",
+   "kompetence": "Identitetsdesign, sikkerhed, least privilege, CI/CD",
+   "tid": "12-16 timer over 2 uger",
+   "svaerhed": "Middel. Frustrerende i starten (RBAC-propagering tager minutter og fejlmeddelelserne er utydelige) - det er en del af laeringen."
+  },
+  {
+   "titel": "Spike 6: Landing zone og governance i miniature",
+   "problem": "Design og deploy en reduceret platform landing zone i eget tenant. KRAV: management group-hierarki efter CAF-modellen (Tenant Root -> Platform, Landing Zones med Prod/Non-prod, Sandbox, Decommissioned); mindst fire Azure Policies der faktisk haandhaever noget maalbart (paakraevede tags, tilladte regioner, naegt offentlige storage-blobs, kraev HTTPS); alt som Bicep med Azure Verified Modules; bevis at politikkerne virker ved at forsoege en ikke-compliant deployment og faa den afvist. BEGRAENSNING: HAARD - ingen Azure Firewall, ingen Application Gateway, ingen VPN Gateway. Det er ~8.000 DKK/md hvis det staar taendt. Deploy, dokumentér, riv ned inden for 48 timer.",
+   "artefakter": "ADR om management group-design med begrundelse for hvert niveau. Bicep-kode med AVM-moduler i git. Diagram over hierarki og policy-arv. Screenshot af en afvist ikke-compliant deployment (det er beviset, ikke policy-definitionen). Kort notat om subscription vending: hvad det er, hvilket problem det loeser, og hvorfor LeanLinking sandsynligvis ikke har brug for det endnu.",
+   "fremgangsmaade": "Laes CAF Ready-metodologien - KUN design areas, spring Strategy/Plan/Adopt helt over. Brug Azure Verified Modules, IKKE ALZ-Bicep classic: classic blev fjernet fra acceleratoren 16. februar 2026 og repoet arkiveres 16. februar 2027, saa enhver tutorial der bruger det underviser i noget doedt. Bicep AVM platform landing zone GA'ede januar 2026 og er nu default starter. Start med et enkelt hierarki i haanden foer acceleratoren proeves - acceleratoren deployer mere end han har raad til. Saet en alarm paa 48 timer.",
+   "kompetence": "Governance, IaC, subscription- og management group-design",
+   "tid": "14-18 timer over 2 uger",
+   "svaerhed": "Svaer, primaert fordi omraadet er stort. Hoej signalvaerdi i interviews - de faerreste udviklere har roert management groups."
+  },
+  {
+   "titel": "Spike 7: Netvaerksisolation - hvad Private Endpoints faktisk koster og koeber",
+   "problem": "Flyt Azure SQL og Storage bag Private Endpoints, saa de ikke har offentlige endpoints. KRAV: opret VNet med subnets; Private Endpoints til begge; privat DNS-zone konfigureret korrekt; VNet-integration for Container Apps saa applikationen stadig kan naa dem; BEVIS at offentlig adgang nu fejler; dokumentér hvordan navneoploesningen faktisk fungerer (det er der 90% fejler). BEGRAENSNING: 2 Private Endpoints = ~94 DKK/md; hold spiken paa maks 7 dage; ingen Azure Firewall, ingen App Gateway. Vurdér til sidst aerligt: var det pengene og kompleksiteten vaerd for netop dette system?",
+   "artefakter": "ADR med en ANBEFALING OM AT LADE VAERE for et system paa hans skala - dokumentér hvad det koster (DKK/md, en ny klasse af svaerdiagnosticerbare fejl, en afhaengighed af DNS ingen forstaar) og hvornaar det bliver rigtigt (en kunde med kontraktligt krav om netvaerksisolation). Netvaerksdiagram med faktiske adresserum. Dokumenteret DNS-oploesningsflow. Bevis paa at offentlig adgang fejler. Papir-design af hub-spoke med App Gateway og Front Door, prissat via Retail Prices API - IKKE deployet.",
+   "fremgangsmaade": "Byg det, mål det, riv det ned. Det vaerdifulde output er ikke deploymentet - det er evnen til at sige nej med tal. Papir-designet af de dyre komponenter er lige saa laererigt som at deploye dem, til en broekdel af prisen: App Gateway WAF v2 ~2.080 DKK/md, Azure Firewall ~5.870 DKK/md, Front Door Standard ~225 DKK/md, Front Door Premium ~2.120 DKK/md. Front Door Standard er den eneste af dem der kunne forsvares i et lab, og selv den kun i én maaned.",
+   "kompetence": "Netvaerksdesign, kritisk vurdering af 'sikkerheds'-argumenter, cost-modellering",
+   "tid": "10-14 timer over 1-2 uger",
+   "svaerhed": "Middel-svaer. DNS er den del der driller. Aabn ALDRIG denne spike uden budget alert aktiv."
+  },
+  {
+   "titel": "Spike 8: Threat model paa dokument-upload",
+   "problem": "Lav en STRIDE threat model paa den mest foelsomme del af LeanLinking-lignende funktionalitet: en tenant-bruger uploader et leverandoercertifikat, det scannes, gemmes, indekseres og deles med udvalgte interne brugere. KRAV: dataflow-diagram med eksplicitte tillidsgraenser; STRIDE-analyse pr. graense; mindst 12 identificerede trusler; hver trussel scoret paa sandsynlighed og konsekvens; mitigering med anslaaet implementeringsomkostning i timer; eksplicit liste over ACCEPTEREDE risici med begrundelse. BEGRAENSNING: mitigeringsbudget paa 40 udviklertimer - han skal prioritere og vaelge nogle trusler fra, hvilket er den egentlige oevelse.",
+   "artefakter": "Dataflow-diagram med tillidsgraenser. Trusselstabel med score, mitigering og timeestimat. En ADR om de accepterede risici - det er det modneste dokument i hele serien, fordi det viser at han kan sige 'vi goer ikke noget ved denne, og her er hvorfor'. Implementering af de to hoejest-scorende mitigeringer i den drifted service.",
+   "fremgangsmaade": "Brug OWASP Threat Dragon (gratis, cross-platform, OWASP Production-status, understoetter STRIDE, og v2.6+ kan gemme modeller i et GitHub-repo saa de lever ved siden af ADR'erne). Microsoft Threat Modeling Tool 7.x vedligeholdes stadig, men er Windows-only og laaser modellerne i et proprietaert format uden for git - fravaelg den. Vaer ærlig: vaerktoejet er ikke pointen. STRIDE paa et whiteboard producerer bedre modeller; vaerktoejet er til at gemme resultatet i. Claim-Check-moensteret fra Cloud Design Patterns er direkte relevant for store dokument-uploads - laes det.",
+   "kompetence": "Sikkerhedsdesign, risikoprioritering, at sige nej med begrundelse",
+   "tid": "10-14 timer over 1-2 uger",
+   "svaerhed": "Middel. Krever mere skrivning end kodning, hvilket er hele pointen."
+  },
+  {
+   "titel": "Spike 9: Datastore-valg med egne maalinger - Azure SQL vs Cosmos DB",
+   "problem": "Systemet skal gemme to ting med meget forskellige adgangsmoenstre: relationel tenant- og leverandoerdata (joins, rapportering, transaktioner) og en append-only audit trail (hoej skrivevolumen, sjaeldne laesninger, aldrig opdateringer, ubegraenset vaekst). KRAV: implementér begge mod baade Azure SQL og Cosmos DB; mål skrive-latency, laese-latency for tre repraesentative queries, og pris ved 1 mio., 10 mio. og 100 mio. audit-raekker; dokumentér partitionsnoeglevalg for Cosmos og hvorfor. BEGRAENSNING: hold dig inden for Azure SQL free offer og Cosmos DB free tier (1000 RU/s + 25 GB) - hvilket i sig selv tvinger ham til at forstaa RU-forbrug frem for at laese om det.",
+   "artefakter": "Maaletabel med egne tal. ADR med et delt valg (sandsynligvis SQL til relationel data, Cosmos eller Storage til audit) og eksplicit begrundelse - inkl. hvorfor 'ét datastore til alt' var en mulighed han overvejede og fravalgte. Analyse af partitionsnoegle med den hot-partition-fejl han sandsynligvis laver foerst. Cost-fremskrivning ved tre skalaer.",
+   "fremgangsmaade": "Cosmos free tier skal opt-in ved oprettelse og kan ikke tilfoejes bagefter - og den gaelder IKKE serverless-konti, kun provisioned/autoscale. Vaelg partitionsnoegle bevidst forkert foerst (fx tenant ID naar én tenant dominerer), observér hot partition, ret det, og skriv begge dele ned. Den fejl er mere vaerd end det rigtige svar. Laes de relevante DDIA-kapitler (partitionering, konsistens) PARALLELT med spiken, ikke foer - saa lander de.",
+   "kompetence": "Datastore-valg, partitionering, RU-modellering, cost-modellering",
+   "tid": "12-16 timer over 2 uger",
+   "svaerhed": "Middel-svaer. Cosmos' RU-model er den del der overrasker de fleste."
+  },
+  {
+   "titel": "Spike 10: Bagudkompatibilitet under drift (kraever den forfremmede service)",
+   "problem": "Den drifted service har nu koert i maaneder med rigtige data og en klient han ikke kontrollerer. Foretag tre aendringer UDEN at bryde kontrakten. KRAV: (1) tilfoej et paakraevet felt til en eksisterende API-response; (2) aendr formatet paa en Service Bus-besked som en koerende worker allerede forbruger; (3) migrér et databaseskema mens servicen koerer. Hver aendring skal deployes uden nedetid og uden at en klient paa den gamle version braekker. BEGRAENSNING: der maa ikke vaere et vedligeholdelsesvindue - han skal loese det, ikke undgaa det. Rollback skal vaere muligt paa hvert trin.",
+   "artefakter": "ADR om versioneringsstrategi. En skriftlig runbook for expand/contract-migrering med de faktiske trin han udfoerte. Dokumentation af hvad der GIK GALT - og der gaar noget galt. Foer/efter-maalinger der viser nul fejlede requests under migreringen (eller ærlig dokumentation af de fejlede). Et fejl-katalog der akkumulerer resten af aaret.",
+   "fremgangsmaade": "Dette er den spike der ikke kan simuleres og den vaerdifuldeste i serien for et interview. Expand/contract: tilfoej det nye felt som valgfrit, deploy, migrér data, skriv til begge, laes fra nyt, fjern gammelt - fem deployments, ikke ét. Til beskedskemaet: versionér beskeden og lad workeren haandtere begge versioner i en overgangsperiode. Regel: skriv NED hvad han troede ville ske, foer han goer det. Forskellen mellem forventning og virkelighed er hele laeringen, og den kan kun fanges hvis forventningen er skrevet ned foerst.",
+   "kompetence": "Drift, bagudkompatibilitet, migreringsstrategi, ydmyghed",
+   "tid": "12-16 timer over 2 uger, gentages i mindre form maanedligt",
+   "svaerhed": "Svaer. Kan foerst koeres naar den forfremmede service har koert 3+ maaneder med rigtige data."
+  },
+  {
+   "titel": "Spike 11: Well-Architected review af egen drifted service",
+   "problem": "Koer et rigtigt WAF-review paa den service han selv har bygget og driftet i maaneder. KRAV: gennemfoer det officielle Azure Well-Architected Review assessment (~60 spoergsmaal) mod servicens faktiske subscription; gennemgaa derefter design review checklist for alle fem pillars manuelt; producér en prioriteret liste hvor hver linje har fund, pillar, rettelsesomkostning i timer og DKK/md, og omkostning ved at lade vaere. BEGRAENSNING: han skal vaelge de tre han faktisk implementerer og eksplicit afvise resten med begrundelse - et review uden prioritering er en oenskeseddel, ikke arkitektarbejde.",
+   "artefakter": "Eksporteret assessment-resultat. Prioriteret backlog med omkostninger i begge retninger. ADR om de tre valgte og hvorfor de oevrige blev fravalgt. Implementering af de tre. Genkoerselsmaaling 4-6 uger senere der viser om det virkede. Et notat om hvor assessmentet gav ANBEFALINGER DER VAR FORKERTE for netop denne workload - det notat er det staerkeste enkeltdokument i hele portefoeljen, fordi det beviser at han taenker selv frem for at foelge en checkliste.",
+   "fremgangsmaade": "Koer assessmentet mod eget system, aldrig mod et hypotetisk - man loeber toer for svar efter 15 spoergsmaal og laerer intet. Integrér Azure Advisor-anbefalinger fra det faktiske subscription. Laes tradeoffs-siden for hver pillar EFTER assessmentet og se hvilke af anbefalingerne der er i indbyrdes konflikt - de er der altid, og at kunne se konflikten er selve kompetencen. Gentag hele oevelsen maaned 6, 9 og 12 paa samme service: han vil kunne se sine egne tidligere fejlvurderinger, og DET er kalibrering.",
+   "kompetence": "WAF-review som haandvaerk, prioritering, kalibrering",
+   "tid": "10-12 timer, gentages tre gange over aaret",
+   "svaerhed": "Middel. Den spike der bedst simulerer en arkitekts faktiske arbejdsdag."
+  },
+  {
+   "titel": "Spike 12: Reduktionsoevelsen - skriv reference architecture'n om",
+   "problem": "Vaelg en Microsoft reference architecture med mindst 12 komponenter fra Azure Architecture Center. KRAV: skriv en kritisk analyse der besvarer seks spoergsmaal - hvilken skala antages? hvilke pillars optimeres og hvilke ignoreres? hvor mange komponenter skal patches, betales for og forstaas kl. 03? hvilken organisation antages (findes det platform team hos os?)? hvad er udeladt (pris, drift, vagtordning, migration fra det eksisterende, data residency, rollback, tenant-onboarding)? hvor gammel er den? Design derefter den mindste arkitektur der opfylder 80% af de samme krav. BEGRAENSNING: prisfastsaet BEGGE via Retail Prices API og angiv praecist hvad der gaar tabt ved reduktionen - reduktionen skal have en aerlig pris, ellers er analysen propaganda i den anden retning.",
+   "artefakter": "Kritisk analyse paa 2-3 sider. To diagrammer side om side. To cost-modeller. En eksplicit liste over hvad den reducerede version IKKE kan, og ved hvilken vaekst hver udeladt komponent bliver noedvendig.",
+   "fremgangsmaade": "Dette er ikke en engangsspike - det er en ugentlig 45-minutters rutine i 12 maaneder, hvor spike 12 er den foerste fulde, skrevne gennemfoerelse. Tjek altid alderen: reference architectures i Azure Architecture Center har en ms.date i GitHub-kilden bag siden (github.com/MicrosoftDocs/architecture-center), og en arkitektur fra 2022 anbefaler services og moenstre der er blevet erstattet. Efter 40 gennemloeb kan han goere det paa 20 minutter mundtligt - og DET er den kompetence der faar folk til at spoerge ham til raads.",
+   "kompetence": "Kritisk laesning, reduktion, cost-modellering, skriftlig argumentation",
+   "tid": "8-10 timer foerste gang, derefter 45 min/uge",
+   "svaerhed": "Let teknisk, svaer intellektuelt. Den mest undervurderede oevelse i hele planen."
+  }
+ ],
+ "paa_jobbet": [
+  "Bed om Reader-rollen paa et non-prod subscription. Det er den enkeltbedste ting han kan bede om, fordi den ikke kan afvises med en risikobegrundelse: Reader kan intet aendre, intet oedelaegge og intet koste. Formuleringen der virker: 'jeg vil gerne kunne se ressourcerne naar jeg debugger mine tickets, saa jeg ikke skal spoerge jer hver gang'. Det er sandt, det er nyttigt for dem, og det giver ham adgang til Azure Advisor, resource-topologi, faktiske SKU'er og Cost Analysis (hvis cost-adgang foelger med - ellers bed separat om Cost Management Reader).",
+  "Skriv en ADR til sin egen ticket, ogsaa naar ingen har bedt om det, og laeg den i PR-beskrivelsen frem for som separat dokument. Ingen kan sige nej til en velskrevet PR-beskrivelse. Format: kontekst, de 2-3 mulige loesninger, hvad han valgte, hvad det koster. Efter tyve af dem er han manden der forklarer sine valg, og det aendrer hvordan folk taler til ham i reviews. Dette er den mest undervurderede mandat-frie manoevre der findes.",
+  "Kortlaeg LeanLinkings tenant-isolationsmodel for sig selv. Hvordan er tenants faktisk adskilt - paa databaseniveau, i storage, i cachen, i logfilerne? Han rammer allerede konsekvenserne i sine tickets uden at have set moenstret. Naar han har kortlagt det, kan han for foerste gang stille et arkitektspoergsmaal der lyder som nysgerrighed frem for kritik: 'jeg proevede at forstaa hvordan tenant-isolationen fungerer paa datalaget - har jeg forstaaet det rigtigt?'",
+  "Tegn et C4 context- og container-diagram over det system han arbejder paa, og vis det til en senior udvikler eller arkitekt med spoergsmaalet 'har jeg forstaaet det her rigtigt?'. Det er en af faa handlinger der er socialt gratis, faktisk hjaelpsom for dem, og som positionerer ham som en der taenker paa systemniveau. Naesten alle siger ja til at rette en juniors diagram - faa siger ja til at holde et arkitekturmoede med en junior. Samme resultat, ingen tilladelse noedvendig.",
+  "Notér den faktiske SKU og maanedspris hver gang en ticket roerer en Azure-ressource. Han kan slaa prisen op i Retail Prices API uden nogen adgang overhovedet. Efter et par maaneder har han en cost-oversigt over sit eget omraade som sandsynligvis INGEN i organisationen har. Naar nogen spoerger 'hvad vil den her feature koste?', er han den eneste med et svar og en kilde. Det er den hurtigste vej til at blive spurgt igen.",
+  "Stil trade-off-spoergsmaalet i code review, ikke i moeder. 'Hvad var alternativet her?' eller 'hvad ville braekke hvis vi gjorde X i stedet?' er legitime review-kommentarer fra enhver, uanset titel. I et moede lyder de samme spoergsmaal som en junior der udfordrer. Kanalen afgoer om det er indflydelse eller stoej.",
+  "Ved enhver incident: byg sin egen tidslinje ud fra logs, Application Insights og commit-historik - ogsaa selvom han ikke er inviteret med. Skriv hvad han ville have gjort anderledes. Ingen skal se det foerste ti gange. Det traener praecis den evne interviews tester ('fortael om en produktionsfejl og hvad du laerte'), og han bygger den paa rigtige haendelser i stedet for hypotetiske.",
+  "Laes Azure DevOps pipeline-YAML'en grundigt og tegn deployment-flowet: hvad bygges, hvad testes, hvad gates paa hvad, hvordan rulles der tilbage, hvem har adgang til at godkende. Ingen tilladelse noedvendig - det ligger i repoet. Det giver ham et sprog om release-arkitektur som de faerreste juniorer har, og det afdaekker naesten altid noget ingen har set paa i to aar.",
+  "Kig efter secrets og gamle SDK'er i kodebasen og skriv en stille liste. Service Bus' gamle biblioteker (Microsoft.Azure.ServiceBus, WindowsAzure.ServiceBus) og SBMP-protokollen pensioneres 30. september 2026 - altsaa om faa uger. Application Insights classic API SDK 2.x pensioneres 31. marts 2027. Hvis LeanLinking bruger nogen af dem, er det en reel, tidsstemplet, dokumenteret risiko som han kan fremlaegge med kilde. Det er den slags fund der aendrer hvordan man bliver set - ikke fordi det er smart, men fordi det er konkret, verificerbart og har en dato paa.",
+  "Instrumentér sin egen ticket lidt bedre end noedvendigt. Ét ekstra meningsfuldt span eller én ekstra dimension (fx tenant ID) paa den kode han alligevel roerer. Det er inden for hans mandat - det er hans ticket - og over maaneder bygger han observability ind i systemet uden nogensinde at have foreslaaet et observability-initiativ.",
+  "Naar en ticket kommer med et design han er uenig i: implementér den som specificeret, men skriv én kort kommentar med den alternative tilgang og dens trade-off. Ikke i et moede, ikke som modstand - som en note. Fem af dem bliver ignoreret. Den sjette bliver husket, og det er den der aendrer hvem der bliver spurgt naeste gang.",
+  "Bed om at maatte deltage som lytter i én arkitektur- eller designdiskussion pr. maaned. Formuleringen: 'jeg laerer meget af at hoere hvordan de beslutninger traeffes - maa jeg sidde med og lytte?'. Lytterrollen er en meget lille ask og bliver naesten altid imoedekommet. Efter tre-fire gange begynder folk at spoerge hvad han mener, og saa er han inde uden nogensinde at have bedt om det."
+ ],
+ "faldgruber": [
+  "At laese WAF som fem ord man kan citere. 'Vi foelger Well-Architected Framework' er indholdsloest og gennemskues oejeblikkeligt af enhver erfaren interviewer. Det maalbare skel: kan han navngive en konkret trade-off mellem to pillars i et system han selv har bygget, med tal? Hvis ikke, har han laest overskrifterne. Tradeoffs-siderne er hvor arbejdet ligger, og de er dem alle springer over.",
+  "At tro at AZ-305 goer ham til arkitekt. Den er 40-60 multiple choice-spoergsmaal paa 120 minutter. Den beviser at han kan genkende det rigtige svar naar det staar blandt fire - ikke at han kan formulere spoergsmaalet, indsamle begraensningerne eller forsvare valget over for en skeptisk stakeholder. Certifikatet aabner HR-filteret; artefakterne bestaar interviewet. Forveksles de to, faar han titlen og fejler i rollen - praecis det scenarie hans egen maaldefinition er skrevet for at forhindre.",
+  "At overse at AZ-104 er en haard forudsaetning. Det er den mest sandsynlige planlaegningsfejl i hele cert-sporet: han laeser til og bestaar AZ-305, og opdager saa at 'Azure Solutions Architect Expert' ikke udstedes uden aktiv AZ-104. Udloebne certifikater taeller ikke. Rigtig raekkefoelge: AZ-104 foerst, AZ-305 3-6 maaneder senere. For taet paa hinanden er spild af overlappende laesning; for langt fra hinanden tvinger en renewal midt i forloebet.",
+  "At bruge exam dumps. Tre grunde, i stigende alvorlighed: det bryder eksamensaftalen og kan koste certifikatet permanent; dumpene er ofte forkerte, fordi AZ-305 blev opdateret 17. april 2026 og materialet stammer fra 2023; og vigtigst - det producerer praecis den kompetenceloese titel han selv har sagt han ikke vil have. Han har defineret sit maal som 'kun hvis jeg reelt kan baere den'. Dumps er den direkte modsaetning.",
+  "At lade spike-serien glide over i produktbyggeri. Symptomerne er genkendelige: en login-side, en admin-UI, 'jeg skal lige rydde op i koden foerst', en CRUD-skaerm mere. Hver time paa UI og CRUD er en time der ikke bliver til arkitekturkompetence. Reglen der beskytter: ingen spike maa producere en brugergraenseflade. Postman, curl og en integrationstest er graensefladen. Er UI'et noedvendigt for at demonstrere pointen, er pointen forkert valgt.",
+  "At fjerne spending limit uden at forstaa at den ikke kan sættes tilbage. Spending limit findes kun paa free account/credit-baserede subscriptions. Gaar man til pay-as-you-go, forsvinder den permanent og vises ikke engang i portalen. Derefter er budget alerts eneste vaern - og de er e-mails, ikke en bremse. Ingenting stopper automatisk. Anomaly detection er gratis, men advarer typisk 1-2 dage EFTER anomalien, hvilket er for sent til en weekend med en Azure Firewall taendt.",
+  "At deploye de fire dyre services i et laeringsmiljoe. Azure Firewall 1,25 USD/time (~5.870 DKK/md), Application Gateway WAF v2 fra 0,443 USD/time plus capacity units (~2.080 DKK/md), Front Door Premium (~2.120 DKK/md), AKS node pools (control plane gratis, noderne ikke). De laeres paa papir og i Retail Prices API. En glemt Azure Firewall over en ferie er ikke en laerepenge - det er en maanedsloen.",
+  "At laere ALZ-Bicep classic. Det er blandt de mest sandsynlige spildte 15 timer i hele planen, fordi det er hvad man finder i tutorials fra 2023-2025. Classic blev fjernet fra ALZ-acceleratoren 16. februar 2026, og repoet arkiveres 16. februar 2027. Azure Verified Modules er standarden - Microsoft accepterer ikke laengere forslag til nye ikke-AVM Bicep-moduler. Tjek altid udgivelsesdatoen paa IaC-tutorials.",
+  "At laere Application Insights classic SDK. TelemetryClient og TrackEvent findes i naesten alt eksisterende .NET-observability-materiale. SDK 2.x for .NET pensioneres 31. marts 2027. Bygger han observability-spiken paa den, laerer han et API der doer inden for planens forlaengede horisont. Azure Monitor OpenTelemetry Distro er vejen - og som bonus er OpenTelemetry leverandoerneutralt og overlever et jobskifte til et ikke-Azure-hus.",
+  "At laese reference architectures som facit. De er skrevet af en leverandoer med incitament til at man bruger flere services, i en greenfield-verden uden legacy, uden ens budget og uden ens team. En junior der foreslaar fjorten komponenter til et problem der kraever tre, har laest for meget Architecture Center og taenkt for lidt. Modgiften er reduktionsoevelsen, hver uge.",
+  "Ikke at slette ressourcer efter en spike. Den mest banale og mest almindelige maade at oedelaegge budgettet paa. Ét resource group pr. spike, et teardown-script, og en fast ugentlig kalenderpaamindelse om at koere det. Undtagelsen er den ene forfremmede drift-service - alt andet slettes.",
+  "At jagte de nye AI-certifikater fordi de foeles aktuelle. 2026-boelgen (AI-200, AI-103, AI-901, AB-100, SC-500) er stoerste distraktion i aar for netop hans maal. AB-100 hedder endda 'Architect' i titlen, hvilket goer den ekstra fristende - men det er agentic AI i Business Applications-sporet, en anden karrierevej. Hver af dem koster 60+ timer af et budget paa ~600 timer. Fravalget skal traeffes én gang og skrives ned, ellers genforhandles det hver maaned.",
+  "Diagram-perfektionisme. Timer der forsvinder i vaerktoejsvalg, ikonsaet og layout. Et diagram der kan forklares paa 90 sekunder slaar et smukt diagram. Stop paa C4-niveau 3. Vaelg ét vaerktoej i uge én og skift aldrig.",
+  "At laese boegerne lineaert. DDIA 2. udgave er 650 sider, og at laese den fra ende til anden er en klassisk maade at braende 50 timer paa med lav retention. Kapitlerne skal laeses NAAR en spike rammer emnet - partitionering under datastore-spiken, konsistens under multi-tenancy-spiken. Samme regel for Fundamentals of Software Architecture.",
+  "At stole paa cert-nyheder fra blogs. Nichen er i 2026 domineret af AI-genereret SEO-spam med opfundne detaljer. Jeg fandt under denne research flere sider der paastod at Microsoft havde afskaffet Expert-tieren og samlet alt under 'Advanced' - forkert. Kun learn.microsoft.com og techcommunity.microsoft.com er paalidelige paa cert-status, priser og pensum. Alt andet skal krydstjekkes.",
+  "At vente paa mandat. Den dyreste faldgrube, fordi den er passiv og foeles fornuftig. Der kommer ikke et tidspunkt hvor nogen giver en junior arkitekturmandat. Mandatet opstaar bagudrettet, naar man i tolv maaneder har skrevet ADR'er ingen bad om, tegnet diagrammer ingen bestilte og haft priser ingen andre havde. Hvis han maaned 6 stadig venter paa at blive inviteret ind, er signalet ikke at han skal vente laengere - det er at strategien skal skifte til jobsoegning."
+ ],
+ "maalepunkter": [
+  "Han kan paa et whiteboard, uden noter og paa under 10 minutter, tegne LeanLinkings faktiske systemarkitektur paa container-niveau og pege paa de tre svageste punkter med en begrundelse der holder over for en senior kollega.",
+  "Han har mindst 15 skrevne ADR'er, og mindst 5 af dem dokumenterer en beslutning han SENERE aendrede, med et opfoelgende dokument om hvorfor den foerste var forkert. Antallet er lettere at snyde med end det andet kriterium - det er de fem revurderinger der er det egentlige maalepunkt, fordi de beviser kalibrering frem for selvsikkerhed.",
+  "Naar nogen spoerger 'hvad koster den her arkitektur om maaneden ved 200 tenants?', kan han svare med et tal, en kilde og en usikkerhedsmargin inden for 30 minutter - inklusive de skjulte poster (egress, log ingestion, private endpoints, backup).",
+  "Han har DREVET én service i minimum 6 sammenhaengende maaneder med maalt oppetid, mindst to reelle incidents han har diagnosticeret og skrevet post-mortem paa, og mindst tre bagudkompatible aendringer gennemfoert uden nedetid. Ikke bygget - driftet. Skillelinjen er om noget er gaaet i stykker og han har rettet det.",
+  "For hvert teknisk valg i hans portefoelje kan han uopfordret navngive mindst én reel ulempe. Testen: bed ham argumentere overbevisende FOR det alternativ han selv fravalgte. Kan han ikke det, forstod han ikke valget - han havde bare en praeference.",
+  "Han kan koere et Well-Architected review paa en arkitektur han ikke selv har bygget, paa 90 minutter, og producere en prioriteret liste hvor hvert punkt har en omkostning i begge retninger (at rette OG at lade vaere).",
+  "Han kan laese en ukendt reference architecture og paa 20 minutter mundtligt liste fem indbyggede antagelser, sige hvilke der er falske for hans kontekst, og skitsere hvad der saa aendrer sig - inklusive hvad der bliver DYRERE ved at forenkle, ikke kun hvad der bliver enklere.",
+  "Mindst én af hans ADR'er, forslag eller analyser er blevet adopteret eller har aendret en beslutning hos LeanLinking. Ét er nok - det er beviset paa at indflydelse uden mandat faktisk virkede for ham. Nul ved maaned 9 er det staerkeste enkeltsignal om at han skal skifte job for at faa rollen.",
+  "En kollega har uopfordret spurgt ham til raads om et designvalg der laa uden for hans egne tickets - mindst tre gange, fra mindst to forskellige personer. Dette er det reneste eksterne signal der findes, fordi det ikke kan selviscenesaettes og ikke afhaenger af hans egen vurdering.",
+  "AZ-104 bestaaet og aktiv, AZ-305 bestaaet. Begge, i den raekkefoelge. Uden AZ-104 aktiv findes titlen ikke, uanset AZ-305-resultatet.",
+  "Han kan gennemfoere en 45-minutters arkitektur-oevelse (whiteboard-design af et system han ikke har set foer) hvor han bruger de foerste 10 minutter paa at stille afklarende spoergsmaal om begraensninger, i stedet for at begynde at tegne. Det er den enkeltadfaerd der tydeligst skiller arkitekter fra seniorudviklere i interviews, og den kan trænes.",
+  "Hans maanedlige Azure-forbrug har over 12 maaneder aldrig overskredet 600 DKK, og han kan forklare hvorfor hver enkelt post var der. Det er ikke et sparemaal - det er et bevis paa cost-disciplin under praksis, hvilket er den samme kompetence i lille skala som den arbejdsgiveren skal koebe."
+ ]
+}

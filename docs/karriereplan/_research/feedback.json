@@ -1,0 +1,397 @@
+{
+ "kernepointer": [
+  "Skelnen der bærer hele sektionen: BROADCAST vs. ADVERSARIELT. Et foredrag, en podcast, et blogindlæg han læser, en konference - det er broadcast. Det ændrer aldrig en beslutning han har truffet. Adversarielt er når et andet menneske læser HANS konkrete artefakt og siger 'det her er forkert, fordi X'. Cirka 90% af det folk kalder 'fagligt netværk' er broadcast. Han skal have mindst TO adversarielle kanaler kørende hele tiden. Alt andet er sekundært.",
+  "Den præcise risiko er ikke at han mangler feedback. Det er at STILHED LÆSES SOM GODKENDELSE. Han publicerer en ADR, får 40 visninger og nul kommentarer, og konkluderer at ingen havde indvendinger. Det er den mekanisme der producerer en selvsikker udvikler med forkerte vaner. Han skal på forhånd definere hvad der tæller som svar - og behandle udeblivende svar som en FEJLET KANAL, ikke som en bestået test.",
+  "Betaling er det der får en mentorrelation til at overleve 12 måneder. Gratis mentorordninger dør stille i måned 3, fordi ingen af parterne har en forpligtelse. DKK 1.000-1.500 pr. måned for én 90-minutters session med en rigtig arkitekt er den højest forrentede krone i hele planen - højere end nogen certificering. En certificering fortæller ham intet om hvorvidt hans design er godt.",
+  "Han skal KØBE HÅRDHED EKSPLICIT. En betalt mentor har en kommerciel interesse i at være behagelig. Kontrakten skal siges højt i første session: 'Jeg betaler dig for at finde fejlen. En session hvor du ikke har noget kritisk at sige, er en spildt session - sig det så.' Uden den sætning får han en venlig samtalepartner til fuld pris.",
+  "Open source er den mest undervurderede kanal i hele listen. Det er den ENESTE mekanisme hvor en fremmed med reel ekspertise er strukturelt forpligtet til at læse hans kode linje for linje, sige hvad der er galt, gratis, med et binært udfald: merged eller ikke merged. Ingen høflighed, ingen relation at beskytte. Og de tre bedste kandidater ligger direkte i hans domæne.",
+  "Architecture katas er hårdeste kvalitet pr. time - og næsten ingen bruger dem. Gratisversionen er endnu bedre end den betalte: TheKataLog har 83 offentlige finalistløsninger. Han løser samme kata på 4 timer, læser derefter tre finalisters løsning på præcis samme problem, og ser sit eget hul sort på hvidt. Det er det tætteste på en facitliste der findes i arkitektur, og det kan køres hver måned for 0 kr.",
+  "AI er hans mest tilgængelige modspiller og hans farligste. Han er præcis på det stadie hvor han kan producere designs der LYDER rigtige. AI er fremragende til at bekræfte at noget lyder rigtigt. Bruger han den som eneste modspil, bruger han 12 måneder på at gøre sine designs mere overbevisende uden noget signal om hvorvidt de er korrekte - og det vil føles som fremgang hele vejen.",
+  "Den systematiske AI-fejl der rammer netop ham: modellen kender ikke hans organisation. Den anbefaler arkitektur der kræver et driftsteam han ikke har. Ved 7 årsværk, ingen platform team og ingen nattevagt er de fleste 'korrekte' arkitektursvar forkerte. Han skal give organisationsbindingen med i HVER prompt, ellers svarer den for en 200-mands virksomhed.",
+  "Mekanismerne er billige hver for sig og uoverkommelige tilsammen. Kørte han dem alle, ville feedback æde ~7 timer om ugen - halvdelen af budgettet. Loftet er 2,5-3 timer/uge (20-25%). Han skal vælge TRE og aktivt afvise resten. Evnen til at sige nej til en meetup er en del af planen.",
+  "Kompetenceporten i måned 9-10 skal have et EKSTERNT anker, fordi ingen på LeanLinking kan bedømme ham. Det stærkeste kriterium der findes: hans betalte mentor - som har set seks måneders ADR'er, ikke er hans arbejdsgiver og ikke har nogen interesse i at lyve - svarer ærligt på 'ville du lade ham eje en designbeslutning i din virksomhed?'. Det kan han ikke snyde sig igennem, og det kan ingen intern anbefaling erstatte.",
+  "Aarhus er ikke en udkant her. Byen har en usædvanligt tæt enterprise-softwareklynge, og folk fra den kommer til ANUG og Aarhus DevOps. Hans mentorpulje sidder 20 minutter væk. Han skal ALDRIG rejse til København for en aftenmeetup - 6 timers transport for 90 minutters foredrag er indefensibelt mod et 10-15 timers budget.",
+  "Måletallet for hele sektionen er ét: hvor mange gange har et menneske UDEN FOR LeanLinking fortalt ham at et af hans designs var forkert, med en begrundelse han accepterede og handlede på? Under 3 gange på seks måneder betyder at loopene er kosmetiske, uanset hvor mange Discords han er medlem af."
+ ],
+ "feedback_udefra": [
+  "RANGERING (kriterium: hårdhed x overlevelsessandsynlighed / omkostning). 1) Betalt mentor med hårdhedskontrakt. 2) Open source-bidrag. 3) Kata-selvdiff mod TheKataLog. 4) DDD-CQRS-ES Discord med velformulerede spørgsmål. 5) Review-bytte med kill-kriterium. 6) Målrettet publicering (ADR sendt til navngivne personer). 7) Aarhus-meetups brugt instrumentelt. 8) AI-sparring (høj volumen, skal loftlægges). 9) IDA/Dansk IT mentorordninger (karriere, ikke teknik). 10) Konferencer (kalibrering, arbejdsgiverbetalt). 11) r/softwarearchitecture, dev.to, Medium, X - nul. Springes over.",
+  "1. BETALT MENTOR - HØJEST PRIORITET. Pris: to veje. (a) MentorCruise: abonnementer DKK ~800-3.000/md (USD 120-450), typisk plan ~USD 150 med ugentlige calls, async beskeder og review mellem sessioner; 7 dages gratis prøve; ~104 profiler under Software Architecture; timepris USD 60-200+. (b) Direkte aftale med en dansk arkitekt fundet via ANUG/LinkedIn: DKK 1.000-1.500 for 90 minutter månedligt = DKK 12-18k/år. (b) er dyrere pr. time men giver dansk kontekst, samme tidszone og en person der kan tale hans arbejdsmarked. Latenstid: hurtig (async svar på dage, session månedligt). Hårdhed: VARIABEL - og det er hele knasten; skal købes eksplicit. Overlevelse: HØJ når der betales, LAV når det er gratis. Frekvens: 90 minutter én gang om måneden er nok. Oftere og han har ikke bygget noget nyt at vise.",
+  "2. HVAD MAN BEDER MENTOREN OM (dette afgør om pengene er spildt). Forkert: 'kan du være min mentor og hjælpe mig med at blive arkitekt?' Rigtigt: 'Jeg sender dig en ADR på max 2 sider 48 timer før hver session. Jeg vil have dig til at finde hullet. Du skal ikke lære mig noget generelt - du skal angribe det konkrete valg.' Gør det værd for mentoren ved at (a) betale, (b) altid møde forberedt med ét artefakt og tre spørgsmål, (c) sende en kort opsamling bagefter med hvad han ændrede - mentorer bliver, når de kan se effekten af deres tid, (d) aldrig bruge sessionen på ting han kunne have googlet eller spurgt en AI om. Han skal forberede sessionen med AI: lad modellen generere de 15 oplagte indvendinger, besvar dem selv, og brug mentortimen på de tre der er tilbage.",
+  "3. ADPList - IKKE EN MENTORORDNING, MEN ET CASTING-VÆRKTØJ. Verificeret aktiv i 2026, 100% gratis, ingen premium-tier, 40.000+ mentorer, 2.151+ inden for software engineering og 4.329+ inden for system design. Sessionerne er typisk 30 minutter og engangs. Hårdhed: LAV - frivillige, halv time, ingen kontekst på hans system, og de vil være opmuntrende. Overlevelse som fast relation: LAV. DERFOR: brug den ikke til 'at få en mentor'. Brug den til at afholde en CASTING på tre uger: book 6-8 samtaler med folk der har titlen Solution/Software Architect og baggrund i B2B SaaS, integrationer eller compliancetunge domæner. Medbring ét ægte designspørgsmål fra LeanLinking hver gang. Scor dem på ÉN ting: sagde personen mig konkret imod om noget substantielt? Konvertér den bedste til en betalt månedsaftale uden for platformen. 3-4 timers investering, og det er den mest effektive måde at finde en mentor på i 2026.",
+  "4. IDA MENTOR - dansk, billig, men FORKERT VÆRKTØJ til dette formål. Verificeret: gratis 6-måneders program; mentor og mentee mødes 4-6 gange à 1,5 time; ansøgningsvinduer lukker i februar (forår) og september (efterår) - for studerendes program angives tilmelding 5.-31. januar med matchning i februar. 9-måneders programmet for medlemmer med mere end 2 års erfaring koster 3.795 kr. Studiemedlemskab: første år gratis, derefter 20 kr./md.; fuldt medlemskab fra 292 kr./md. ÆRLIG VURDERING: det er et KARRIERE-mentorprogram, ikke et arkitektur-sparringsprogram. Matchningen sker på karriereudvikling, ikke på 'kan du rive min event-sourcing-model fra hinanden'. Nyttigt til spørgsmålet 'skal jeg tage titlen / hvad er den værd', ubrugeligt til 'er min idempotensnøgle forkert'. Kør den gerne parallelt - den er nærmest gratis - men tæl den ALDRIG som teknisk modspil. Bemærk timing: efterårsvinduet lukker i september 2026, altså nu; ellers januar/februar 2027. Verificér den præcise frist direkte hos IDA, kilderne er ikke helt entydige om studerende- vs. nyuddannedeprogrammet.",
+  "5. DANSK IT MENTORPROGRAM - anden række, overvej at springe over. Verificeret: indgår i Dansk IT-medlemskab, hold starter i januar, tilmelding åbner i november, kontakt Hans Ravnkjær Larsen (hrl@dit.dk). Pris for medlemskab ikke verificeret. Risiko: Dansk IT vægter IT-ledelse og digitalisering; sandsynligheden for at blive matchet med en IT-chef frem for en hands-on arkitekt er reel. Ansøg i november hvis han vil have et dansk netværksanker, men byg intet på det.",
+  "6. AARHUS-MEETUPS - eksisterer, men kun værdifulde INSTRUMENTELT. Verificerede grupper: Aarhus .NET User Group (ANUG, meetup.com/anugdk - kører bl.a. sociale 'ANUG Friday Beer'-formater), Aarhus DevOps (meetup.com/arhus-devops-meetup), GOTO Meetups Aarhus (meetup.com/goto-meetups-aarhus - emner: programmeringssprog, event-driven architecture, microservices), Azure Usergroup Denmark Aarhus (meetup.com/azure-usergroup-denmark-aarhus - venue-oplysningen i søgeresultatet virker forældet, tjek selv om den stadig kører), Tech Hub Aarhus (techhubaarhus.com/events). BEMÆRK: meetup.com kunne ikke hentes gennem netværksproxyen i denne research, så jeg har verificeret at grupperne EKSISTERER, ikke deres aktuelle aktivitetsniveau. Han skal selv tjekke om der er events inden for de sidste tre måneder, før han bruger en aften. Tid: 3-4 timer pr. aften inkl. transport. Pris: normalt gratis. Hårdhed som feedback: NUL - det er broadcast. REGLEN: en meetup hvor han ikke har talt med nogen om sit eget design, er en spildt aften. Maks. én om måneden, og han skal gå derfra med ét navn. Det er hele formålet: rekruttering af mentor og review-partner.",
+  "7. ONLINE-COMMUNITIES DER FAKTISK REVIEWER DESIGN. Bedste match: DDD-CQRS-ES Discord (invite verificeret via github.com/ddd-cqrs-es/community: https://discord.gg/sEZGSHNNbH - migreret fra Slack til Discord, sprog- og platformsagnostisk). Hvorfor lige den: hans domæne - supplier onboarding, revisionsspor, certifikatudløb, compliance - er lærebogseksempler på DDD og event sourcing, og folkene der (Marten-, Wolverine-, Axon-, EventStore-miljøet) svarer teknisk og direkte. Latenstid: timer til et døgn hvis spørgsmålet er velformuleret - den hurtigste hårde kanal der findes, og den er gratis. Hårdhed: MIDDEL-HØJ. Overlevelse: HØJ, nul friktion. Nummer to: Virtual DDD (virtualddd.com - verificeret aktiv, session 9. september 2026 med Trond Hjorteland, 'Organisational Dysfunctions: A Live Diagnosis Session'; nyligt relanceret website; community på Discord; finansieret via Open Collective, gratis). Kører live online-sessioner om DDD, softwarearkitektur og design, flere formater end rene foredrag.",
+  "8. HVORDAN MAN SPØRGER SÅ MAN FÅR SVAR - den enkeltteknik der afgør om alle online-kanaler virker. Et åbent spørgsmål ('hvordan designer jeg X?') får nul svar. Et spørgsmål med en påstand i får svar, fordi folk reagerer langt hurtigere på noget konkret der er forkert end på et tomt lærred. Skabelonen: (1) beslutningen i én sætning, (2) de to navngivne optioner, (3) den binding der gør det svært (fx: 7 udviklere, ingen nattevagt, kunden har on-prem SQL Server), (4) hvad han allerede har udelukket og hvorfor, (5) ét specifikt spørgsmål. Eksempel der virker: 'Vi skal varsle om ~1 mio. udløbende certifikater. Jeg valgte et natligt scan over per-certifikat timers, fordi vi ikke har nogen der kan drifte durable timers. Hvad overser jeg?' Eksempel der ikke virker: 'Nogen der har erfaring med notifikationssystemer?'",
+  "9. HVOR MAN IKKE SKAL PUBLICERE. r/softwarearchitecture og r/dotnet: højt volumen, lavt signal. En ADR postet der giver typisk tre kommentarer der skændes om microservices. Det er ikke en reviewkanal. Hacker News: brutalt når det rammer, men det er et lotteri der afhænger af forsiden - ikke en planlægbar kanal. dev.to og Medium: genererer visninger og nul kritik; visninger er præcis det signal han ikke må forveksle med validering. X/Twitter: dødt som teknisk feedbackkanal for dansk .NET i 2026. Generelle .NET/C# Discords: fine til taktiske kodespørgsmål, dårlige til arkitektur.",
+  "10. OFFENTLIG SKRIVNING - MÅLRETTET, ALDRIG BROADCAST. Fælden er at bygge en blog uden publikum og forveksle stilhed med accept. Regler: (a) Byg ALDRIG et personligt blogsite i måned 1 - han bruger 8 timer på static site generator og tema og har stadig nul læsere. ADR'erne ligger i spike-repoet under /docs/adr/NNNN-*.md plus ét pinned GitHub-profil-README. Nul opsætningsomkostning, og det ER porteføljen. (b) Publicering er distribution, ikke skrivning: skriv ADR'en, tag derefter LINKET ind i en kanal hvor mennesker er nødt til at reagere - DDD-Discorden med et specifikt spørgsmål, og tre navngivne personer med hver deres konkrete spørgsmål. Svarprocent på et specifikt spørgsmål til en navngiven person: 30-40%. På et broadcast-opslag: ~2%. (c) En bevidst skarp, men forsvarlig påstand får 10x flere svar end et afbalanceret overblik. 'Vi valgte IKKE event sourcing til revisionssporet, her er hvorfor' får svar. 'Et overblik over audit trail-mønstre' får ingen. (d) LinkedIn er den ene brede kanal der stadig virker for dansk .NET/arkitektur, netop fordi hans fremtidige arbejdsmarked læser med. (e) Omkostning: 3-5 timer pr. ADR-opskrivning. Det er dyrt mod 10-15 timer/uge. Budget: én offentlig ADR pr. spike, altså 6-8 på 12 måneder. Ikke ugentligt.",
+  "11. REVIEW-BYTTE - HØJEST VÆRDI HVIS DET OVERLEVER, LAVEST OVERLEVELSESRATE. De fleste bytteaftaler dør efter 3-6 uger. Årsagerne er altid de samme tre: ingen tvangsmekanisme, asymmetrisk indsats, og vagt scope ('bare send mig noget'). Design der overlever: fast tidspunkt hver 14. dag med kalenderinvitation, 60 minutter. KUN ÉN persons artefakt pr. session, skiftevis - begge dele på én gang halverer opmærksomheden og fordobler forberedelsen. Artefaktet sendes 48 timer før og er maks. 2 sider eller 400 linjers diff; ubegrænset scope slår det ihjel. Skriftligt output hver gang: tre punkter med 'sådan ville jeg ændre det'. Intet skriftligt = sessionen fandt ikke sted. Eksplicit 3-sessioners prøveperiode og derefter et gensidigt go/no-go - at navngive udgangen fjerner den pinlighed der ellers dræber aftalen lydløst. Kill-kriterium aftalt på forhånd: to aflyste sessioner i træk = slut, ingen sure miner. BEDSTE PRÆDIKTOR FOR OVERLEVELSE: at modparten OGSÅ har noget der skal reviewes og ingen til at gøre det. Symmetrisk behov. En jævnbyrdig med et andet domæne er bedre end en mere senior person der gør ham en tjeneste - tjenester udløber. Hvor findes personen: gangen til ANUG/Aarhus DevOps, en der svarede godt på hans Discord-spørgsmål, en medstuderende der også er seriøs, eller en ADPList-mentor på tilsvarende niveau.",
+  "12. OPEN SOURCE - GRATIS, HÅRD, VERIFICERBAR. Fire verificerede kandidater, valgt fordi de ligger i HANS domæne, ikke fordi de er populære: (a) Finbuckle.MultiTenant (github.com/Finbuckle/Finbuckle.MultiTenant, ~1.6k stjerner, 300 forks, understøtter .NET 10, versionering følger .NET-majorversioner, CONTRIBUTING.md, Contributor Covenant, Apache 2.0; bemærk: Open Source Maintenance Fee-model fra november 2026 med sponsorkrav ved kommerciel brug) - direkte overlap med multi-tenant isolation. Bedste enkeltmatch. (b) Marten (github.com/JasperFx/marten, 3.5k stjerner, 7.202 commits, CONTRIBUTING.md, kræver .NET SDK 8+ og PostgreSQL 13+, xUnit/Shouldly) - event sourcing og document DB, altså append-only revisionsspor og dokumenttung storage. Jeremy D. Miller reviewer hårdt og offentligt. (c) OpenFGA (github.com/openfga/openfga, 5.8k stjerner, 2.051 commits, CONTRIBUTING.md, Slack-community, månedlige community-møder, officiel .NET SDK) - fine-grained authorization, altså per-tenant compliancekrav. (d) dotnet/aspire (6.3k stjerner, 8.411 commits, MIT, 'good first issue'- og 'help wanted'-labels, Discord) - Microsoft-reviewers og høj standard, men hård konkurrence om issues og PR'er kan ligge længe.",
+  "13. OPEN SOURCE - STRATEGIEN, IKKE BARE LISTEN. Almindeligt dårligt råd: sigt efter dotnet/runtime eller efcore som første bidrag. Undgå det. De er enorme, langsomme, og reviewet handler om stilminutier frem for design. Gå hvor der er 1-3 maintainers og domænet passer. VIGTIGERE END EN KODE-PR: en velskrevet ISSUE med et minimalt repro-repo. Den koster 2-3 timer, udløser typisk et substantielt maintainer-svar inden for dage, og træner præcis den færdighed han mangler - at fremføre et teknisk argument der kan holde. Det er et feedbackloop til en femtedel af prisen. Realistiske omkostninger for første kode-PR mod et større repo: 8-20 timer (build-opsætning, tests, kodestil, reviewrunder). Latenstid til første review: dage til uger; dotnet/* kan være uger til måneder. Realistisk mål: 3-5 merged PR'er på 12 måneder, ikke en løbende strøm. Aggregatorer til at finde issues: up-for-grabs.net, goodfirstissue.dev, github.com/MunGell/awesome-for-beginners. Kendetegn på et projekt der giver reelt review: maintainers svarer inden 48 timer, issues er labelet efter sværhedsgrad, og CONTRIBUTING.md antager ingen forhåndsviden.",
+  "14. ARCHITECTURE KATAS - HØJESTE KVALITET PR. TIME. Den betalte version: O'Reilly Architectural Katas med Neal Ford og Mark Richards (oreilly.com/live-events/architectural-katas/ - hold løser et virkeligt arkitekturproblem, finalister præsenterer og bedømmes; kræver at mindst ét holdmedlem har O'Reilly online learning-medlemskab). O'Reilly-priser verificeret 2026: USD 49/md., USD 129/kvartal, USD 499/år. Kadence: ca. kvartalsvis (Q4 2025, Winter 2025 'AI-Enabled Architecture', Fall 2024 osv.), så 2-3 muligheder på 12 måneder; realistisk deltager han i 1-2. Omkostning: USD 49 for én måned plus 15-25 timer i kata-vinduet - det skal planlægges MOD spike-kalenderen, ikke oveni. Hvorfor det er godt: ægte deadline, et hold fremmede der vil være uenige med ham, et defineret problem og bedømmelse af rigtige seniorarkitekter. GRATISVERSIONEN ER NÆSTEN LIGE SÅ GOD: TheKataLog (github.com/TheKataLog) er verificeret aktiv med 83 repositories af finalist- og vinderløsninger, senest Q4 2025-finalister opdateret november 2025. Han vælger en kata, løser den selv på fire timer under tidspres, og læser derefter tre finalisters løsning på præcis samme problem. Gabet er synligt og kan ikke bortforklares. Gratis, asynkront, ubegrænset - og det bedste månedlige kalibreringsritual i hele planen.",
+  "15. KONFERENCER - KALIBRERING, IKKE FEEDBACK. Sig det rent ud: en konference er ikke et feedbackloop. Det er broadcast plus networking. Verificeret 2026: GOTO Copenhagen 2026 afholdes 28. september - 2. oktober 2026 (2 masterclass-dage + 3 konferencedage); priser oplyses ekskl. 25% moms i tiers med deadlines på gotocph.com/2026/pages/price-tiers - de præcise DKK-beløb kunne IKKE verificeres, fordi gotocph.com er blokeret gennem netværksproxyen; han skal selv tjekke siden. Det er under tre uger væk fra dags dato, altså for sent til en fornuftig pristier og formentlig for sent at få arrangeret. VIGTIG KORREKTION: 'Copenhagen Developers Festival' findes ikke længere under det navn - den hedder nu NDC Copenhagen (2026-udgaven blev afholdt 1.-4. juni i Øksnehallen i Kødbyen med 55 talere, 65 sessioner og syv workshops, med emner om AI, cloud native, .NET, arkitektur, DevOps og sikkerhed). Ethvert råd der nævner CphDevFest er forældet. Realistiske mål inden for hans vindue: NDC Copenhagen 2027 (juni 2027) eller GOTO Copenhagen 2027 (slut september/oktober 2027, lige uden for 12 måneder). BESLUTNINGSREGLEN, robust over for den ukendte pris: dette er en arbejdsgiverudgift eller også sker det ikke. I et 9-mandsfirma får man den ved at spørge stifteren direkte med én side om hvad man bringer tilbage. Det er den ene 'politiske' manøvre der virker ved den størrelse, og den koster én samtale. ÉN konference på 12 måneder, arbejdsgiverbetalt. To er spild. Billigt substitut med 80% af kalibreringsværdien: GOTO's YouTube-kanal, hvor alle talks lægges ud gratis.",
+  "16. AI SOM SPARRINGSPARTNER - HVOR DEN RÆKKER. Reelt god til: (a) Breddehukommelse. Spørger han 'hvad overser jeg om idempotent indlæsning fra kunders ERP-systemer', får han outbox, dedup-nøgler, naturlige vs. surrogate keys, clock skew, replay-vinduer, poison messages. Det er ægte værdi og hurtigere end noget menneske. (b) Steelmanning af den option han valgte fra - bed den argumentere FOR det han forkastede. Mennesker gør det sjældent grundigt. (c) At finde interne modsigelser i hans egen ADR - den læser alle 2.000 ord omhyggeligt hver gang; en mentor læser første side. (d) At generere listen af fjendtlige spørgsmål FØR en menneskelig review, så han ikke bruger en betalt mentortime på det oplagte. (e) At omformulere samme design tre gange, så han opdager hvilken indramning der skjuler risikoen.",
+  "17. AI SOM SPARRINGSPARTNER - HVOR DEN PRÆCIST IKKE RÆKKER. (1) Den har intet produktionsar på HANS system. Den er aldrig blevet vækket kl. 3 om natten fordi et certifikatudløbs-job sendte 400.000 mails til den forkerte tenant. Den ved at den slags SKER, fordi det er skrevet ned; den ved ikke at det i et system som LeanLinkings er det MEST SANDSYNLIGE der går galt. Frekvens- og alvorlighedspriors fra rigtig drift er præcis det den mangler. (2) Den kan ikke se hans faktiske bindinger: 3-5 udviklere, ingen på vagt om natten, den største kunde med en on-prem SQL Server fra 2016, driftskapacitet reelt nul. Den overanbefaler systematisk arkitektur der kræver en organisation til at drifte den. (3) Sycophancy under pres. Den er konstrueret til at være enig. Presser han to gange, giver den sig. En rigtig arkitekt der mener han tager fejl, mener det stadig efter tredje runde. TESTEN: har en AI nogensinde fået ham til at OPGIVE et design han var glad for? Er svaret nej efter seks måneder, fungerer den ikke som modspil. (4) Den siger aldrig 'hele det her projekt er ikke værd at bygge'. Den besvarer det stillede spørgsmål og optimerer den ramme han rækker den. Den mest værdifulde arkitekturfeedback handler næsten altid om rammen - 'du løser det forkerte problem', 'det her burde være en konfigurationsfil, ikke en service'. Mennesker byder ind med det uopfordret; modeller gør det sjældent. (5) Ingen konsekvens, intet omdømme, ingen erindring om at have taget fejl. En mentor der rådgav forkert og så det fejle, justerer. Modellens sikkerhed er ukalibreret mod udfald. (6) Ingen social værdi: et design velsignet af en AI overbeviser hverken en hiring manager eller en stifter. Et design velsignet af en navngiven arkitekt gør.",
+  "18. AI - PROTOKOL DER GØR DEN BRUGBAR. Spørg aldrig 'er det her et godt design'. Spørg: 'Her er mit design. Giv mig de tre mest sandsynlige måder det fejler i produktion ved 200 tenants med 3 udviklere og ingen nattevagt, rangeret efter sandsynlighed, og for hver: hvilket bevis ville vise at det allerede sker.' Tving den i modstanderrolle med en omkostning: 'Du er staff architect og mener det her er forkert. Skriv den indvending du ville fremføre i review' - og lad den derefter forsvare indvendingen mod hans modargument uden at give sig. Giv organisationsbindingen med HVER gang. Brug den til at forberede de menneskelige sessioner, aldrig til at erstatte dem. FORHOLDSTALSREGLEN: for hver 10 timers AI-sparring mindst 1 time menneskeligt review. Rammes det forhold ikke, er loopet brudt. Før en logfil over de indvendinger den kom med som senere viste sig forkerte - den liste er hvordan han kalibrerer hvor meget han skal stole på den.",
+  "19. FEEDBACKARKITEKTUREN - MÅNED FOR MÅNED. Måned 0-1 (sep-okt 2026): Uge 1: meld dig ind i DDD-CQRS-ES Discord og Virtual DDD; post ét ægte arbejdsspørgsmål inden syv dage - har han ikke postet på dag 7, er kanalen død for ham, og han skal erkende det frem for at lade medlemskabet stå som en tom trøst. Uge 1-3: ADPList-castingen, 6-8 samtaler, ét designspørgsmål hver gang, scoring på 'sagde de mig imod'. Slut måned 1: konvertér den bedste til betalt månedsaftale, seks måneder committed forud, hårdhedskontrakten sagt højt i første session. Opret /docs/adr i første spike-repo. Ingen blog. Måned 2 (nov): Første offentlige ADR, link taget ind i Discorden med 'hvad overser jeg'-indramning plus tre personlige henvendelser. Første OSS-kontakt: én velskrevet issue med minimalt repro mod Finbuckle.MultiTenant eller Marten. Første ANUG- eller Aarhus DevOps-meetup - gå derfra med ét navn. Dansk IT-tilmelding åbner i november, lav prioritet. Måned 3 (dec): Kata-selvdiff-ritualet starter og kører månedligt resten af året. Første OSS-PR-forsøg. Måned 4-5 (jan-feb 2027): Review-byttet starter, kilde fra meetup-navnet eller Discorden, 3-sessioners prøve. IDA-forårsvindue hvis han vil have karrieresporet. Tilmeld én O'Reilly-kata (USD 49 for én måned).",
+  "20. FEEDBACKARKITEKTUREN - MIDTVEJSAUDIT OG PORT. Måned 6 (marts 2027) - revision af selve feedbackarkitekturen, ikke kun af færdighederne: Hvor mange gange på seks måneder har et menneske uden for LeanLinking sagt at et af hans designs var forkert, med en begrundelse han accepterede og handlede på? Mål: mindst 5. Under 3 betyder at loopene er kosmetiske, og han skal reparere dem FØR han fortsætter - ikke bygge videre. Er der mindst én merged PR? Kører den betalte mentor stadig? Overlevede review-byttet tre sessioner? Måned 7-9: anden kata eller fortsat selvdiff; yderligere 2-3 ADR'er, hver sendt til navngivne personer; anden og tredje OSS-PR; i måned 7 spørger han stifteren om konferencebudget til NDC Copenhagen juni 2027 med én side om hvad han bringer tilbage. Måned 9-10, KOMPETENCEPORTENS EKSTERNE DEL: mindst 5 dokumenterede designkorrektioner accepteret fra mennesker; mindst 2 merged PR'er i projekter med reelt review; mindst én katal√∏sning han kan holde op mod finalisterne; mindst 2 navngivne eksterne arkitekter der kan udtale sig om hans designevne. Og det kriterium han ikke kan snyde: den betalte mentor svarer ærligt på 'ville du lade ham eje en designbeslutning i din virksomhed?'. Mentoren er ikke hans arbejdsgiver og har ingen interesse i at lyve.",
+  "21. HVAD HAN GØR NÅR EN MEKANISME IKKE VIRKER. Betalt mentor bliver for dyr eller findes ikke: fald til én betalt 90-minutters session pr. kvartal (DKK 4-6k/år) og skru op for OSS og katas. Gå ALDRIG til nul betalt. Mentoren er blød: én advarsel ('jeg har brug for at du fortæller mig hvad der er galt, ikke hvad der er fint'), derefter udskiftning. To bløde sessioner i træk = skift. Vent ikke seks måneder. Discord-spørgsmål får ingen svar: spørgsmålet er forkert, ikke kanalen. Skriv om efter skabelonen - beslutning, to navngivne optioner, bindingen, det udelukkede, ét specifikt ønske. Får tre omskrevne spørgsmål stadig intet, skift server. Review-byttet dør: det er forventet. Han skal have en erstatningskandidat identificeret FØR det dør. Genstart én gang; dør nummer to også, stopper han og lægger timen i OSS, hvor reviewpartneren er strukturelt forpligtet til at svare. OSS-PR ignoreret i tre uger: ét høfligt ping, derefter videre til et mindre repo. Maintainer-responsivitet er en egenskab ved projektet, ikke ved ham. Ingen meetup giver et navn: stop efter fire forsøg. Det er et resultat, ikke en indsatsfejl.",
+  "22. TIDSBUDGETTET SKAL GÅ OP - OG DET GØR DET IKKE HVIS HAN TAGER DET HELE. Discord ~1 t/uge. Mentorsession inkl. forberedelse ~0,75 t/uge. Review-bytte ~1 t/uge. Kata-selvdiff ~1,25 t/uge. ADR-opskrivning ~0,6 t/uge. Meetup ~0,9 t/uge. OSS bursty, ~1,5 t/uge i snit. AI-sparring ~0 marginal, den ligger oveni byggetiden. Sum hvis alt kører: ~7 timer/uge, altså halvdelen af budgettet. Loftet er 2,5-3 timer/uge, dvs. 20-25%. Konkret sammensætning: AI (gratis, ligger i byggetiden) + betalt mentor + ÉN af {OSS, review-bytte} + kata-selvdiff. Discorden er gratis fyld. Meetup maks. månedligt. Alt andet er valgfrit. Maks. fire mekanismer samtidig, sigt efter tre. Evnen til at afvise den femte er en del af planen, ikke en mangel ved den."
+ ],
+ "kompetencer": [
+  {
+   "navn": "At formulere et designspørgsmål så det kan besvares",
+   "hvorfor": "Hver eneste eksterne kanal - Discord, mentor, review-bytte, OSS-issue, ADR-distribution - står og falder med denne ene færdighed. Et åbent spørgsmål får nul svar overalt. Det er derfor folk konkluderer at 'communities ikke virker'; i virkeligheden spurgte de forkert. Det er også den billigste færdighed at træne, fordi feedbacken er øjeblikkelig: enten svarede nogen, eller også gjorde de ikke.",
+   "hvordan_traenes": "Fast skabelon på hvert eneste spørgsmål: (1) beslutningen i én sætning, (2) de to navngivne optioner, (3) bindingen der gør valget svært, (4) hvad han allerede har udelukket og hvorfor, (5) ét specifikt ønske. Skriv hvert spørgsmål i den form FØR det postes. Log svarraten pr. spørgsmål. Efter 20 spørgsmål har han et datasæt over hvad der udløser svar.",
+   "niveauskala": "Niveau 1: får svar på taktiske kodespørgsmål. Niveau 2: får mindst ét substantielt svar på et arkitekturspørgsmål inden for et døgn, mere end 50% af gangene. Niveau 3: fremmede begynder at svare med 'godt spørgsmål' og bygge videre på hans indramning, og han bliver tagget når andre stiller lignende spørgsmål."
+  },
+  {
+   "navn": "At tage imod kritik uden at forsvare",
+   "hvorfor": "Den mest almindelige måde at ødelægge et feedbackloop på er at argumentere imod den første indvending. Modparten registrerer at kritik koster energi, og næste gang er kritikken blødere. Efter tre runder får han kun høflighed - og han vil tro at hans designs er blevet bedre. Det er den præcise mekanisme hvor loopet dør uden at nogen siger det.",
+   "hvordan_traenes": "Regel i hver session: første 10 minutter er ren modtagelse, ingen modargumenter, kun opklarende spørgsmål. Notér indvendingen ordret. Svar først i den skriftlige opsamling dagen efter, hvor han har haft tid til at overveje om han faktisk er uenig. Mål: hvor mange indvendinger blev til ændringer.",
+   "niveauskala": "Niveau 1: kan lade være med at afbryde. Niveau 2: ændrer designet efter mindst hver tredje indvending. Niveau 3: opsøger aktivt den person der er mest tilbøjelig til at være uenig, i stedet for den der er nemmest at tale med."
+  },
+  {
+   "navn": "At kalibrere egen dømmekraft mod en ekstern facitliste",
+   "hvorfor": "Uden en facitliste vokser hans selvtillid uafhængigt af hans korrekthed. Det er hele problemet med at være den mest arkitektur-interesserede person i et 9-mandsfirma. Kalibrering er den færdighed der forhindrer at han bliver selvsikker på forkert grundlag - og den er lettere at træne end selve arkitekturfærdigheden.",
+   "hvordan_traenes": "Kata-selvdiff hver måned: løs en kata fra TheKataLog på fire timer under tidspres, læs derefter tre finalisters løsning på samme problem, skriv én side med 'hvad de så som jeg ikke så'. Før en kumulativ liste over gentagne blinde vinkler. Suppler med en logfil over hver gang han var sikker og tog fejl - både over for mennesker, over for AI og over for produktionen.",
+   "niveauskala": "Niveau 1: kan se gabet, når det er peget ud. Niveau 2: kan forudsige før han læser finalisterne, hvor hans løsning er svagest, og rammer rigtigt over halvdelen af gangene. Niveau 3: hans blinde-vinkel-liste er holdt op med at vokse med nye kategorier, kun med nye instanser af kendte kategorier."
+  },
+  {
+   "navn": "At skrive en ADR nogen gider læse og angribe",
+   "hvorfor": "ADR'en er både porteføljeartefaktet og feedback-vehiklet. En ADR der retfærdiggør en beslutning får ingen kritik, fordi der ikke er noget at tage fat i. En ADR der ærligt udstiller det usikre punkt får kritik præcis dér hvor han har brug for den. Forskellen er ren skrivefærdighed og koster ingen ekstra timer.",
+   "hvordan_traenes": "Brug MADR- eller Nygard-formatet fra github.com/joelparkerhenderson/architecture-decision-record. Tilføj to sektioner der ikke står i standardskabelonerne: 'Det jeg er mest usikker på' og 'Sådan opdager vi at dette valg var forkert'. De to sektioner er hvad der udløser svar. Maks. to sider. Vis den mens han stadig kan ændre mening - en færdig ADR bliver forsvaret, ikke revideret.",
+   "niveauskala": "Niveau 1: dokumenterer valget. Niveau 2: dokumenterer det fravalgte troværdigt nok til at en læser kan være uenig. Niveau 3: en fremmed læser den og skriver en konkret indvending uden at være blevet bedt om det."
+  }
+ ],
+ "ressourcer": [
+  {
+   "titel": "DDD-CQRS-ES Discord (community)",
+   "type": "community",
+   "url": "https://discord.gg/sEZGSHNNbH",
+   "prioritet": "skal",
+   "hvorfor": "Hurtigste hårde feedbackkanal han kan få gratis. Hans domæne - supplier onboarding, revisionsspor, certifikatudløb, compliance - er lærebogs-DDD, og folkene der svarer teknisk og direkte. Latenstid timer til et døgn ved velformuleret spørgsmål. Invite verificeret via github.com/ddd-cqrs-es/community; communityet er migreret fra Slack til Discord.",
+   "tidsforbrug": "1 time/uge",
+   "verificeret": true,
+   "hvad_springes_over": "Generelle .NET/C#-Discords til arkitekturspørgsmål - de er gode til taktisk kode, dårlige til design. Maks. to servere i alt, og han skal poste i begge inden for uge ét eller melde sig ud."
+  },
+  {
+   "titel": "Virtual DDD",
+   "type": "community",
+   "url": "https://virtualddd.com/",
+   "prioritet": "skal",
+   "hvorfor": "Verificeret aktiv i 2026 (session 9. september 2026 med Trond Hjorteland, 'Organisational Dysfunctions: A Live Diagnosis Session'; website nyligt relanceret; finansieret via Open Collective). Gratis live online-sessioner om DDD, softwarearkitektur og design, med formater ud over rene foredrag, plus et Discord-community der kører hele ugen.",
+   "tidsforbrug": "1,5-2 timer pr. session, ca. månedligt",
+   "verificeret": true,
+   "hvad_springes_over": "Sessioner uden interaktivt format. Kun de sessioner hvor han kan stille et spørgsmål eller deltage i en øvelse, tæller."
+  },
+  {
+   "titel": "TheKataLog - 83 offentlige finalistløsninger på architecture katas",
+   "type": "øvelse/repo",
+   "url": "https://github.com/TheKataLog",
+   "prioritet": "skal",
+   "hvorfor": "Det tætteste på en facitliste der findes i softwarearkitektur, og det er gratis. Arkiverer finalist- og vinderbidrag fra O'Reillys Architectural Katas; verificeret aktiv med 83 repositories, senest Q4 2025-finalister opdateret november 2025 og Winter 2025 'AI-Enabled Architecture'. Han løser samme kata på fire timer og differ sin løsning mod tre finalisters. Gabet kan ikke bortforklares.",
+   "tidsforbrug": "5 timer/måned",
+   "verificeret": true,
+   "hvad_springes_over": "At læse finalistløsninger uden først selv at have løst opgaven. Så er det broadcast, ikke kalibrering, og værdien falder til nul."
+  },
+  {
+   "titel": "ADPList (mentor-casting, ikke mentorordning)",
+   "type": "mentorplatform",
+   "url": "https://adplist.org/mentors/expertise/software-engineering",
+   "prioritet": "skal",
+   "hvorfor": "Verificeret 100% gratis i 2026, ingen premium-tier, 40.000+ mentorer, 2.151+ inden for software engineering og 4.329+ inden for system design. Sessionerne er typisk 30 minutter og engangs, og kritikken er blød - derfor er den forkert som mentorordning og perfekt som castingværktøj. 6-8 samtaler på tre uger for at finde den ene person han vil betale.",
+   "tidsforbrug": "3-4 timer engangs i måned 1",
+   "verificeret": true,
+   "hvad_springes_over": "At forvente en varig relation herfra. Konvertér den bedste til en betalt aftale uden for platformen, eller drop det."
+  },
+  {
+   "titel": "MentorCruise - Software Architecture",
+   "type": "mentorplatform (betalt)",
+   "url": "https://mentorcruise.com/experts/softwarearchitecture/",
+   "prioritet": "bør",
+   "hvorfor": "Verificeret 2026: ~104 profiler under Software Architecture; timepris USD 60-200+; abonnementsplaner USD 120-450/md. med ugentlige calls, async beskeder og review mellem sessioner; 7 dages risikofri prøve. Betalingen er det der får relationen til at overleve 12 måneder. Alternativ til en dansk arkitekt fundet via ANUG/LinkedIn til DKK 1.000-1.500 pr. 90 minutter.",
+   "tidsforbrug": "3 timer/måned inkl. forberedelse",
+   "verificeret": true,
+   "hvad_springes_over": "Den dyreste plan. En månedlig 90-minutters session er nok - oftere og han har ikke bygget noget nyt at vise. Og drop enhver mentor der ikke har sagt ham konkret imod i to sessioner i træk."
+  },
+  {
+   "titel": "IDA Mentor",
+   "type": "mentorordning (dansk)",
+   "url": "https://ida.dk/raad-og-karriere/ida-mentor/faa-en-mentor",
+   "prioritet": "kan",
+   "hvorfor": "Verificeret: gratis 6-måneders program, 4-6 møder à 1,5 time, ansøgningsvinduer lukker februar (forår) og september (efterår); 9-måneders programmet for medlemmer med over 2 års erfaring koster 3.795 kr. Studiemedlemskab gratis første år, derefter 20 kr./md.; fuldt medlemskab fra 292 kr./md. Nyttigt til karrierespørgsmålet 'hvad er titlen værd og hvornår kan jeg bære den'. Nærmest gratis, så den kan køre parallelt.",
+   "tidsforbrug": "1,5 time hver 6.-8. uge",
+   "verificeret": true,
+   "hvad_springes_over": "Tæl det ALDRIG som teknisk modspil. Matchningen sker på karriereudvikling, ikke på arkitektur. Verificér selv den præcise frist hos IDA - kilderne skelner ikke entydigt mellem studerende- og nyuddannedeprogrammet."
+  },
+  {
+   "titel": "Dansk IT mentorprogram",
+   "type": "mentorordning (dansk)",
+   "url": "https://akademi.dit.dk/DIT-mentorprogram",
+   "prioritet": "spring over (medmindre timingen passer)",
+   "hvorfor": "Verificeret at det findes: indgår i Dansk IT-medlemskab, hold starter i januar, tilmelding åbner i november, kontakt hrl@dit.dk. Men Dansk IT vægter IT-ledelse og digitalisering, og risikoen for at blive matchet med en IT-chef frem for en hands-on arkitekt er reel. Medlemsprisen kunne ikke verificeres.",
+   "tidsforbrug": "ukendt",
+   "verificeret": true,
+   "hvad_springes_over": "Byg intet på det. Ansøg i november hvis han vil have et dansk netværksanker, ellers spring det over til fordel for den betalte mentor."
+  },
+  {
+   "titel": "Aarhus .NET User Group (ANUG)",
+   "type": "meetup",
+   "url": "https://www.meetup.com/anugdk/",
+   "prioritet": "bør",
+   "hvorfor": "Nærmeste faglige miljø, .NET-fokuseret, og hovedkilden til både mentor- og review-partnerkandidater. Aarhus har en tæt enterprise-softwareklynge, så folk med reel arkitekturerfaring dukker op. Gruppen findes og har bl.a. sociale formater ('ANUG Friday Beer' på Aarhus Street Food).",
+   "tidsforbrug": "3-4 timer pr. gang inkl. transport, maks. månedligt",
+   "verificeret": false,
+   "hvad_springes_over": "Aktivitetsniveauet kunne IKKE verificeres - meetup.com er blokeret gennem netværksproxyen i denne research. Han skal selv tjekke om der er events inden for de sidste tre måneder før han bruger en aften. Og: en aften uden at have talt med nogen om sit eget design tæller som spildt."
+  },
+  {
+   "titel": "Aarhus DevOps",
+   "type": "meetup",
+   "url": "https://www.meetup.com/arhus-devops-meetup/",
+   "prioritet": "kan",
+   "hvorfor": "Fokus på at bygge OG drifte software - præcis den driftsvirkelighed han mangler adgang til, og som AI ikke kan give ham. Beskrives som indhold fra Aarhus' softwarescene.",
+   "tidsforbrug": "3-4 timer pr. gang",
+   "verificeret": false,
+   "hvad_springes_over": "Aktivitetsniveau ikke verificeret (meetup.com blokeret). Vælg ÉN af ANUG/Aarhus DevOps pr. måned, ikke begge."
+  },
+  {
+   "titel": "GOTO Meetups Aarhus",
+   "type": "meetup",
+   "url": "https://www.meetup.com/goto-meetups-aarhus/",
+   "prioritet": "kan",
+   "hvorfor": "Emner angives som programmeringssprog og frameworks, event-driven architecture, microservices og machine learning - altså det tætteste på rene arkitekturemner i Aarhus. Gratis.",
+   "tidsforbrug": "3 timer pr. gang",
+   "verificeret": false,
+   "hvad_springes_over": "Aktivitetsniveau ikke verificeret. Talks er broadcast - kun gangen tæller."
+  },
+  {
+   "titel": "Azure Usergroup Denmark (Aarhus)",
+   "type": "meetup",
+   "url": "https://www.meetup.com/azure-usergroup-denmark-aarhus/",
+   "prioritet": "kan",
+   "hvorfor": "Relevant hvis LeanLinking kører på Azure og hvis han går efter AZ-305. Gruppen findes; der er også en Copenhagen-afdeling og en aktiv call for speakers for København.",
+   "tidsforbrug": "3 timer pr. gang",
+   "verificeret": false,
+   "hvad_springes_over": "Venue-oplysningen i søgeresultaterne (Creuna Aarhus, Vesterbro Torv) virker forældet, hvilket kan tyde på en sovende Aarhus-afdeling. Tjek for events inden for tre måneder før han satser en aften på den."
+  },
+  {
+   "titel": "O'Reilly Architectural Katas (Neal Ford / Mark Richards)",
+   "type": "øvelse (betalt)",
+   "url": "https://www.oreilly.com/live-events/architectural-katas/0636920458487/",
+   "prioritet": "bør",
+   "hvorfor": "Hold løser et virkeligt arkitekturproblem under deadline, finalister præsenterer for og bedømmes af seniorarkitekter. Ægte deadline, fremmede der er uenige med ham, defineret problem, ekstern bedømmelse - alt det han mangler. Kræver at mindst ét holdmedlem har O'Reilly online learning. Kadence ca. kvartalsvis, så 2-3 muligheder på 12 måneder.",
+   "tidsforbrug": "15-25 timer i kata-vinduet - skal planlægges MOD spike-kalenderen, ikke oveni",
+   "verificeret": true,
+   "hvad_springes_over": "Årsabonnementet på USD 499. Én måned til USD 49 dækker én kata. Deltag i 1-2 på 12 måneder, ikke flere - resten af kalibreringen tager gratisversionen (TheKataLog)."
+  },
+  {
+   "titel": "O'Reilly online learning - pris",
+   "type": "abonnement",
+   "url": "https://www.oreilly.com/online-learning/pricing",
+   "prioritet": "kan",
+   "hvorfor": "Verificerede 2026-priser: USD 49/måned, USD 129/kvartal, USD 499/år. Kun relevant som adgangsbillet til katas. Skal han bruge den ét eller to enkeltmåneder, er det USD 49-98 i alt.",
+   "tidsforbrug": "-",
+   "verificeret": true,
+   "hvad_springes_over": "Årsabonnementet. Han læser ikke 500 bøger på et år, og biblioteksadgang er ikke feedback."
+  },
+  {
+   "titel": "Finbuckle.MultiTenant (OSS-bidrag)",
+   "type": "open source",
+   "url": "https://github.com/Finbuckle/Finbuckle.MultiTenant",
+   "prioritet": "skal",
+   "hvorfor": "Bedste enkeltmatch mellem hans domæne og et projekt der giver reelt review. Multi-tenant isolation er direkte i hans arbejde. Verificeret: ~1.6k stjerner, 300 forks, 588 commits, understøtter .NET 10, versionering følger .NET-majorversioner, CONTRIBUTING.md, Contributor Covenant, Apache 2.0. Bemærk: Open Source Maintenance Fee-model fra november 2026 med sponsorkrav ved indtægtsgenererende brug - relevant hvis LeanLinking selv bruger biblioteket.",
+   "tidsforbrug": "3 timer for første issue med repro; 8-20 timer for første kode-PR",
+   "verificeret": true,
+   "hvad_springes_over": "Start med en velskrevet issue med minimalt repro-repo, ikke en kode-PR. En femtedel af prisen, samme feedbackkvalitet, hurtigere svar."
+  },
+  {
+   "titel": "Marten (OSS-bidrag)",
+   "type": "open source",
+   "url": "https://github.com/JasperFx/marten",
+   "prioritet": "bør",
+   "hvorfor": "Event sourcing og document DB på PostgreSQL - altså append-only revisionsspor og dokumenttung storage, præcis hans problemklasser. Verificeret: 3.5k stjerner, 7.202 commits, CONTRIBUTING.md med udførlig opsætningsvejledning (kræver .NET SDK 8+, PostgreSQL 13+, xUnit/Shouldly). Jeremy D. Miller reviewer hårdt og offentligt, hvilket er hele pointen.",
+   "tidsforbrug": "10-20 timer for første PR inkl. opsætning",
+   "verificeret": true,
+   "hvad_springes_over": "Kun ét OSS-projekt ad gangen. To parallelle bidrag betyder to halvfærdige PR'er."
+  },
+  {
+   "titel": "OpenFGA (OSS-bidrag)",
+   "type": "open source",
+   "url": "https://github.com/openfga/openfga",
+   "prioritet": "kan",
+   "hvorfor": "Fine-grained authorization - direkte relevant for multi-tenant isolation hvor hver kunde har egne compliancekrav. Verificeret: 5.8k stjerner, 2.051 commits, CONTRIBUTING.md, Slack-community, månedlige community-møder, officiel .NET SDK. Community-møderne er en ekstra feedbackkanal ud over PR-reviewet.",
+   "tidsforbrug": "10-20 timer",
+   "verificeret": true,
+   "hvad_springes_over": "Kernen i Go - hvis han bidrager, så til .NET-SDK'et, hvor han er stærkest og hvor domæneindsigten tæller."
+  },
+  {
+   "titel": "dotnet/aspire (OSS-bidrag)",
+   "type": "open source",
+   "url": "https://github.com/dotnet/aspire",
+   "prioritet": "kan",
+   "hvorfor": "Verificeret: 6.3k stjerner, 8.411 commits, MIT, 'good first issue'- og 'help wanted'-labels, contributing guide i docs/contributing.md, Discord-server, 2.1k issues og 255 åbne PR'er. Microsoft-reviewers med høj standard - hårdt review, godt CV-signal.",
+   "tidsforbrug": "15-25 timer for første PR",
+   "verificeret": true,
+   "hvad_springes_over": "Sigt ALDRIG efter dotnet/runtime eller dotnet/efcore som første bidrag. Enorme, langsomme, og reviewet handler om stilminutier frem for design. Selv aspire har hård konkurrence om issues og PR'er der kan ligge længe."
+  },
+  {
+   "titel": "up-for-grabs.net / goodfirstissue.dev / awesome-for-beginners",
+   "type": "aggregator",
+   "url": "https://github.com/MunGell/awesome-for-beginners",
+   "prioritet": "kan",
+   "hvorfor": "Til at finde issues i projekter der aktivt vil have hjælp. Kendetegn på et projekt der giver reelt review: maintainers svarer inden 48 timer, issues labelet efter sværhedsgrad, og CONTRIBUTING.md antager ingen forhåndsviden.",
+   "tidsforbrug": "30 minutter engangs",
+   "verificeret": true,
+   "hvad_springes_over": "Projekter uden domæneoverlap. Et merged bidrag til et tilfældigt JS-bibliotek giver review, men ingen porteføljeværdi."
+  },
+  {
+   "titel": "ADR-skabeloner (joelparkerhenderson/architecture-decision-record)",
+   "type": "skabelon/repo",
+   "url": "https://github.com/joelparkerhenderson/architecture-decision-record",
+   "prioritet": "skal",
+   "hvorfor": "Verificeret: 16.9k stjerner, 368 commits, aktivt vedligeholdt. Indeholder 12+ skabeloner - Michael Nygard (enkel og udbredt), MADR, Y-statements (Olaf Zimmermann), arc42, Jeff Tyree/Art Akerman, Planguage m.fl. Han skal bruge Nygard eller MADR og ikke bruge en time på at vælge.",
+   "tidsforbrug": "20 minutter engangs",
+   "verificeret": true,
+   "hvad_springes_over": "De sofistikerede skabeloner (Tyree/Akerman, Planguage). Overkill for en ADR på to sider, og de gør dokumentet sværere at kritisere."
+  },
+  {
+   "titel": "GOTO Copenhagen 2026",
+   "type": "konference",
+   "url": "https://gotocph.com/2026/pages/price-tiers",
+   "prioritet": "spring over i 2026",
+   "hvorfor": "Verificeret: 28. september - 2. oktober 2026, 2 masterclass-dage plus 3 konferencedage. Priser oplyses ekskl. 25% moms i tiers med deadlines. De præcise DKK-beløb kunne IKKE verificeres - gotocph.com er blokeret gennem netværksproxyen; han skal selv tjekke siden. Under tre uger væk fra dags dato: for sent til en fornuftig pristier og formentlig for sent at få arrangeret budget.",
+   "tidsforbrug": "3-5 dage",
+   "verificeret": false,
+   "hvad_springes_over": "2026-udgaven. Sigt mod 2027 og få stifteren til at betale. Substitut med 80% af kalibreringsværdien: GOTO's YouTube-kanal, hvor alle talks lægges gratis ud."
+  },
+  {
+   "titel": "NDC Copenhagen (tidligere Copenhagen Developers Festival)",
+   "type": "konference",
+   "url": "https://ndccopenhagen.com/",
+   "prioritet": "bør (2027, arbejdsgiverbetalt)",
+   "hvorfor": "VIGTIG KORREKTION: 'Copenhagen Developers Festival' findes ikke længere under det navn - den er omdøbt til NDC Copenhagen. Ethvert råd der nævner CphDevFest er forældet. 2026-udgaven blev afholdt 1.-4. juni i Øksnehallen i Kødbyen med 55 talere, 65 sessioner og syv workshops om AI, cloud native, .NET, arkitektur, DevOps og sikkerhed. Næste udgave forventeligt juni 2027, altså inden for hans 12-månedersvindue.",
+   "tidsforbrug": "4 dage",
+   "verificeret": true,
+   "hvad_springes_over": "At betale selv. Beslutningsreglen: dette er en arbejdsgiverudgift eller også sker det ikke. I et 9-mandsfirma får man den ved at spørge stifteren direkte med én side om hvad man bringer tilbage. ÉN konference på 12 måneder. To er spild."
+  },
+  {
+   "titel": "r/softwarearchitecture, r/dotnet, dev.to, Medium, X",
+   "type": "publiceringskanal",
+   "url": "https://www.reddit.com/r/softwarearchitecture/",
+   "prioritet": "spring over",
+   "hvorfor": "Nul til negativ værdi som feedbackkanaler. Reddit: højt volumen, lavt signal - en ADR postet der giver typisk tre kommentarer der skændes om microservices. dev.to og Medium: genererer visninger og nul kritik, og visninger er præcis det signal han ikke må forveksle med validering. X: dødt som teknisk feedbackkanal for dansk .NET i 2026. Hacker News er brutalt når det rammer, men det afhænger af forsiden og er derfor et lotteri, ikke en planlægbar kanal.",
+   "tidsforbrug": "0",
+   "verificeret": false,
+   "hvad_springes_over": "Alle sammen som reviewkanal. Den ene brede kanal der stadig virker for ham er LinkedIn, netop fordi hans fremtidige danske arbejdsmarked læser med."
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "F1: Mentor-casting - 6-8 samtaler på tre uger",
+   "problem": "Han skal finde ét menneske der vil sige ham imod om et designvalg, og han ved ikke hvem det er. Uden denne person har hele planen ingen ekstern kalibrering, og alle andre mekanismer er sekundære.",
+   "domaenekobling": "Hver samtale skal bruge ét ægte, konkret designspørgsmål fra LeanLinking - fx: skal varsling om udløbende certifikater ved ~1 mio. certifikater være et natligt scan eller event-drevet med durable timers per certifikat, når der ikke er nogen til at drifte timers? Det tester samtidig om personen kan svare på noget virkeligt frem for noget generelt.",
+   "fremgangsmaade": "Book 6-8 ADPList-sessioner à 30 minutter med folk med titlen Solution/Software Architect og baggrund i B2B SaaS, integrationer eller compliancetunge domæner. Stil samme spørgsmål hver gang. Scor på ÉN kolonne: sagde personen mig konkret imod om noget substantielt? Konvertér den bedst scorende til en betalt månedsaftale uden for platformen - DKK 1.000-1.500 pr. 90 minutter, seks måneder committed forud. Sig hårdhedskontrakten højt i første session: 'Jeg betaler dig for at finde fejlen. En session hvor du ikke har noget kritisk at sige, er en spildt session - sig det så.'",
+   "artefakter": "Scoringsark med 6-8 navne og deres substantielle indvendinger. En indgået betalt månedsaftale. En skriftlig hårdhedskontrakt i første mødereferat.",
+   "tid": "4-5 timer over tre uger",
+   "svaerhed": "Lav teknisk, høj social. Det ubehagelige er at bede fremmede om deres tid og derefter tilbyde at betale.",
+   "kompetence": "At formulere et designspørgsmål så det kan besvares"
+  },
+  {
+   "titel": "F2: ADR-0001 plus målrettet distribution",
+   "problem": "Han skal lære at publicere et designvalg så det udløser kritik i stedet for stilhed - og stilhed er den enkeltstående største risiko i hele planen.",
+   "domaenekobling": "Emnet er append-only revisionsspor der skal kunne holde til en CSDDD- eller NIS2-audit: event sourcing i Marten vs. temporal tables i SQL Server vs. append-only audit-tabel med hash-chain, under kravet om at kunne bevise over for en auditor at rækker ikke er ændret bagudrettet - og under bindingen 7 årsværk, ingen platform team, ingen nattevagt.",
+   "fremgangsmaade": "Skriv ADR'en i MADR- eller Nygard-format, maks. to sider, i /docs/adr i spike-repoet. Tilføj to sektioner der ikke står i standardskabelonen: 'Det jeg er mest usikker på' og 'Sådan opdager vi at dette valg var forkert' - det er dem der udløser svar. Publicér den MENS han stadig kan skifte mening. Distribuér derefter: link i DDD-CQRS-ES Discorden med skabelonspørgsmålet, plus tre personlige henvendelser til navngivne personer med hver sit specifikke spørgsmål, plus ét LinkedIn-opslag med en skarp men forsvarlig påstand. Log al kritik og hvad han faktisk ændrede.",
+   "artefakter": "ADR i repo. Kritiklog med hver indvending, hvem der kom med den, og hvad han ændrede. Måling: dage fra publicering til første substantielle kritik.",
+   "tid": "5 timer",
+   "svaerhed": "Middel. Det svære er at skrive usikkerheden frem i stedet for at skjule den.",
+   "kompetence": "At skrive en ADR nogen gider læse og angribe"
+  },
+  {
+   "titel": "F3: Kata-selvdiff - månedligt ritual",
+   "problem": "Han har ingen facitliste og ingen på arbejdet der kan levere en. Uden en ekstern målestok vokser hans selvtillid uafhængigt af hans korrekthed.",
+   "domaenekobling": "Vælg fortrinsvis katas med dokument-, compliance- eller multi-tenant-træk, og oversæt eksplicit hver læring til LeanLinking-kontekst i slutningen af hver selvdiff - så fodrer øvelsen arbejdet i stedet for at konkurrere med det.",
+   "fremgangsmaade": "Vælg en kata fra TheKataLog. Løs den selv på fire timer under reelt tidspres: context diagram, tre ADR'er, risikoliste, ét eksplicit fravalg. Læs derefter tre finalisters løsning på præcis samme problem. Skriv én side: hvad de så som jeg ikke så. Før en kumulativ liste over gentagne blinde vinkler - kategorierne, ikke instanserne, er signalet.",
+   "artefakter": "Mindst 8 selvdiffs på 12 måneder, hver med en 'hvad jeg ikke så'-liste. En kumulativ blinde-vinkel-liste der efter et halvt år holder op med at vokse med nye kategorier.",
+   "tid": "5 timer/måned",
+   "svaerhed": "Middel. Det svære er tidspresset og at læse finalisterne EFTER, ikke før.",
+   "kompetence": "At kalibrere egen dømmekraft mod en ekstern facitliste"
+  },
+  {
+   "titel": "F4: Første OSS-issue med minimalt repro",
+   "problem": "Han skal have en fremmed med reel ekspertise til at læse hans tekniske argument og svare på det. Ingen relation at beskytte, ingen høflighed, binært udfald.",
+   "domaenekobling": "Alle tre kandidater ligger i hans domæne: Finbuckle.MultiTenant (tenant-isolation), Marten (append-only og event sourcing), OpenFGA (per-tenant autorisationsregler). Problemet han rejser skal komme fra noget han faktisk har ramt på arbejdet - abstraheret, uden kundedata.",
+   "fremgangsmaade": "Start med en ISSUE, ikke en PR. Byg et minimalt repro-repo på under 100 linjer der isolerer problemet. Skriv issuet som et argument: forventet adfærd, faktisk adfærd, hvorfor han mener det er en fejl og ikke hans misforståelse, og hvad han allerede har udelukket. Målet er ikke at få ret - det er at få et substantielt maintainer-svar. Først NÅR den kanal virker, forsøg en kode-PR.",
+   "artefakter": "Repro-repo. Issue med teknisk argument. Maintainer-svar. Senere: mindst to merged PR'er inden måned 9.",
+   "tid": "3 timer for issue; 8-20 timer for første kode-PR",
+   "svaerhed": "Middel til høj. Den første PR mod et større repo koster mest i build-opsætning og kodestil, ikke i kode.",
+   "kompetence": "At formulere et designspørgsmål så det kan besvares"
+  },
+  {
+   "titel": "F5: Review-bytte med kill-kriterium",
+   "problem": "Han har brug for en fast, jævnbyrdig modpart der læser hans artefakter hver 14. dag. De fleste sådanne aftaler dør efter tre til seks uger, og han skal designe imod det fra dag ét.",
+   "domaenekobling": "Artefakterne han sender er hans egne domæneforankrede spikes - idempotent indlæsning af leverandørstamdata, tenant-isolation, sletning under GDPR med legal hold ovenpå. Modparten behøver ikke kende domænet; en jævnbyrdig med et ANDET domæne fanger oftere det han har taget for givet.",
+   "fremgangsmaade": "Find personen i gangen til ANUG/Aarhus DevOps, blandt dem der svarede godt på hans Discord-spørgsmål, eller en medstuderende der også er seriøs. Bedste prædiktor for overlevelse: modparten har OGSÅ noget der skal reviewes og ingen til at gøre det - symmetrisk behov slår en tjeneste fra en mere senior person, for tjenester udløber. Struktur: fast tidspunkt hver 14. dag, kalenderinvitation, 60 minutter. KUN én persons artefakt pr. session, skiftevis. Artefakt sendt 48 timer før, maks. 2 sider eller 400 linjers diff. Tre skriftlige punkter som output hver gang - intet skriftligt betyder at sessionen ikke fandt sted. Tre sessioners prøveperiode og derefter gensidigt go/no-go. Kill-kriterium aftalt på forhånd: to aflysninger i træk = slut.",
+   "artefakter": "Kalenderserie. Mindst 8 gennemførte sessioner på 12 måneder. Et skriftligt reviewnotat med tre punkter pr. session. En skriftlig aftale inkl. kill-kriterium.",
+   "tid": "2 timer hver 14. dag",
+   "svaerhed": "Lav teknisk, høj i vedholdenhed. Han skal have en erstatningskandidat identificeret FØR den første dør.",
+   "kompetence": "At tage imod kritik uden at forsvare"
+  },
+  {
+   "titel": "F6: AI-adversary-protokol og kalibreringslog",
+   "problem": "AI er hans mest tilgængelige modspiller og hans farligste. Han er præcis på det stadie hvor han kan producere designs der LYDER rigtige, og AI er fremragende til at bekræfte at noget lyder rigtigt.",
+   "domaenekobling": "Organisationsbindingen skal med i hver eneste prompt, fordi det er den AI systematisk ignorerer: 7 årsværk, 3-5 udviklere, ingen platform team, ingen nattevagt, største kunde med on-prem SQL Server. Uden den svarer modellen for en 200-mands virksomhed, og næsten alle 'korrekte' arkitektursvar er forkerte ved den størrelse.",
+   "fremgangsmaade": "Fast protokol. Spørg aldrig 'er det her et godt design'. Spørg: 'Giv mig de tre mest sandsynlige måder det her fejler i produktion ved 200 tenants med 3 udviklere og ingen nattevagt, rangeret efter sandsynlighed, og for hver: hvilket bevis ville vise at det allerede sker.' Tving den i modstanderrolle: 'Du er staff architect og mener det her er forkert - skriv den indvending du ville fremføre i review' - og lad den derefter forsvare indvendingen mod hans modargument uden at give sig. Brug den til at generere de 15 oplagte indvendinger FØR mentortimen, så den time bruges på de tre der er tilbage. Forholdstalsreglen: for hver 10 timers AI-sparring mindst 1 time menneskeligt review.",
+   "artefakter": "En kalibreringslog: 'AI sagde X - mennesket/produktionen sagde Y'. En tæller: antal gange han har opgivet et design efter AI-modstand. Er den tæller 0 efter seks måneder, fungerer AI ikke som modspil, og det er et rødt flag, ikke en bekræftelse.",
+   "tid": "0 marginalt - ligger i byggetiden. Men den skal loftlægges, ikke udvides.",
+   "svaerhed": "Lav i udførelse, høj i disciplin. Fælden er at det føles som fremgang hele vejen.",
+   "kompetence": "At kalibrere egen dømmekraft mod en ekstern facitliste"
+  }
+ ],
+ "paa_jobbet": [
+  "Skriv en ADR for hver ikke-triviel ticket han løser, også når ingen har bedt om det. Læg den i repoet. Ingen skal give ham lov, og i et 9-mandsfirma vil ingen stoppe ham. Efter 12 måneder har han 30-40 ADR'er - det er både porteføljen og råstoffet til ekstern kritik.",
+  "Læs support- og incidentloggen bagud. Hvad er der FAKTISK gået galt hos kunderne de sidste tre år? Det er præcis den produktionsviden ingen AI har, og som en ekstern mentor heller ikke har om hans system - og han sidder på den. Den liste bliver hans testcase-katalog mod både egne designs og mod AI's forslag.",
+  "Bed om read-only adgang til produktionsmetrikker og logs. Ét spørgsmål til stifteren. Uden det designer han i blinde, og det er nemmere at få i et 9-mandsfirma end noget andet sted.",
+  "Bed om at sidde med til én kundesamtale eller supporteskalering om måneden. Det er et spørgsmål, ikke en proces. Kundens formulering af problemet er det domænekendskab han ikke kan læse sig til, og det er nøjagtig den bredde et mikrofirma giver, som en junior i en 500-mands virksomhed aldrig får.",
+  "Spørg de dygtige udviklere: 'Hvad ville du have gjort anderledes, hvis du kunne bygge det om?' Det er ikke arkitekt-modspil, men det er domænearkæologi, og de KAN svare på det. Det er det bedste de har at give ham, og han skal bede om det systematisk i stedet for at være skuffet over at ingen af dem er arkitekt.",
+  "Før en liste over faktiske produktionshændelser i systemet og brug den som prøvesten: for hvert nyt design, hvilke af de historiske hændelser ville det have forhindret, og hvilke ville det have gjort værre?",
+  "Anonymisér og abstrahér før han publicerer noget. Han skal spørge stifteren ÉN gang om rammen for hvad der må skrives offentligt - i et 9-mandsfirma tager det fem minutter - og derefter altid publicere problemKLASSEN, ikke systemet: 'append-only revisionsspor under compliancekrav', ikke LeanLinkings faktiske skemaer, kundenavne eller integrationsdetaljer.",
+  "Bed i måned 7 stifteren om konferencebudget til NDC Copenhagen juni 2027 med én side: hvad han vil hente, og hvad firmaet får tilbage. Det er den eneste 'politiske' manøvre der overhovedet giver mening ved ni ansatte, og den koster én samtale.",
+  "Foreslå at han selv skriver den første ADR for en beslutning teamet allerede har truffet uformelt, og sender den rundt til kommentar. Det er den billigste måde at indføre design review i et firma der ikke har det - og det giver ham intern øvelse i at få sine præmisser angrebet, selv om kritikken ikke er arkitektonisk."
+ ],
+ "faldgruber": [
+  "STILHED LÆST SOM GODKENDELSE. Han publicerer en ADR, får 40 visninger og nul kommentarer, og konkluderer at ingen havde indvendinger. Det er den præcise mekanisme der producerer en selvsikker udvikler med forkerte vaner. Modtræk: definér på forhånd hvad der tæller som svar, og behandl udeblivende svar som en FEJLET KANAL der skal repareres - ikke som en bestået test.",
+  "AT SAMLE PÅ KANALER I STEDET FOR AT BRUGE DEM. Otte Discords, fem meetupgrupper og et LinkedIn-netværk føles som fagligt engagement og producerer nul feedback. Regel: maks. to Discord-servere, og han skal have postet et rigtigt spørgsmål i begge inden for uge ét, ellers melder han sig ud.",
+  "AT FORVEKSLE KARRIEREMENTORING MED TEKNISK MODSPIL. IDA, Dansk IT og de fleste ADPList-sessioner leverer det første. De kan fortælle ham om titler, lønniveauer og karrierevalg. De kan ikke fortælle ham om hans idempotensnøgle er forkert. Han skal have begge dele, men han må aldrig tælle det ene som det andet.",
+  "GRATIS MENTORSKAB DER DØR STILLE I MÅNED 3. Prisen for gratis er at ingen af parterne har en forpligtelse. Der er ingen dårlig samvittighed ved at aflyse, og efter to aflysninger er det slut uden at nogen siger det højt. Betaling er det eneste der pålideligt får relationen til at overleve 12 måneder.",
+  "AT KØBE EN MENTOR OG GLEMME AT KØBE HÅRDHED. En betalt mentor har en kommerciel interesse i at være behagelig. Uden en eksplicit kontrakt om at kritik er leverancen, får han en venlig samtalepartner til fuld pris. Og han skal håndhæve den: to bløde sessioner i træk = skift mentor, ikke om seks måneder.",
+  "AT STILLE ÅBNE SPØRGSMÅL ONLINE. 'Hvordan designer jeg X?' og 'nogen der har erfaring med Y?' får nul svar overalt, og han vil konkludere at communities ikke virker. Folk svarer på noget konkret der er forkert, ikke på et tomt lærred. Fejlen er hans formulering, ikke kanalen.",
+  "AT PRÆSENTERE SANERE DESIGNS. Viser han kun den version han allerede er tilfreds med, får han bifald. Han skal vise versionen med det usikre punkt tydeligt markeret - og han skal vise den MENS han stadig kan skifte mening. Et færdigt design bliver forsvaret, ikke revideret.",
+  "AT VÆLGE FEEDBACKPARTNERE DER ER IMPONEREDE AF HAM. En juniorkollega eller medstuderende der synes han er dygtig, er værre end ingenting - han bekræfter det forkerte, og det føles godt. Han skal aktivt opsøge den der er mest tilbøjelig til at være uenig.",
+  "AT ARGUMENTERE IMOD DEN FØRSTE INDVENDING. Modparten registrerer at kritik koster energi, og næste gang er den blødere. Efter tre runder får han kun høflighed - og han vil tro hans designs er blevet bedre. Loopet dør uden at nogen melder det.",
+  "AI SOM ENESTE MODSPIL. Den er konstrueret til at være enig, den giver sig efter to gange modstand, den siger aldrig 'hele det her projekt er ikke værd at bygge', og den anbefaler systematisk arkitektur der kræver et driftsteam han ikke har. Bruger han den alene, bruger han 12 måneder på at gøre sine designs mere overbevisende uden signal om deres korrekthed. Testen: har en AI nogensinde fået ham til at opgive et design han var glad for? Er svaret nej efter seks måneder, er den ikke modspil - den er et ekkokammer med god grammatik.",
+  "AT BYGGE EN BLOG I MÅNED 1. Otte timer på static site generator og tema, nul læsere, og han har brugt en uges feedbackbudget på infrastruktur. ADR'erne ligger i spike-repoet under /docs/adr og ét pinned GitHub-profil-README. Nul opsætning, og det ER porteføljen.",
+  "AT REJSE TIL KØBENHAVN TIL AFTENMEETUPS. Seks timers transport for 90 minutters foredrag er indefensibelt mod et 10-15 timers ugebudget. Aarhus har en tæt nok enterprise-softwareklynge til at hans mentorpulje sidder 20 minutter væk.",
+  "MEETUP-FREMMØDE SOM SUBSTITUT FOR FEEDBACK. Tolv talks på tolv måneder uden at have talt med nogen om sit eget design er 40 timer brugt på nul modspil. Talks er broadcast. Gangen er produktet.",
+  "AT SIGTE EFTER dotnet/runtime ELLER efcore SOM FØRSTE OSS-BIDRAG. Populært råd, dårligt råd. De er enorme og langsomme, og reviewet handler om stilminutier frem for design. Gå hvor der er 1-3 maintainers og domænet passer.",
+  "AT SKRIVE ADR'ER DER RETFÆRDIGGØR I STEDET FOR AT UNDERSØGE. Optimerer han for hvordan porteføljen ser ud, skriver han forsvarsskrifter, og forsvarsskrifter kan man ikke kritisere. Sektionerne 'det jeg er mest usikker på' og 'sådan opdager vi at valget var forkert' er hvad der gør dokumentet angribeligt - og dermed brugbart.",
+  "AT PUBLICERE ARBEJDSGIVERENS DETALJER. Kundenavne, skemaer, integrationsdetaljer og compliance-svagheder må ikke ud. Ét spørgsmål til stifteren om rammen, og derefter altid problemKLASSEN frem for systemet. Dette er også den eneste måde spikes og portefølje kan spille sammen uden at blive et problem.",
+  "AT KØRE ALLE MEKANISMER SAMTIDIG. Kørte han hele listen, ville feedback æde ~7 timer om ugen - halvdelen af budgettet - og bygningen ville gå i stå. Loftet er 2,5-3 timer/uge. Maks. fire mekanismer, sigt efter tre. Evnen til at afvise den femte er en del af planen.",
+  "AT VENTE MED AT STARTE FEEDBACKLOOPENE TIL HAN 'HAR NOGET AT VISE'. De tager 4-8 uger at få op at køre (casting, matchning, prøveperioder), og starter han i måned 4, har han kun otte måneders kalibrering på en 12-månedersplan. Mentor-castingen skal ligge i uge 1-3, før den første spike er færdig."
+ ],
+ "maalepunkter": [
+  "HOVEDMÅLET, det ene tal der afgør om sektionen virkede: antal gange et menneske UDEN FOR LeanLinking har fortalt ham at et af hans designs var forkert, med en begrundelse han accepterede og handlede på. Mål: mindst 5 ved måned 6, mindst 10 ved måned 12. Under 3 ved måned 6 betyder at loopene er kosmetiske - uanset hvor mange communities han er medlem af - og han skal reparere dem FØR han bygger videre.",
+  "Dage fra publicering af en ADR til første substantielle eksterne kritik. Mål: under 7 dage. Over 14 dage betyder at distributionen er brudt, ikke at designet var godt. Efter tre ADR'er i træk over 14 dage skal han skifte kanal eller omskrive sin spørgeskabelon.",
+  "Er den betalte mentorrelation i live ved måned 6 OG måned 12? Binært. Dør den, er den mest kritiske kanal væk, og erstatningen skal være fundet inden fire uger.",
+  "Antal sessioner hvor mentoren IKKE havde noget kritisk at sige. Mål: under 2 ud af 12. Rammer den 2 i træk, skiftes mentoren ud - ikke om et halvt år.",
+  "Merged OSS-PR'er i projekter med reelt review (Finbuckle.MultiTenant, Marten, OpenFGA, dotnet/aspire eller tilsvarende). Mål: mindst 1 ved måned 6, mindst 2 ved måned 9. Substantielle maintainer-svar på issues tæller som delmål undervejs.",
+  "Kata-selvdiffs gennemført mod TheKataLog-finalister. Mål: mindst 8 ved måned 12. Kvalitetskrav: hver skal have en skriftlig 'hvad jeg ikke så'-liste, og den kumulative blinde-vinkel-liste skal efter måned 6 holde op med at vokse med NYE kategorier.",
+  "Review-bytte-sessioner gennemført. Mål: mindst 8 ved måned 12 (fortnightly med realistisk slip). Overlevede den første aftale ikke prøveperioden på tre sessioner, tæller genstarten - men dør nummer to også, skal timen omdirigeres til OSS.",
+  "Antal gange han har OPGIVET et design efter AI-modstand. Er tallet 0 ved måned 6, fungerer AI ikke som modspil, og det er et rødt flag - ikke en bekræftelse på at hans designs er gode.",
+  "Forholdstal AI-timer til menneskelige reviewtimer. Mål: højst 10:1. Overstiger det 20:1, er feedbackarkitekturen reelt kun AI, og hovedrisikoen er ubehandlet.",
+  "Navngivne eksterne arkitekter der har set nok af hans arbejde til at kunne udtale sig kvalificeret om hans designevne. Mål: mindst 2 ved måned 10. En LinkedIn-forbindelse tæller ikke; det skal være nogen der har læst mindst tre af hans ADR'er.",
+  "PORTKRITERIET i måned 9-10, det han ikke kan snyde sig igennem: hans betalte mentor svarer ærligt på 'ville du lade ham eje en designbeslutning i din virksomhed, og hvilken?'. Mentoren er ikke hans arbejdsgiver, har ingen interesse i at lyve, og har seks måneders ADR'er som grundlag. Ingen intern anbefaling fra et 9-mandsfirma kan erstatte det svar.",
+  "Feedback-timeforbrug som andel af de 10-15 ugentlige timer. Mål: 20-25%, altså 2,5-3 timer/uge i snit. Over 35% i to måneder i træk betyder at han er holdt op med at bygge og er begyndt at netværke, hvilket er den behagelige version af at fejle."
+ ],
+ "web_verifikation": "\"VERIFICERET i denne session (via websøgning og direkte hentning): (1) Copenhagen Developers Festival findes ikke længere under det navn - omdøbt til NDC Copenhagen; 2026-udgaven 1.-4. juni i Øksnehallen, 55 talere, 65 sessioner, 7 workshops. (2) GOTO Copenhagen 2026: 28. sept - 2. okt 2026, 2 masterclass-dage + 3 konferencedage, priser ekskl. 25% moms i tiers. (3) O'Reilly online learning-priser 2026: USD 49/md, USD 129/kvartal, USD 499/år. (4) O'Reilly Architectural Katas eksisterer fortsat med Neal Ford/Mark Richards; kræver mindst ét O'Reilly-medlemskab pr. hold. (5) TheKataLog: 83 repos, senest Q4 2025-finalister opdateret nov. 2025. (6) DDD-CQRS-ES: migreret fra Slack til Discord, aktuel invite https://discord.gg/sEZGSHNNbH (hentet fra github.com/ddd-cqrs-es/community README). (7) Virtual DDD aktiv 2026, session 9. sept. 2026 med Trond Hjorteland, relanceret website, Discord-community, Open Collective-finansieret. (8) ADPList: gratis i 2026, ingen premium-tier, 40.000+ mentorer, 2.151+ software engineering, 4.329+ system design. (9) MentorCruise: ~104 Software Architecture-profiler, USD 60-200+/time, planer USD 120-450/md, 7 dages prøve. (10) IDA Mentor: gratis 6-mdr program, 4-6 møder à 1,5 t, frister feb./sept.; 9-mdr program 3.795 kr for >2 års erfaring; studiemedlemskab gratis 1. år derefter 20 kr/md, fuldt medlemskab fra 292 kr/md. (11) Dansk IT mentorprogram: del af medlemskab, januarstart, tilmelding åbner november, kontakt hrl@dit.dk. (12) OSS-projekter hentet direkte fra GitHub: Finbuckle.MultiTenant (~1.6k stjerner, 588 commits, .NET 10, Apache 2.0, Open Source Maintenance Fee fra nov. 2026), Marten (3.5k stjerner, 7.202 commits, .NET SDK 8+/PostgreSQL 13+), OpenFGA (5.8k stjerner, 2.051 commits, Slack, månedlige community-møder, .NET SDK), dotnet/aspire (6.3k stjerner, 8.411 commits, MIT, good-first-issue-labels, Discord). (13) joelparkerhenderson/architecture-decision-record: 16.9k stjerner, 12+ skabeloner. (14) AZ-305 og AZ-400 er IKKE pensioneret i 2026; AZ-305 opdateret 17. april 2026 med AI-indhold. IKKE VERIFICERET og skal tjekkes af ham selv: aktivitetsniveauet for alle Aarhus-meetups (ANUG, Aarhus DevOps, GOTO Meetups Aarhus, Azure Usergroup Denmark Aarhus, Tech Hub Aarhus) - meetup.com er blokeret gennem netværksproxyen i dette miljø, så jeg har kun kunnet bekræfte at grupperne eksisterer, ikke at de afholder events i 2026; de præcise DKK-priser for GOTO Copenhagen 2026 og NDC Copenhagen (gotocph.com og ndccopenhagen.com blokeret); Dansk IT's medlemspris; den præcise IDA-ansøgningsfrist for efteråret 2026 (kilderne skelner ikke entydigt mellem studerende- og nyuddannedeprogrammet). BEGRÆNSNING: websøgebudgettet i denne session blev opbrugt (200/200 kald), og størstedelen af de relevante domæner (meetup.com, oreilly.com, ida.dk, gotocph.com, ndccopenhagen.com, virtualddd.com, akademi.dit.dk, sessionize.com, dev.events, azug.dk, techcalendar.eu) er blokeret af netværksproxyen. github.com var tilgængeligt, hvilket er grunden til at OSS-oplysningerne er de bedst underbyggede i denne research. Ingen URL i dette output er opfundet; alle stammer fra søgeresultater eller direkte hentning.\""
+}

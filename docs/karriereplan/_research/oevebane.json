@@ -1,0 +1,469 @@
+{
+ "kernepointer": [
+  "Spike-metoden er ikke 'et sideprojekt light'. Den er et instrument til at producere FALSIFICERBARE arkitekturpaastande. Outputtet er ikke kode - det er en beslutning med bevis. Koden i en spike er stillads og maa smides vaek.",
+  "Domaeneforankring er ikke pynt, det er timeregnskab. 10-15 t/uge kan ikke baere to laeringsspor. Naar spiken henter sit problem fra leverandoerkaede/compliance-domaenet, betaler arbejdsdagen for domaeneresearchen, og spiken betaler for arkitekturkompetencen. En generisk spike konkurrerer med jobbet om hans timer; en domaeneforankret spike faar timer foraeret.",
+  "Uden reviewer er MAALINGEN hans reviewer. Det eneste der kan modsige ham naar ingen kollega kan, er et tal han ikke selv bestemte. Alt andet i artefaktsaettet kan han rationalisere sig igennem.",
+  "FORUDSIGELSE FOER MAALING er den vigtigste enkeltvane i hele planen. Tal + interval + konfidens committes til git FOER maaleopsaetningen skrives. Git-tidsstemplet er beviset over for ham selv. Uden det slaar hindsight bias til og han laerer intet.",
+  "Et forkert gaet er det mest vaerdifulde output. En spike hvor forudsigelsen holdt inden for 20% var et for let spoergsmaal. Retrospektivet skal starte med AFVIGELSEN og med hvilken antagelse der var forkert - ikke med resultatet.",
+  "'Done' for en laeringsspike = spoergsmaalet er besvaret med et tal, og alle fem artefakter findes. Ikke 'det virker'. Ingen auth, intet UI, ingen fejlhaandtering, ingen test coverage - det er leverancekriterier og de er forbudte her.",
+  "Porteføljer imponerer ikke fordi de viser BYGGE-evne. Bygge-evne er commodity. Det knappe er VALG under begraensning MED bevis. En ADR med to forkastede alternativer og en maaling der afgjorde det er sjaelden; en koerende app er det ikke.",
+  "Maalingen skiller en mening fra en arkitekturbeslutning. En ADR uden maaling er en holdning med overskrifter: alternativerne er hentet fra det han allerede havde laest, og 'hvorfor' er hentet fra samme sted. Ingen ny information er skabt. MADR 4 har en indbygget 'Confirmation'-sektion praecis derfor - den staar tom i naesten alle ADR'er man ser i naturen. Han fylder den ud hver gang.",
+  "Én spike skal forfremmes til noget der deployes og DRIFTES resten af aaret. Uden drift laerer han aldrig migrationer paa data, bagudkompatibilitet, cost drift og reelle fejlmoenstre. Drift er hvor arkitekturbeslutninger falsificeres over TID i stedet for over millisekunder.",
+  "Timeloftet er reelt og skal regnes. 1-2 uger pr. spike ved 10-15 t/uge = 10-25 t pr. spike. Den forfremmede tjeneste aeder 1,5 t/uge fast fra den maaned den gaar i drift. Resten er spiken. Regnestykket gaar op, men kun hvis driften holdes minimal.",
+  "HAARDT STOP ved 25 timer uanset tilstand. En spike afleveret som 'ubesvaret' med det den naaede at vise, er bedre end en spike der aeder tre uger. Gør 'ubesvaret' til et normalt og accepteret udfald, ellers snyder han sig selv til at forlaenge.",
+  "Han skal publicere offentligt fra spike nr. 1 - ikke for eksponering, men fordi det er den eneste mekanisme der genererer uopfordret modsigelse naar der ikke sidder en arkitekt ved siden af ham. Optimér for at blive MODSAGT, ikke for at imponere.",
+  "Der findes intet faerdigt format for 'solo, maalingsdrevet, domaeneforankret arkitekturoevelse'. Alle eksisterende formater er enten holdbaserede, fiktive, interview-orienterede eller driftsforudsaettende. Hans metode er en syntese - derfor skal han committe sin egen skabelon og holde den STABIL, saa spike 16 er sammenlignelig med spike 1.",
+  "Fortrolighed skal afklares i uge 1. Én to-minutters samtale med stifteren om at han skriver offentligt om arkitekturmønstre med syntetisk data og uden kundenavne eller firmakode. I et 9-mandsfirma er det en Slack-besked, ikke en proces. Uden den er hele porteføljen en risiko."
+ ],
+ "ressourcer": [
+  {
+   "titel": "TheKataLog - finalist- og vinderbesvarelser fra O'Reilly Architectural Katas",
+   "type": "repo-samling",
+   "prioritet": "P1 - vigtigste enkeltressource for en der oever alene",
+   "url": "https://github.com/TheKataLog",
+   "verificeret": true,
+   "tidsforbrug": "3 t pr. kalibrering, 4 gange om aaret = 12 t/aar",
+   "hvorfor": "83 repositories med DOEMTE besvarelser fra O'Reilly-katakonkurrencerne, vedligeholdt af hoveddommer Jacqui Read, aktivt opdateret (README opdateret sept. 2026, seneste konkurrencebidrag fra Q4 2025-runden om AI-Enabled Architecture). Naar man ikke har en reviewer er kalibrering mod faerdige, eksternt bedoemte besvarelser den bedste erstatning. Metode: vaelg en kata, brug 4 timer paa egen besvarelse, LUK den, laes derefter vinderbesvarelsen, og skriv en liste over hvad de gjorde som han ikke gjorde. Advarsel: vinderbesvarelserne er ofte lange og praesentationstunge - kalibrér paa STRUKTUR og FRAVALG, ikke paa antal slides.",
+   "hvad_springes_over": "Ikke selv at deltage i konkurrencen hver runde - laesningen giver 80% af vaerdien til 10% af tiden"
+  },
+  {
+   "titel": "O'Reilly Architectural Katas (Neal Ford / Mark Richards, dommer Jacqui Read)",
+   "type": "live event / kohorteforløb",
+   "prioritet": "P1 - eneste realistiske kilde til kvalificeret menneskelig kritik af hans designarbejde",
+   "url": "https://www.oreilly.com/live-events/architectural-katas/",
+   "verificeret": true,
+   "tidsforbrug": "6-8 t pr. event, 2-3 gange om aaret",
+   "hvorfor": "Virtuelle, holdbaserede oevelser paa reelle organisationers problemer; senest afholdt 2. sept. 2026. Der findes ogsaa et 6-ugers kohorteforløb hvor hold laver en kata om ugen og faar direkte feedback fra Ford og Richards. Kraever O'Reilly online learning-medlemskab for mindst ét holdmedlem, og de foerste 100 hold optages. Det holdbaserede er en FORDEL for ham: han ser hvordan andre argumenterer. SVAGHED: katakerne er fiktive domaener uden maalinger - de traener formulering og fravalg, ikke falsificering. Brug som supplement, aldrig som oevebane.",
+   "hvad_springes_over": "Hele katalogets kohorteforløb hvis det kolliderer med spike-kadencen - enkelt-events er nok"
+  },
+  {
+   "titel": "MADR 4 (Markdown Architectural Decision Records)",
+   "type": "skabelon",
+   "prioritet": "P1 - artefaktstandarden",
+   "url": "https://github.com/adr/madr",
+   "verificeret": true,
+   "tidsforbrug": "1 t opsaetning, derefter 2 t pr. spike",
+   "hvorfor": "MADR 4.0.0 (udgivet 2024-09-17) leverer fire skabelonvarianter: fuld/minimal x annoteret/bar. Verificeret sektionsstruktur i adr-template.md: front-matter (status, date, decision-makers, consulted, informed) + Context and Problem Statement, Decision Drivers, Considered Options, Decision Outcome (med Consequences og CONFIRMATION), Pros and Cons of the Options, More Information. 'Confirmation'-sektionen er den centrale: den er indbygget i formatet praecis fordi feltet har erkendt at ADR'er ellers bliver holdninger. Den er tom i naesten alle ADR'er man ser. Hans regel: Confirmation peger paa maalingen, hver gang, uden undtagelse. (En YAML-variant, YADR, blev udgivet marts 2026 - ignorér den, markdown renderes af GitHub.)",
+   "hvad_springes_over": "Den fulde annoterede skabelon - brug adr-template-bare.md efter foerste spike, forklaringerne er stoej naar man kan formatet"
+  },
+  {
+   "titel": "Grafana k6",
+   "type": "vaerktoej (load testing)",
+   "prioritet": "P1 - standardvaerktøj til maaling over HTTP",
+   "url": "https://github.com/grafana/k6",
+   "verificeret": true,
+   "tidsforbrug": "3 t at laere, derefter 1 t pr. spike",
+   "hvorfor": "AGPLv3, gratis, ingen licensfaelde. Stabil version 2.1.0 pr. 30. juni 2026; v2.0 (11. maj 2026) fjernede deprecated API'er - skriv nyt, ikke efter gamle blogindlaeg. Scripts i JavaScript, output som JSON/CSV han kan committe som raadata. Koerer gratis og ubegraenset i GitHub Actions paa et PUBLIC repo.",
+   "hvad_springes_over": "k6 Cloud - han har ingen brug for multi-region-koersler"
+  },
+  {
+   "titel": "NBomber",
+   "type": "vaerktoej (load testing, .NET)",
+   "prioritet": "P4 - SPRINGES OVER, og det er et populaert raad der er blevet daarligt",
+   "url": "https://nbomber.com/",
+   "verificeret": true,
+   "tidsforbrug": "0",
+   "hvorfor": "Naesten alle .NET-blogindlaeg anbefaler NBomber som 'open source load testing for .NET'. Det er forældet: fra version 5 er brug i organisationer licenspligtig - gratis KUN til personlig brug, org-licens fra ca. $99/bruger/md, og de distribuerede NuGet-builds er closed source under NBomber License Agreement v2.0. Konsekvens for ham: han kan bruge det til sine egne spikes, men kan ikke tage maalemetoden med ind i LeanLinking uden at firmaet skal betale. Det gør vaerktoejet vaerdiloest som faelles maalestandard. Vaelg k6.",
+   "hvad_springes_over": "Hele vaerktoejet"
+  },
+  {
+   "titel": "Azure Retail Prices API",
+   "type": "API (uautentificeret)",
+   "prioritet": "P1 - fundamentet for enhver cost-maaling",
+   "url": "https://prices.azure.com/api/retail/prices",
+   "verificeret": true,
+   "tidsforbrug": "2 t at bygge en genbrugelig klient, derefter 30 min pr. cost-model",
+   "hvorfor": "Uautentificeret, gratis, kraever hverken Azure-konto eller abonnement. Returnerer retail-priser pr. service, region og SKU. Nyere api-version 2023-01-01-preview er bagudkompatibel og tilfoejer savings plan-rater. Dette er det eneste rigtige grundlag for en cost-model: alt andet er blogindlaeg med udløbsdato. Cost-dimensionering er i oevrigt den ene arkitektfaerdighed hvor en junior faktisk kan slaa seniorer, fordi de fleste gaetter. Byg klienten én gang, genbrug den i alle cost-spikes, datér altid modellen.",
+   "hvad_springes_over": "Manuel afskrivning fra pricing-sider og fra tredjeparts prisartikler"
+  },
+  {
+   "titel": "Mermaid-diagrammer direkte i markdown",
+   "type": "diagramvaerktoej",
+   "prioritet": "P1 - brug denne til spike 1-6",
+   "url": "https://mermaid.js.org",
+   "verificeret": true,
+   "tidsforbrug": "1 t",
+   "hvorfor": "Renderes native af GitHub i markdown - nul opsaetning, nul afhaengigheder, diagrammet er versionsstyret tekst, og en hiring manager ser det uden at klikke videre. Daekker C4-agtige containerdiagrammer (der findes C4-syntaks i Mermaid) og sekvensdiagrammer, som er de to eneste diagramtyper en spike har brug for. Yak shaving paa diagramvaerktoej er en klassisk tidsfaelde i praecis denne slags plan.",
+   "hvad_springes_over": "PlantUML, draw.io, Excalidraw, Miro - alt der producerer et billede i stedet for tekst"
+  },
+  {
+   "titel": "Structurizr Lite / Structurizr DSL",
+   "type": "diagramvaerktoej (C4)",
+   "prioritet": "P2 - foerst fra spike 7+, ikke foer",
+   "url": "https://structurizr.com/dsl",
+   "verificeret": true,
+   "tidsforbrug": "3 t opsaetning",
+   "hvorfor": "Structurizr er skabt af Simon Brown (C4-modellens ophavsmand) og er referenceimplementeringen. Structurizr Lite er gratis og open source, koeres lokalt (Docker/JAR), og kan rendere diagrammer, dokumentation OG architecture decision records fra én DSL-model. Begraensning: Lite er designet til én person og har ingen samarbejdsfunktioner - hvilket er praecis hans situation. Servervarianten kraever licens. Vaerdien opstaar foerst naar han har nok spikes til at ville have ÉN model paa tvaers frem for 12 loesrevne diagrammer. Introducér den som en spike i sig selv ('kan én model daekke 8 spikes?').",
+   "hvad_springes_over": "Structurizr Cloud/on-premises - licenspligtigt og irrelevant for én person"
+  },
+  {
+   "titel": "Fundamentals of Software Architecture, 2. udgave (Mark Richards & Neal Ford, O'Reilly)",
+   "type": "bog",
+   "prioritet": "P1 - men laest selektivt",
+   "url": "https://www.oreilly.com/library/view/fundamentals-of-software/9781098175504/",
+   "verificeret": true,
+   "tidsforbrug": "8-10 t selektiv laesning fordelt over aaret, ikke i én blok",
+   "hvorfor": "2. udgave udkom 23. september 2025 med fem nye kapitler; daekker arkitekturkarakteristika, arkitekturmønstre, komponentbestemmelse, diagrammering, governance, data, team topologies. Brug den som REFERENCESTANDARD for hvordan en beslutning formuleres og hvordan en arkitekturkarakteristik goeres maalbar - ikke som laesning fra ende til anden. Konkret brug: slaa op i kapitlerne om arkitekturkarakteristika og governance naar han skal formulere en spikes kvalitetskrav, og i diagrammeringskapitlet foer han laaser sin diagramskabelon.",
+   "hvad_springes_over": "Laesning fra ende til anden. Og kapitlerne om team topologies og enterprise governance - de forudsaetter en organisation han ikke har"
+  },
+  {
+   "titel": "Mark Richards - Software Architecture Monday",
+   "type": "video-serie (gratis)",
+   "prioritet": "P2",
+   "url": "https://developertoarchitect.com/lessons/",
+   "verificeret": true,
+   "tidsforbrug": "15 min/md = 3 t/aar",
+   "hvorfor": "Gratis lektion foerste mandag i maaneden, 10-15 min, aktivt opdateret i 2026 (bl.a. 'Approaches For Legacy Migration' 7. sept. 2026, 'Transactional Sagas and Atomicity' 3. aug. 2026). Ikke feedback, men den billigste kilde til arkitekturvokabular og til at hoere hvordan en erfaren arkitekt RAMMER et argument. Vokabular betyder noget: han skal kunne formulere sine fravalg i termer andre arkitekter genkender.",
+   "hvad_springes_over": "De betalte kurser paa samme site indtil videre"
+  },
+  {
+   "titel": "BenchmarkDotNet",
+   "type": "vaerktoej (mikrobenchmark)",
+   "prioritet": "P2",
+   "url": "https://github.com/dotnet/BenchmarkDotNet",
+   "verificeret": true,
+   "tidsforbrug": "2 t at laere",
+   "hvorfor": ".NET Foundation-projekt, gratis, stadig aktivt vedligeholdt i 2026 (nyere udgivelser har tilfoejet Roslyn-analysatorer der fanger forkert brug ved compile time). Bruges naar spoergsmaalet er in-process (serialisering, allokeringer, parsing af dokumenter, hash-beregning) - ikke naar det er over HTTP. Fanger den klassiske fejl at maale paa debug-build. Bemaerk: projektet har stadig ikke naaet 1.0, versionsnumre er 0.x - det er normalt her og ikke et modenhedssignal.",
+   "hvad_springes_over": "Mikrobenchmarking af ting der er I/O-dominerede - der er tallet stoej"
+  },
+  {
+   "titel": "Polly (resilience og transient-fault handling til .NET)",
+   "type": "bibliotek",
+   "prioritet": "P2",
+   "url": "https://github.com/App-vNext/Polly",
+   "verificeret": true,
+   "tidsforbrug": "3 t",
+   "hvorfor": "Standardvalget naar spiken handler om retry, backoff, circuit breaker, timeout og bulkhead - hvilket den skal mindst én gang, fordi hentning af certifikater fra tredjeparts udstedersystemer er et reelt fejlmoenster i hans domaene. Vigtigt: brug det til at MAALE at naiv retry ofte gør systemet vaerre (retry storms), ikke bare til at slaa det til.",
+   "hvad_springes_over": "Ingenting - men undgaa at bruge det som erstatning for at forstaa hvorfor kaldet fejler"
+  },
+  {
+   "titel": "Wheel of Misfortune (Google SRE incident-rollespil)",
+   "type": "oevelsesformat",
+   "prioritet": "P3 - foerst naar den forfremmede tjeneste har koert 3+ maaneder",
+   "url": "https://github.com/dastergon/wheel-of-misfortune",
+   "verificeret": true,
+   "tidsforbrug": "2 t pr. game day, kvartalsvis",
+   "hvorfor": "Rollespilsformat fra Google SRE-bogen: et scenarie, en game master, en deltager. Formaalet er at oeve diagnosticering under pres i et risikofrit miljø. Kraever egentlig to personer. SOLO-VARIANT der virker: skriv scenariet ned mindst en uge foer, laeg det vaek, koer det derefter paa den forfremmede tjeneste uden at kigge paa loesningen. Svaekket, men den eneste oevelse der reelt tester om hans telemetri kan besvare et spoergsmaal han ikke har forudset. Naar han ikke kan diagnosticere sit eget system, er det en ARKITEKTURFEJL, ikke en driftsfejl - og det er hele pointen.",
+   "hvad_springes_over": "Formatets facilitator-materiale til store teams"
+  },
+  {
+   "titel": "tedneward/ArchKatas + architecturalkatas.com",
+   "type": "problem-generator",
+   "prioritet": "P3 - laan strukturen, ikke problemerne",
+   "url": "https://github.com/tedneward/ArchKatas",
+   "verificeret": true,
+   "tidsforbrug": "30 min",
+   "hvorfor": "35+ katabeskrivelser i JSON, gratis, tilfaeldig kata kan traekkes fra architecturalkatas.com/kata.html. Ingen eksplicit licens angivet paa repoet. Formatet Ted Neward etablerede er nyttigt: hver kata definerer users, requirements og CONSTRAINTS eksplicit. VURDERING: problemerne selv er direkte i konflikt med hans strategi - fiktive domaener, ingen volumental, ingen maalinger. Han skal stjaele skabelonstrukturen (brugere / krav / begraensninger) og laegge den ned over sine egne domaeneproblemer, og ellers lade katalogets indhold ligge.",
+   "hvad_springes_over": "Selve kataproblemerne - de bygger ingen domaeneautoritet"
+  },
+  {
+   "titel": "Azure Chaos Studio",
+   "type": "vaerktoej (fejlinjektion)",
+   "prioritet": "P4 - SPRINGES OVER indtil maaned 9+, og formentlig helt",
+   "url": "https://azure.microsoft.com/en-us/pricing/details/chaos-studio/",
+   "verificeret": true,
+   "tidsforbrug": "0 nu",
+   "hvorfor": "Pris ca. $0,10 pr. action-minut (ca. 0,64 kr). Status pr. sept. 2026: Microsoft har STOPPET feature-udvikling paa 'classic' experiments (kun kritiske fixes og sikkerhedsopdateringer); Workspaces og Scenarios kom i public preview 1. juli 2026 med GA sigtet mod sen 2026. Klassiske eksperimenter koerer uaendret videre, ingen tvungen migrering annonceret. VURDERING: chaos engineering forudsaetter et system i drift med telemetri og et hypotesebegreb. Foer det er det teater. Han kan injicere de samme fejl gratis ved at slukke for afhaengigheden, saette en firewall-regel eller lade en fejl-proxy returnere 429. Men LAAN hypoteseformen fra dag 1: 'steady state er X; vi tror at ved fejl F forbliver X inden for Y'. Formen er gratis, vaerktoejet er ikke noedvendigt.",
+   "hvad_springes_over": "Hele vaerktøjet - laan disciplinen, spring produktet over"
+  },
+  {
+   "titel": "Azure App Testing (tidligere Azure Load Testing)",
+   "type": "tjeneste",
+   "prioritet": "P3 - kun til maaling over netvaerket mod deployet miljø",
+   "url": "https://azure.microsoft.com/en-us/pricing/details/app-testing/",
+   "verificeret": true,
+   "tidsforbrug": "2 t opsaetning",
+   "hvorfor": "50 Virtual User Hours (VUH) gratis pr. maaned; derefter ca. $0,15/VUH under 10.000 VUH (ca. 0,96 kr/VUH). Ingen maanedlig ressourceafgift laengere. MEN: pr. 1. marts 2026 paalaegges et minimum-VUH-forbrug pr. testkoersel, saa mange smaa koersler er blevet dyrere relativt. Regnestykke: 50 VU i 20 min = ca. 16,7 VUH, altsaa 2-3 koersler om maaneden inden for gratisgraensen. Anbefaling: koer k6 lokalt og i GitHub Actions til alt det daglige (gratis, ubegraenset paa public repo), og brug App Testing kun naar spoergsmaalet KRAEVER at trafikken kommer udefra over netvaerket.",
+   "hvad_springes_over": "Daglig brug - gratisgraensen brydes hurtigt"
+  },
+  {
+   "titel": "System design-interviewmateriale (System Design Primer, ByteByteGo og lignende)",
+   "type": "laeringsmateriale",
+   "prioritet": "P5 - SPRINGES OVER HELT, og det er et populaert raad der er direkte skadeligt for ham",
+   "verificeret": false,
+   "tidsforbrug": "0",
+   "hvorfor": "Standardraadet til 'bliv arkitekt' er at traene system design. For ham er det forkert paa tre punkter. (1) Skala: materialet traener hyperskala-moenstre - 100 mio. brugere, global replikering, sharding, CDN-hierarkier. Han arbejder i et 9-mandsfirma med B2B-kunder hvor det tunge er DOKUMENTVOLUMEN og KORREKTHED, ikke request-volumen. (2) Ingen maalinger: formatet belønner moenster-recitation, ikke begraensningsanalyse med tal - praecis den vane han skal AF med. (3) Vaerste konsekvens: han begynder at foreslaa kompleksitet der ikke er begrundet i tal, hvilket er den signaturfejl juniorer laver naar de faar arkitekttitel for tidligt. Materialet er godt til jobinterviews. Han soeger ikke job.",
+   "hvad_springes_over": "Hele kategorien"
+  },
+  {
+   "titel": "Enterprise-arkitekturrammer (TOGAF, ArchiMate, arkitektur-review-boards)",
+   "type": "rammevaerk",
+   "prioritet": "P5 - SPRINGES OVER",
+   "verificeret": false,
+   "tidsforbrug": "0",
+   "hvorfor": "Naesten al 'bliv solution architect'-raadgivning peger paa disse. De forudsaetter en organisation med governance-lag, sponsorer og formelle beslutningsfora. I et 9-mandsfirma faar man mandat ved at spoerge stifteren. Rammevaerkerne loeser et koordineringsproblem han ikke har, og de producerer artefakter ingen laeser. Vender problemet tilbage senere i en stoerre organisation, laerer han det paa to uger.",
+   "hvad_springes_over": "Hele kategorien"
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "METODE-DEFINITION: hvad er en god arkitektur-spike (SPIKE-testen)",
+   "problem": "En spike er en tidsboxet undersoegelse der besvarer ÉT arkitekturspoergsmaal med en maaling, hvor svaret kunne falde ud til flere sider, og hvor forudsigelsen er skrevet ned foerst. Fem kriterier, alle skal vaere opfyldt. S - SPOERGSMAALET er formuleret som et VALG mellem mindst to navngivne muligheder ('outbox-tabel vs. transactional messaging vs. change data capture til leverandoerstamdata'), aldrig som et emne ('event-driven arkitektur'). P - PAASTANDEN kan vaere forkert; kender han svaret paa forhaand, er det en tutorial. I - INSTRUMENTERINGEN er valgt FOER kodning: han kan pege paa hvad han maaler og med hvilket vaerktoej. K - KONTEKSTEN har tal fra det virkelige domaene: antal leverandoerer, dokumentstoerrelser, tenants, opdateringsfrekvens, SLO. Uden tal er der intet at dimensionere efter, og saa er det en mening. E - den ENDER: der findes en tilstand hvor han er faerdig uanset om det virkede. ANTI-MOENSTRE der ikke er spikes: 'Byg en X' (leveranceformuleret, intet valg). 'Laer Y' (teknologiorienteret, ikke falsificerbart). 'Sammenlign alle message brokers' (for bredt, ingen kontekst). Spikes der kraever UI - UI er DEN store tidsfaelde og ingen spike maa have en frontend medmindre spiken handler om frontend-arkitektur. Spikes der kraever auth/tenancy-plumbing foer noget kan maales, medmindre isolation ER spoergsmaalet.",
+   "domaenekobling": "Selve metodedefinitionen er domaeneneutral, men K-kriteriet er det der tvinger domaeneforankringen ind: en spike uden volumental fra leverandoerkaede-domaenet kan ikke opfylde SPIKE-testen.",
+   "kompetence": "metadisciplin - problemformulering og afgraensning",
+   "svaerhed": "grundlag - laases i uge 1 og aendres ikke",
+   "tid": "2 t engangsinvestering: skriv skabelonen, commit den, laas den",
+   "fremgangsmaade": "Skriv SPIKE-testen som en checkliste i rod-repoets CONTRIBUTING.md. Hver ny spike skal bestaa alle fem punkter FOER foerste linje kode. Bestaar den ikke, omformuleres spoergsmaalet - eller den droppes.",
+   "artefakter": "CONTRIBUTING.md med SPIKE-testen og de fem faste artefaktnavne"
+  },
+  {
+   "titel": "METODE-DEFINITION: afgraensning til 10-20 timer og hvordan man undgaar at det bliver et produkt",
+   "problem": "Den maade spike-serier doer paa er at spike 3 bliver interessant, faar et UI, faar brugere, og aeder tre maaneder. TIMEBUDGET pr. spike, ca. 16 t over 2 uger: 1,5 t problemformulering + kontekst-tal + forudsigelse (FOER kode). 1,5 t research af alternativer (docs og kildekode, ikke blogindlaeg). 6 t mindste rig der kan maale - harness og datagenerator, ikke produkt. 3 t koersel + maaling + gentagelse (minimum 3 koersler, ellers er tallet stoej). 2 t ADR + diagram. 1 t retrospektiv og afvigelsesanalyse. 1 t publicering. SEKS AFGRAENSNINGSTEKNIKKER: (1) Skriv MAALESAETNINGEN foerst - 'ved 2 mio. certifikatraekker og 50.000 varsler/dag er p95 under X ms og kosten under Y kr/md'. Al kode der ikke bidrager til at producere det tal, er ude. (2) Syntetisk datagenerator er OBLIGATORISK og bygges ÉN gang i spike 1 og genbruges - en generator der laver 2 mio. raekker paa under 2 minutter (SqlBulkCopy eller set-baseret SQL-generering, ikke ORM-loops). (3) Intet UI, ingen auth, ingen CI - medmindre det ER emnet. (4) ÉN variabel: hoejst 3 optioner, én primaer metrik, hoejst to sekundaere. (5) HAARDT STOP ved 25 timer uanset tilstand - status 'ubesvaret' i ADR'en plus hvad der manglede, og det er et normalt udfald. (6) PRODUKT-DETEKTOREN: i det sekund han taenker paa brugere, roller, opsaetningsskaermbilleder, fejlbeskeder eller design, er han holdt op med at lave en spike. Det er signalet til at stoppe, ikke til at fortsaette.",
+   "domaenekobling": "Datagenerator-investeringen er domaenespecifik og betaler sig kun fordi alle spikes deler samme domaene: én generator der producerer leverandoerer, certifikater, dokumenter og tenants daekker hele serien.",
+   "kompetence": "metadisciplin - scope-kontrol",
+   "svaerhed": "grundlag",
+   "tid": "16 t er normen, 25 t er loftet",
+   "fremgangsmaade": "Timebudgettet skrives ind i hver spikes README som en faktisk log: planlagt vs. brugt pr. post. Efter 5 spikes har han data paa hvor han systematisk undervurderer - de fleste undervurderer datagenerering og overvurderer analysetid.",
+   "artefakter": "Timelog i README pr. spike; genbrugelig datagenerator i /tools"
+  },
+  {
+   "titel": "METODE-DEFINITION: 'Done' for en laeringsspike",
+   "problem": "Done er IKKE 'koden virker'. Done = alle fem artefakter findes OG forudsigelsen er blevet konfronteret med et tal. TJEKLISTE: (a) Spoergsmaalet staar som ÉT spoergsmaal oeverst i README. (b) Kontekst-tallene staar der - volumen, stoerrelse, frekvens, SLO. (c) Forudsigelsen er committet FOER foerste maaling; git-tidsstemplet er beviset. (d) Mindst 3 koersler med spredning angivet, ikke ét tal. (e) Maalingen er reproducerbar med ÉN kommando dokumenteret i README. (f) ADR'en har mindst 2 forkastede alternativer med begrundelse. (g) ADR'ens Confirmation-sektion peger paa maalingen. (h) Diagram findes. (i) Retrospektiv med afvigelse: forudsagt vs. maalt, faktor, og hvad i hans model der var galt. (j) Repoet kunne kastes vaek uden tab - al vaerdi ligger i dokumenterne. EKSPLICIT IKKE done-kriterier og direkte forbudte: test coverage, kodekvalitet, fejlhaandtering, features, refactoring. Det er leverancekriterier. En spike der opfylder dem har spildt timer der skulle vaere gaaet til den naeste spike.",
+   "domaenekobling": "Punkt (b) - kontekst-tallene - kan kun udfyldes fordi han sidder i domaenet. Det er kriteriet der goer hans spikes ikke-kopierbare.",
+   "kompetence": "metadisciplin - faerdiggoerelse",
+   "svaerhed": "grundlag",
+   "tid": "tjeklisten koster 10 min at gennemgaa",
+   "fremgangsmaade": "Tjeklisten ligger som en markdown-checkbox-liste i hver spikes README og skal vaere afkrydset i den commit der lukker spiken.",
+   "artefakter": "Afkrydset DONE-checkliste i hver spikes README"
+  },
+  {
+   "titel": "METODE-DEFINITION: det standardiserede artefaktsaet (fem filer, faste navne)",
+   "problem": "Standardisering er ikke pedanteri - det er hvad der goer spike 16 sammenlignelig med spike 1, og hvad der goer porteføljen scanbar paa fem minutter. FEM ARTEFAKTER, samme navne hver gang: (1) README.md - problemformulering: spoergsmaalet, kontekst-tallene, krav (funktionelle + kvalitetskrav MED TAL), begraensninger (maa ikke koste over X kr/md, skal koere paa Azure, skal kunne rulles tilbage), og hvordan maalingen koeres paa én kommando. (2) PREDICTION.md - committet FOER maaleopsaetningen: metrik praecist defineret, punktgaet, 80%-interval, konfidens i procent, 3-5 linjers begrundelse for hans mentale model (hvad tror han dominerer - I/O, allokeringer, netvaerksrundture?), og ét scenarie under 'hvad ville overraske mig'. REDIGERES ALDRIG bagefter; rettelser hoerer hjemme i retrospektivet. (3) docs/adr/0001-*.md - MADR 4-format med Considered Options, Decision Outcome, Consequences og CONFIRMATION der peger paa maalingen. (4) docs/diagram/ - ÉT diagram: C4 container-niveau ELLER sekvensdiagram, ikke begge medmindre spiken handler om integration. Mermaid i markdown de foerste seks spikes. (5) results/ + RETRO.md - raadata som CSV/JSON, én graf, og retrospektivet der starter med afvigelsen. HVORFOR MAALINGEN ER DEN VIGTIGSTE: en ADR uden maaling er en holdning med overskrifter - alternativerne er hentet fra det han allerede havde laest, og 'hvorfor' fra samme sted; ingen ny information er skabt, det er referat af blogs. Maalingen er den ENESTE del af saettet der kan producere information han ikke havde i forvejen. Den er ogsaa det eneste der overlever ham: laeser nogen ADR'en om to aar, er begrundelsen uinteressant, men tallet og hvordan det blev fremskaffet er interessant. Og hiring-argumentet: alle kan skrive 'vi valgte X fordi det skalerer bedre'. Naesten ingen juniorer kan vise 'vi troede X ville vaere 3x hurtigere, det var 1,2x, og her er hvorfor vores model var forkert'. Det andet ligner arkitektarbejde; det foerste ligner en holdning.",
+   "domaenekobling": "Kontekst-tallene i README og kvalitetskravene med tal kommer fra hans daglige arbejde med supplier onboarding, certifikatvolumen, dokumentstoerrelser og kunders integrationsfrekvens.",
+   "kompetence": "metadisciplin - dokumentation og bevisfoerelse",
+   "svaerhed": "grundlag",
+   "tid": "4 t pr. spike (1,5 + 2 + 0,5 fordelt paa de fem filer)",
+   "fremgangsmaade": "MAALINGSTYPER, mindst én pr. spike: latency/throughput (BenchmarkDotNet in-process, k6 over HTTP); load (k6 lokalt eller i GitHub Actions - gratis paa public repo); cost-model (bygget mod Azure Retail Prices API, ikke mod blogindlaeg); KORREKTHEDSMAALING (for idempotens- og konsistens-spikes er maalingen et invariant-tjek under samtidighed: koer N parallelle klienter, taeel duplikater og tabte opdateringer - det er stadig et tal); fejlmaaling (injicér fejl, maal recovery time og datatab). ANTI-MOENSTRE I MAALING: ét datapunkt; maaling paa debug-build eller med debugger tilkoblet; maaling paa tomt datasaet (en query der er hurtig paa 1.000 raekker siger intet om 2 mio.); cold start ikke adskilt fra warm; maale paa egen laptop og paastaa noget om Azure - sig ALTID hvor du maalte.",
+   "artefakter": "README.md, PREDICTION.md, docs/adr/, docs/diagram/, results/ + RETRO.md - identiske navne i hver eneste spike"
+  },
+  {
+   "titel": "METODE-DEFINITION: hvordan spike-metoden kompenserer for manglende reviewer (den kritiske sektion)",
+   "problem": "Problemet praecist: uden reviewer er der ingen der siger 'det argument holder ikke'. Han vil konvergere mod sine egne foretrukne moenstre og blive HURTIGERE til at lave de samme fejl. 12 maaneder af det er vaerre end 0 maaneder, fordi han faar selvtillid uden kalibrering. FIRE MEKANISMER i faldende styrke. (1) FORUDSIGELSE FOER MAALING - staerkeste, og den eneste der virker helt uden andre mennesker. PREDICTION.md committes foer nogen maaleopsaetning er skrevet. Effekt: hindsight bias slaaet fra, han kan ikke laengere rationalisere bagefter. (2) KALIBRERINGSSCORE OVER TID - i rod-README en tabel med forudsagt vs. maalt for hver spike og 'inden for interval? ja/nej'. Med 16 spikes har han en hitrate. Maalet er IKKE 100%: rammer alt, er intervallerne for brede eller spoergsmaalene for lette. Sigt 65-80% inden for 80%-interval. Ligger han paa 40%, er hans model systematisk forkert og retrospektiverne skal fortaelle ham hvor. Dette er den eneste objektive kompetencemaaling han kan lave paa sig selv, og den er direkte anvendelig i kompetenceporten i maaned 9-10. (3) DET FORKERTE GAET SOM PRIMAERPRODUKT - retrospektiv-skabelon der tvinger det frem: Forudsagt X, maalt Y, faktor Z. Hvilken ANTAGELSE var forkert (ikke: hvad var resultatet)? Hvorfor troede jeg det - hvor kom antagelsen fra: blogindlaeg, analogi, intuition, LeanLinkings kodebase? Hvor ELLERS i tidligere spikes har jeg brugt samme antagelse - gaa tilbage og markér dem. Hvad ville have afsloeret det billigere? Det sidste spoergsmaal er selve arkitekt-metafaerdigheden: at vide hvilket eksperiment der er billigst. HAANDHAEV REGLEN: en spike hvor forudsigelsen ramte inden for 20% er en SVAG spike - han valgte et for let spoergsmaal og skal naeste gang gaa taettere paa graensen af sin viden. (4) EKSTERN EKSPONERING DESIGNET TIL MODSIGELSE - passiv publicering virker ikke, ingen kommenterer en README. Det der virker: publicér med et EKSPLICIT spoergsmaal og en indroemmet usikkerhed ('jeg maalte 3,2x forskel ved 2 mio. raekker; jeg er usikker paa om min indeksering er fair over for B - har nogen maalt anderledes?'). En konklusion inviterer ingenting; et indroemmet hul inviterer korrektion. Publicér RAADATA og reproduktionskommandoen - folk der ville korrigere ham, gider ikke gaette paa hans opsaetning. Vaer forkert offentligt med vilje synligt: 'jeg troede X, det var forkert' tiltraekker langt mere kvalificeret respons end en korrekt konklusion. Kontraintuitivt, og det virker. OM LLM'ER: de kan generere modargumenter mod en ADR og det er bedre end ingenting, men det er IKKE et review. En LLM kan ikke maale hans system og vil overvejende bekraefte en velformuleret paastand. Brug den til at finde alternativer han ikke overvejede (nyttigt), aldrig til at validere en beslutning (farligt).",
+   "domaenekobling": "Kalibreringsscoren maaler hans doemmekraft PAA HANS EGET DOMAENE. En generisk kalibrering ville vaere vaerdiloes; en der siger 'jeg rammer 75% naar jeg dimensionerer dokumenttunge compliance-systemer' er en kompetencepaastand.",
+   "kompetence": "kalibrering og intellektuel aerlighed",
+   "svaerhed": "haardest at holde fast i - det er her metoden doer hvis den doer",
+   "tid": "20 min pr. spike til PREDICTION.md, 1 t til retrospektiv, 30 min/kvartal til kalibreringsopgørelse",
+   "fremgangsmaade": "FALDGRUBEN DER SKAL SIGES HOEJT: han vil fristes til at vaelge spoergsmaal hvor han allerede kender svaret, fordi det producerer paenere artefakter. Det er praecis den mekanisme der oedelaegger metoden. Modgiften er kalibreringsscoren - rammer alle forudsigelser, er metoden gaaet i staa og han skal hoejne svaerheden.",
+   "artefakter": "PREDICTION.md pr. spike; kalibreringstabel i rod-README; RETRO.md med tvungen afvigelsesanalyse; en 'hvad jeg tog fejl om'-sektion i rod-README"
+  },
+  {
+   "titel": "METODE-DEFINITION: akkumulering til portefølje og 5-minutters-testen",
+   "problem": "STRUKTUR: ÉT offentligt GitHub-repo, ikke ét pr. spike. Navn efter domaenet, fx 'supplier-compliance-architecture'. Ét repo = én commit-historik = kontinuitet synlig; 20 repos = rod. Mappe pr. spike: spikes/001-certificate-expiry-fanout/. Rod-README ER porteføljen - det er det eneste en hiring manager laeser. ROD-README OPBYGNING: (1) Én saetning om hvad samlingen er: 'Arkitekturundersoegelser af dokumenttunge leverandoerkaede- og compliance-systemer paa .NET/Azure.' (2) En TABEL: nr. | spoergsmaal | beslutning | maalingen der afgjorde det (som TAL) | forudsigelse holdt? Én linje pr. spike. Kolonnen 'forudsigelse holdt?' er det der faar folk til at laese videre - ingen andre har den. (3) En 'hvad jeg tog fejl om'-sektion med de tre stoerste fejlgaet. Det er det mest overbevisende element i hele porteføljen og det ingen konkurrent har. (4) Link til den ene forfremmede tjeneste, dens statusside og dens aendringslog. (5) INGEN 'om mig', ingen teknologi-badges, ingen skills-bar-charts. HVORFOR DE FLESTE PORTEFØLJER IKKE IMPONERER: de demonstrerer at man kan foelge en tutorial til ende, hvilket er sandt for alle ansoegere. De viser ingen BEGRAENSNINGER - og uden begraensning er der intet valg, og uden valg er der ingen arkitektur. De viser ingen FRAVALG, som er den mindste enhed af arkitektarbejde. De viser intet der kunne have vaeret FORKERT, og uden risiko er der ingen information. Og de er alle sammen ens: to-do, e-commerce, weather app, chat-klon. Domaeneforankringen er hans strukturelle fordel: der findes ikke 500 andre juniorer med maalinger paa certifikatudloeb i leverandoerkaeder. Efterhaanden som kodegenerering bliver commodity, falder vaerdien af 'kan bygge' yderligere, og vaerdien af 'kan vaelge og bevise' stiger. Han satser paa den rigtige side. FORBEHOLD OM MARKEDSDATA: 2026-artikler om udviklerporteføljer siger konsistent at deployede koerende ting slaar rene repos, og at 3-5 gennemarbejdede ting slaar 10+ overfladiske. Retningen er brugbar og understøtter baade 'én forfremmet tjeneste' og 'kvalitet over antal'. De konkrete procenttal i den slags artikler (73%, 84%, 87%) er marketingtal uden metodebeskrivelse - brug retningen, aldrig tallene.",
+   "domaenekobling": "Porteføljens navn, tema og hver eneste raekke i tabellen kommer fra leverandoerkaede- og compliance-domaenet. Det er det der goer den ikke-generisk og ikke-kopierbar.",
+   "kompetence": "kommunikation af arkitekturarbejde",
+   "svaerhed": "middel - kraever at han skriver som en der argumenterer, ikke som en der praesenterer",
+   "tid": "3 t at bygge rod-README foerste gang, 15 min at opdatere pr. spike",
+   "fremgangsmaade": "SKRIVESTIL: paastand, tal, kilde. Ingen adjektiver. TEST DEN: en ekstern person (ikke fra LeanLinking) laeser i fem minutter og skal derefter kunne gengive tre af hans arkitekturvalg og hvorfor. Bestaar han ikke testen, er det README'et der er problemet, ikke laeseren. Koer testen to gange i loebet af aaret med rigtige mennesker. NB: hans primaere formaal med porteføljen er IKKE jobsoegning - han bliver paa LeanLinking. Formaalene er (a) at tvinge disciplin, fordi offentligt betyder at han ikke kan snyde, (b) at generere ekstern kritik, (c) at vaere et eksternt kompetencebevis, da en titel fra et 9-mandsfirma ikke er det. Den raekkefoelge betyder at han skal optimere for at blive MODSAGT, ikke for at imponere.",
+   "artefakter": "Offentligt repo med rod-README indeholdende spike-tabel, kalibreringstabel og 'hvad jeg tog fejl om'-sektion"
+  },
+  {
+   "titel": "METODE-DEFINITION: forfremmelse af én spike til drift resten af aaret",
+   "problem": "HVILKEN SLAGS SPIKE EGNER SIG - fem kriterier: (1) TIDSDIMENSION: noget skal ske gentagne gange over maaneder, saa han oplever drift og ikke bare deployment. (2) SKEMAEVOLUTION: nye felter og krav skal komme til over tid, saa han tvinges gennem migrationer paa data med indhold. Compliance-domaenet leverer det gratis - nye dokumenttyper, nye regelsaet, nye felter. (3) EKSTERNE INTEGRATIONER der kan fejle: mail/webhook-udsendelse, filhentning, tredjeparts-API. Uden ekstern afhaengighed opstaar der ingen realistiske fejlmoenstre. (4) Kan koere til under 100 kr/md. (5) MAA IKKE indeholde persondata fra LeanLinkings kunder - kun syntetisk data, og det skal staa eksplicit i README. ANBEFALING: certifikatudloebs-varslingstjenesten. Syntetisk leverandoerregister, certifikater med udloebsdatoer, varslingsregler 90/30/14/7/1 dag, idempotent afsendelse, append-only haendelseslog, og en offentlig statusside der viser dagens koersel. Den opfylder alle fem kriterier og fejl er SYNLIGE (varsel udeblev, kom for tidligt, kom dobbelt) - hvilket er hele forudsaetningen for at laere af drift. Alternativ: en Supplier Document Intake-tjeneste der modtager dokumenter, klassificerer, udleder udloebsdato, versionerer og haandterer sletning under legal hold. MINIMUMSDRIFT - 1,5 t/uge, ikke mere: ÉT SLO med ét tal, og det skal handle om det systemet er TIL FOR ('99% af varsler afsendt inden for det korrekte kalenderdoegn'), ikke om uptime. ÉN alarm der virker og som han faktisk reagerer paa - én, ikke fem; flere alarmer giver alarmtraethed og dermed ingen laering. Ét ugentligt 30-minutters 'driftsmoede med sig selv': metrikker, cost, fejllog, og fem linjer i en driftslog - det er der moenstre bliver synlige. En AENDRINGSLOG med bagudkompatibilitetsnote pr. deploy: 'breaking? nej/ja, og hvordan blev det haandteret'. MIGRATIONER SKAL VAERE AEGTE: mindst 4 gange paa et aar aendrer han skema paa en tabel MED DATA I, uden nedetid, med rollback-plan, efter expand/contract-moenstret. Det er den enkeltdisciplin der bedst skiller senior fra junior i praksis og den kan ikke laeres uden drift. KVARTALSVIS GAME DAY: vaelg en fejl (database utilgaengelig i 10 min, mailudbyder returnerer 429, sommertidsskift, klokkeslaet paa tvaers af tidszoner), injicér den, skriv post-mortem. AUTOMATISÉR IKKE ALT - lidt manuelt arbejde er hvor han opdager hvad der goer ondt; automatisér foerst naar han har maerket smerten tre gange. HVAD HAN IKKE SKAL: multi-region, Kubernetes, service mesh, blue/green med trafiksplit, egen observability-stack. Det er teater i denne skala og aeder alle timerne. FORFREMMET TJENESTE FAAR KUN AENDRINGER DER SKABER DRIFTSLAERING - migrationer, kompatibilitet, fejlhaandtering, cost - aldrig ny funktionalitet. Symptomet paa at det gaar galt er at han tilfoejer features.",
+   "domaenekobling": "Certifikatudloeb er LeanLinkings kerneopgave. Hver eneste ting han laerer i driften - varslingsvinduer, dubletter, tidszoner, dokumentversionering - er direkte overfoerbar til arbejdet dagen efter, og omvendt giver arbejdet ham de realistiske fejlmoenstre at bygge ind.",
+   "kompetence": "drift, migrationer, bagudkompatibilitet, cost-styring",
+   "svaerhed": "hoej - og den eneste vej til den del af arkitektkompetencen der ikke kan laeses sig til",
+   "tid": "1,5 t/uge fast fra den maaned den gaar i drift, plus 2 t pr. kvartalsvis game day",
+   "fremgangsmaade": "AZURE-OMKOSTNINGER I DKK (kurs ca. 6,43 DKK/USD, sept. 2026). ARKITEKTUR A - gratis saa vidt muligt, anbefalet start: Azure Container Apps Consumption med scale-to-zero: gratis grant er 180.000 vCPU-sekunder, 360.000 GiB-sekunder og 2 mio. requests pr. abonnement pr. maaned - en daglig batch plus lav trafik ligger komfortabelt under. Forventet 0 kr. Hold dig til et Consumption-only environment; workload profiles-tilstand kan koste. Azure SQL Database serverless free offer: 100.000 vCore-sekunder + 32 GB data + 32 GB backup pr. database pr. maaned, op til 10 databaser pr. abonnement, gaelder for abonnementets levetid (GA siden feb. 2025). Vaelg 'auto-pause ved graensen' i stedet for 'fortsaet og fakturer' - det er hans HAARDE loft. Forventet 0 kr. Blob Storage hot til dokumenter: ca. 0,018-0,023 USD/GB/md = ca. 0,12-0,15 kr/GB/md; 20 GB syntetiske PDF'er = 2-3 kr/md plus transaktioner, under 10 kr/md. Azure Monitor / Log Analytics ER DEN REELLE BUDGETLAEKAGE: saet daily cap paa workspacet (fx 0,1 GB/dag) og sampling til - uden cap kan logs alene loebe op i hundredvis af kroner; med cap 0-30 kr/md. Azure Functions hvis timer trigger i stedet for Container Apps: KLASSISK Consumption har 1 mio. udførelser + 400.000 GB-s gratis/md, mens Flex Consumption kun har 250.000 udførelser + 100.000 GB-s - vaelg klassisk her. Static Web Apps Free til statusside og portefølje: 0 kr (100 GB baandbredde, gratis SSL, 1-2 custom domaener - kilderne er uenige, tjek selv). GitHub Actions paa PUBLIC repo: ubegraenset gratis - koer benchmarks og k6-smoke der. REALISTISK TOTAL ARKITEKTUR A: 0-60 kr/md, typisk under 30 kr. ARKITEKTUR B naar han vil have noget der ikke er gratis-tier-teater: Service Bus Standard 10 USD/md base = ca. 64 kr/md inkl. op til 12,5 mio. operationer; Basic er 0,05 USD pr. mio. operationer uden base MEN kun koeer - ingen topics, ingen sessioner, ingen duplicate detection. Handler spiken om idempotens, er valget mellem at betale for Standard eller bygge idempotensen selv i databasen - og DET valg er en fremragende ADR med en cost-akse. Anbefaling: byg idempotensen selv med outbox og unik noegle i SQL, dokumentér Service Bus duplicate detection som det forkastede alternativ, og vis prisen. 0 kr og en bedre ADR. BUDGETLOFT - SAADAN SAETTES DET REELT: (1) Azure Budgets ALARMERER kun, de stopper INTET, og de evalueres typisk kun hver 8-24 timer, saa et loebsk forbrug naar at koste inden alarmen kommer. Alle der siger 'saet et budget saa er du sikker' tager fejl - det er et populaert og forkert raad. (2) Reelle stopmekanismer i prioriteret raekkefoelge: (a) vaelg tjenester med INDBYGGEDE haarde lofter - SQL free offer med auto-pause, Container Apps med scale-to-zero, Log Analytics daily cap; det er det eneste der stopper noget uden kode. (b) Saet max replicas og max scale-out EKSPLICIT paa alt - standardvaerdierne er hoeje. (c) Byg en budget-alarm ved 50/80/100 kr via action group til et Logic App eller en Automation runbook der saetter Container App til min=max=0 og pauser SQL; det er i oevrigt selv en fin lille spike. (d) Brug et SEPARAT Azure-abonnement kun til dette - blandes det med andet, kan han ikke se hvad der koster. (3) Saet budgettet til 100 kr/md med alarm ved 50%. Rammer han det, er der en FEJL, ikke vaekst. (4) Tjek forbruget hver mandag de foerste 6 uger - cost drift er et driftsfaenomen han skal laere at genkende, ikke undgaa.",
+   "artefakter": "Deployet tjeneste med offentlig statusside; SLO-definition; aendringslog med bagudkompatibilitetsnoter; driftslog med ugentlige noter; mindst 4 migrations-ADR'er; mindst 2 game day-postmortems; maanedlig cost-opgørelse forudsagt vs. faktisk"
+  },
+  {
+   "titel": "EKSEMPELSPIKE 1 - Varselsberegning ved certifikatudloeb: fuld scan vs. filtreret indeks vs. materialiseret varselsplan (KANDIDAT TIL FORFREMMELSE)",
+   "problem": "2 mio. certifikatraekker fordelt paa 40.000 leverandoerer. Varsler skal udsendes 90/30/14/7/1 dage foer udloeb. Den natlige beregning skal vaere faerdig inden for et 15-minutters vindue og maa aldrig sende samme varsel to gange - heller ikke hvis jobbet fejler halvvejs og genstartes. Spoergsmaal: hvilken af tre strategier holder p95 under maalet, og hvad koster hver af dem paa skrivesiden?",
+   "domaenekobling": "Certifikater der udloeber og skal varsles er LeanLinkings kerneopgave. Volumentallene, udloebsfordelingen og varslingsvinduerne kan han hente fra sit daglige arbejde i anonymiseret form.",
+   "kompetence": "data/persistens + kapacitetsdimensionering + idempotens",
+   "svaerhed": "middel",
+   "tid": "14-18 t",
+   "fremgangsmaade": "Generér 2 mio. raekker med realistisk udloebsfordeling (ikke uniform - certifikater klumper omkring aarsskifte og kvartalsskifte). Implementér tre strategier: (a) fuld tabelscan med beregnede datoer i WHERE-klausulen, (b) filtreret indeks paa udloebsdato plus dagsvindue, (c) forudberegnet notification_schedule-tabel skrevet ved indskrivning af certifikatet. Maal p95 og total koerselstid over 5 koersler pr. strategi, plus SKRIVEOMKOSTNINGEN ved indskrivning af et nyt certifikat - det er den akse folk glemmer, og hvor (c) typisk taber. Tilfoej et idempotens-invariant: koer jobbet, draeb det efter 40%, genstart, og taeel duplikater. Forudsigelse skrives foerst - hans mentale model boer eksplicit sige hvad han tror dominerer: I/O, indeksopslag eller datoberegning i CPU.",
+   "artefakter": "README med volumental og SLO; PREDICTION.md; ADR med de to fravalg og Confirmation der peger paa maalingen; sekvensdiagram af varslingsflowet inkl. genstartsscenariet; results/ med tider, spredning og graf; RETRO med afvigelsesanalyse. DENNE spike er den anbefalede kandidat til forfremmelse til drift: tidsdimension, gentagen koersel, skemaevolution, ekstern integration (mail), synlige fejl, og kan koere paa gratis-tier."
+  },
+  {
+   "titel": "EKSEMPELSPIKE 2 - Idempotent indlaesning af leverandoerstamdata fra kunders ERP",
+   "problem": "Kunden sender samme eksportfil to gange, eller sender delvise opdateringer med samme loebenummer, eller sender to filer der overlapper. Systemet maa hverken skabe dubletter eller tabe felter. Han har ingen kontrol over afsenderen og kan ikke faa dem til at aendre adfaerd. Spoergsmaal: hvilken af tre idempotensstrategier holder invarianten under samtidighed, og hvad koster den?",
+   "domaenekobling": "Supplier onboarding via kunders ERP-eksporter er praecis den integrationsflade LeanLinking lever af. Fejlmoenstrene kan han hente fra supportsager.",
+   "kompetence": "integration/messaging + korrekthed under samtidighed + cost-tradeoff",
+   "svaerhed": "middel-hoej",
+   "tid": "16-20 t",
+   "fremgangsmaade": "Tre strategier: (a) naturlig noegle plus UPSERT/MERGE, (b) indhold-hash plus dedupliceringstabel, (c) Service Bus duplicate detection (kraever Standard-tier, ca. 64 kr/md - Basic har det ikke). Koer 8 parallelle klienter der sender overlappende batches. MAALINGEN ER ET INVARIANT-TJEK: antal dubletter, antal tabte opdateringer (last-writer-wins-tab), throughput, og pris pr. maaned. Det er stadig et tal - korrekthedsmaalinger er lige saa falsificerbare som latency. Tilfoej et scenarie hvor to filer opdaterer forskellige felter paa samme leverandoer samtidig; naiv UPSERT taber det ene felt, og det er et godt kandidat-forkert-gaet.",
+   "artefakter": "README med de tre strategier og invarianten; PREDICTION.md med gaet paa duplikatrate pr. strategi; ADR hvor cost-aksen er eksplicit (Service Bus Standard 64 kr/md vs. 0 kr for SQL-baseret); sekvensdiagram af de samtidige klienter; results/ med invariant-brud pr. strategi; RETRO"
+  },
+  {
+   "titel": "EKSEMPELSPIKE 3 - Append-only revisionsspor der kan holde til et audit",
+   "problem": "En auditor spoerger: hvem aendrede leverandoer X's ISO 9001-status den 3. marts, hvad var vaerdien foer, og hvordan ved vi at logposten ikke er aendret bagefter? Svaret skal kunne gives 5 aar tilbage. Spoergsmaal: hvad koster de tre sporingsmodeller i lager og query-tid, og hvilke af dem overlever en db_owner med onde hensigter?",
+   "domaenekobling": "Sporbarhed i leverandoerdokumentation. VIGTIGT AT FAA RET: CSDDD er via Omnibus I udskudt - transposition 26. juli 2028, anvendelse fra 26. juli 2029, og taersklen haevet til 5.000+ ansatte og 1,5 mia. EUR omsaetning (direktiv (EU) 2026/470, offentliggjort 26. feb. 2026, i kraft 18. marts 2026). Skriver han 'CSDDD-audit i 2026', ligner det manglende faglighed. NIS2 er derimod LIVE i Danmark: lov om foranstaltninger til sikring af et hoejt cybersikkerhedsniveau, vedtaget 29. april 2025, i kraft 1. juli 2025, ca. 6.000 omfattede virksomheder, og den stiller krav til leverandoerkaedesikkerhed. Dertil kommer kundedrevne audits og ISO-certificering, som kraever sporbarhed uanset regulering. Byg paa det der er i kraft.",
+   "kompetence": "data/persistens + sikkerhed + lagerdimensionering",
+   "svaerhed": "middel-hoej",
+   "tid": "16-20 t",
+   "fremgangsmaade": "Tre modeller: (a) SQL Server temporal tables, (b) egen event-tabel med hash-kaede (hver post indeholder hash af forrige), (c) append-only blob med immutability policy. Maal: lagerforbrug pr. mio. aendringer, query-tid for 'tilstand pr. given dato' ved 5 aars data, og cost/md ved 5 aars opbevaring beregnet mod Retail Prices API. NEGATIV TEST som korrekthedsmaaling: kan en bruger med db_owner aendre historikken uden at det opdages? For (a) og (b) er svaret forskelligt, og det er hele pointen. Forudsig hvor meget dyrere hash-kaeden er i skrivetid - de fleste overvurderer det kraftigt.",
+   "artefakter": "README med auditor-spoergsmaalet som acceptkriterium; PREDICTION.md; ADR med de to fravalg og eksplicit note om NIS2 vs. CSDDD-tidslinjen; C4 container-diagram; results/ med lager, query-tid, cost og resultatet af den negative test; RETRO"
+  },
+  {
+   "titel": "EKSEMPELSPIKE 4 - Sletning under GDPR med legal hold ovenpaa",
+   "problem": "En leverandoerkontakt beder om sletning af sine persondata. Samme persons underskrift staar paa en auditrapport der skal opbevares i 7 aar. Begge krav er lovlige og de er i konflikt. Spoergsmaal: hvilken af tre sletningsmodeller kan gennemfoere en sletning inden for rimelig tid ved 50.000 dokumenter, og hvor mange steder i systemet skal roeres?",
+   "domaenekobling": "Persondata i leverandoerdokumentation - kontaktpersoner, underskrivere, auditoerer - er uundgaaeligt i supplier relationship management. Konflikten mellem sletningsret og dokumentationspligt er reel og daglig.",
+   "kompetence": "data/persistens + sikkerhed + API-design",
+   "svaerhed": "hoej",
+   "tid": "16-20 t",
+   "fremgangsmaade": "Tre modeller: (a) crypto-shredding med noegle pr. registreret - slet noeglen, data bliver ulaeselig, (b) tombstone plus pseudonymisering, (c) fysisk sletning med hold-flag der blokerer sletning af det der er under hold. Maal tre ting: tidsforbrug for en sletning ved 50.000 dokumenter; ANTAL STEDER der skal roeres, taelt eksplicit - det er kompleksitetsmaalingen og den er ofte den afgoerende akse; og verifikation ved fuldtekstsoegning at data faktisk er vaek (inkl. i backups, logs og soegeindeks - det er der de fleste implementeringer fejler). Kobl paa cost for noeglestyring i Key Vault ved 50.000 noegler.",
+   "artefakter": "README med de to konfliktende krav; PREDICTION.md med gaet paa antal beroerte steder; ADR med de to fravalg; C4 container-diagram der viser hvor persondata lever; results/ med tider, antal steder og verifikationsresultat; RETRO"
+  },
+  {
+   "titel": "EKSEMPELSPIKE 5 - Multi-tenant isolation naar hver kunde har egne compliancekrav",
+   "problem": "Én kunde kraever at deres data ligger i EU-region og at ingen anden tenants query kan naa den. En anden accepterer delt database. En tredje kraever egen krypteringsnoegle. Spoergsmaal: hvad koster de tre isolationsniveauer i latency og kroner pr. tenant, og hvilke af dem holder naar en udvikler glemmer tenant-filteret?",
+   "domaenekobling": "Stoerre kunder med individuelle compliancekrav er praecis LeanLinkings marked. Antallet af tenants og datavolumen pr. tenant kan han estimere fra arbejdet.",
+   "kompetence": "sikkerhed/isolation + cost + datamodellering",
+   "svaerhed": "hoej",
+   "tid": "18-22 t",
+   "fremgangsmaade": "Tre modeller: (a) delt skema med tenant-kolonne og row-level security, (b) skema pr. tenant, (c) database pr. tenant. Maal: query-latency ved 50 tenants og 2 mio. raekker; cost/md pr. tenant ved hver model beregnet mod Retail Prices API (bemaerk at (c) hurtigt bliver dyr fordi SQL free offer kun daekker 10 databaser pr. abonnement); og VIGTIGST en NEGATIV TEST: skriv bevidst en query der glemmer tenant-filteret og se om isolationen holder. For (a) uden row-level security lakker den; med RLS gør den ikke. Det er en korrekthedsmaaling der falsificerer, og den er langt mere overbevisende end latency-tallene.",
+   "artefakter": "README med de tre kunders krav som constraints; PREDICTION.md; ADR med cost pr. tenant pr. model og break-even paa antal tenants; C4 container-diagram; results/ med latency, cost og resultat af den negative test; RETRO"
+  },
+  {
+   "titel": "EKSEMPELSPIKE 6 - Cost-model for dokumenttungt storage (billigst at bygge, hoejest direkte forretningsvaerdi)",
+   "problem": "4 mio. leverandoerdokumenter, medianstoerrelse 180 KB, ca. 30% under 128 KB. Adgangsmoenster: 95% laeses aldrig efter foerste aar, men skal kunne fremskaffes inden for 24 timer ved audit. Spoergsmaal: hvad koster hot vs. cool vs. en lifecycle-politik over 5 aar, hvornaar er break-even, og hvor foelsom er svaret over for gennemsnitsstoerrelsen?",
+   "domaenekobling": "Certifikater, auditrapporter, erklaeringer og testresultater er dokumenttungt af natur. Dette er den spike der giver mest direkte forretningsvaerdi for LeanLinking og den er den billigste at lave - ingen infrastruktur overhovedet. God som spike 2-3 for tidligt momentum.",
+   "kompetence": "cost/kapacitet + modellering",
+   "svaerhed": "lav-middel",
+   "tid": "10-14 t",
+   "fremgangsmaade": "Byg modellen mod Azure Retail Prices API (uautentificeret, gratis). Modellér tre politikker. INKLUDÉR TRANSAKTIONSOMKOSTNINGER OG REHYDRERINGSOMKOSTNINGER - det er der de fleste cost-modeller fejler, fordi de kun ganger GB med raten. Koer et ekstra scenarie MED det 128 KiB minimum-fakturerbare gulv for cool/cold/archive for at kvantificere eksponeringen. FAKTATJEK SOM ER SELVE POINTEN: gulvet blev annonceret april 2026 med ikrafttraeden 1. juli 2026 for nye konti og 1. juli 2027 for alle - men det blev SAT PAA PAUSE 8. juni 2026 og traadte IKKE i kraft. Microsoft har eksplicit forbeholdt sig at komme igen med en revideret model. Mange 2026-artikler skriver stadig at det er i kraft. Effekten hvis det genindfoeres: en 4 KB-fil i cool faktureres som 128 KiB, altsaa 32x paa smaa objekter. Det er praecis derfor cost-modeller skal bygges mod API'et og DATERES, ikke skrives én gang fra et blogindlaeg. Maal: kr/md pr. politik, break-even-maaned, og foelsomhed over for medianstoerrelsen.",
+   "artefakter": "README med volumental og adgangsmoenster; PREDICTION.md med gaet paa break-even-maaned; ADR om lagerpolitik med de to fravalg; ingen arkitekturdiagram noedvendigt - i stedet en foelsomhedsgraf; results/ med modellen som koerbart script plus CSV; RETRO. Dette er ogsaa den spike der bedst kan praesenteres internt hos LeanLinking uden fortrolighedsproblemer, fordi den bygger paa offentlige priser og syntetiske volumener."
+  },
+  {
+   "titel": "EKSEMPELSPIKE 7 - API-versionering naar compliancekrav aendrer sig",
+   "problem": "EUDR gaelder fra 30. december 2026 for store og mellemstore operatoerer (30. juni 2027 for smaa og mikro). Et nyt paakraevet felt skal ind i leverandoer-API'et. 40 kundeintegrationer maa ikke gaa ned. Spoergsmaal: hvilken versioneringsstrategi giver faerrest brud og faerrest kodestier at vedligeholde?",
+   "domaenekobling": "Regulering aendrer datamodellen, og kunderne integrerer via API. Det er et strukturelt vilkaar i compliance-software og en af de faa steder hvor arkitekturvalg har direkte og maalbar kundekonsekvens.",
+   "kompetence": "API-design/versionering + bagudkompatibilitet",
+   "svaerhed": "middel",
+   "tid": "14-18 t",
+   "fremgangsmaade": "Tre strategier: (a) URL-version (/v2/suppliers), (b) header-baseret version, (c) additiv evolution uden version med tolerant reader paa klientsiden. Byg en kontrakttest-suite der repraesenterer tre 'gamle klienter' med forskellig tolerance (streng deserialisering, ignorér-ukendte, og en der validerer paa required-felter). Koer suiten mod hver strategi efter aendringen. MAALINGEN ER BINAER OG FALSIFICERBAR: antal fejlende kontrakttests. Sekundaert: antal kodestier der skal vedligeholdes pr. strategi (taeel dem) og deploy-kompleksitet. Forudsig hvilken der bryder mindst - de fleste gaetter forkert paa (c), fordi tolerant reader kun virker hvis KLIENTEN er tolerant, og det bestemmer han ikke.",
+   "artefakter": "README med EUDR-datoen som drivende constraint; PREDICTION.md; ADR med de to fravalg og en eksplicit note om at strategien afhaenger af klienter han ikke kontrollerer; sekvensdiagram af gammel klient mod nyt API; results/ med kontrakttestresultater pr. strategi; RETRO"
+  },
+  {
+   "titel": "EKSEMPELSPIKE 8 - Fejlmoenstre ved hentning af certifikater fra tredjeparts udstedersystemer",
+   "problem": "Certifikater verificeres mod certificeringsorganers portaler og API'er. De er nede, langsomme, eller returnerer 429 med Retry-After. 5.000 hentninger i doegnet skal gennemfoeres. Spoergsmaal: hvilken resiliensstrategi giver hoejest gennemfoert-procent uden at forvaerre belastningen paa tredjeparten?",
+   "domaenekobling": "Verifikation af leverandoercertifikater mod udstederen er en reel funktion i domaenet og en reel kilde til supportsager. Fejlmoenstrene kan han hente direkte fra arbejdet.",
+   "kompetence": "drift/resiliens + integration",
+   "svaerhed": "middel",
+   "tid": "14-18 t",
+   "fremgangsmaade": "Byg en fejl-injicerende stub der kan simulere: latency-spikes, 500'er, 429 med Retry-After, halve svar (afbrudt forbindelse midt i body), og langsom TLS-handshake. Sammenlign (a) simpel retry med fast interval, (b) exponential backoff med jitter, (c) circuit breaker plus koe med senere genforsoeg. Brug Polly. Maal: gennemfoert-procent over et simuleret doegn, hale-latency (p99), og KRITISK: BELASTNINGEN paa det simulerede tredjepartsystem - antal requests sendt. Maalingen viser typisk at naiv retry gør det VAERRE (retry storm forlaenger nedetiden), hvilket er en fremragende kandidat til et forkert gaet. Egnet som game day-materiale for den forfremmede tjeneste bagefter.",
+   "artefakter": "README med fejlkatalog og doegnprofil; PREDICTION.md med gaet paa gennemfoert-procent pr. strategi; ADR; sekvensdiagram af circuit breaker-tilstande; results/ med gennemfoert-procent, p99 og requests-mod-tredjepart pr. strategi; RETRO"
+  }
+ ],
+ "paa_jobbet": [
+  "Skriv en ADR bagudrettet for en beslutning der allerede er truffet i LeanLinkings kodebase, og laeg den som en intern PR. Ingen beder om lov til at dokumentere. Det bliver enten taget imod eller ignoreret - begge dele er information om hvor meget plads han faktisk har.",
+  "Maal noget der ikke er blevet maalt. Find den langsomste endpoint eller det tungeste natlige job og maal det ordentligt: p50/p95/p99, ikke gennemsnit, over flere koersler, paa realistisk datamaengde. Et tal ingen kendte er den billigste form for autoritet i en lille organisation, og det kraever ingen tilladelse.",
+  "Byg volumen-generatoren mod et anonymiseret skema af produktionsdatabasen. Test paa realistisk datamaengde er noget de fleste smaa firmaer ikke gør, og generatoren er samtidig fundamentet for hele spike-serien. Dobbelt afkast paa samme timer.",
+  "Laes supportsager og fejlrapporter systematisk én time om ugen og foer en liste: 'arkitekturproblemer der viser sig som supportsager'. Det er gratis domaeneviden og det er hvor spike-emnerne kommer fra. Listen bliver senere hans mandat-argument.",
+  "Sid med paa en kundesamtale. I et 9-mandsfirma spoerger man bare. Kundens EGNE ORD for problemet er guld til problemformuleringer - en spike formuleret i kundens sprog laeser helt anderledes end en formuleret i teknologisprog.",
+  "Kortlaeg systemet i C4 Context- og Container-niveau og haeng det op. Ingen beder om lov til at tegne. I et firma med 3-5 udviklere findes diagrammet formentlig ikke, og den der laver det, ejer samtalen om det bagefter.",
+  "Kortlaeg alle integrationer med kunders ERP-systemer: formater, fejlmoenstre, volumener, hvem der ejer fejlen naar den opstaar. Det er kildematerialet til hele idempotens- og integrationssporet, og det er en artefakt firmaet mangler.",
+  "Foer en liste over de ti dyreste tilbagevendende supportspoergsmaal og bind hver enkelt til en arkitekturaarsag. Den liste er det staerkeste argument han kan have naar han senere vil have ansvar for et omraade - den viser at han taenker i aarsager, ikke i tickets.",
+  "Foreslaa ÉN ting og maal effekten. Ikke ti. En vundet, maalt forbedring er mere vaerd end ti forslag, og i en organisation paa ni personer er den synlig for alle med det samme.",
+  "Uge 1: spoerg stifteren direkte om fortrolighedsrammen for offentlig skrivning. Konkret formulering: 'Jeg vil skrive offentligt om arkitekturmoenstre i leverandoerkaede-compliance, med syntetisk data og uden at naevne kunder eller vores kode. Er det i orden, og er der noget du vil have jeg holder mig fra?' Faa svaret paa skrift - en Slack-besked er nok. Uden det er hele porteføljen en risiko.",
+  "Tag det billigste af spike-resultaterne med ind: cost-modellen for dokumentstorage (eksempelspike 6) bygger udelukkende paa offentlige priser og syntetiske volumener, har ingen fortrolighedsproblemer, og er umiddelbart relevant for firmaets bundlinje. Det er den nemmeste maade at demonstrere at oevebanen betaler tilbage.",
+  "Naar en spike har afsloeret et forkert gaet, fortael det internt. 'Jeg troede X og maalte Y' er den hurtigste maade at etablere sig som en der arbejder med beviser i stedet for meninger - og i et lille firma uden arkitekt er der ingen der konkurrerer om den position."
+ ],
+ "faldgruber": [
+  "Spiken bliver et produkt. Symptomer: UI, auth, brugerroller, 'det skal lige vaere paent', refactoring. Modgift: 25-timers hard stop og produkt-detektoren - i det sekund han taenker paa brugere eller opsaetningsskaerme, er han holdt op med at lave en spike.",
+  "Vaerktoejs-yak-shaving. Seks timer paa Structurizr, dashboards eller en devcontainer i stedet for at maale. Modgift: Mermaid i markdown de foerste seks spikes; ingen ny infrastruktur i en spike medmindre infrastrukturen ER spoergsmaalet.",
+  "Maaling uden data. En query der er hurtig paa 1.000 raekker siger intet om 2 mio. Alle spikes skal koere paa realistisk volumen. Byg datageneratoren i spike 1 og genbrug den - ellers bliver hver spike en ny datageneratoropgave og han maaler aldrig noget.",
+  "Ét datapunkt praesenteret som et resultat. Minimum 3 koersler, rapportér median og spredning. Ét tal er en anekdote.",
+  "Maaling paa egen laptop, konklusion om Azure. Sig ALTID hvor du maalte, og hvad forskellen kunne vaere.",
+  "For brede spoergsmaal. 'Er event-driven bedre?' er ikke besvarbart. 'Koster outbox-moenstret mere end 15% throughput ved 500 indlaesninger/s i vores skema?' er.",
+  "At vaelge spikes hvor han allerede kender svaret, fordi det giver paenere artefakter. Det er den mekanisme der oedelaegger hele metoden. Modgift: kalibreringsscoren - rammer alle forudsigelser, er metoden gaaet i staa.",
+  "At redigere PREDICTION.md efter maalingen. Selv smaa justeringer ('jeg mente egentlig...'). Filen er hellig; rettelser hoerer hjemme i RETRO.md. Uden det er hele kalibreringen vaerdiloes.",
+  "Domaenepaastande uden kilde. Skriver han 'certifikater udloeber i millionvis', skal der staa hvor tallet kommer fra - anonymiseret stoerrelsesorden fra arbejdet, eller et eksplicit 'antaget'. En hiring manager der ser et ubelagt tal, diskonterer hele dokumentet.",
+  "FORTROLIGHED. Ingen kundedata, kundenavne, skemaer eller kildekode fra LeanLinking maa ud. Rammen aftales med stifteren FOER foerste publicering, ikke bagefter. Alt i porteføljen skal koere paa syntetisk data, og det skal staa eksplicit i hver README.",
+  "Foraeldede compliance-paastande. CSDDD er via Omnibus udskudt til transposition 26. juli 2028 og anvendelse fra 26. juli 2029, med taerskel haevet til 5.000+ ansatte og 1,5 mia. EUR. Skriver han 'CSDDD-audit i 2026' i en ADR, ligner det manglende faglighed. NIS2 er derimod i kraft i Danmark siden 1. juli 2025, og EUDR gaelder fra 30. december 2026 for store og mellemstore. Byg paa det der er i kraft, og datér paastandene.",
+  "Cost-tal fra blogindlaeg. Konkret eksempel: det varslede 128 KiB minimum-fakturerbare objektgulv for cool/cold/archive blev SAT PAA PAUSE 8. juni 2026 og traadte ikke i kraft 1. juli som mange 2026-artikler stadig skriver. Byg cost-modeller mod Azure Retail Prices API og skriv datoen paa modellen.",
+  "At tro at et Azure-budget stopper forbruget. Det gør det ikke - budgetter kun alarmerer, og de evalueres typisk hver 8-24 timer. Det er et populaert og forkert raad. Reelle lofter er auto-pause paa SQL free offer, scale-to-zero og max replicas paa Container Apps, og daily cap paa Log Analytics.",
+  "Log Analytics uden daily cap. Det er den mest almindelige budgetlaekage i smaa Azure-opsaetninger og den ene ting der kan tage et 30-kroners-forbrug til trecifret paa en weekend.",
+  "Alle spikes i samme teknologiomraade. Er 8 af 12 om databaser, har han ikke bredde - han har dybde i ét hjørne. Fordel dem paa seks kategorier: data/persistens, integration/messaging, sikkerhed/isolation, drift/observability, cost/kapacitet, API-design/versionering. Hoejst 40% i én kategori.",
+  "At droppe retrospektivet naar det haster. Retrospektivet er hvor laeringen ligger. Hellere springe diagrammet over end retroet.",
+  "At holde repoet privat 'indtil det er godt nok'. Saa bliver det aldrig offentligt, og han mister den eneste kilde til ekstern kritik. Offentligt fra spike 1, inklusive de daarlige og de ubesvarede.",
+  "Passiv publicering. En README med en konklusion faar nul kommentarer. Hvert opslag skal slutte med et eksplicit hul: 'her er jeg mest usikker: X - har nogen maalt anderledes?' Konklusioner inviterer ingenting; indroemmede huller inviterer korrektion.",
+  "At bruge en LLM som validator i stedet for som modargument-generator. En LLM kan ikke maale hans system og vil overvejende bekraefte en velformuleret paastand. Bed eksplicit om de tre staerkeste argumenter MOD beslutningen og hvilken maaling der ville afgøre det - brug det til at finde oversete alternativer, aldrig til at bekraefte.",
+  "Den forfremmede tjeneste faar features. Symptom: han tilfoejer funktionalitet. Regel: den faar KUN aendringer der skaber driftslaering - migrationer, kompatibilitet, fejlhaandtering, cost. Alt andet er scope creep forkladt som produktivitet.",
+  "Drift der bliver til hobbyprojekt-infrastruktur: Kubernetes, service mesh, multi-region, egen observability-stack. Teater i denne skala, og det aeder hele timebudgettet uden at producere ét falsificerbart udsagn.",
+  "For mange alarmer. Én alarm han faktisk reagerer paa, slaar fem han ignorerer. Alarmtraethed er den hurtigste vej til at driftslaeringen stopper.",
+  "At maale i debug-build eller med debugger tilkoblet. Klassisk .NET-fejl der giver tal der er faktorer forkerte og som han ikke opdager fordi de er konsistent forkerte."
+ ],
+ "maalepunkter": [
+  "Antal AFSLUTTEDE spikes (alle fem artefakter til stede): mindst 16 paa 9 maaneder, med slaek til eksamen og ferie. Under 12 = metoden er ikke koert, og kompetenceporten kan ikke bestaas.",
+  "Artefaktfuldstaendighed: 100% af afsluttede spikes har alle fem artefakter. Ét manglende artefakt = spiken taeller ikke. Ingen delvis kredit - det er hele pointen med en standardiseret skabelon.",
+  "KALIBRERINGSHITRATE: andel af spikes hvor maalingen faldt inden for det forudsagte 80%-interval. Maal 65-80%. Over 90% = spoergsmaalene er for lette eller intervallerne for brede, og han skal hoejne svaerheden. Under 45% = systematisk fejlmodel der kraever indgreb. Dette er den eneste objektive kompetencemaaling han kan lave paa sig selv uden en reviewer.",
+  "Antal spikes hvor forudsigelsen var forkert med faktor over 2: mindst 4. Det er beviset for at han har gaaet taet paa graensen af sin viden i stedet for at samle lette sejre.",
+  "Domaenedaekning: mindst 5 forskellige problemklasser fra leverandoerkaede-, dokumentations- og compliance-domaenet. Faerre = han har bygget dybde i ét hjoerne, ikke domaeneautoritet.",
+  "Teknisk spredning: hoejst 40% af spikes i én af de seks kategorier (data/persistens, integration/messaging, sikkerhed/isolation, drift/observability, cost/kapacitet, API-design/versionering).",
+  "FORFREMMET TJENESTE: mindst 6 maaneders sammenhaengende drift; mindst 4 skemamigrationer paa tabeller MED DATA, uden nedetid, med dokumenteret rollback-plan; mindst 2 reelle incidents (ikke oevelser) med skreven post-mortem; mindst 2 gennemfoerte game days.",
+  "Cost-disciplin: maanedligt Azure-forbrug under 100 kr HVER eneste maaned, og en cost-model der forudsagde det faktiske forbrug inden for 30%. Rammer han loftet, er det en fejl, ikke vaekst.",
+  "Ekstern respons: mindst 10 kvalificerede eksterne kommentarer eller korrektioner paa tvaers af aaret - fra communities, katas, code review-bytte, konferencesamtaler. Under 5 = eksponeringen virker ikke, og han oever sig blindt. Dette er planens stoerste risiko og skal maales som et tal, ikke fornemmes.",
+  "Kalibrering mod doemt materiale: mindst 4 gennemfoerte TheKataLog-sammenligninger, hver med en SKREVEN liste over hvad vinderbesvarelsen gjorde som han ikke gjorde. Uden den skrevne liste taeller den ikke.",
+  "Deltagelse i O'Reilly Architectural Katas: mindst 2 gange paa aaret, med skreven note om hvilken kritik han fik og hvad han aendrede.",
+  "Portefølje-scanbarhed: én ekstern person, ikke fra LeanLinking, kan efter 5 minutters laesning gengive tre af hans arkitekturvalg og hvorfor. Testes med rigtige mennesker, to gange i loebet af aaret. Bestaar han ikke, er det README'et der skal om, ikke laeseren.",
+  "Andel af spikes der ramte 25-timers loftet og blev afleveret som 'ubesvaret': mellem 5% og 20%. Nul = han vaelger for lette spoergsmaal. Over 25% = han afgraenser for daarligt.",
+  "Antal ADR'er hvor Confirmation-sektionen peger paa en faktisk maaling med et tal: 100%. Én ADR uden maaling i Confirmation er en holdning med overskrifter og traekker hele porteføljens troværdighed ned."
+ ],
+ "kompetencer": [
+  {
+   "navn": "Falsificerbar problemformulering",
+   "hvorfor": "Den enkeltfaerdighed der bedst skiller en arkitekt fra en dygtig udvikler. En udvikler faar et problem og loeser det; en arkitekt omformulerer problemet til et valg med maalbare konsekvenser. Uden den producerer han holdninger uanset hvor meget han maaler.",
+   "hvordan_traenes": "SPIKE-testens fem kriterier anvendt paa hver eneste spike foer foerste linje kode. Bestaar spoergsmaalet ikke alle fem, omformuleres det. Efter 16 gentagelser er det automatiseret.",
+   "niveauskala": "Niveau 1: kan formulere et spoergsmaal med to navngivne alternativer. Niveau 2: kan tilfoeje kontekst-tal og kvalitetskrav med tal. Niveau 3: kan vaelge det spoergsmaal der er billigst at besvare og alligevel afgoerende - dvs. vaelge det rigtige eksperiment."
+  },
+  {
+   "navn": "Maaledesign og instrumentering",
+   "hvorfor": "Det er maalingen der skiller en mening fra en arkitekturbeslutning. Naar der ikke findes en reviewer, er maalingen den eneste instans der kan modsige ham. Uden den er ADR'en referat af blogindlaeg.",
+   "hvordan_traenes": "Mindst én maaling pr. spike, valgt foer kodning. Roter mellem maaletyper: latency/throughput (BenchmarkDotNet, k6), load, cost-model (Retail Prices API), korrekthedsinvariant under samtidighed, og fejl-/recoverymaaling. Minimum 3 koersler med spredning.",
+   "niveauskala": "Niveau 1: kan koere et benchmark og rapportere median og spredning. Niveau 2: kan designe en maaling der faktisk kan falsificere paastanden, inkl. negative tests. Niveau 3: kan vurdere hvornaar en maaling er stoej og hvornaar den generaliserer - og sige det hoejt i ADR'en."
+  },
+  {
+   "navn": "Kalibrering (forudsigelse foer maaling)",
+   "hvorfor": "Planens stoerste risiko er at han oever sig forkert i 12 maaneder uden at opdage det. Kalibrering er den eneste mekanisme der virker helt uden andre mennesker, og den producerer et tal han kan tage med i kompetenceporten.",
+   "hvordan_traenes": "PREDICTION.md committes foer maaleopsaetningen: metrik, punktgaet, 80%-interval, konfidens, mental model, og ét 'hvad ville overraske mig'. Aldrig redigeret. Hitrate opgøres kvartalsvis i rod-README.",
+   "niveauskala": "Niveau 1: skriver forudsigelser ned konsekvent. Niveau 2: hitrate 65-80% inden for 80%-interval, med intervaller der ikke er absurd brede. Niveau 3: kan identificere HVILKEN antagelse der var forkert og finde de andre steder han har brugt samme antagelse."
+  },
+  {
+   "navn": "Fravalgsargumentation (ADR-haandvaerk)",
+   "hvorfor": "Et fravalg med begrundelse er den mindste enhed af arkitektarbejde. Det er ogsaa det de fleste porteføljer mangler helt - de viser hvad der blev bygget, aldrig hvad der blev fravalgt og hvorfor.",
+   "hvordan_traenes": "MADR 4-format, mindst to forkastede alternativer pr. ADR, og Confirmation-sektionen udfyldt med et tal hver gang. Kalibrering mod TheKataLog-vinderbesvarelser fire gange om aaret.",
+   "niveauskala": "Niveau 1: kan skrive en ADR med alternativer. Niveau 2: alternativerne er reelle konkurrenter, ikke straamaend, og konsekvenserne er negative saavel som positive. Niveau 3: kan skrive den ADR han selv ville vaere uenig i om et aar, og sige hvad der ville faa ham til at aendre den."
+  },
+  {
+   "navn": "Cost-dimensionering",
+   "hvorfor": "En af de faa arkitektfaerdigheder hvor en junior faktisk kan slaa seniorer, fordi de fleste gaetter. Den er ogsaa direkte forretningsrelevant i et 9-mandsfirma hvor infrastrukturregningen er synlig for stifteren.",
+   "hvordan_traenes": "Byg cost-modeller mod Azure Retail Prices API (uautentificeret, gratis), aldrig fra blogindlaeg. Inkludér transaktions- og rehydreringsomkostninger. Datér modellen. Forudsig egen maanedsregning paa den forfremmede tjeneste og maal afvigelsen hver maaned.",
+   "niveauskala": "Niveau 1: kan laese en pris og gange. Niveau 2: kan modellere et scenarie med transaktioner, tiering og break-even. Niveau 3: kan sige hvilken parameter modellen er mest foelsom over for, og hvad der skal ske foer beslutningen vender."
+  },
+  {
+   "navn": "Drift, migrationer og bagudkompatibilitet",
+   "hvorfor": "Den del af arkitektkompetencen der IKKE kan laeses sig til, og den der oftest mangler hos folk der faar arkitekttitel for tidligt. Skemaaendringer paa data med indhold, uden nedetid, med rollback, er den enkeltdisciplin der bedst skiller senior fra junior i praksis.",
+   "hvordan_traenes": "Én forfremmet spike i drift i mindst 6 maaneder, 1,5 t/uge. Mindst 4 aegte migrationer efter expand/contract-moenstret. Aendringslog med bagudkompatibilitetsnote pr. deploy. Kvartalsvis game day med post-mortem.",
+   "niveauskala": "Niveau 1: kan deploye og holde noget koerende. Niveau 2: kan migrere skema paa data uden nedetid med rollback-plan. Niveau 3: kan designe en aendring saa migrationen bliver triviel - dvs. taenke bagudkompatibilitet ind FOER aendringen."
+  },
+  {
+   "navn": "Diagnosticering fra telemetri",
+   "hvorfor": "Naar han ikke kan diagnosticere sit eget system, er det en ARKITEKTURFEJL, ikke en driftsfejl. Observability er et designvalg, og den eneste maade at teste om valget var rigtigt, er at proeve at bruge det under pres.",
+   "hvordan_traenes": "Solo-varianten af Wheel of Misfortune: skriv scenariet mindst en uge foer, laeg det vaek, koer det derefter paa den forfremmede tjeneste uden at kigge paa loesningen. Kvartalsvis. Plus reelle incidents naar de opstaar - dem skal han IKKE forhindre, han skal laere af dem.",
+   "niveauskala": "Niveau 1: kan finde fejlen i loggen naar han ved hvad han leder efter. Niveau 2: kan diagnosticere en fejl han ikke har forudset, fra telemetrien alene. Niveau 3: kan pege paa hvilken telemetri der MANGLER foer fejlen opstaar."
+  },
+  {
+   "navn": "Kommunikation af arkitekturarbejde til folk der ikke var med",
+   "hvorfor": "Titlen kommer ikke fra et 9-mandsfirma, saa kompetencen skal vaere synlig eksternt. Og internt er evnen til at forklare et valg for stifteren paa to minutter det der giver mandat i en lille organisation.",
+   "hvordan_traenes": "Rod-README'ets 5-minutters-test, testet med rigtige eksterne mennesker to gange om aaret. Hvert offentligt opslag skrevet med et eksplicit indroemmet hul der inviterer korrektion. Katas hvor han skal praesentere for dommere.",
+   "niveauskala": "Niveau 1: kan beskrive hvad han byggede. Niveau 2: en ekstern laeser kan efter 5 minutter gengive tre valg og hvorfor. Niveau 3: hans skriverier tiltraekker uopfordret kvalificeret modsigelse - det er beviset paa at han skriver saa der er noget at tage fat i."
+  }
+ ],
+ "feedback_udefra": [
+  "O'Reilly Architectural Katas (https://www.oreilly.com/live-events/architectural-katas/) - den eneste realistiske kilde til DIREKTE, kvalificeret menneskelig kritik af hans designarbejde til en pris han kan betale. Virtuelle, holdbaserede, dommere med tung erfaring. Kraever O'Reilly online learning-medlemskab for mindst ét holdmedlem og de foerste 100 hold optages. 2-3 deltagelser paa et aar. Det holdbaserede er en fordel: han ser hvordan andre argumenterer, hvilket er halvdelen af laeringen. Svaghed at kende: katakerne er fiktive domaener uden maalinger - de traener formulering og fravalg, ikke falsificering.",
+  "TheKataLog (https://github.com/TheKataLog) - 83 repositories med DOEMTE finalist- og vinderbesvarelser, vedligeholdt af hoveddommer Jacqui Read og aktivt opdateret i 2026. Dette er den asynkrone, gratis erstatning for en reviewer og den mest undervurderede ressource paa hele listen. Metode der virker: vaelg en kata, brug 4 timer paa egen besvarelse, LUK den, laes derefter vinderbesvarelsen, og skriv en liste over hvad de gjorde som han ikke gjorde. Fire gange om aaret. Kalibrér paa struktur og fravalg, ikke paa praesentationsomfang.",
+  "Publicér hver spike med et EKSPLICIT indroemmet hul plus raadata og reproduktionskommandoen. En konklusion faar nul svar; 'jeg maalte 3,2x forskel ved 2 mio. raekker, men jeg er usikker paa om min indeksering er fair over for B - har nogen maalt anderledes?' faar svar. Folk der ville korrigere ham, gider ikke gaette paa hans opsaetning, saa raadata og én kommando er forudsaetningen.",
+  "Vaer forkert offentligt, med vilje synligt. 'Jeg troede X, det var forkert med faktor 8, og her er hvorfor min model var gal' tiltraekker langt mere kvalificeret respons end en korrekt konklusion. Det er kontraintuitivt og det virker - og det er samtidig det element i porteføljen der er umuligt at kopiere.",
+  "Code review-bytte: find ÉN person paa tilsvarende eller lidt hoejere niveau i et andet firma og byt ADR-review én gang om maaneden. Aftalen skal vaere konkret - fast dato, 45 minutter, ét dokument hver - ellers doer den inden for to maaneder. En jaevnbyrdig der stiller spoergsmaalet 'hvorfor ikke det andet?' er langt mere vaerd end ingen, ogsaa selvom han ikke er arkitekt.",
+  "Betalt gennemgang: en times betalt gennemgang fra en erfaren arkitekt to-tre gange om aaret, hvor vedkommende laeser tre af hans ADR'er. Det er den billigste risikoreduktion i hele planen maalt i kroner pr. undgaaet fejlspor. Han skal ikke haabe paa at finde en gratis mentor - haab er ikke en strategi her.",
+  "LLM som MODARGUMENT-generator, aldrig som validator. Konkret prompt-form: 'giv de tre staerkeste argumenter MOD denne beslutning, og for hvert af dem: hvilken maaling ville afgøre det?' Brug outputtet til at finde alternativer han ikke overvejede - det er nyttigt. Brug det ALDRIG til at bekraefte en beslutning: en LLM kan ikke maale hans system og vil overvejende bekraefte en velformuleret paastand. Det er en systematisk risiko for netop hans situation, fordi han er velformuleret.",
+  "Mark Richards' Software Architecture Monday (https://developertoarchitect.com/lessons/) - gratis 10-15 minutters lektion foerste mandag i maaneden, aktiv i 2026. Ikke feedback, men den billigste kilde til det vokabular han skal bruge for at kunne formulere sine fravalg saa andre arkitekter genkender dem. 15 min/md.",
+  "Fundamentals of Software Architecture 2. udgave (Richards & Ford, sept. 2025) som REFERENCESTANDARD, ikke som laesning fra ende til anden. Slaa op i kapitlerne om arkitekturkarakteristika naar han formulerer kvalitetskrav, og i diagrammeringskapitlet foer han laaser sin diagramskabelon. Bogen fungerer som en stedfortraedende reviewer for FORMEN, ikke for indholdet.",
+  "Fitness functions i GitHub Actions som automatiseret, upartisk reviewer: en test der fejler bygget hvis p95 overstiger graensen, eller hvis et modul refererer paa tvaers af tenant-graensen. Gratis og ubegraenset paa public repo. Det er den enkeltteknik der bedst konverterer engangsspikes til vedvarende disciplin - den siger fra uden at have en mening.",
+  "Maal det. Mindst 10 kvalificerede eksterne kommentarer eller korrektioner over aaret. Under 5 betyder at eksponeringen ikke virker og at han oever sig blindt - og saa skal han aendre kanal eller formulering, ikke haabe paa bedre held. Dette er planens stoerste enkeltrisiko og den skal have et tal paa sig som alt andet."
+ ],
+ "web_verifikation": "\"VERIFICERET VIA WEB (10. sept. 2026): (1) O'Reilly Architectural Katas afholdes fortsat - event 2. sept. 2026 med Neal Ford; 6-ugers kohorteforløb med Ford og Richards findes; kraever O'Reilly-medlemskab for mindst ét holdmedlem; foerste 100 hold optages. (2) TheKataLog (github.com/TheKataLog): 83 repos med finalist-/vinderbesvarelser, vedligeholdt af hoveddommer Jacqui Read, README opdateret 1. sept. 2026, seneste konkurrencerunde Q4 2025 'AI-Enabled Architecture'. (3) MADR 4.0.0 udgivet 2024-09-17; verificeret sektionsstruktur direkte fra adr/madr template: front-matter (status, date, decision-makers, consulted, informed) + Context and Problem Statement, Decision Drivers, Considered Options, Decision Outcome (Consequences, CONFIRMATION), Pros and Cons of the Options, More Information. YAML-variant YADR udgivet marts 2026. (4) Grafana k6: AGPLv3, gratis; stabil v2.1.0 pr. 30. juni 2026; v2.0 (11. maj 2026) fjernede deprecated API'er. (5) NBomber: fra v5 licenspligtig for organisationsbrug, ca. $99/bruger/md, NuGet-builds closed source under NBomber License Agreement v2.0; gratis kun til personlig brug. Dette gør det udbredte raad 'brug NBomber, det er open source' foraeldet. (6) .NET 10 er aktuel LTS (udgivet nov. 2025, support til nov. 2028); .NET 11 kommer nov. 2026 med kun standard-term support; .NET 8 og 9 udloeber 10. nov. 2026. (7) Fundamentals of Software Architecture 2. udgave udkom 23. sept. 2025 med fem nye kapitler. (8) Structurizr Lite er gratis og open source, single-user, uden samarbejdsfunktioner; server kraever licens. (9) Azure Chaos Studio: ca. $0,10/action-minut; Workspaces/Scenarios i public preview siden 1. juli 2026, GA sigtet mod sen 2026; feature-udvikling paa classic er STOPPET (kun kritiske fixes), men classic koerer uaendret videre og der er ingen tvungen migrering. (10) Azure App Testing (tidl. Load Testing): 50 VUH gratis/md, derefter ca. $0,15/VUH under 10.000 VUH; ingen maanedlig ressourceafgift; MEN minimum-VUH pr. testkoersel indfoert 1. marts 2026. (11) Azure Container Apps Consumption: gratis grant 180.000 vCPU-s + 360.000 GiB-s + 2 mio. requests pr. abonnement pr. md; scale-to-zero-app inden for grant koster 0. (12) Azure SQL Database free offer: 100.000 vCore-s + 32 GB data + 32 GB backup pr. database pr. md, op til 10 databaser pr. abonnement, for abonnementets levetid; GA siden feb. 2025; valgbart mellem auto-pause og betal-over-graensen. (13) Azure Functions: klassisk Consumption 1 mio. udførelser + 400.000 GB-s gratis/md; Flex Consumption kun 250.000 + 100.000 GB-s. (14) Azure Cosmos DB free tier: 1000 RU/s + 25 GB, én konto pr. abonnement, gaelder IKKE for serverless. (15) Azure Service Bus: Basic $0,05/mio. operationer (kun koeer); Standard $10/md base inkl. op til 12,5 mio. operationer + $0,01/mio. (16) Azure Blob hot: ca. $0,018-0,023/GB/md. (17) VIGTIGT: det varslede 128 KiB minimum-fakturerbare objektgulv for cool/cold/archive blev annonceret april 2026 med ikrafttraeden 1. juli 2026 for nye konti, men blev SAT PAA PAUSE 8. juni 2026 og traadte IKKE i kraft; Microsoft forbeholder sig at komme igen med en revideret model. Mange 2026-artikler skriver stadig at det er i kraft. (18) Azure Budgets alarmerer kun og stopper intet; evalueres typisk hver 8-24 timer; reel haandhaevelse kraever action group + Logic App/Automation runbook. (19) GitHub Actions: ubegraenset gratis paa public repos med standard-runnere; hosted-runner-rater saenket op til 39% pr. 1. jan. 2026. (20) Azure Retail Prices API paa prices.azure.com/api/retail/prices er uautentificeret og gratis; api-version 2023-01-01-preview er bagudkompatibel. (21) CSDDD: direktiv (EU) 2026/470 offentliggjort 26. feb. 2026, i kraft 18. marts 2026; transposition senest 26. juli 2028, anvendelse fra 26. juli 2029 (Art. 16-rapportering for regnskabsaar fra 1. jan. 2030); taerskel haevet til 5.000+ ansatte og 1,5 mia. EUR omsaetning; Kommissionens retningslinjer fremrykket til 26. juli 2026. (22) NIS2 i Danmark: lov om foranstaltninger til sikring af et hoejt cybersikkerhedsniveau vedtaget 29. april 2025, i kraft 1. juli 2025, ingen overgangsperiode, ca. 6.000 omfattede virksomheder. (23) EUDR: udskudt til 30. dec. 2026 for store og mellemstore operatoerer, 30. juni 2027 for smaa og mikro; due diligence- og sporbarhedsforpligtelser i behold. (24) USD/DKK: ca. 6,42-6,46 i begyndelsen af september 2026; aarsgennemsnit 2026 ca. 6,43. FORBEHOLD: azure.microsoft.com, learn.microsoft.com, docs.structurizr.com, c4model.com og adr.github.io var blokeret af netvaerksproxyen i denne session, saa Azure-priser og -graenser stammer fra soegeresultatsammendrag af Microsoft-dokumentation samt tredjepartskilder fra 2026, ikke fra direkte fetch af de officielle sider. Stoerrelsesordenen er paalidelig; de eksakte rater og de nyeste graenser boer verificeres i Azure Pricing Calculator for West Europe / North Europe foer der skrives faste tal i den faerdige guide. Ligeledes: soegebudgettet for sessionen blev opbrugt (200/200), saa system design-materialets kritik og enkelte sekundaere punkter bygger paa fagligt raesonnement frem for ny web-verifikation - det er markeret ved de paagaeldende ressourcer med verificeret: false. Tallene fra artikler om udviklerporteføljer (73%, 84%, 87%) er marketingtal uden metodebeskrivelse og maa IKKE gengives som fakta i guiden; kun retningen er brugbar.\""
+}

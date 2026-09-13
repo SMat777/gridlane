@@ -1,0 +1,668 @@
+{
+ "kernepointer": [
+  "Dybden er ikke forberedelse til arkitektrollen - den ER autoriteten. Simon har nul formelt mandat hos LeanLinking. Det eneste han kan handle med er at have ret om ting andre ikke kan verificere intuitivt, og kunne fremvise tallet der beviser det. En arkitekt uden titel er en person hvis forudsigelser holder. Det er hele mekanismen.",
+  "Maaling skal komme FOERST, ikke sidst. Stort set alle laeringsplaner placerer profilering og observability som 'advanced' i slutningen. Det er forkert raekkefoelge. Uden et maaleapparat er alt hvad han laerer bagefter uverificerbart, og alle hans arkitekturargumenter reduceres til meninger. Med maaleapparatet paa plads i uge 1-2 bliver hver eneste efterfoelgende spike selvkorrigerende.",
+  "Arkitektur er trade-off-analyse, og trade-off-analyse kraever at kende STOERRELSESORDENEN paa omkostningskurven. Boeger fortaeller dig at trade-offs findes. Kun dybde fortaeller dig hvad de koster. Du kan ikke vide hvad et netvaerkshop koster foer du har maalt et netvaerkshop. Stoerrelsesordenen er hele jobbet - resten er ordforraad.",
+  "En arkitekt der ikke kan drifte er en diagramtegner. De dyreste arkitekturfejl er driftsfejl: manglende backpressure, ikke-idempotente retries, skemamigrationer uden rollback, cache uden invalidering, retry-storme der forstaerker en fejl. De bliver foerst virkelige naar du selv er blevet vaekket af dem. Derfor er den forfremmede drift-spike ikke valgfri - den er den eneste kilde til den viden.",
+  "Adgangsbilletten til arkitekturboeger er konkret og falsificerbar: EEN service han kan instrumentere, load-teste, profilere, finde flaskehalsen i, fixe, bevise fixet med tal, deploye uden nedetid, rulle tilbage, og udvikle baade databaseskema og API-kontrakt paa uden at braekke en consumer. Kan han ikke det hele, er arkitekturboeger ordforraad uden daekning - og seniorer i rummet hoerer forskellen paa foerste saetning.",
+  "For HANS domaene er datalaget uforholdsmaessigt vigtigt. LeanLinking er supplier compliance: dokumenter, certifikater, audits, retention, multi-tenancy, revisionsspor. Det er relationelt, transaktionstungt og tenant-partitioneret. SQL, query-planer, transaktioner, isolationsniveauer og multi-tenancy-modeller er hans hoejeste leverage - hoejere end distributed systems-teori, hoejere end microservices, hoejere end Kubernetes.",
+  "Laer SQL FOER EF Core. Den omvendte raekkefoelge producerer udviklere der ikke kan diagnosticere deres eget ORM - den mest udbredte dybdefejl i .NET. Naar man har skrevet forespoergslerne i haanden og laest planerne foerst, bliver EF Core et vaerktoej man kan vurdere. Naar man ikke har, bliver det magi man kan bruge og ikke fejlfinde.",
+  "Testen paa dybde er PRAEDIKTION, ikke brug. 'Jeg har brugt det' og 'jeg forstaar det' ser fuldstaendig ens ud - indtil nogen beder om et tal paa forhaand. Simons billigste og haardeste selvtest er en praediktionslog: skriv tallet ned foer du maaler, hver gang, og foelg fejlmarginen over 6 maaneder. Krymper den, er der laering. Goer den ikke, er der aktivitet.",
+  ".NET 10 er LTS med support til 14. november 2028. .NET 8 OG .NET 9 udloeber begge 10. november 2026 - om to maaneder fra i dag. Det er ikke trivia. Hvis LeanLinking koerer .NET 8, ligger der et konkret, tidsbundet, ejerloest stykke arkitektarbejde og venter paa at nogen tager det. Man beder ikke om lov til at skrive et to-siders opgraderingsassessment.",
+  "Cargo-cult-arkitektur er den hurtigste selvdiskvalifikation. Clean Architecture-templates med seks projekter og et interface pr. klasse for et system med een deployment-enhed ser ud som arkitektur for juniorer og som uerfarenhed for seniorer. Faelden er praecis at det ligner det rigtige. Simon skal kunne argumentere for den SIMPLERE loesning med et tal - det er det staerkeste enkeltsignal en junior kan sende i et designmoede.",
+  "At laese en stor ukendt kodebase systematisk er baade hans daglige job som ticket-taker OG hans billigste synlighedskort. Metoden er fast: indgange -> udgange -> databaseskema -> een request end-to-end i haanden -> git-historik som hotspot-kort -> tests foer implementation -> braek noget med vilje. Skemaet er den mest aerlige dokumentation i ethvert system; det kan ikke lyve om hvad systemet faktisk gemmer.",
+  "Dybde er noedvendig, ikke tilstraekkelig. Dybdesporet er primaert til og med maaned 6, men det maa ikke aede maaned 7-12. Dybdesporet foeles aldrig faerdigt - der er altid en spike mere. Positioneringen starter paa kalenderen, ikke paa foelelsen af at vaere klar."
+ ],
+ "kompetencer": [
+  {
+   "navn": "Maaling, profilering og observability-instrumentering",
+   "hvorfor": "Det fundament alt andet hviler paa. Uden reproducerbare tal er hans arkitekturargumenter meninger, og en junior med meninger taber altid mod en senior med meninger. Det er ogsaa den kompetence der hurtigst konverterer til synlighed paa jobbet: et tal i en PR-beskrivelse aendrer hvordan folk laeser hans arbejde inden for en maaned.",
+   "hvordan_traenes": "Spike 1 bygger maaleapparatet: dotnet-counters, dotnet-trace, BenchmarkDotNet med MemoryDiagnoser, OpenTelemetry traces+metrics, en load-generator. Krav: samme baseline to gange inden for 5 procents afvigelse. Derefter er reglen at INGEN spike afsluttes uden mindst eet tal. Paa jobbet: vedhaeft foer/efter-tal til enhver performance-naer ticket.",
+   "niveauskala": "Nybegynder: kan starte en profiler og laese output naar nogen peger paa hvad han skal kigge efter. Kompetent: vaelger selv rigtigt vaerktoej til symptomet (counter vs trace vs dump vs benchmark), producerer reproducerbare tal, kender forskellen paa gennemsnit og p99 og hvorfor det betyder noget. Staerk: praedikterer stoerrelsesordenen foer han maaler og rammer inden for en faktor 10 konsistent; kan instrumentere et ukendt system saa naeste incident bliver diagnosticerbar; ved hvornaar en maaling er utroovaerdig og siger det hoejt."
+  },
+  {
+   "navn": "Async/await og concurrency reelt forstaaet (ikke som syntaks)",
+   "hvorfor": "Naesten alle .NET-produktionsnedbrud i denne kategori kommer fra at behandle async/await som syntaks i stedet for en state machine plus en scheduler. Thread pool starvation, sync-over-async, manglende cancellation og unawaited tasks er de fire mest almindelige maader en ellers velskrevet .NET-service falder om paa under last. Ingen af dem er synlige i code review hvis man ikke ved hvad man leder efter.",
+   "hvordan_traenes": "Spike 2: byg de seks fejlmoenstre med vilje, og for hvert enkelt: praediker den observerbare signatur (hvilken counter bevaeger sig, hvordan ser tracen ud) FOER du maaler. Laes den genererede state machine paa sharplab.io. Laes Stephen Clearys blog i stedet for tilfaeldige Medium-artikler. Paa jobbet: i hver PR-review han laver, stil spoergsmaalet 'hvad sker der hvis to kald rammer det her samtidig'.",
+   "niveauskala": "Nybegynder: skriver async/await korrekt naar moenstret er kendt, men kan ikke forklare hvorfor. Kompetent: kan forklare state machine, capture af context, hvorfor ConfigureAwait(false) betyder mindre i ASP.NET Core end i WPF, og kan genkende thread pool starvation ud fra counters. Staerk: kan diagnosticere en produktions-hang ud fra et dump; ved hvornaar ValueTask er berettiget og hvornaar det er cargo cult; designer cancellation-flow gennem hele call-stacken uden at blive bedt om det."
+  },
+  {
+   "navn": "Allokering og GC-forstaaelse",
+   "hvorfor": "Allokeringsraten er den skjulte variabel bag halvdelen af de p99-problemer folk tilskriver databasen. I containere paa Azure koster hukommelse direkte penge, og DATAS aendrede spillereglerne i .NET 9-10. Det er ogsaa den kompetence der klarest adskiller 'har brugt .NET' fra 'forstaar .NET'.",
+   "hvordan_traenes": "Spike 3: reducer allokeringer per request med 50 procent paa S1-endpointet, og bevis hvilke af dine aendringer der faktisk virkede - mindst to vil ikke gøre nogen forskel, og retroen skal navngive dem. Maal med DATAS baade slaaet til og fra. Kokosas bog bruges som opslagsvaerk, ikke som gennemlaesning. Laes Toubs 'Performance Improvements in .NET 10' som en dybdetest af sig selv: hvor mange afsnit kan du forklare uden at slaa op?",
+   "niveauskala": "Nybegynder: ved at Span<T> og struct 'er hurtigere'. Kompetent: laeser MemoryDiagnoser-output, forstaar generationer og hvorfor Gen2-collections er dyre, kan finde en leak med gcdump. Staerk: kan forklare hvornaar en allokeringsoptimering IKKE betaler sig og siger nej til den; forstaar DATAS' konsekvenser for containerdimensionering; kan laese lowered C# og se hvad compileren gjorde."
+  },
+  {
+   "navn": "SQL og query-planer",
+   "hvorfor": "Den hoejest rangerende enkeltkompetence for hans specifikke domaene. Supplier compliance er relationelt, tenant-partitioneret og skaevt fordelt (nogle kunder har 40 procent af dataen). De fleste .NET-udviklere kan skrive SQL og kan ikke laese en plan. Den forskel er hvor arkitekttroovaerdigheden ligger i et LOB-SaaS-firma.",
+   "hvordan_traenes": "Spike 4 skriver otte realistiske forespoergsler i haanden mod et seedet skema paa 2 mio. raekker med skaev tenant-fordeling - uden EF Core overhovedet. For hver: praediker plan og logical reads FOER du koerer. Laes 'Use The Index, Luke' helt igennem (den er kort). Brug First Responder Kit til at se hvad en rigtig diagnose ser ud som. Paa jobbet: log og laes den genererede SQL for hver EF-forespoergsel han roerer.",
+   "niveauskala": "Nybegynder: skriver forespoergsler der virker; tilfoejer indeks naar nogen siger han skal. Kompetent: laeser en execution plan, identificerer den dyreste operator, forstaar forskellen paa seek og scan og hvornaar en scan faktisk er korrekt, designer et daekkende indeks bevidst. Staerk: praedikterer planen foer han koerer den; forstaar parameter sniffing og statistik-skaevhed; kan sige 'det her indeks vil ikke hjaelpe, og her er hvorfor' foer nogen har brugt en dag paa det."
+  },
+  {
+   "navn": "Transaktioner, isolationsniveauer og samtidighedskontrol",
+   "hvorfor": "Det er her de fejl bor som ikke fanges af tests, ikke reproduceres lokalt, og koster kunder deres data. I et compliance-system hvor to samtidige godkendelser af samme dokument begge kan passere en check-then-act-validering, er det ikke akademisk. Og det er praecist den slags fejl hvor en junior der HAR forstaaet det, kan overtrumfe en senior der ikke har.",
+   "hvordan_traenes": "Spike 6: koer Hermitage-testsuiten mod SQL Server i en Testcontainer, praediker hvert resultat foer du koerer det. Byg derefter anomalien for alvor i et godkendelsesflow, fix den paa tre maader og maal throughput-omkostningen ved hver. Test under Azure SQL's default (RCSI slaaet til) versus on-prem SQL Servers default (RCSI slaaet fra) - den forskel er den faelde flest .NET-udviklere aldrig laerer.",
+   "niveauskala": "Nybegynder: bruger en transaktion naar det virker noedvendigt; kender ordene 'dirty read'. Kompetent: kan navngive hvilket isolationsniveau der forhindrer hvilken anomali, og vaelger bevidst mellem unique constraint, optimistic concurrency token og eksplicit laasning. Staerk: kan reproducere en given anomali deterministisk paa under 30 minutter; kender omkostningen ved hvert fix i throughput; opdager en check-then-act-race i en PR ved laesning."
+  },
+  {
+   "navn": "API-design: modenhed, versionering, fejlkontrakter, idempotens",
+   "hvorfor": "Det er kontraktfladen mod resten af verden, og det er hvor bagudkompatibilitet enten eksisterer eller ikke goer. En arkitekt der ikke kan sige praecis hvilke aendringer der braekker en consumer, kan ikke styre et systems udvikling. For LeanLinking med storkunde-integrationer er det direkte forretningskritisk.",
+   "hvordan_traenes": "Spike 7: ship v1, lav fem aendringer, afgoer for hver om den braekker en consumer, og byg en CI-check der fejler paa breaking changes i OpenAPI-dokumentet. Implementer RFC 9457 Problem Details med et stabilt type-URI-register. Spike 8: idempotens med Idempotency-Key og outbox, bevist under fejlinjektion. Vaer praecis om at Idempotency-Key stadig kun er et IETF-draft, ikke en RFC - den slags praecision ER arkitektsignalet.",
+   "niveauskala": "Nybegynder: bygger REST-endpoints der virker; versionerer med /v2 naar nogen beder om det. Kompetent: skelner additiv fra breaking change, designer stabile fejlkontrakter, ved hvorfor idempotens ikke er det samme som retry. Staerk: kan skrive en deprecation-politik andre kan foelge uden ham; bygger automatiseret kontraktverifikation i pipelinen; kan forklare hvorfor hypermedia sjaeldent betaler sig i et B2B-SaaS uden at lyde som en ideolog."
+  },
+  {
+   "navn": "Teststrategi som arkitekturbeslutning",
+   "hvorfor": "Testpyramiden er en arkitekturbeslutning forkladt som en teknisk detalje. Hvad der testes hvor, bestemmer hvor hurtigt systemet kan aendres - altsaa systemets faktiske modificerbarhed, som er den arkitekturkarakteristik alle paastaar de optimerer for. Og en langsom eller upaalidelig testsuite er den mest almindelige uerkendte arkitekturgaeld i SaaS.",
+   "hvordan_traenes": "Spike 10 er en restrukturering, ikke et nyt system: klassificer hver test som unit, integration eller contract, maal suitens koeretid, faa Testcontainers-integrationstests under 3 minutter med container-genbrug, og slet de tests der aldrig fejler. Skriv derefter politikken ned saa en reviewer kan anvende den uden ham. Paa jobbet: den flaky test ingen vil roere er en gratis adgangsbillet.",
+   "niveauskala": "Nybegynder: skriver unit tests med mange mocks; integrationstests findes maaske. Kompetent: bruger Testcontainers mod rigtig database, ved hvornaar en mock loej, kan begrunde hvad der IKKE skal testes. Staerk: kan argumentere for at slette tests med et tal; bygger contract tests der fanger reelle breaking changes; behandler testsuitens koeretid som en SLO."
+  },
+  {
+   "navn": "Komposition, dependency injection og modulgraenser",
+   "hvorfor": "DI er ikke et framework-emne, det er kompositionsemnet. De fleste .NET-kodebaser gaar ikke i staa paa grund af daarlige algoritmer men paa grund af utydelige modulgraenser og livstidsfejl. Det er ogsaa hvor Clean Architecture-cargo-culten goer mest skade, og hvor Simon kan skille sig ud ved at argumentere for MINDRE struktur.",
+   "hvordan_traenes": "Kontinuerligt, ikke som en fase. Regel: for enhver DI-registrering han roerer, skal han kunne tegne objektgrafen og livstiderne i haanden uden containeren. Byg en gang en 200-linjers version af noget han bruger (Channel<T>, IHttpClientFactory, HybridCache) og diff sit design mod det rigtige. Paa jobbet: naar han finder en captive dependency eller en scoped-i-singleton-fejl, skriver han den op som en retroaktiv ADR.",
+   "niveauskala": "Nybegynder: registrerer services; bruger constructor injection. Kompetent: forstaar livstider og deres faelder, ser hvornaar et interface ikke tjener noget formaal, kan afgoere om en afhaengighed hoerer til i modulet. Staerk: kan tegne systemets afhaengighedsgraf fra hukommelsen; siger nej til abstraktioner med et argument; ser en modulgraense der er placeret forkert foer den koster noget."
+  },
+  {
+   "navn": "Datamodellering: normalisering, denormalisering og multi-tenancy",
+   "hvorfor": "Skemaet overlever al kode omkring det. Det er den beslutning der er dyrest at fortryde, og i et multi-tenant compliance-SaaS er tenancy-modellen den enkeltbeslutning der bestemmer omkostningsstruktur, blast radius og hvad man overhovedet kan love en kunde kontraktuelt. Det er ogsaa den mest LeanLinking-relevante arkitekturbeslutning der findes.",
+   "hvordan_traenes": "Spike 9: implementer samme feature tre gange - shared schema med tenant-diskriminator, schema-per-tenant, database-per-tenant - og maal for hver: performance med den skaeve tenant, omkostning ved 50/500/5000 tenants, blast radius ved en daarlig migration, og indsatsen for at gendanne EEN tenants data. Kravet er en skriftlig anbefaling med det praecise tenant-antal og det praecise compliance-krav hvor anbefalingen vender.",
+   "niveauskala": "Nybegynder: normaliserer fordi man skal; tilfoejer TenantId fordi de andre tabeller har det. Kompetent: kan begrunde en denormalisering med et laesemoenster og et tal; forstaar konsekvenserne af tenancy-modellen for migrationer og backup. Staerk: kan skrive beslutningstabellen der siger hvornaar modellen skal skifte, og har faktisk gennemfoert en single-tenant-restore i praksis."
+  },
+  {
+   "navn": "Caching og invalidering",
+   "hvorfor": "Cache er den mest almindelige optimering og den mest almindelige kilde til uforklarlige fejl. HybridCache i .NET 10 loeser stampede-problemet, men ikke invalideringsproblemet - og det er invalideringen der producerer de bugs hvor kunden ser en anden virkelighed end databasen. I et compliance-system hvor et certifikat kan vaere udloebet, er en staleness-window en juridisk stoerrelse.",
+   "hvordan_traenes": "Spike 11: tilfoej HybridCache til den laesetunge sti, maal hit rate og p99-forbedring, og byg derefter stale-read-scenariet MED VILJE og maal staleness-vinduet i sekunder. Implementer tag-baseret invalidering. Kravet er at producere det tilfaelde hvor caching goer det vaerre - koldstart-stampede eller en tenant hvis working set ikke passer.",
+   "niveauskala": "Nybegynder: tilfoejer cache; saetter en TTL efter fornemmelse. Kompetent: maaler hit rate, forstaar stampede og L1/L2-topologi, kan begrunde sin TTL. Staerk: kan sige staleness-vinduet i sekunder og hvem der baerer risikoen; har en skriftlig invalideringsstrategi; siger 'her skal vi ikke cache' med en begrundelse."
+  },
+  {
+   "navn": "Systematisk laesning af en stor ukendt kodebase",
+   "hvorfor": "Det er ticket-takerens faktiske daglige arbejde, og det er den enkeltfaerdighed der hurtigst konverterer til synlighed uden mandat. Enhver arkitekt bliver konstant sat foran systemer han ikke skrev. Metoden kan traenes, og de fleste traener den aldrig - de laeser bare mere kode langsommere.",
+   "hvordan_traenes": "Fast metode: (1) find alle indgange - MapGet/MapPost, [HttpGet], BackgroundService, IHostedService, koe-abonnenter, timers, webhooks. (2) find alle udgange - DB-writes, udgaaende HTTP, message publishes, blob writes, mails. (3) laes databaseskemaet FOER koden. (4) trace een request end-to-end i haanden og tegn den. (5) brug git-historik som hotspot-kort (churn gange stoerrelse gange antal forfattere). (6) laes tests foer implementation - tests fortaeller hvad folk var bange for. (7) braek noget med vilje lokalt; kobling afsloeres af breakage, ikke af laesning. (8) foer liste over spoergsmaal koden ikke kan besvare - DEN liste er hans vaerdi.",
+   "niveauskala": "Nybegynder: laeser sig frem fra det sted ticketen peger paa, udad. Kompetent: kan producere et dataflow og en liste af indgange for et ukendt modul paa en dag. Staerk: kan levere dataflow-diagram, tre fejlmoenstre og een sundhedsmetrik for et ukendt modul paa under 45 minutter - og seniorer begynder at spoerge HAM om moduler han har kortlagt."
+  },
+  {
+   "navn": "Drift: deploy, rollback, bagudkompatibilitet og fejlmoenstre",
+   "hvorfor": "Uden det er han designer, ikke arkitekt. Det er ogsaa den kompetence der er umulig at simulere: den kraever et system der har koert i maaneder, har haft mindst een rigtig hendelse, og har haft skema- og kontraktaendringer under drift. Det er praecis derfor een spike skal forfremmes til noget han faktisk DRIFTER.",
+   "hvordan_traenes": "Forfrem maalespike S1 til drift: deploy til Azure, definer en rigtig SLO, saet alarmering op, byg en pipeline med rollback, koer skemamigrationer mod levende data (expand-migrate-contract), og hav en rigtig consumer (et scheduled job) hvis kontrakt han ikke maa braekke. Kraev mindst to skemaaendringer og to API-aendringer over seks maaneder. Paa jobbet: bed om laeseadgang til alarmkanaler og skriv den postmortem ingen andre vil skrive.",
+   "niveauskala": "Nybegynder: deployer via pipeline andre har bygget; ved ikke hvordan man ruller tilbage. Kompetent: kan deploye uden nedetid, kan rulle tilbage, koerer expand-migrate-contract-migrationer bevidst. Staerk: har vaeret aarsag til og loest mindst een rigtig hendelse i noget han selv drifter; kan navngive systemets tre mest sandsynlige fejlmoenstre og pege paa den metrik der ville vise dem foerst."
+  },
+  {
+   "navn": "Kalibrering: praediktion foer maaling",
+   "hvorfor": "Den metakompetence der goer alle de andre falsificerbare. Det er ogsaa den eneste maade at skelne 'har brugt' fra 'forstaar' indefra - uden en ekstern bedoemmer. En arkitekt bliver betalt for at forudsige konsekvenser af beslutninger foer de traeffes. Hvis hans forudsigelser ikke er kalibrerede, er hans arkitekturarbejde gaetteri med selvtillid.",
+   "hvordan_traenes": "En enkelt fil i spike-repoet: praediktionslog. Foer enhver maaling, enhver query-plan, ethvert benchmark: skriv tallet og stoerrelsesordenen ned. Bagefter: skriv det faktiske og fejlfaktoren. Gennemgaa loggen ved hver maanedsretro. Udvid til rigtige postmortems: laes en offentlig postmortem (Azure status history, Cloudflare, GitHub) til og med symptombeskrivelsen, skriv din hypotese, laes derefter root cause.",
+   "niveauskala": "Nybegynder: har ingen praediktion; maaler og accepterer tallet. Kompetent: praedikterer og rammer ofte inden for en faktor 100; genkender hvornaar han ikke har grundlag for at gaette. Staerk: rammer konsistent inden for en faktor 10 paa velkendt terraen; hans fejlfaktor falder maalbart over tid; han siger 'det ved jeg ikke, lad os maale' foer nogen spoerger."
+  }
+ ],
+ "ressourcer": [
+  {
+   "titel": ".NET og .NET Core officiel supportpolitik (versionslivscyklus)",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "hvorfor": "Verificeret 10. sep 2026: .NET 10 = LTS, udgivet 11. nov 2025, support til 14. nov 2028. .NET 8 (LTS) OG .NET 9 (STS) udloeber BEGGE 10. november 2026 - om to maaneder. .NET 11 er STS og lander nov 2026. Det er ikke baggrundsviden; det er en deadline der lige nu ligger og venter paa en ejer hos LeanLinking. Alt hvad han bygger, bygges paa .NET 10.",
+   "url": "https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core",
+   "verificeret": true,
+   "tidsforbrug": "20 min, laes en gang, bogmaerk",
+   "hvad_springes_over": "Alt om .NET Framework og .NET Standard. Og .NET 11-features - det er STS, LeanLinking kommer ikke i naerheden af det de naeste to aar."
+  },
+  {
+   "titel": "Use The Index, Luke! (gratis webudgave af SQL Performance Explained, Markus Winand)",
+   "type": "bog/web",
+   "prioritet": "kerne",
+   "hvorfor": "Den enkeltressource med hoejest afkast for hans domaene. Kort, praecis, gratis, og verificeret aktivt vedligeholdt i 2026 (testet mod SQL Server 2025, PostgreSQL 17). Laer 'Anatomy of an SQL Index', 'The Where Clause', 'The Join Operation', 'Clustering Data', 'Sorting and Grouping', 'Partial Results'. Hele bogen er kortere end tre kapitler i DDIA og har stoerre umiddelbar effekt paa hans arbejde.",
+   "url": "https://use-the-index-luke.com/sql/table-of-contents",
+   "verificeret": true,
+   "tidsforbrug": "6-8 timer i alt, laeses i maaned 2 sideloebende med spike 4",
+   "hvad_springes_over": "Intet. Laes det hele. Hvis han kun laeser een ting fra hele denne liste, er det denne."
+  },
+  {
+   "titel": "Designing Data-Intensive Applications, 2. udgave (Kleppmann & Riccomini, feb/mar 2026)",
+   "type": "bog",
+   "prioritet": "kerne",
+   "hvorfor": "2. udgave er verificeret udkommet i 2026 - koeb den, ikke 1. udgaven. Vaesentligt: kapitelnummereringen er aendret (Encoding and Evolution er nu kap. 5, var kap. 4; 'Partitioning' hedder nu 'Sharding'; batch processing-kapitlet er omskrevet fordi MapReduce er forældet; der er tilfoejet stof om data privacy og regulering). Naevn kapitler ved TITEL, ikke nummer.",
+   "url": "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781098119058/",
+   "verificeret": true,
+   "tidsforbrug": "25 timer fordelt over maaned 3-6, kun de udvalgte kapitler, og hvert kapitel laeses i den uge den tilsvarende spike koerer",
+   "hvad_springes_over": "LAES TAET: Storage and Retrieval (goer query-planer forstaaelige), Encoding and Evolution (= bagudkompatibilitet, hans drift-spike), Transactions (laes to gange - det ER kapitlet), Sharding (= multi-tenancy). LAES: Replication, The Trouble with Distributed Systems, samt det nye stof om data privacy/regulering (hoej relevans for compliance-SaaS). SKIM: Data Models and Query Languages. LAES KUN FOERSTE HALVDEL: Consistency and Consensus - linearizability og ordering er relevant, konsensusalgoritmernes interne mekanik (Raft/Paxos-detaljer) er det ikke; han kommer aldrig til at implementere en. SPRING OVER: batch processing-kapitlet helt. Af stream processing-kapitlet kun afsnittene om change data capture og event sourcing."
+  },
+  {
+   "titel": ".NET diagnostics tools overview (dotnet-counters, dotnet-trace, dotnet-dump, dotnet-gcdump)",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "hvorfor": "Selve maaleapparatet. Cross-platform, gratis, virker i containere paa Azure - i modsaetning til Visual Studios profiler som ikke hjaelper ham i produktion. Bemaerk: .NET 10 tilfoejede 'collect-linux'-verbet til dotnet-trace (kernel events, native frames, maskin-daekkende sampling) - kraever root og skriver et preview-format .nettrace som ikke alle viewers laeser endnu.",
+   "url": "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/tools-overview",
+   "verificeret": true,
+   "tidsforbrug": "4 timer opsaetning i spike 1, derefter opslagsvaerk",
+   "hvad_springes_over": "Visual Studio Enterprise-profileren som primaert vaerktoej - den er ikke tilgaengelig hvor han faktisk faar brug for den. Laer CLI-vaerktoejerne foerst."
+  },
+  {
+   "titel": "BenchmarkDotNet",
+   "type": "vaerktoej",
+   "prioritet": "kerne",
+   "hvorfor": "Standarden for mikrobenchmarks i .NET, og det eneste vaerktoej der giver ham allokeringstal per operation (MemoryDiagnoser). Verificeret: v0.15.x er stabil med .NET 10-support; v0.16 er i preview pr. august 2026 - brug 0.15.x. Vaesentlig disciplin: mikrobenchmark er IKKE load test. Han skal have begge dele og vide hvornaar hvilken.",
+   "url": "https://benchmarkdotnet.org/",
+   "verificeret": true,
+   "tidsforbrug": "3 timer opsaetning, derefter loebende",
+   "hvad_springes_over": "Ikke bruge det til at benchmarke noget der involverer I/O eller en database - det er den klassiske misbrug. Der skal han bruge en load-generator."
+  },
+  {
+   "titel": "Hermitage: testsuite der adskiller transaktionsisolationsniveauer (Kleppmann)",
+   "type": "vaerktoej/repo",
+   "prioritet": "kerne",
+   "hvorfor": "Den bedste gratis dybdetest der findes paa dette omraade. Konkrete SQL-scripts der reproducerer hver enkelt concurrency-anomali (G0, G1a, G1b, G1c, OTV, PMP, P4, G-single, G2-item, G2) og viser praecis hvilket isolationsniveau der forhindrer hvad. Indeholder tests for SQL Server. De fleste seniore .NET-udviklere dumper denne test. Kan han koere den og forklare resultaterne, er han foran de fleste i rummet.",
+   "url": "https://github.com/ept/hermitage",
+   "verificeret": true,
+   "tidsforbrug": "6-8 timer i spike 6, inkl. at praediktere hvert resultat foer koersel",
+   "hvad_springes_over": "Testene for CockroachDB, YugabyteDB, FoundationDB, Memgraph. Kun SQL Server - og gerne PostgreSQL til sammenligning, fordi kontrasten er laererig."
+  },
+  {
+   "titel": "Testcontainers for .NET",
+   "type": "vaerktoej",
+   "prioritet": "kerne",
+   "hvorfor": "Verificeret aktivt vedligeholdt (v4.11.x, april 2026). Det der goer hans spikes rigtige i stedet for legetoej: rigtig SQL Server, rigtig Azure Storage-emulator, rigtig message broker - i tests og lokalt. Uden det bygger han mod in-memory-providere og laerer ting der ikke er sande i produktion.",
+   "url": "https://dotnet.testcontainers.org/",
+   "verificeret": true,
+   "tidsforbrug": "4 timer opsaetning, derefter fundament under alle spikes",
+   "hvad_springes_over": "EF Cores InMemory-provider til noget som helst der ligner en test af databaseadfaerd. Den lyver om transaktioner, constraints, og genereret SQL. Brug den aldrig igen."
+  },
+  {
+   "titel": "Stephen Cleary: blog om async/await og ConfigureAwait",
+   "type": "blog",
+   "prioritet": "kerne",
+   "hvorfor": "Den mest paalidelige kilde til async-forstaaelse i .NET-oekosystemet, og en direkte modgift mod de tusinder af Medium-artikler der gentager 2013-raad forkert. Laes specifikt posten om ConfigureAwait i .NET 8 (den daekker ConfigureAwaitOptions: SuppressThrowing, ContinueOnCapturedContext, ForceYielding) samt 'Async and Await'-grundposten.",
+   "url": "https://blog.stephencleary.com/2023/11/configureawait-in-net-8.html",
+   "verificeret": true,
+   "tidsforbrug": "5-6 timer for de centrale poster, i spike 2",
+   "hvad_springes_over": "'Concurrency in C# Cookbook' som gennemlaesning - den er fra 2019 og bloggen daekker det opdaterede. Brug bogen som opslagsvaerk hvis han har den, koeb den ikke."
+  },
+  {
+   "titel": "sharplab.io (lowered C#, IL, JIT asm i browseren)",
+   "type": "vaerktoej",
+   "prioritet": "kerne",
+   "hvorfor": "Det billigste dybdeinstrument der findes. For enhver abstraktion han bruger: se hvad compileren faktisk producerer. async-metode -> se state machine. record -> se genereret Equals. foreach over Span -> se om der allokeres. Reglen der traener dybde: TEGN state machinen foer du kigger, og se om du ramte.",
+   "url": "https://sharplab.io",
+   "verificeret": false,
+   "tidsforbrug": "0 timers opsaetning, 10 minutter ad gangen, loebende",
+   "hvad_springes_over": "Ingenting - men brug det aktivt, ikke passivt. Passiv brug laerer ingenting."
+  },
+  {
+   "titel": "EF Core 10: What's New + Breaking Changes (Microsoft Learn)",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "hvorfor": "Verificeret: EF Core 10 kraever .NET 10. Nye foerste-klasses LeftJoin/RightJoin-operatorer, udvidet ExecuteUpdateAsync (opdateringer drevet af andre kolonner), SQL Server 2025 vector-type-mapping. Kritisk breaking change: hvis man bruger UseAzureSql, genererer opgradering til EF 10 en migration der aendrer ALLE eksisterende nvarchar(max) JSON-kolonner til json-typen. Det er praecis den slags detalje der goer et opgraderingsassessment troovaerdigt.",
+   "url": "https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-10.0/breaking-changes",
+   "verificeret": true,
+   "tidsforbrug": "2 timer, i spike 5 og igen naar han skriver .NET 8-EOL-assessmentet paa jobbet",
+   "hvad_springes_over": "Vector search og AI-integrationsdelen - interessant, men ikke hans flaskehals."
+  },
+  {
+   "titel": "RFC 9457: Problem Details for HTTP APIs",
+   "type": "standard",
+   "prioritet": "kerne",
+   "hvorfor": "Erstattede RFC 7807. Det er DEN maskinlaesbare fejlkontrakt, og ASP.NET Core producerer den by default (AddProblemDetails + UseExceptionHandler, Results.Problem, [ApiController]-modelstate). At kunne designe et stabilt type-URI-register for fejl - saa en consumer kan programmere mod fejl uden at parse tekst - er en konkret arkitektleverance ingen beder om og alle har brug for.",
+   "url": "https://www.rfc-editor.org/info/rfc9457/",
+   "verificeret": true,
+   "tidsforbrug": "2 timer, i spike 7",
+   "hvad_springes_over": "At opfinde sin egen fejlkonvolut. Det er den mest almindelige og mest unoedvendige beslutning i .NET-API'er."
+  },
+  {
+   "titel": "Idempotency-Key HTTP Header Field (IETF draft-ietf-httpapi-idempotency-key-header-07)",
+   "type": "standard (draft)",
+   "prioritet": "kerne",
+   "hvorfor": "Vaer praecis her: det er stadig et Internet-Draft, IKKE en RFC - i realiteten en de facto-konvention popularisereret af Stripe. Praecis den slags skelnen (draft vs standard vs konvention) er et arkitektsignal i sig selv, og den slags praecision koster ingenting at have.",
+   "url": "https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header-07",
+   "verificeret": true,
+   "tidsforbrug": "1 time, i spike 8",
+   "hvad_springes_over": "At implementere den fuldt konformt. Han skal forstaa mekanikken og semantikken, ikke certificere sig mod et draft."
+  },
+  {
+   "titel": "Azure Architecture Center: Tenancy models for a multitenant solution + SaaS-moenstre for Azure SQL",
+   "type": "dokumentation",
+   "prioritet": "kerne",
+   "hvorfor": "Den mest direkte LeanLinking-relevante arkitekturressource der findes. Daekker pooled/siloed/hybrid-modellerne, hvad valget koster i drift, omkostning og blast radius, og hvorfor det er dyrt at skifte senere. Azure SQL-siden har konkrete multitenant SaaS-moenstre med elastic pools og sharding.",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/considerations/tenancy-models",
+   "verificeret": true,
+   "tidsforbrug": "5 timer, i spike 9",
+   "hvad_springes_over": "De tjenestespecifikke sider for tjenester LeanLinking ikke bruger. Laes overview + tenancy models + Azure SQL-moenstrene, ikke hele katalogget."
+  },
+  {
+   "titel": "The Programmer's Brain (Felienne Hermans, Manning)",
+   "type": "bog",
+   "prioritet": "kerne",
+   "hvorfor": "Del 1 om at LAESE kode er praecis den faerdighed en ticket-taker i en stor ukendt kodebase bruger hver dag og aldrig er blevet traenet i. Bogens pointe - at kodelaesning begraenses af arbejdshukommelse og chunking, ikke af intelligens - giver ham konkrete teknikker frem for 'laes mere kode'. Hoej effekt per time.",
+   "url": "https://www.manning.com/books/the-programmers-brain",
+   "verificeret": true,
+   "tidsforbrug": "4 timer for Del 1",
+   "hvad_springes_over": "Del 3 og 4 (om at skrive kode og om onboarding af andre) - laes dem eventuelt i maaned 10 hvis han gaar efter teamlead-vinklen. Ikke nu."
+  },
+  {
+   "titel": "Your Code as a Crime Scene, 2. udgave (Adam Tornhill, Pragmatic, marts 2024)",
+   "type": "bog",
+   "prioritet": "stoette",
+   "hvorfor": "Teknikken - brug git-historik til at finde hotspots (churn gange kompleksitet), kortlaegge skjulte afhaengigheder og se hvordan teamstrukturen har formet arkitekturen - er direkte anvendelig paa LeanLinkings repo. Det giver ham et artefakt ingen har bedt om, som ingen andre har, og som ikke kraever mandat at producere. Det er hans staerkeste enkelte synlighedskort som ticket-taker.",
+   "url": "https://pragprog.com/titles/atcrime2/your-code-as-a-crime-scene-second-edition/",
+   "verificeret": true,
+   "tidsforbrug": "6 timer for hotspot- og koblingsteknikkerne, i spike 12",
+   "hvad_springes_over": "Kapitlerne om organisatorisk analyse paa tvaers af store organisationer - LeanLinking er for lille. Og undlad at koebe CodeScene: han kan beregne churn gange stoerrelse gange forfatterantal med et git-script paa en eftermiddag."
+  },
+  {
+   "titel": "Pro .NET Memory Management, 2. udgave (Kokosa, Nasarre, Gosse - opdateret til .NET 8)",
+   "type": "bog",
+   "prioritet": "stoette",
+   "hvorfor": "Definitivt vaerk, men det er et OPSLAGSVAERK, ikke en gennemlaesning - 800+ sider. Laes: GC-grundkapitlerne (generationshypotesen, hvad en collection faktisk goer), samt kapitlerne om allokeringsregler og memory-relaterede kodningsregler. Suppler med .NET-bloggens DATAS-post, fordi bogen er skrevet foer DATAS blev default.",
+   "url": "https://prodotnetmemory.com/",
+   "verificeret": true,
+   "tidsforbrug": "8-10 timer maalrettet laesning i spike 3. Ikke mere.",
+   "hvad_springes_over": "Alt om objektlayout paa binaert niveau, GC-implementeringens interne datastrukturer, native memory interop, og profiler-API'et. Han kommer ikke til at skrive en GC. Laes de kapitler kun hvis en konkret spike tvinger ham derned."
+  },
+  {
+   "titel": "Stephen Toub: Performance Improvements in .NET 10 (.NET Blog)",
+   "type": "blog",
+   "prioritet": "stoette",
+   "hvorfor": "Dobbelt formaal. Som viden: hvad der faktisk blev hurtigere og hvorfor (escape analysis, devirtualisering, bounds check elimination, vektorisering). Som DYBDETEST: laes den og tael hvor mange afsnit han kan forklare uden at slaa op. Den procentdel er en aerlig maaling af hans runtime-forstaaelse, og han kan gentage maalingen paa .NET 11-posten om et aar.",
+   "url": "https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-10/",
+   "verificeret": true,
+   "tidsforbrug": "4 timer, i maaned 4-5. Laes den ikke i maaned 1 - den vil bare demoralisere.",
+   "hvad_springes_over": "At laese den lineaert forfra. Spring til de sektioner der beroerer hans egen kode: strings, collections, JSON, networking."
+  },
+  {
+   "titel": "Preparing for the .NET 10 GC (DATAS) - .NET Blog + DATAS-dokumentationen",
+   "type": "dokumentation/blog",
+   "prioritet": "stoette",
+   "hvorfor": "DATAS (Dynamic Adaptation To Application Sizes) er default siden .NET 9 og dermed default paa .NET 10. Det aendrer hvordan heap'en vokser og krymper, hvilket aendrer hvordan man dimensionerer containere og hvordan man laeser hukommelsesgrafer. Naesten al aeldre .NET-perfmateriale paa nettet er skrevet foer det og er derfor forkert paa dette punkt.",
+   "url": "https://devblogs.microsoft.com/dotnet/preparing-for-dotnet-10-gc/",
+   "verificeret": true,
+   "tidsforbrug": "2 timer, i spike 3",
+   "hvad_springes_over": "Manuel GC-tuning via config-knapper. Maal foerst, i maaneder, foer han overhovedet overvejer at roere ved GC-konfiguration."
+  },
+  {
+   "titel": "HybridCache (Microsoft.Extensions.Caching.Hybrid)",
+   "type": "bibliotek/dokumentation",
+   "prioritet": "stoette",
+   "hvorfor": "Verificeret aktuel (v10.9.0). Loeser stampede-problemet (kun ét kald pr. noegle udfoerer factory-metoden), giver L1 in-process plus L2 distribueret over IDistributedCache, haandterer serialisering, og har tag-baseret invalidering. Relevant fordi det fjerner en hel klasse af hjemmestrikkede cache-fejl - men det loeser ikke invalideringsproblemet, og det er invalideringen der producerer de dyre bugs.",
+   "url": "https://www.nuget.org/packages/Microsoft.Extensions.Caching.Hybrid",
+   "verificeret": true,
+   "tidsforbrug": "4 timer, i spike 11",
+   "hvad_springes_over": "At bygge sit eget cache-lag med SemaphoreSlim rundt om IMemoryCache. Det moenster er nu forældet."
+  },
+  {
+   "titel": "Combining API versioning with OpenAPI in .NET 10 (.NET Blog) + Asp.Versioning 10.0",
+   "type": "dokumentation/blog",
+   "prioritet": "stoette",
+   "hvorfor": "Verificeret aktuel og nyttig: ASP.NET Core droppede Swashbuckle fra templates fra .NET 9 til fordel for Microsoft.AspNetCore.OpenApi (OpenAPI 3.1 by default i .NET 10). Asp.Versioning 10.0 er den foerste udgave der spiller sammen med den nye pipeline - WithDocumentPerVersion(). Det er praecis den slags konkrete integrationsdetalje der goer forskellen paa en versionerings-ADR der virker og en der ikke goer.",
+   "url": "https://devblogs.microsoft.com/dotnet/api-versioning-in-dotnet-10-applications/",
+   "verificeret": true,
+   "tidsforbrug": "3 timer, i spike 7",
+   "hvad_springes_over": "Swashbuckle som nyt valg. Det er stadig vedligeholdt (v10.x med .NET 10-support), men hvis han starter fra nul, start paa det indbyggede."
+  },
+  {
+   "titel": "Validation in ASP.NET Core 10 (Microsoft.Extensions.Validation, source generator, [ValidatableType])",
+   "type": "dokumentation",
+   "prioritet": "stoette",
+   "hvorfor": "Nyt i .NET 10: indbygget minimal API-validering via en Roslyn source generator der analyserer objektgrafen paa compile-time i stedet for reflection. Bemaerk faelden: AddValidation opdager kun typer i det assembly hvor den kaldes, og source generatoren kraever interceptor-namespaces i csproj. Relevant for hans fejlkontrakt-spike.",
+   "url": "https://learn.microsoft.com/en-us/aspnet/core/validation/overview?view=aspnetcore-10.0",
+   "verificeret": true,
+   "tidsforbrug": "2 timer, i spike 7",
+   "hvad_springes_over": "FluentValidation som default-valg i nye projekter paa .NET 10 - vurder det indbyggede foerst. Han skal kunne begrunde valget, ikke arve det."
+  },
+  {
+   "titel": "PactNet (consumer-driven contract testing for .NET)",
+   "type": "vaerktoej",
+   "prioritet": "stoette",
+   "hvorfor": "Contract testing er det testniveau naesten ingen .NET-teams har, og det er praecis det niveau der forhindrer den dyreste fejltype: en bagudinkompatibel aendring der slipper igennem fordi begge sider blev testet hver for sig. Han skal ikke indfoere det hos LeanLinking - han skal FORSTAA det, saa han kan sige hvornaar det betaler sig og hvornaar et OpenAPI-diff i CI er nok.",
+   "url": "https://github.com/pact-foundation/pact-net",
+   "verificeret": true,
+   "tidsforbrug": "5 timer, i spike 7",
+   "hvad_springes_over": "Pact Broker-hosting og hele det organisatoriske apparat. Han skal have ét consumer-provider-par der faktisk fanger et brud, ikke en platform."
+  },
+  {
+   "titel": "MADR (Markdown Architectural Decision Records) + adr.github.io",
+   "type": "template/dokumentation",
+   "prioritet": "kerne",
+   "hvorfor": "ADR er artefaktet hele oevebanen producerer, og hele hans portefoelje bestaar af dem. MADR 4.0.0 er verificeret aktuel. Vaelg EEN template og hold fast - varierende format i portefoeljen laeser som roderi. Vaesentligt: ADR'ens vaerdi ligger i afsnittet om FRAVALGTE muligheder og konsekvenser, ikke i beslutningen. En ADR uden alternativer er et referat.",
+   "url": "https://adr.github.io/madr/",
+   "verificeret": true,
+   "tidsforbrug": "1 time at vaelge og laere, derefter 45-60 min pr. ADR",
+   "hvad_springes_over": "adr-tools, log4brains og hele tooling-laget. En markdown-fil i et repo er nok. Vaerktoejet er ikke pointen; disciplinen er."
+  },
+  {
+   "titel": "Fundamentals of Software Architecture, 2. udgave (Richards & Ford, sept 2025)",
+   "type": "bog",
+   "prioritet": "senere (maaned 7-9, IKKE foer)",
+   "hvorfor": "2. udgave er verificeret udkommet 23. sep 2025 med fem nye kapitler, herunder et om modulaer monolit (kap. 11), samt nyt stof om cloud, data topologies, team topologies og governance. Den ER god - men den er GIFT hvis den laeses foer dybdesporet, fordi den giver ham ordforraad han ikke kan daekke. Laeses foerst naar han har otte spikes og en driftet service bag sig.",
+   "url": "https://www.oreilly.com/library/view/fundamentals-of-software/9781098175504/",
+   "verificeret": true,
+   "tidsforbrug": "20 timer i maaned 7-9, udvalgte kapitler",
+   "hvad_springes_over": "LAES: kapitlerne om architecture characteristics (det er dem der forvandler 'goer det hurtigt' til en testbar fitness function), kapitlet om arkitekturbeslutninger og ADR, det nye kapitel 11 om modulaer monolit (den mest LeanLinking-relevante stil), og governance/fitness functions (matcher hans sekundaere interesse). SKIM EEN GANG: hele stilkataloget - microkernel, space-based, service-based, event-driven. Han skal kunne genkende dem, ikke studere dem. UDSAET: soft skills- og forhandlingskapitlerne til maaned 8-9 hvor de faktisk skal bruges. SKIM: genAI-kapitlet, det aeldes hurtigst af alt i bogen."
+  },
+  {
+   "titel": "Software Architecture: The Hard Parts (Ford, Richards, Sadalage, Dehghani)",
+   "type": "bog",
+   "prioritet": "senere (maaned 9-10)",
+   "hvorfor": "Bogens vaerdi er trade-off-analyse som metode - at forvandle enhver beslutning til en eksplicit pro/con med kontekst. Det er den vigtigste arkitektfaerdighed. Men den er skrevet for folk der allerede har foelt smerten; laest for tidligt bliver den et katalog over ting han vil foreslaa uden grund.",
+   "url": "https://www.oreilly.com/library/view/software-architecture-the/9781492086888/",
+   "verificeret": false,
+   "tidsforbrug": "12 timer, udvalgte kapitler, maaned 9-10",
+   "hvad_springes_over": "LAES: kapitlerne om kobling (statisk vs dynamisk), decomposition drivers, distribuerede transaktioner og sagas, samt datadekomponering. SPRING OVER: de mere taksonomiske dele om kontraktformater, og alt om data mesh medmindre en jobannonce naevner det."
+  },
+  {
+   "titel": "Learning Domain-Driven Design (Vlad Khononov, 2021)",
+   "type": "bog",
+   "prioritet": "senere / delvist",
+   "hvorfor": "Hvis han skal laese DDD overhovedet, saa denne - ikke Evans' blaa bog. Men KUN den strategiske halvdel: subdomains, bounded contexts, context mapping, og hvordan man vurderer hvor kompleksiteten faktisk ligger. Det er det der er brugbart i et designmoede.",
+   "url": "https://www.oreilly.com/library/view/learning-domain-driven-design/9781098100124/",
+   "verificeret": true,
+   "tidsforbrug": "8 timer for den strategiske halvdel, maaned 8+",
+   "hvad_springes_over": "Hele den taktiske halvdel: aggregates, value objects, repositories, domain events som implementeringsmoenstre. Det er praecis der .NET-udviklere gaar hen og bygger katedraler. Han faar mere ud af at forstaa modulgraenser end aggregatregler."
+  },
+  {
+   "titel": "Brent Ozar First Responder Kit (sp_Blitz, sp_BlitzCache, sp_BlitzIndex, sp_BlitzFirst)",
+   "type": "vaerktoej",
+   "prioritet": "stoette",
+   "hvorfor": "Gratis, open source, verificeret opdateret juli 2026. Ikke fordi han skal blive DBA, men fordi det viser ham hvordan en rigtig SQL Server-diagnose ser ud: hvilke spoergsmaal en professionel stiller, i hvilken raekkefoelge. At koere sp_BlitzIndex mod sin egen spike-database og laese kritikken er en billig og brutalt aerlig dybdetest af hans indeksdesign.",
+   "url": "https://github.com/BrentOzarULTD/SQL-Server-First-Responder-Kit",
+   "verificeret": true,
+   "tidsforbrug": "4 timer i spike 4, derefter opslagsvaerk",
+   "hvad_springes_over": "Alt om SQL Server-installation, high availability, Always On og backup-strategi. Han er ikke DBA og bliver det ikke."
+  },
+  {
+   "titel": "Kendra Little: 'Why read committed is the default isolation level, and what to do next'",
+   "type": "kursus/video",
+   "prioritet": "stoette",
+   "hvorfor": "Kort, praecis behandling af praecis det emne hvor de fleste .NET-udviklere har en forkert mental model. Supplerer Hermitage: Hermitage viser HVAD der sker, denne forklarer hvorfor defaults er som de er og hvad man realistisk goer ved det.",
+   "url": "https://kendralittle.com/course/read-committed-is-bonkers/",
+   "verificeret": true,
+   "tidsforbrug": "1-2 timer, i spike 6",
+   "hvad_springes_over": "Ikke noget - det er kort."
+  },
+  {
+   "titel": "Aspire 13.x (tidligere .NET Aspire)",
+   "type": "vaerktoej",
+   "prioritet": "stoette",
+   "hvorfor": "Verificeret: Aspire 13 droppede '.NET' fra navnet og blev en multi-sprogs applikationsplatform; v13.5.3 pr. 25. aug 2026; Aspire paa Azure App Service er GA. Vaerdien for ham er IKKE at bygge distribuerede systemer - det er at faa lokal orkestrering plus OpenTelemetry-dashboard gratis, saa hans spike-maaleapparat kraever timer i stedet for dage. Brug det som stillads, ikke som emne.",
+   "url": "https://aspire.dev/whats-new/aspire-13/",
+   "verificeret": true,
+   "tidsforbrug": "4 timer opsaetning i spike 1",
+   "hvad_springes_over": "Hele deployment-historien til Kubernetes. Og lad vaere med at goere Aspire til et laeringsmaal i sig selv - det er et vaerktoej der er aendret meget de sidste to aar og vil aendre sig igen."
+  },
+  {
+   "titel": "dotnet/eShop (Microsofts reference-applikation)",
+   "type": "referencekode",
+   "prioritet": "stoette / laesestof",
+   "hvorfor": "Bemaerk: eShopOnContainers er ARKIVERET siden nov 2023; den aktive er dotnet/eShop. Vaerdien er ikke at kopiere den - det er som laeseoevelse: anvend hans kodebase-laesemetode paa den, producer et dataflow-diagram og en liste over beslutninger han er uenig i. En reference-app er et godt sted at oeve kritisk laesning, fordi indsatsen er nul.",
+   "url": "https://github.com/dotnet/eShop",
+   "verificeret": true,
+   "tidsforbrug": "6 timer som laeseoevelse, maaned 3",
+   "hvad_springes_over": "Enhver ide om at bruge den som template. Reference-apps er pædagogiske artefakter, ikke arkitekturanbefalinger, og de er systematisk over-arkitekterede i forhold til hvad de fleste firmaer har brug for."
+  },
+  {
+   "titel": "OpenTelemetry semantic conventions (HTTP, database, messaging)",
+   "type": "dokumentation",
+   "prioritet": "stoette",
+   "hvorfor": "At bruge standardnavne (http.request.method, db.system, server.address) i stedet for hjemmestrikkede er forskellen paa telemetri der virker i ethvert backend og telemetri der kun virker i hans eget dashboard. Bemaerk: HTTP-konventionerne har status 'Mixed' - ikke alt er stabilt endnu, og der findes en OTEL_SEMCONV_STABILITY_OPT_IN-mekanisme til overgange. Det er igen den slags praecision der laeser som arkitekt.",
+   "url": "https://opentelemetry.io/docs/specs/semconv/http/",
+   "verificeret": true,
+   "tidsforbrug": "2 timer, i spike 1",
+   "hvad_springes_over": "Hele collector-konfigurationsuniverset og alt om at koere sin egen observability-stack. Send til Azure Monitor / Application Insights og videre."
+  },
+  {
+   "titel": "Clean Code + Clean Architecture (Robert C. Martin)",
+   "type": "bog",
+   "prioritet": "spring over",
+   "hvorfor": "Aktivt fravalgt. Clean Code's dogmer om mikroskopiske funktioner producerer kodebaser der er svaerere at laese, ikke lettere - og .NET-oekosystemets kopi af Clean Architecture er blevet en boilerplate-industri: seks projekter og et interface per klasse for et system med een deployment-enhed. Selv de kilder der forsvarer moenstret medgiver over-engineering-risikoen. Han skal kunne genkende og NAVNGIVE moenstret paa 20 minutter fra en blogpost, saa han kan argumentere imod det. Han skal ikke laese boegerne.",
+   "url": "",
+   "verificeret": false,
+   "tidsforbrug": "0 timer. 20 minutter paa en blogpost om lagdeling er nok.",
+   "hvad_springes_over": "Begge boeger. Sparet tid: ca. 20 timer, som gaar til spike 6."
+  },
+  {
+   "titel": "Domain-Driven Design (Eric Evans, 'den blaa bog')",
+   "type": "bog",
+   "prioritet": "spring over",
+   "hvorfor": "500+ sider fra 2003 skrevet til et andet oekosystem. Ideerne der stadig betyder noget - bounded contexts, ubiquitous language, context mapping - kan han faa fra Khononov paa en broekdel af tiden. Den blaa bogs status i branchen er hovedsageligt social.",
+   "url": "",
+   "verificeret": false,
+   "tidsforbrug": "0 timer. Sparet: 30+ timer.",
+   "hvad_springes_over": "Hele bogen."
+  },
+  {
+   "titel": "C# in Depth, 4. udgave (Jon Skeet, 2019)",
+   "type": "bog",
+   "prioritet": "spring over",
+   "hvorfor": "Fremragende bog, men den stopper ved C# 7-8. Vi er paa C# 14 (extension members, field-keyword, og alt derimellem). Sproget har aendret sig mere siden 2019 end i de ti aar foer. Brug den officielle 'What's new in C#'-dokumentation plus Toubs perf-poster i stedet - de er gratis og aktuelle.",
+   "url": "",
+   "verificeret": false,
+   "tidsforbrug": "0 timer. Sparet: 25 timer.",
+   "hvad_springes_over": "Hele bogen. Erstat med docs + sharplab."
+  },
+  {
+   "titel": "Building Microservices, 2. udgave (Sam Newman)",
+   "type": "bog",
+   "prioritet": "spring over (indtil maaned 10, sandsynligvis for altid)",
+   "hvorfor": "Han kommer ikke til at bygge microservices, og LeanLinking har med stor sandsynlighed ikke brug for flere. Bogen er god, men laest nu vil den faa ham til at FORESLAA microservices - hvilket er den hurtigste maade en junior mister troovaerdighed i et designmoede. Modulaer monolit-kapitlet i Fundamentals 2e daekker hvad han faktisk har brug for.",
+   "url": "",
+   "verificeret": false,
+   "tidsforbrug": "0 timer i maaned 1-9. Sparet: 20 timer.",
+   "hvad_springes_over": "Hele bogen. Genoverveje kun hvis en konkret jobannonce han soeger paa kraever det."
+  },
+  {
+   "titel": "Enhver 'System Design Interview'-bog (Xu, Alex m.fl.)",
+   "type": "bog",
+   "prioritet": "spring over",
+   "hvorfor": "Forkert spil. De boeger er artefakter fra amerikanske FAANG-interviewprocesser. Et dansk SaaS-firmas solution architect-interview er 'fortael om en beslutning du traf, hvad den kostede, og hvad du ville goere anderledes'. Den samtale kan man ikke crame til - man kan kun have artefakterne. Boegerne producerer flydende snak uden daekning, hvilket er praecis det signal der diskvalificerer ham.",
+   "url": "",
+   "verificeret": false,
+   "tidsforbrug": "0 timer. Sparet: 15-20 timer.",
+   "hvad_springes_over": "Hele genren."
+  },
+  {
+   "titel": "Database Internals (Alex Petrov)",
+   "type": "bog",
+   "prioritet": "spring over / senere hvis lyst",
+   "hvorfor": "God bog, men DDIA's Storage and Retrieval-kapitel daekker 80 procent af det han faktisk faar brug for som solution architect. Petrov gaar dybere end hans rolle kraever. Ren fornoejelse, ikke prioritet. Hvis han absolut vil: kun Del I om storage engines.",
+   "url": "",
+   "verificeret": false,
+   "tidsforbrug": "0 timer i 12-maanedersplanen.",
+   "hvad_springes_over": "Hele Del II om distribuerede systemer - der er DDIA bedre og mere anvendelig."
+  },
+  {
+   "titel": "Understanding Distributed Systems (Roberto Vitillo)",
+   "type": "bog",
+   "prioritet": "spring over",
+   "hvorfor": "Redundant med DDIA 2e. To boeger om samme emne i en 12-maanedersplan er en luksus han ikke har raad til. Vaelg DDIA - den er bedre skrevet og har lige faaet en opdatering.",
+   "url": "",
+   "verificeret": false,
+   "tidsforbrug": "0 timer. Sparet: 15 timer.",
+   "hvad_springes_over": "Hele bogen."
+  },
+  {
+   "titel": "CodeCrafters ('Build your own Redis/Git/SQLite')",
+   "type": "kursusplatform",
+   "prioritet": "spring over",
+   "hvorfor": "Fagligt gedigent og genuint laererigt - men det er den forkerte dybde for hans maal. At bygge en Redis-klon laerer ham systemprogrammering, ikke solution architecture. Hans budget er 10-15 timer om ugen i 12 maaneder, og hver time brugt her er en time ikke brugt paa isolationsniveauer eller multi-tenancy. Gem det til efter han har titlen.",
+   "url": "https://codecrafters.io/pricing",
+   "verificeret": true,
+   "tidsforbrug": "0 timer i denne plan.",
+   "hvad_springes_over": "Hele platformen indtil maaned 13+."
+  },
+  {
+   "titel": "Kubernetes-dybde (CKA, operators, service mesh)",
+   "type": "emneomraade",
+   "prioritet": "spring over",
+   "hvorfor": "LeanLinking koerer efter al sandsynlighed paa Azure App Service eller Container Apps. Kubernetes-dybde er et helt spor i sig selv og betaler sig kun hvis han faktisk moeder det. Regel: laer kun Kubernetes hvis det staar i jobannoncerne for de stillinger han rent faktisk soeger paa i maaned 8-10 - og saa laerer han praecis nok til at kunne tale om det aerligt.",
+   "url": "",
+   "verificeret": false,
+   "tidsforbrug": "0 timer indtil beslutningspunktet i maaned 8.",
+   "hvad_springes_over": "Hele omraadet indtil der findes evidens for at han faar brug for det."
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "Spike 1: Maaleapparatet (og drift-kandidaten)",
+   "problem": "Byg den mindst mulige ASP.NET Core-service paa .NET 10: eet endpoint, een SQL-forespoergsel mod SQL Server i en Testcontainer. Instrumenter den fuldstaendigt: OpenTelemetry traces plus metrics plus struktureret log med semantic conventions, dotnet-counters live, en load-generator (k6 eller bombardier), og et separat BenchmarkDotNet-projekt. KRAV: producer en baseline for p50/p95/p99 og allokeringer per request som du kan reproducere to gange inden for 5 procents afvigelse. BEGRAENSNING: absolut ingen feature-udvikling. Ingen UI. Ingen CRUD. Endpointet maa gerne vaere trivielt - maaleapparatet er produktet. Hvis du bruger over 30 minutter paa forretningslogik, er du paa afveje.",
+   "artefakter": "ADR-001 'Saadan maaler vi' (valg af vaerktoejskaede, hvad hvert vaerktoej svarer paa, hvad det IKKE svarer paa). Et arkitekturdiagram over telemetri-flowet. En baselinetabel med to koersler og afvigelsen mellem dem. Praediktionsloggens foerste post. Et kort retrospektiv paa hvad der overraskede - typisk: hvor svaert reproducerbarhed faktisk er.",
+   "kompetence": "Maaling, profilering og observability-instrumentering",
+   "fremgangsmaade": "Brug Aspire 13.x som lokalt stillads for at faa OTel-dashboard og orkestrering gratis. Skriv baseline-tallet NED foer foerste koersel som en praediktion. Naar de to koersler afviger mere end 5 procent - og det goer de foerste gang - er fejlfindingen paa MAALINGEN selve laeringen. Denne spike forfremmes senere til drift-sporet; byg den derfor med den antagelse at den skal leve i 12 maaneder.",
+   "svaerhed": "Teknisk let. Reproducerbarhedskravet er det haarde og hele pointen.",
+   "tid": "2 uger, ca. 20-24 timer"
+  },
+  {
+   "titel": "Spike 2: Async-faelderne som diagnostisk katalog",
+   "problem": "Byg med vilje seks async-fejlmoenstre i en kopi af S1-servicen og maal hver enkelt: (1) sync-over-async med .Result, (2) async void i en event handler, (3) manglende CancellationToken gennem hele stakken, (4) unawaited Task der sluger en exception, (5) blokerende kald inde i en BackgroundService, (6) ThreadPool starvation under et burst. KRAV: for hver fejl skal du producere den OBSERVERBARE SIGNATUR - hvilken counter bevaeger sig, hvordan ser tracen ud, hvad staar der i et dump - ikke bare 'det er daarligt'. BEGRAENSNING: du skal skrive din praediktion af signaturen ned FOER du maaler. Der er ingen point i at genkende noget bagefter.",
+   "artefakter": "En diagnostisk playbook: tabel med symptom -> counter/signal -> underliggende aarsag -> fix. ADR-002 med de kodebaseregler der forhindrer hver fejl (og hvordan man haandhaever dem med analyzers). Screenshot af hver fejlsignatur. Praediktionslog med seks poster og deres trefsikkerhed. Retrospektiv paa hvilke to du gættede forkert - og der VIL vaere to.",
+   "kompetence": "Async/await og concurrency reelt forstaaet",
+   "fremgangsmaade": "Laes Clearys ConfigureAwait-post i .NET 8 foerst. Brug sharplab.io til at se den genererede state machine - tegn den i haanden foerst. Denne playbook er ogsaa direkte anvendelig paa jobbet: naeste gang en LeanLinking-service opfoerer sig maerkeligt under last, har han et opslagsvaerk ingen andre har.",
+   "svaerhed": "Middel. At faa ThreadPool starvation til at ske deterministisk kraever taalmodighed.",
+   "tid": "1 uge, ca. 12 timer"
+  },
+  {
+   "titel": "Spike 3: Allokering, GC og hvad der faktisk virkede",
+   "problem": "Tag S1-endpointet, koer det haardt, og reducer allokeringer per request med 50 procent. KRAV: lav mindst fem separate optimeringer og bevis for hver enkelt om den faktisk virkede - kvantificer Gen0/Gen1/Gen2-collections, pausetider og allokerede bytes per operation. Mindst to af dine fem aendringer vil ikke goere nogen maalbar forskel, og retrospektivet skal navngive dem eksplicit. BEGRAENSNING: maal ogsaa med DATAS slaaet fra og forklar forskellen - DATAS er default i .NET 10 og aendrer heap-adfaerden fundamentalt i forhold til alt aeldre .NET-perfmateriale paa nettet.",
+   "artefakter": "Foer/efter-tabel per optimering med allokeringstal og GC-taellere. ADR-003 'Hvornaar optimerer vi allokeringer, og hvornaar goer vi ikke' - med eksplicitte kriterier en reviewer kan anvende uden dig. GC-grafer med og uden DATAS. Retrospektiv der navngiver de aendringer der viste sig at vaere overtro.",
+   "kompetence": "Allokering og GC-forstaaelse",
+   "fremgangsmaade": "BenchmarkDotNet med MemoryDiagnoser til mikroniveauet, dotnet-counters og dotnet-gcdump til systemniveauet. Brug sharplab til at se hvad compileren faktisk gjorde ved dine Span-aendringer. Kokosas bog som opslagsvaerk til GC-kapitlerne, ikke som gennemlaesning. Det VIGTIGSTE afsnit i retroen er listen over ineffektive optimeringer - den er hvad der adskiller maaling fra ritual.",
+   "svaerhed": "Middel til svaer. Isolering af hvilken aendring der gjorde forskellen er den svaere del.",
+   "tid": "2 uger, ca. 22 timer"
+  },
+  {
+   "titel": "Spike 4: SQL uden ORM - praediker planen foer du koerer den",
+   "problem": "Seed en SQL Server (Testcontainers) med et realistisk LeanLinking-agtigt skema: 2 mio. dokumenter, 5.000 leverandoerer, 50 tenants, certifikater med udloebsdatoer, audit-log - og SKAEV fordeling, hvor een tenant har 40 procent af dataen. Skriv otte forespoergsler i haanden: filtreret paging, top-N-per-gruppe (nyeste certifikat per leverandoer), eksistenscheck, aggregat over datointerval, tekstsoegning, join over fire tabeller, en rapportforespoergsel og en der roerer den skaeve tenant. KRAV: for hver forespoergsel, praediker execution plan, logical reads og varighed FOER du koerer. Tilfoej derefter indekser og maal igen. BEGRAENSNING: absolut ingen EF Core i denne spike. Kun ADO.NET eller Dapper.",
+   "artefakter": "Praediktion-versus-faktisk-tabel for alle otte forespoergsler foer og efter indeksering (DET er dybdetesten - selve artefaktet). ADR-004 om indeksstrategi, inklusive de indekser du fravalgte og hvorfor. Plan-screenshots. Output fra sp_BlitzIndex mod dit eget skema med din kommentar til kritikken. Retrospektiv paa hvor din mentale model var forkert.",
+   "kompetence": "SQL og query-planer",
+   "fremgangsmaade": "Laes 'Use The Index, Luke' sideloebende, ikke foerst - laes kapitlet der matcher forespoergslen du er ved at skrive. Den skaeve tenant er ikke pynt: det er der parameter sniffing og statistik-skaevhed bliver virkelige, og det er praecis LeanLinkings virkelighed. Denne spike leverer mere arkitekttroovaerdighed per time end nogen anden i serien.",
+   "svaerhed": "Middel. At laese planer er en faerdighed der foerst klikker efter ca. tyve planer.",
+   "tid": "2 uger, ca. 24 timer"
+  },
+  {
+   "titel": "Spike 5: EF Core-afsloeringen",
+   "problem": "Genimplementer praecis de samme otte forespoergsler fra spike 4 i EF Core 10, og diff den genererede SQL mod den du skrev i haanden. KRAV: find mindst to tilfaelde hvor EF genererer noget maerkbart daarligere, og mindst eet hvor EF er fint og din haandskrevne var daarligere - hvis du ikke finder det sidste, leder du efter bekraeftelse i stedet for sandhed. Undersoeg ExecuteUpdateAsync/ExecuteDeleteAsync, split queries, AsNoTracking, compiled queries og den nye foerste-klasses LeftJoin-operator. BEGRAENSNING: ADR'en skal angive de PRAECISE kriterier for hvornaar denne kodebase skal droppe til Dapper eller raa SQL - kriterier en reviewer kan anvende uden dig i rummet.",
+   "artefakter": "SQL-diff-tabel: haandskrevet versus EF-genereret, med logical reads for begge. ADR-005 'EF Core-graenser' med falsificerbare kriterier for hvornaar man forlader ORM'en. En liste over EF-adfaerd der overraskede dig. Retrospektiv.",
+   "kompetence": "SQL og query-planer + komposition",
+   "fremgangsmaade": "Slaa query-logging til fra foerste minut. Denne spike kommer bevidst EFTER spike 4 - den omvendte raekkefoelge er den mest udbredte dybdefejl i .NET og producerer udviklere der ikke kan fejlfinde deres eget vaerktoej. Bemaerk EF Core 10-breaking change: hvis der bruges UseAzureSql, migreres eksisterende nvarchar(max) JSON-kolonner til den native json-type - den detalje er direkte relevant for LeanLinkings opgradering.",
+   "svaerhed": "Middel. Let hvis spike 4 sad ordentligt; umulig hvis den ikke gjorde.",
+   "tid": "1 uge, ca. 12 timer"
+  },
+  {
+   "titel": "Spike 6: Isolationsniveauer og race conditions du fremkalder med vilje",
+   "problem": "To dele. FOERST: koer Hermitage-testsuiten mod SQL Server i en Testcontainer og praediker hvert enkelt resultat foer koersel - hvilket isolationsniveau forhindrer G0, G1a, G1b, G1c, OTV, PMP, P4, G-single, G2-item, G2. DEREFTER: byg anomalien i noget der ligner virkeligheden - et dokumentgodkendelsesflow hvor to samtidige godkendelser begge passerer en check-then-act-validering, saa et krav om dobbelt godkendelse omgaas. KRAV: reproducer anomalien deterministisk, fix den derefter paa tre maader (unique constraint, optimistic concurrency token via rowversion, eksplicit laasning eller serializable) og maal throughput-omkostningen ved hver. BEGRAENSNING: koer HELE oevelsen baade under Azure SQL Databases default (RCSI slaaet TIL) og under on-prem SQL Servers default (RCSI slaaet FRA) og forklar forskellen. Det er den faelde flest .NET-udviklere aldrig laerer, og den forklarer hvorfor 'det virker lokalt' er en loegn.",
+   "artefakter": "Hermitage-resultater med praediktioner ved siden af. Et repo der reproducerer dobbelt-godkendelses-anomalien deterministisk. Sammenligningstabel over de tre fixes med throughput-tal. ADR-006 om kodebasens default-strategi for samtidighedskontrol. Sekvensdiagram over racen. Retrospektiv.",
+   "kompetence": "Transaktioner, isolationsniveauer og samtidighedskontrol",
+   "fremgangsmaade": "Laes DDIA's Transactions-kapitel i samme uge. Suppler med Kendra Littles gennemgang af read committed. Denne spike er sandsynligvis den hoejest rangerende i hele serien for hans domaene: en bruger-godkendelses-race i et compliance-system er ikke en teoretisk fejl, det er et revisionsfund. Kan han demonstrere den paa 30 minutter og forklare de tre fixes' omkostninger, er han foran de fleste seniorer han moeder.",
+   "svaerhed": "Svaer. Deterministisk reproduktion af races kraever taalmodighed og en barriere/semafor-teknik.",
+   "tid": "2 uger, ca. 24 timer"
+  },
+  {
+   "titel": "Spike 7: API-kontrakt, versionering og hvad der egentlig braekker en consumer",
+   "problem": "Tag S1-servicen. Ship v1 med en rigtig consumer (et scheduled job du selv skriver, som du derefter ikke maa braekke). Lav derefter fem aendringer og afgoer for hver, med bevis, om den braekker consumeren: (a) tilfoej et valgfrit felt, (b) omdoeb et felt, (c) fjern en enum-vaerdi, (d) aendre fejlkontraktens form, (e) stram en valideringsregel. KRAV: implementer RFC 9457 Problem Details ordentligt med et STABILT type-URI-register - en consumer skal kunne programmere mod fejltyper uden at parse tekst. Implementer versionering med Asp.Versioning 10.0 plus Microsoft.AspNetCore.OpenApi (WithDocumentPerVersion). Byg mindst een PactNet consumer contract test der faktisk fanger et af de fem brud. BEGRAENSNING: OpenAPI 3.1-dokumentet skal diffes i CI, og pipelinen skal FEJLE paa en breaking change. Manuel disciplin taeller ikke.",
+   "artefakter": "ADR-007 'Versionerings- og deprecation-politik' som andre kan foelge uden dig. Braekker/braekker-ikke-tabel for de fem aendringer med bevis. Fejltype-registret. En CI-pipeline der beviseligt fejler paa et brud. Contract test der fanger et brud. Retrospektiv paa hvilke af de fem du vurderede forkert.",
+   "kompetence": "API-design: modenhed, versionering, fejlkontrakter",
+   "fremgangsmaade": "Laes DDIA's 'Encoding and Evolution'-kapitel i samme uge - det er det mest undervurderede kapitel i bogen og handler praecis om dette. Bemaerk at Swashbuckle er ude af templates siden .NET 9 og at Asp.Versioning 10.0 er foerste udgave der spiller sammen med den nye OpenAPI-pipeline. Denne spike er direkte anvendelig paa LeanLinking, hvor storkunde-integrationer betyder at kontraktbrud har juridiske konsekvenser.",
+   "svaerhed": "Middel. CI-diff-delen er det der kraever mest fikleri.",
+   "tid": "2 uger, ca. 22 timer"
+  },
+  {
+   "titel": "Spike 8: Idempotens, outbox og at overleve at blive draebt midt i en transaktion",
+   "problem": "Byg et endpoint der SKAL vaere sikkert at gentage: upload af et leverandoercertifikat der udloeser tre sideeffekter - en blob-write, en DB-raekke og en message publish. KRAV: implementer Idempotency-Key i henhold til IETF-draftet med et idempotency-store, og BEVIS korrektheden under tre scenarier: (1) to identiske requests der rammer samtidig, (2) retry efter delvis fejl, (3) proceskrasch mellem DB-commit og message publish. BEGRAENSNING: brug fejlinjektion til at draebe processen paa praecis det tidspunkt, og vis at ingen sideeffekt sker to gange. Maal overhead'en ved idempotenslaget i millisekunder og i ekstra database-writes - hvis du ikke kan sige prisen, har du ikke designet den, du har tilfoejet den.",
+   "artefakter": "ADR-008 om idempotens og transactional outbox, med eksplicit behandling af at Idempotency-Key er et draft og ikke en standard. Testsuite med fejlinjektion. Sekvensdiagram over den vej der giver exactly-once-EFFEKT (ikke exactly-once-delivery - den skelnen skal staa i ADR'en). Maalt overhead. Retrospektiv.",
+   "kompetence": "API-design + drift + samtidighedskontrol",
+   "fremgangsmaade": "Brug Azure Service Bus eller RabbitMQ i en Testcontainer. VIGTIG BESLUTNING at dokumentere: MassTransit v9 gik kommercielt (shipped jan 2026, runtime license key; v8 naar end-of-life ved udgangen af 2026). Alternativer: Wolverine (MIT), Rebus (MIT), NServiceBus (kommerciel med gratis community-tier), eller OpenTransit-forken af v8. Det er en RIGTIG arkitekturbeslutning med licens-, drifts- og exit-omkostninger - skriv en ADR om valget selv om det er dit eget lille projekt. Det er praecis den slags beslutning en solution architect skal kunne fremlaegge, og den er direkte relevant hvis LeanLinking bruger MassTransit.",
+   "svaerhed": "Svaer. Deterministisk krasch paa det rigtige tidspunkt er det tekniske hoejdepunkt i serien.",
+   "tid": "2 uger, ca. 24 timer"
+  },
+  {
+   "titel": "Spike 9: Multi-tenancy - tre modeller, samme feature, malede omkostninger",
+   "problem": "Implementer den samme feature (leverandoerdokument-listning med certifikatudloebsfilter) tre gange: (a) shared schema med tenant-diskriminator plus EF global query filters, med og uden row-level security, (b) schema-per-tenant, (c) database-per-tenant. KRAV: maal for hver model: forespoergselsperformance med den skaeve tenant fra spike 4, omkostningsmodel ved 50 / 500 / 5.000 tenants paa Azure SQL (inkl. elastic pools), blast radius ved en fejlbehaeftet migration, og den faktiske indsats for at gendanne EEN tenants data uden at roere de andre. BEGRAENSNING: leverancen er en skriftlig anbefaling der angiver det PRAECISE tenant-antal og det PRAECISE compliance-krav hvor anbefalingen vender. En anbefaling uden et vendepunkt er en holdning.",
+   "artefakter": "ADR-009 med beslutningstabel og eksplicitte vendepunkter. Omkostningsmodel i et regneark med kilder. Tre fungerende branches. En 'gendan een tenant'-runbook som du FAKTISK har koert igennem, med tidsforbrug. Diagram over de tre isolationsmodeller. Retrospektiv paa hvad du troede foer du maalte.",
+   "kompetence": "Datamodellering og multi-tenancy",
+   "fremgangsmaade": "Azure Architecture Centers tenancy models-guide og Azure SQL SaaS-moenstre som grundlag. Denne spike er den mest direkte LeanLinking-relevante af alle - den producerer et dokument han kan fremlaegge internt uden at have spurgt om lov, fordi det er hans eget sideprojekt. Og hvis LeanLinking staar over for et tenancy-spoergsmaal, er han pludselig den eneste i rummet der har maalt det.",
+   "svaerhed": "Svaer, primaert paa grund af omfanget. Hold featuren minimal - tre gange en simpel liste, ikke tre gange en applikation.",
+   "tid": "2 uger, ca. 26 timer"
+  },
+  {
+   "titel": "Spike 10: Teststrategi som arkitekturbeslutning",
+   "problem": "Ingen ny kode. Restrukturer testsuiterne fra spike 1-9. KRAV: klassificer hver eneste test som unit, integration eller contract og begrund klassifikationen. Maal suitens totale koeretid foer og efter. Faa Testcontainers-baserede integrationstests under tre minutter gennem container-genbrug og parallelisering. Find og SLET de tests der aldrig har fejlet og aldrig kan fejle. BEGRAENSNING: leverancen er en skriftlig politik for hvad der faar en unit test versus en integration test, med en begrundelse en reviewer kan anvende uden dig. 'Det kommer an paa' er ikke en politik.",
+   "artefakter": "ADR-010 'Teststrategi' med falsificerbare kriterier. Suite-koeretid foer/efter. Antal slettede tests og begrundelsen for hver kategori. En liste over de fejl dine tests IKKE ville have fanget - det afsnit er det mest vaerdifulde.",
+   "kompetence": "Teststrategi som arkitekturbeslutning",
+   "fremgangsmaade": "Dette er ikke en 'ryd op'-uge, det er en arkitekturbeslutning: testsuitens koeretid ER systemets modificerbarhed, som er den arkitekturkarakteristik alle paastaar de optimerer for. At kunne argumentere for at SLETTE tests med et tal bag er et staerkt seniorsignal og et af de faa steder hvor en junior kan sige noget kontraintuitivt og have ret. Paa jobbet: den flaky test ingen vil roere er en gratis adgangsbillet til hele kodebasen.",
+   "svaerhed": "Middel. Det svaere er at have modet til at slette noget.",
+   "tid": "1 uge, ca. 12 timer"
+  },
+  {
+   "titel": "Spike 11: Caching, invalidering og staleness som en maalt stoerrelse",
+   "problem": "Tilfoej HybridCache til den laesetunge sti i drift-servicen. KRAV: maal hit rate, p99-forbedring og cache-stoerrelse. Byg derefter MED VILJE stale-read-scenariet og maal staleness-vinduet i sekunder - i et compliance-system hvor et certifikat kan udloebe, er staleness-vinduet en juridisk stoerrelse, ikke en teknisk. Implementer tag-baseret invalidering paa tenant-niveau. BEGRAENSNING: du skal producere mindst eet scenarie hvor caching goer tingene VAERRE - koldstart-stampede, eller en tenant hvis working set ikke passer i L1 og derfor bare betaler serialiseringsomkostningen. Hvis du ikke kan fremvise et tilfaelde hvor cachen skader, har du ikke forstaaet den.",
+   "artefakter": "ADR-011 'Caching-politik og invalideringsstrategi' med et eksplicit afsnit 'hvornaar vi IKKE cacher'. Maalt hit rate, p99 foer/efter og staleness-vindue i sekunder. Dokumentation af det scenarie hvor caching gjorde det vaerre. Retrospektiv.",
+   "kompetence": "Caching og invalidering",
+   "fremgangsmaade": "Microsoft.Extensions.Caching.Hybrid (verificeret v10.9.0) med Redis som L2 i en Testcontainer. Bemaerk at HybridCache loeser stampede-problemet - kun eet kald per noegle udfoerer factory-metoden - men INTET om invalideringskorrekthed. Den skelnen er hele ADR'en.",
+   "svaerhed": "Middel. At maale staleness-vinduet praecist kraever lidt opfindsomhed.",
+   "tid": "1 uge, ca. 12 timer"
+  },
+  {
+   "titel": "Spike 12: Kodebase-arkaeologi paa LeanLinkings rigtige repo",
+   "problem": "Den eneste spike der koeres paa arbejdsgiverens kode, og den kraever ingen tilladelse - han har allerede repo-adgang. Vaelg et LeanLinking-modul han aldrig har roert. KRAV: producer paa to uger, uopfordret: (1) en inventarliste over alle indgange - endpoints, BackgroundServices, timers, koe-abonnenter, webhooks; (2) alle udgange - DB-writes, udgaaende HTTP, message publishes, blob-writes, mails; (3) et dataflow-diagram over EEN request end-to-end, tegnet i haanden fra en debugger-session eller en trace; (4) et hotspot-kort fra git-historikken (churn gange stoerrelse gange antal forfattere); (5) en liste over ti spoergsmaal koden IKKE kan besvare; (6) tre retroaktive ADR'er over beslutninger der aabenlyst er truffet men aldrig skrevet ned. BEGRAENSNING: hver ADR skal verificeres med den person der traf beslutningen. Den samtale ER produktet - dokumentet er kun paaskuddet til at faa den.",
+   "artefakter": "Dokumentsaettet ovenfor plus en liste over hvem han talte med og hvad de rettede. De tre verificerede ADR'er lagt hvor teamet kan se dem. Git-hotspot-scriptet (en eftermiddags arbejde, ingen grund til at koebe CodeScene).",
+   "kompetence": "Systematisk laesning af en stor ukendt kodebase - plus den eneste politiske manoevre i hele serien",
+   "fremgangsmaade": "Metoden i fast raekkefoelge: indgange, udgange, databaseskema FOER kode (skemaet er den mest aerlige dokumentation i systemet - det kan ikke lyve om hvad systemet gemmer), een request i haanden, git-historik som kort, tests foer implementation (tests fortaeller hvad folk var bange for), og til sidst: braek noget med vilje lokalt, fordi kobling afsloeres af breakage og ikke af laesning. Teknikken til hotspot-kortet er Tornhills. Dette er hans staerkeste synlighedskort som ticket-taker: det koster andre tre minutters rettelse per ADR og giver ham ejerskab over kodebasens beslutningshistorik.",
+   "svaerhed": "Teknisk let. Socialt er det den svaereste spike i serien, og det er den vigtigste faerdighed den traener.",
+   "tid": "2 uger, ca. 20 timer - sideloebende med det almindelige ticket-arbejde"
+  },
+  {
+   "titel": "DRIFT-SPORET: Spike 1 forfremmet til noget der koerer i 6+ maaneder",
+   "problem": "Maaleservicen fra spike 1 deployes til Azure og DRIFTES resten af de 12 maaneder. KRAV over perioden: en defineret SLO med alarmering der faktisk fyrer; en deploymentpipeline med fungerende rollback som du har brugt mindst een gang i vrede; mindst to databaseskemaaendringer koert som expand-migrate-contract mod levende data; mindst to API-aendringer uden at braekke den consumer du selv skrev; og mindst een RIGTIG hendelse med en skreven postmortem. BEGRAENSNING: den maa ikke vokse til et produkt. Ingen UI ud over et sundhedsendpoint. Hver gang du faar lyst til at tilfoeje en feature, tilfoejer du i stedet en maaling eller et fejlmoenster.",
+   "artefakter": "En koerende service med maanedlig oppetid og SLO-rapport. Deployment- og rollback-runbook. To migrationslogs med expand-migrate-contract-forloebet dokumenteret. Mindst een aegte postmortem paa dit eget system. En 'fejlmoenstre i dette system'-liste der vokser over tid. Det samlede saet er den enkelt-artefakt der baerer mest vaegt i en samtale om Solution Architect-titlen.",
+   "kompetence": "Drift, bagudkompatibilitet og fejlmoenstre - den kompetence der IKKE kan simuleres",
+   "fremgangsmaade": "Azure App Service eller Container Apps, ikke Kubernetes. Azure DevOps pipeline (hans arbejdsstack) eller GitHub Actions. Hold driftsomkostningen under ca. 2 timer om ugen - resten af budgettet gaar til spikes. Det er selve TIDEN der er ingrediensen her: en service der har koert i seks maaneder har haft certifikatfornyelser, dependency-opdateringer, en Azure-platformhaendelse og mindst een selvforskyldt fejl. Ingen af de erfaringer kan koebes hurtigere.",
+   "svaerhed": "Lav per uge, hoej kumuleret. Den svaere del er ikke at bygge den, men ikke at forlade den i maaned 4.",
+   "tid": "2 timer/uge fra maaned 2 og resten af aaret, ca. 90 timer i alt"
+  }
+ ],
+ "paa_jobbet": [
+  "Vedhaeft et tal til hver eneste performance-naer ticket. Foer/efter-maaling i PR-beskrivelsen: 'p95 gik fra 340ms til 95ms, logical reads fra 41.000 til 1.200'. Kraever ingen tilladelse fra nogen. Aendrer inden for en maaned hvordan folk laeser hans PR'er, og inden for tre maaneder hvem der bliver spurgt om ting.",
+  "Laes og log den genererede SQL for HVER EF Core-forespoergsel han roerer. Naar den er ikke-triviel, indsaet execution plan'en i PR'en. Ingen kommer til at stoppe ham, og det er den hurtigste vej til at finde N+1-problemer ingen har opdaget - fordi ingen andre kigger.",
+  "Tag ejerskab over .NET 8/9 end-of-life-uret. Begge udloeber 10. november 2026 - om to maaneder. Hvis LeanLinking koerer .NET 8, SKAL nogen haandtere det. Skriv uopfordret et to-siders assessment: hvilke projekter, hvilke NuGet-pakker der blokerer, hvilke EF Core 10 breaking changes der rammer (isaer nvarchar(max)-til-json-migrationen hvis de bruger UseAzureSql), estimeret indsats, risikoordnet raekkefoelge. Man beder ikke om lov til at skrive et dokument. Det er den mest tilgaengelige ejerloese arkitektopgave der findes lige nu.",
+  "Retroaktive ADR'er. Hver gang han spoerger en senior 'hvorfor er det bygget saadan?' og faar et svar, skriver han det som en een-sides ADR og sender den til personen med 'ret mig hvis jeg har misforstaaet noget'. Koster dem tre minutter. Efter ti af dem ejer han kodebasens beslutningshistorik, og det er en position ingen har givet ham men heller ingen kan tage.",
+  "Forvandl 'det er langsomt'-tickets til en diagnose foer en loesning. Brug den foerste time paa trace plus hypotese plus tal, saa fixet. Vedhaeft begge dele. Forskellen paa 'jeg fiksede det' og 'her er hvad der var galt, her er hvorfor, her er hvad jeg gjorde, her er beviset' er hele forskellen paa junior og arkitekt - og den koster en time.",
+  "Skriv et fejlmoenstre-afsnit i hver PR-beskrivelse: hvad braekker hvis det her bliver kaldt to gange, kaldt samtidig, faar en null tenant, timer ud halvvejs. Fem minutters arbejde. Laeses som seniorarbejde. Traener praecis den muskel spike 2, 6 og 8 bygger.",
+  "Bed om laeseadgang til alarm- og incidentkanaler, og skriv derefter den postmortem ingen andre vil skrive. Det er den hurtigste rute til operationel troovaerdighed, og den bliver naesten altid budt velkommen - fordi ingen kan lide at skrive postmortems. En junior der frivilligt dokumenterer en hendelse bliver husket.",
+  "Tag de kedelige tvaergaaende tickets alle undgaar: stoejende logging, den flaky test, langsom CI, dependency-opgradering, dead code. Det er arkitekturarbejde forkladt som pligtarbejde, og de giver ham legitim anledning til at roere HVERT modul i kodebasen. Ticket-takerens eneste vej til breddekendskab.",
+  "Foer et beslutningsdagbog over kodebasen. Hvert designspoergsmaal han ser afgjort i et moede: skriv hvad der blev besluttet, hvilke alternativer der var paa bordet, og hvad der ville goere beslutningen forkert. Efter seks maaneder er den dagbog en stor del af hans portefoelje - og den er skrevet i arbejdstiden uden at nogen har bedt om det.",
+  "Instrumenter een ting bedre end den var, i kode han alligevel roerer til en ticket. Eet OpenTelemetry-span, eller een metrik med rigtige semantic conventions. Brug den derefter naeste gang der er et problem. Peg saa paa den. Gentag. Det er saadan observability-mandat opstaar nedefra - ved at vaere den der havde tallet.",
+  "Stil eet spoergsmaal per PR-review han laver, af formen 'hvad sker der hvis X fejler her?'. Ikke et forslag - et spoergsmaal. Spoergsmaal koster ingen politisk kapital, kan ikke afvises, og traener praecis den fejlmoenster-muskel arkitektrollen kraever. Efter tredive af dem er det hans ry.",
+  "Vaer forberedt paa Azure DevOps-spoergsmaalet foer det bliver stillet. Microsoft annoncerede paa Build 2026 et strategisk skift mod GitHub for egne og kunders repositories - der er ingen annonceret end-of-life for Azure DevOps Services, og Boards og Pipelines fortsaetter som selvstaendige produkter. Men spoergsmaalet 'hvad goer vi?' lander paa nogens bord hos LeanLinking. Et kort notat om migrationsvaerktoejer (GitHub Actions Importer, GEI, ELM), hvad der ikke kan migreres automatisk, og hvad der taler for at BLIVE - det er arkitektarbejde han kan levere uden mandat.",
+  "Naar han moeder en concurrency-fejl i produktion - og det goer han - saa reproducer den i en test foer han fixer den. Det er den enkeltvane der klarest signalerer at han har forstaaet noget frem for at have gaettet. Og den producerer et artefakt: en test der beviser at fejlen ikke kommer igen."
+ ],
+ "faldgruber": [
+  "Den centrale faelde: at laese arkitekturboeger foer han kan bygge OG DRIFTE een service ordentligt. Symptomerne er praecise og synlige for alle andre end ham selv - ordforraadet vokser hurtigere end maalingerne, han foreslaar at splitte noget op foer han har profileret det, han bruger ord som 'eventual consistency' og 'bounded context' korrekt men kan ikke svare paa 'hvad er p99 i dag, og hvor ender den?'. Den person bliver afsloeret i loebet af eet sprint og faar ikke en anden chance i det rum. Seniorer genkender moenstret oejeblikkeligt fordi de alle har moedt ham foer.",
+  "At bygge et produkt i stedet for spikes. CRUD og UI aeder hele budgettet og laerer ham naesten ingenting om arkitektur. Hver time paa en React-formular er en time ikke brugt paa en query-plan. Regel: hvis en spike bruger mere end 10 procent af sin tid paa forretningslogik eller praesentation, er den designet forkert - skaer featuren ned, ikke maalingen.",
+  "At optimere uden at maale - og tvillingen: at maale EEN gang og kalde det et benchmark. Ikke-reproducerbare tal er vaerre end ingen tal, fordi de skaber falsk selvtillid som han derefter tager med ind i et designmoede. Derfor er 5-procents-reproducerbarhedskravet i spike 1 ikke pedanteri; det er hele grundlaget.",
+  "At laere EF Core foer SQL. Producerer udviklere der ikke kan diagnosticere deres eget ORM, og det er den mest udbredte dybdefejl i .NET-verdenen. Raekkefoelgen i denne plan - raa SQL i spike 4, EF Core i spike 5 - er bevidst og maa ikke byttes om af bekvemmelighed.",
+  "At samle certificeringer som erstatning for artefakter. En certificering beviser at han bestod en proeve. En ADR med en maaling beviser at han gjorde arbejdet. Certificeringerne har vaerdi som deadline-motor og som HR-filter, og ingen som helst vaerdi i selve samtalen om hvorvidt han kan baere titlen. Hvis han maerker sig selv laese eksamensmateriale i stedet for at koere en spike, er sporet forladt.",
+  "At jage .NET 11. Den lander november 2026 og er STS - to aars support. LeanLinking bliver paa .NET 10 LTS i aarevis. Timer brugt paa STS-features er timer stjaalet fra dybdesporet. Regel: byg paa LTS, og laes kun release notes for STS.",
+  "Clean Architecture-cargo cult. Seks projekter, et interface per klasse, en mapper mellem hvert lag - for et system med een deployment-enhed. Det ser ud som arkitektur for juniorer og som uerfarenhed for seniorer, og det er en usaedvanlig hurtig maade at diskvalificere sig selv paa i et designmoede. Han skal kunne genkende og navngive moenstret, ikke praktisere det. Den staerkeste ting en junior kan goere i et designmoede er at argumentere for den SIMPLERE loesning med et tal bag.",
+  "At forveksle 'jeg har brugt det' med 'jeg forstaar det'. De to tilstande foeles fuldstaendig ens indefra. Den eneste maade at skelne dem er praediktion: sig tallet foer du maaler. Uden praediktionsloggen vil han i maaned 9 ikke kunne skelne kompetence fra fortrolighed - og det er praecis der kompetenceporten skal traeffe en aerlig afgoerelse.",
+  "At behandle async/await som syntaks frem for en state machine plus en scheduler. Naesten alle .NET-produktionshaendelser i den kategori kommer fra det hul. Og det er usynligt i code review hvis man ikke ved hvad man leder efter - derfor er spike 2's diagnostiske playbook ikke valgfri.",
+  "At droppe retrospektivet paa spikes. Retroen er hvor laeringen komprimeres til noget der kan genkaldes. Uden den er en spike bare et weekendprojekt han glemmer inden for otte uger. Isaer afsnittet 'hvad var jeg sikker paa og tog fejl om' - det er det eneste afsnit der laeser som modenhed i en interviewsituation.",
+  "At bygge ti spikes og aldrig drifte noget. Saa har han laert design og nul drift. De dyreste arkitekturfejl er driftsfejl, og de kan kun laeres ved at have vaeret aarsag til dem i et system man selv ejer. Fristelsen til at forlade drift-servicen omkring maaned 4 - naar den er kedelig og ingenting sker - er den enkeltbeslutning der oftest saenker denne slags planer.",
+  "At laese DDIA fra ende til anden som foerste traek. Det er en referencebog paa 600 sider. Den korrekte brug er at laese det kapitel der matcher den spike han er ved at koere, i den uge han koerer den. Laest lineaert i maaned 1 producerer den udmattelse og et ordforraad han ikke kan daekke - altsaa praecis den faelde hele planen er bygget for at undgaa.",
+  "At tro dybde kan bevises i en samtale. Den kan kun bevises med artefakter og tal. Hvis en samtale om hans tekniske dybde forloeber uden at han har naevnt et konkret tal fra noget han selv har maalt, gik den samtale ikke godt - uanset hvordan den foeltes.",
+  "At antage lokal adfaerd er lig produktionsadfaerd. Det mest konkrete eksempel han vil moede: Azure SQL Database har RCSI slaaet TIL som default, on-prem SQL Server har det slaaet FRA. Samme kode, samme forespoergsel, forskellig samtidighedsadfaerd. Det er hele forklaringen bag et stort antal 'det virker paa min maskine'-fejl i .NET-shops, og de fleste seniorer kender den ikke.",
+  "At lade dybdesporet aede maaned 7-12. Dybdesporet foeles ALDRIG faerdigt - der er altid en spike mere, altid et kapitel mere. Positioneringen, portefoeljen og interviewtraeningen starter paa kalenderen i maaned 7, ikke naar dybden foeles tilstraekkelig. Hvis han venter paa foelelsen af at vaere klar, gaar der tre aar.",
+  "At undervurdere hvor meget af arkitektrollen der er skriftlig kommunikation. Hver spike producerer en ADR ikke fordi ADR'er er magiske, men fordi evnen til at skrive en beslutning ned saa en fremmed kan anvende den er selve jobbet. En teknisk staerk person der ikke kan skrive en beslutning ned, faar ikke titlen - og hvis han faar den, kan han ikke baere den."
+ ],
+ "maalepunkter": [
+  "Han kan praediktere p99 og allokeringer per request for et endpoint inden for en faktor 10 FOER han maaler, og praediktionsloggen viser at fejlmarginen er faldet maalbart over seks maaneder. Loggen er artefaktet - ikke hans fornemmelse af at vaere blevet bedre.",
+  "Han kan laese en SQL Server execution plan og udpege den dyreste operator uden at et vaerktoej fortaeller ham det, og kan forklare HVORFOR den er dyr i termer af logical reads og cardinality-estimat.",
+  "Givet en ukendt EF Core-forespoergsel i en PR kan han sige hvilken SQL den genererer foer den koeres, og rammer rigtigt oftere end forkert. Dokumenteret ved at han faktisk goer det i PR-reviews og bliver bekraeftet.",
+  "Han kan navngive hvilket isolationsniveau der forhindrer hvilken concurrency-anomali, og demonstrere mindst een af dem i en koerende test paa under 30 minutter uden noter. Hermitage-koerslen ligger i repoet med hans praediktioner ved siden af de faktiske resultater.",
+  "Han har en service han selv har deployet, som har koert i mindst tre maaneder, har haft mindst een rigtig hendelse, og han kan fremvise tracen, root cause og fixet. Ikke en demo - noget med oppetid.",
+  "Han har aendret den services API-kontrakt og databaseskema mindst to gange hver uden at braekke consumeren, og kan fremvise den automatiserede check der VILLE have fanget det hvis han havde taget fejl.",
+  "Hans PR-beskrivelser indeholder rutinemaessigt tal og fejlmoenstre - og andre ingenioerer hos LeanLinking er begyndt at citere dem eller efterligne formatet. Det sidste er det egentlige signal.",
+  "En senior har spurgt HAM om noget i kodebasen, og han svarede ud fra dokumentation han selv har produceret. Det er oejeblikket hvor den uformelle autoritet er opstaaet, og det kan dateres.",
+  "Han kan tage et ukendt modul og paa under 45 minutter levere: et dataflow-diagram, tre konkrete fejlmoenstre og een metrik der ville afsloere om modulet er sundt. Testbart naar som helst med en tilfaeldig del af LeanLinkings kodebase.",
+  "Der ligger mindst otte komplette spike-artefaktsaet (ADR plus diagram plus maaling plus retrospektiv) i et repo, og han kan gennemgaa et vilkaarligt af dem koldt uden forberedelse - inklusive hvad han ville goere anderledes.",
+  "Han har mindst een gang i et rigtigt designmoede argumenteret IMOD den mere sofistikerede loesning ved hjaelp af et tal han selv havde maalt. Det er det klareste enkeltsignal paa at dybden er blevet til doemmekraft.",
+  "Han har skrevet mindst fem ADR'er som andre mennesker har refereret til, rettet i, eller bygget videre paa. Andres engagement er maalepunktet, ikke antallet af dokumenter.",
+  "Han kan navngive tre ting han var sikker paa og tog fejl om, og praecist hvad maalingen viste. Kan han ikke det, har han enten ikke maalt nok eller ikke skrevet praediktionerne ned - og begge dele betyder at dybden er uverificeret.",
+  "Han kan forklare forskellen paa Azure SQL Databases og on-prem SQL Servers default-samtidighedsadfaerd og hvorfor det producerer 'det virker paa min maskine'-fejl - uden at slaa op. Lille test, men den skiller staerkt.",
+  "Hans .NET 8-EOL-assessment (eller det tilsvarende uopfordrede arkitekturnotat) er blevet laest af nogen med beslutningskompetence, og har foert til en konkret handling eller en konkret beslutning om ikke at handle. Effekt, ikke levering, er maalepunktet."
+ ],
+ "web_verifikation": "\"Alle versionsnumre, produktnavne, licensforhold og udgivelsesdatoer er verificeret via websoegning og -hentning 10. september 2026. Verificeret og BEKRAEFTET: (1) .NET 10 er LTS, udgivet 11. nov 2025, support til 14. nov 2028 - hentet direkte fra Microsofts supportpolitik-side. (2) KRITISK: .NET 8 (LTS) OG .NET 9 (STS) udloeber BEGGE 10. november 2026, altsaa om to maaneder; .NET 11 er STS og lander november 2026 (RC1 udkom 8. sep 2026). (3) C# 14 foelger .NET 10; headline-features er extension members og field-keyword. (4) EF Core 10 kraever .NET 10; LeftJoin/RightJoin som foerste-klasses operatorer; breaking change hvor UseAzureSql migrerer nvarchar(max) JSON-kolonner til native json-type. (5) Aspire har droppet '.NET' fra navnet; v13 udkom nov 2025, v13.5.3 pr. 25. aug 2026; Aspire paa Azure App Service er GA. (6) ASP.NET Core droppede Swashbuckle fra templates fra .NET 9; Microsoft.AspNetCore.OpenApi genererer OpenAPI 3.1 by default i .NET 10; Asp.Versioning 10.0 er foerste version der spiller sammen med den nye pipeline (WithDocumentPerVersion). (7) .NET 10 har indbygget minimal API-validering via Microsoft.Extensions.Validation med Roslyn source generator og [ValidatableType]. (8) HybridCache: Microsoft.Extensions.Caching.Hybrid v10.9.0, stampede-beskyttelse, L1/L2, tag-invalidering. (9) DATAS er default GC-adfaerd siden .NET 9 og dermed paa .NET 10. (10) Testcontainers for .NET aktivt vedligeholdt, v4.11.x pr. april 2026. (11) BenchmarkDotNet: v0.15.x stabil med .NET 10-support, v0.16.0 stadig i preview pr. aug 2026. (12) MassTransit v9 gik KOMMERCIELT - annonceret april 2025, shipped januar 2026, kraever runtime license key, 100 pct. rabat for organisationer under 1 mio. USD omsaetning; v8 naar end-of-life ved udgangen af 2026. Alternativer: Wolverine (MIT), Rebus (MIT), NServiceBus (kommerciel med gratis community-tier), OpenTransit (community-fork af v8). Dette er en aendring siden traeningsdata og har direkte konsekvenser for LeanLinking hvis de bruger MassTransit. (13) RFC 9457 har erstattet RFC 7807 som Problem Details-standarden. (14) Idempotency-Key er STADIG kun et IETF Internet-Draft (draft-ietf-httpapi-idempotency-key-header-07, okt 2025), IKKE en RFC. (15) DDIA 2. udgave er udkommet feb/marts 2026 af Kleppmann OG Chris Riccomini; kapitelnummereringen er aendret (Encoding and Evolution er nu kap. 5, var kap. 4), 'Partitioning' hedder nu 'Sharding', batch processing-kapitlet er omskrevet fordi MapReduce er forældet, og der er tilfoejet stof om data privacy og regulering. (16) Fundamentals of Software Architecture 2. udgave udkom 23. sep 2025 med fem nye kapitler inkl. kap. 11 om modulaer monolit samt nyt stof om cloud, data topologies, team topologies, governance og genAI. (17) Pro .NET Memory Management 2. udgave af Kokosa, Nasarre og Gosse, opdateret til .NET 8. (18) Use The Index, Luke aktivt vedligeholdt, testet mod SQL Server 2025 og PostgreSQL 17. (19) Your Code as a Crime Scene 2. udgave udkom marts 2024. (20) Hermitage findes paa github.com/ept/hermitage med SQL Server-tests. (21) Brent Ozar First Responder Kit opdateret juli 2026. (22) Azure SQL Database har RCSI slaaet TIL by default; on-prem SQL Server har det IKKE. (23) eShopOnContainers er arkiveret siden nov 2023; aktiv efterfoelger er github.com/dotnet/eShop. (24) Microsoft annoncerede paa Build 2026 et strategisk skift af egne og kunders repositories fra Azure DevOps til GitHub, MEN der er ingen annonceret end-of-life for Azure DevOps Services eller Pipelines, og roadmappen opdateres fortsat. (25) MADR 4.0.0 (udgivet 2024-09-17) er aktuel ADR-template. (26) OpenTelemetrys HTTP semantic conventions har fortsat status 'Mixed' - ikke alt er stabilt; OTEL_SEMCONV_STABILITY_OPT_IN findes til overgange. (27) Stephen Toubs 'Performance Improvements in .NET 10' udkom 10. sep 2025 paa .NET-bloggen. IKKE VERIFICERET og markeret som saadan i ressourcelisten: sharplab.io's URL (velkendt, men ikke hentet), 'Software Architecture: The Hard Parts' O'Reilly-URL (titlen verificeret via flere kilder, URL'en gaettet paa moenster - boer tjekkes), og DDIA 2e's praecise kapitelNUMRE (nummereringen er verificeret aendret, men den fulde liste kunne ikke hentes - O'Reilly, martin.kleppmann.com og flere andre domaener blokeres af egress-proxyen; derfor er alle kapitelanbefalinger angivet ved TITEL, ikke nummer). Ingen URL i denne rapport er opfundet.\""
+}

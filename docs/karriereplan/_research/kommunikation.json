@@ -1,0 +1,496 @@
+{
+ "kernepointer": [
+  "Skriftlighed er den eneste arkitektkompetence han kan traene UDEN tilladelse, uden budget og uden titel. I et 9-mandsfirma er distancen fra hans tastatur til stifterens skaerm nul: et godt dokument bliver laest samme dag. Det er ikke en metafor - det er den strukturelle fordel han har, og som en junior i en 500-mands virksomhed ikke har.",
+  "Arkitektur er ikke en teknisk disciplin med et kommunikationsvedhaeng. Beslutningen ER kommunikationen. En beslutning ingen forstod, ingen kan finde igen om 18 maaneder, og ingen kunne argumentere imod, er ikke arkitektur - det er en tilfaeldighed der overlevede. Hans maaleenhed skal derfor vaere artefakter, ikke timer.",
+  "Den vigtigste asymmetri i hans situation: LeanLinkings KUNDER er stoerre virksomheder med rigtige enterprise- og solution arkitekter. Han har ingen arkitekt paa kontoret, men han sidder 1-2 mails fra flere. Et kundevendt arkitekturdokument om multi-tenant isolation eller audit trail er samtidig (a) salgsmateriale, (b) hans oevebane, og (c) den eneste gratis kilde til kvalificeret modspil han har adgang til. Ingen anden strategi i planen giver tre udbytter paa samme timer.",
+  "C4 er det rigtige valg, men han skal bruge det halvt. Level 1 (System Context) og Level 2 (Container) baerer 90 % af vaerdien. Level 3 (Component) raadner hurtigst af alle diagrammer fordi koden aendrer sig under det. Level 4 (Code) skal han ALDRIG tegne i haanden - IDE'et og AI-vaerktoejer genererer det bedre og gratis. Folk der tegner alle fire niveauer for alt, bruger arkitektur som prokrastination.",
+  "VERIFICERET OG AENDRET SIDEN HANS TRAENINGSDATA: Structurizr cloud service lukker 30. september 2026 - om tre uger. Alle workspaces har vaeret read-only siden 1. juli 2026. Han skal IKKE oprette en cloud-konto. Han skal koere Structurizr Lite lokalt i Docker (gratis, open source) med workspace.dsl i samme git-repo som koden. Enhver guide der siger 'opret en konto paa structurizr.com' er nu forkert.",
+  "Simon Brown udgav 'The C4 Model: Visualizing Software Architecture' paa O'Reilly 21. juli 2026 (177 sider, Kindle 12. juni 2026). Det er nu den kanoniske reference og erstatter hans aeldre Leanpub-boeger som foerste kilde. 177 sider - det er en weekend, ikke et projekt.",
+  "Diagrammer der imponerer og diagrammer der forklarer er to forskellige haandvaerk med modsatrettede regler. Imponerende: mange kasser, gradienter, cloud-ikoner overalt, ingen tekst paa pile. Forklarende: faa kasser, hver kasse har teknologi i parentes, HVER pil har et verbum og en retning, der er en legend, og der er en titel med dato. Simon Browns egen review-checklist paa c4model.com/diagrams/checklist er den hurtigste kalibrering der findes - den tager 20 minutter at laese og aendrer permanent hvordan han tegner.",
+  "Den haardeste og mest brugbare test paa et diagram: giv det til en person der aldrig har set systemet, sig INTET, og bed dem forklare hvad de ser. Alt hvad de misforstaar er en fejl i diagrammet, ikke i dem. Denne test er gratis, tager fem minutter og kan koeres uendeligt mange gange. Han skal koere den mindst 20 gange paa 12 maaneder.",
+  "ADR'er er hans hoejeste return-on-effort-artefakt, men kun hvis han skriver dem FOER beslutningen traeffes. En ADR skrevet bagefter er en pressemeddelelse. En ADR skrevet foer er et invitations-til-modstand-dokument, og det er praecis dét han mangler naar ingen paa kontoret kan give modspil. Kriteriet paa maaned 9-10 skal derfor vaere: kan han pege paa en ADR hvor 'Decision'-sektionen blev AENDRET af feedback? Git-historikken kan ikke lyve om det.",
+  "ADR-taerskel: skriv kun ADR for beslutninger der er dyre at rulle tilbage. Datamodel for revisionsspor, tenant-isolationsstrategi, valg af message broker, retention/sletningsmodel - ja. Bibliotek til JSON-parsing, mappenavne, kodestil - nej. ADR-spam draeber praksissen paa tre maaneder, og det er den hyppigste maade folk fejler med ADR'er.",
+  "Amazon-formatet (6-pager, ingen bullets, laest hoejt i stilhed foerst i moedet) er ikke kult - det er en tvangsmekanisme der afsloerer om forfatteren faktisk kan taenke. Bullets skjuler manglende sammenhaeng; hele saetninger goer det ikke. Han skal skrive MINDST tre narrativer i proesa uden et eneste bullet i loebet af aaret. Det goer mere for hans taenkning end nogen bog.",
+  "Til stifteren i et firma paa ni: teknik oversaettes ikke til 'kvalitet' eller 'teknisk gaeld'. De ord har ingen plads i et runway-regneark. De fire enheder der virker er: (1) kroner per maaned, (2) timer per maaned brugt paa manuelt arbejde, (3) sandsynlighed for at tabe eller ikke vinde en konkret handel, (4) sandsynlighed for at fejle en kundes audit eller sikkerhedsgennemgang. Alt andet er stoej. 'Teknisk gaeld' skal altid oversaettes til én af de fire foer det siges hoejt.",
+  "Han skal ALDRIG praesentere én loesning for stifteren. Han skal praesentere to eller tre med pris, tid og risiko, og en klar anbefaling. Grunden er ikke hoeflighed: en stifter der ikke faar et valg, kan kun sige ja eller nej, og saa handler samtalen om tillid i stedet for om sagen. En stifter der faar tre muligheder, traeffer en beslutning - og saa er beslutningen hans, og gennemfoerelsen er sikret.",
+  "Uenighed med en mere erfaren udvikler vindes skriftligt og asynkront, ikke mundtligt. Mundtligt vinder den mest selvsikre og den med flest aars anciennitet. Skriftligt vinder det bedste argument oftere, fordi laeseren kan taenke uden at skulle svare. Hans standardtraek boer vaere: 'Jeg skriver en side med de to muligheder og hvad jeg tror vi risikerer ved hver - kan du rette hvor jeg tager fejl?' Det er ikke konfliktsky, det er taktisk.",
+  "Han skal aktivt oeve at TABE en faglig diskussion pænt og skriftligt. Det er en faerdighed, ikke en karakterbrist. Konkret: naar han tager fejl, skriver han selv opdateringen i dokumentet, med hvad der overbeviste ham. Efter tredje gang begynder folk at give ham aerlig feedback i stedet for hoeflig feedback, og dét er hele forskellen mellem at oeve sig rigtigt og forkert i 12 maaneder.",
+  "Facilitering er den enkeltfaerdighed der tydeligst adskiller en dygtig senior udvikler fra en arkitekt, og det er den han har svaerest ved at oeve alene. Maalet i et 3-5 mands udviklerteam er ikke store workshops - det er tre teknikker i miniature: risk storming (90 min), design review med skriftligt forarbejde (45 min), og blameless postmortem (60 min). Alle tre kan han foreslaa i morgen uden mandat.",
+  "Maaleenheden for facilitering er brutal og falsificerbar: taletid. Hvis han taler mere end 30 % af tiden i en session han faciliterer, faciliterede han ikke - han holdt foredrag. Lad en kollega taelle, eller optag og maal. Det er det eneste maalepunkt for facilitering man ikke kan snyde sig igennem.",
+  "Offentlig skrivning er IKKE personal branding, og han skal aktivt afvise den ramme. Formaalet er ét: at faa kvalificeret modspil fra fremmede, fordi ingen paa arbejdet kan give det. Det aendrer alt ved hvordan man skriver. Et indlaeg der er skrevet for at faa likes lukker af for kritik; et indlaeg der eksplicit siger 'her er hvad jeg er mest usikker paa, og her er hvad jeg tror er forkert ved min egen loesning' aabner for den.",
+  "Niche-argumentet er reelt og tidsbegraenset: 'arkitektur til compliance i leverandoerkaeder' er et emne hvor der findes maaske et tocifret antal mennesker i Danmark der kan skrive kvalificeret om det. NIS2 artikel 21 (leverandoerkaedesikkerhed) er LIVE i dansk ret siden 1. juli 2025 og tilsynet skalerer op i 2026 - det er det emne der har laesere lige nu. CSDDD er derimod udskudt: Omnibus I (Direktiv (EU) 2026/470, i kraft 18. marts 2026) indsnaevrede omfanget til virksomheder over 5.000 ansatte og 1,5 mia. EUR omsaetning og flyttede anvendelsen til 26. juli 2029. Hvis han skriver 'CSDDD kraever X fra 2027' er han forkert, og det er praecis den slags fejl der koster troværdighed i en niche.",
+  "Alt hvad der handler om enterprise-indflydelse - sponsorer, architecture review boards, stakeholder power/interest-matricer, RACI, Hohpes 'architect elevator' mellem maskinrum og direktionsgang - er stoej i hans situation og skal springes over. Elevatoren i LeanLinking har én etage. Han faar mandat ved at spoerge stifteren i koekkenet. Hver time brugt paa den litteratur er en time stjaalet fra noget der virker.",
+  "Hele planens stoerste risiko ligger i dette emne, ikke i teknikken: han kan blive rigtig god til at skrive dokumenter ingen kvalificeret har laest. Skriftlighed uden ekstern laeser er en ekkokammer-maskine. Derfor skal hvert eneste skriftligt artefakt i planen have en navngiven ekstern modtager fra dag ét - mentor, kunde-arkitekt, community, offentligheden - og ikke 'jeg lægger det i repoet'."
+ ],
+ "ressourcer": [
+  {
+   "titel": "The C4 Model: Visualizing Software Architecture (Simon Brown, O'Reilly)",
+   "type": "bog",
+   "prioritet": "P0 - foerst, uge 1-2",
+   "hvorfor": "Udgivet 21. juli 2026 (Kindle 12. juni 2026), 177 sider. Nu den kanoniske reference paa C4 og skrevet af manden der opfandt modellen. Kort nok til at laeses paa en weekend. Erstatter alle blogindlaeg og aeldre Leanpub-udgaver som foerste kilde - laes den foer han tegner noget som helst, ellers laerer han C4 fra andenhaandskilder der typisk overkomplicerer det.",
+   "url": "https://www.oreilly.com/library/view/the-c4-model/9798341660113/",
+   "verificeret": true,
+   "tidsforbrug": "5-6 timer i alt, fordelt over to weekender",
+   "hvad_springes_over": "Springer hans aeldre boeger over: 'Software Architecture for Developers Vol 1+2' (2016) og Leanpub-udgaven 'C4 model for visualising software architecture'. Overlappet er stort, den nye bog er destillatet. Spring ogsaa alle 'C4 tutorial'-videoer paa YouTube over."
+  },
+  {
+   "titel": "Software architecture diagram review checklist (c4model.com)",
+   "type": "checkliste / web",
+   "prioritet": "P0 - uge 1, 20 minutter",
+   "hvorfor": "Simon Browns egen checkliste til at reviewe et diagram: forstaar laeseren elementtypen, betydningen af hver farve, hver pilehoved-stil, hver linjestil, hver forkortelse? Er notationen selvforklarende, og er der alligevel en legend? Det er den hurtigste enkeltkalibrering der findes af forskellen paa 'diagram der imponerer' og 'diagram der forklarer'. Print den og haeng den ved skrivebordet - den skal bruges paa HVERT diagram i 12 maaneder, ikke laeses én gang.",
+   "url": "https://c4model.com/diagrams/checklist",
+   "verificeret": true,
+   "tidsforbrug": "20 min foerste gang, derefter 3 min per diagram",
+   "hvad_springes_over": "Resten af c4model.com kan han springe over naar han har bogen - siden og bogen overlapper naesten helt."
+  },
+  {
+   "titel": "Structurizr Lite (Docker, gratis og open source)",
+   "type": "vaerktoej",
+   "prioritet": "P0 - uge 2, opsaetning",
+   "hvorfor": "Modellen som kode i git ved siden af koden. Ét workspace.dsl giver flere views - saa et nyt diagram om 12 maaneder ikke kraever at han gentegner alt. VERIFICERET OG KRITISK: Structurizr CLOUD lukker 30. september 2026 og har vaeret read-only siden 1. juli 2026. Han skal ikke oprette en cloud-konto. Lite og CLI forbliver gratis; on-prem serveren kraever fra vNext en licens for de praebyggede binaries (open core kan stadig bygges fra kilde gratis). Kommando, verificeret: docker run -it --rm -p 8080:8080 -v /sti/til/mappe:/usr/local/structurizr structurizr/lite - derefter localhost:8080.",
+   "url": "https://hub.docker.com/r/structurizr/lite",
+   "verificeret": true,
+   "tidsforbrug": "2 timer opsaetning + 1 time paa DSL-syntaks",
+   "hvad_springes_over": "Structurizr cloud (doed 30/9-2026), Structurizr on-premises (koster licens, meningsloest for ni mand), IcePanel (kommerciel, pænt, men et betalt vaerktoej loeser ikke hans problem), Miro-licens til diagrammer."
+  },
+  {
+   "titel": "Google Technical Writing One + Technical Writing Two (gratis, selvstudie)",
+   "type": "kursus",
+   "prioritet": "P0 - uge 3-5",
+   "hvorfor": "Gratis, selvstudie, skrevet praecis til softwareudviklere. Det er det billigste maalbare loeft i hele hans plan: aktiv form, korte saetninger, én idé per afsnit, konsistent terminologi, hvordan man skriver til en laeser der ikke deler ens kontekst. Han faar mere ud af de otte timer end af tre arkitekturboeger, fordi det er dét der faktisk fejler naar en stifter laegger et dokument fra sig efter to afsnit. Der findes ogsaa Technical Writing for Accessibility.",
+   "url": "https://developers.google.com/tech-writing",
+   "verificeret": true,
+   "tidsforbrug": "6-8 timer selvstudie (spring de live virtuelle sessioner over - de kraever kalenderkoordinering og tilfoejer lidt)",
+   "hvad_springes_over": "Alle betalte 'technical writing for engineers'-kurser paa Udemy/Coursera. Denne er gratis og bedre."
+  },
+  {
+   "titel": "Design Docs at Google (Malte Ubl, industrialempathy.com)",
+   "type": "artikel",
+   "prioritet": "P0 - uge 3",
+   "hvorfor": "Den korteste og mest brugbare beskrivelse af hvad en design doc er og hvornaar den skrives. Strukturen han skal stjaele direkte: Context and Scope, Goals and Non-Goals, Actual Design, Alternatives Considered, Cross-cutting concerns. 'Non-Goals' og 'Alternatives Considered' er de to sektioner juniorer springer over og som er hele forskellen paa et dokument der viser taenkning og et der viser en plan. Pointe han skal tage med: dokumentet er en DISKUSSIONSPLATFORM, ikke en tilladelse han soeger.",
+   "url": "https://www.industrialempathy.com/posts/design-docs-at-google/",
+   "verificeret": true,
+   "tidsforbrug": "30-40 min",
+   "hvad_springes_over": "Malte Ubls aeldre 'Design docs - a design doc' (2015) er sjov men overfloedig ved siden af denne."
+  },
+  {
+   "titel": "MADR - Markdown Any Decision Records (adr.github.io/madr + github.com/adr/madr)",
+   "type": "skabelon",
+   "prioritet": "P0 - uge 2",
+   "hvorfor": "Den ADR-skabelon der er bedst egnet til et lille team: findes i en FULD og en MINIMAL variant, hver i en annoteret og en bar udgave. Han skal bruge den minimale. MADR's staerke side over Nygards oprindelige format er eksplicitte 'Decision Drivers' og 'Considered Options' med pros/cons - altsaa netop det der tvinger ham til at vise afvejningen. Aktivt vedligeholdt; siden marts 2026 findes ogsaa en YAML-variant (YADR), som han skal ignorere - markdown i git er det rigtige for ni mand.",
+   "url": "https://github.com/adr/madr",
+   "verificeret": true,
+   "tidsforbrug": "30 min at laese, 5 min at kopiere ind i repoet",
+   "hvad_springes_over": "adr-tools og andre CLI-generatorer: unoedvendigt vaerktoejslag for et repo med under 20 ADR'er. Log4brains og adr-viewer (statiske sites) ligeledes - de loeser et problem han ikke har. Ogsaa: hele diskussionen om ADR-nummerering og status-lifecycle. Filnavn med dato og et Status-felt med tre mulige vaerdier er nok."
+  },
+  {
+   "titel": "Communication Patterns: A Guide for Developers and Architects (Jacqui Read, O'Reilly)",
+   "type": "bog",
+   "prioritet": "P1 - maaned 2-3",
+   "hvorfor": "Den eneste bog der behandler arkitektkommunikation som et samlet haandvaerk: diagrammer, dokumentation, skriftlig, mundtlig OG nonverbal - og vigtigst, som PATTERNS og ANTIPATTERNS, saa han kan genkende sine egne fejl. Kapitlerne om at tilpasse diagram og dokument til publikum og projektfase er direkte anvendelige paa hans kundevendte arbejde. Bogens tilgaengelighedsvinkel (farveblindhed, skaermlaesere) er ikke pynt: han kommer til at sende diagrammer til kunders compliance-folk, og et diagram hvor betydningen kun ligger i roed/groen er ubrugeligt for 8 % af maendene der ser det.",
+   "url": "https://www.oreilly.com/library/view/communication-patterns/9781098140533/",
+   "verificeret": true,
+   "tidsforbrug": "6-8 timer, laeses i bidder ved siden af spikes - ikke i én omgang",
+   "hvad_springes_over": "Generiske praesentationsteknik-boeger (Presentation Zen, Confessions of a Public Speaker, Presentation Patterns). Denne bog daekker det han har brug for i sin kontekst."
+  },
+  {
+   "titel": "RFD 1: Requests for Discussion (Oxide Computer)",
+   "type": "artikel / procesbeskrivelse",
+   "prioritet": "P1 - maaned 2",
+   "hvorfor": "Den bedste offentligt tilgaengelige beskrivelse af en RFC-proces der faktisk fungerer i et lille firma. Oxide har skrevet over 500 RFD'er paa under fem aar, og de bruger dem til alt - teknisk design, hardwarevalg, processer, kultur. Pointen han skal tage: RFD'er tillader baade hurtig diskussion af raa idéer OG bliver et permanent arkiv. Deres RFD'er ligger offentligt paa nettet, saa han kan laese rigtige eksempler i stedet for skabeloner. Det er den bedste kilde til 'hvordan ser et rigtigt beslutningsdokument ud'.",
+   "url": "https://rfd.shared.oxide.computer/rfd/0001",
+   "verificeret": true,
+   "tidsforbrug": "45 min til RFD 1, derefter 2-3 timer paa at laese 4-5 rigtige RFD'er som forbilleder",
+   "hvad_springes_over": "Deres tooling (rfd-site, rfd-api) og AsciiDoc-setup. LeanLinking skal bruge markdown-filer i et git-repo, punktum."
+  },
+  {
+   "titel": "Engineering Planning with RFCs, Design Documents and ADRs (The Pragmatic Engineer)",
+   "type": "artikel",
+   "prioritet": "P1 - maaned 2",
+   "hvorfor": "Den klareste forklaring af FORSKELLEN paa de tre artefakter, som folk konstant blander sammen: RFC/design doc = forslag foer arbejdet, diskuteres, kan afvises. ADR = registrering af én traeffet beslutning og dens konsekvens, kort, uforanderlig naar den er accepteret. At kunne vaelge det rigtige format til situationen er i sig selv et arkitektsignal. Der findes en soesterartikel med rigtige skabeloner og eksempler fra flere firmaer.",
+   "url": "https://newsletter.pragmaticengineer.com/p/rfcs-and-design-docs",
+   "verificeret": true,
+   "tidsforbrug": "1 time",
+   "hvad_springes_over": "Delvist betalingsmur - hvis den er lukket, giver Oxide RFD 1 + Google design docs-artiklen 90 % af samme indsigt gratis. Betal ikke for abonnementet alene for dette."
+  },
+  {
+   "titel": "Design It! From Programmer to Software Architect (Michael Keeling, Pragmatic Bookshelf)",
+   "type": "bog / opslagsvaerk",
+   "prioritet": "P1 - opslagsvaerk, ikke laesning",
+   "hvorfor": "Bogens sidste tredjedel er et katalog over konkrete design- og faciliteringsaktiviteter med tidsforbrug, materialer og fremgangsmaade - Architecture Haiku (Activity 21), Risk Storming (Activity 35), Group Poster, Empathy Map, Goal-Question-Metric Workshop m.fl. Det er praecis det han mangler: opskrifter til at facilitere med tre-fem mennesker uden at have prøvet det foer. Han skal IKKE laese bogen forfra; han skal slaa op i kataloget naar han skal facilitere noget.",
+   "url": "https://pragprog.com/titles/mkdsa/design-it/",
+   "verificeret": true,
+   "tidsforbrug": "0 timer laesning; 15 min opslag per aktivitet han skal koere",
+   "hvad_springes_over": "Kapitel 1-8 (teorien). Han faar den fra C4-bogen og fra arbejdet."
+  },
+  {
+   "titel": "Risk storming (riskstorming.com)",
+   "type": "teknik / web",
+   "prioritet": "P0 - maaned 3, foerste facilitering",
+   "hvorfor": "Den enkleste faciliteringsteknik der virker med tre-fem mennesker og som han kan foreslaa uden mandat. Fire trin: (1) tegn arkitekturdiagrammer paa flere abstraktionsniveauer, (2) hver deltager skriver risici paa post-its individuelt og i stilhed, farvekodet efter alvor, (3) alle saetter dem paa diagrammet og man diskuterer, (4) man skriver handlinger paa de vigtigste. Det individuelle og tavse trin er hele pointen: det forhindrer at den mest erfarne udvikler saetter dagsordenen. Simon Brown har skabt teknikken, saa den passer direkte oveni C4.",
+   "url": "https://riskstorming.com/",
+   "verificeret": true,
+   "tidsforbrug": "45 min forberedelse + 90 min session",
+   "hvad_springes_over": "Formelle risikorammer: FAIR, ISO 31000, risikoregistre i Excel. Post-its paa et diagram er baade nok og bedre ved ni ansatte."
+  },
+  {
+   "titel": "Postmortem Culture: Learning from Failure (Google SRE Book, kapitel 15) + SRE Workbook-kapitlet",
+   "type": "bogkapitel online, gratis",
+   "prioritet": "P1 - maaned 4-5",
+   "hvorfor": "Originalkilden til blameless postmortems, gratis online. Det han skal tage med er ikke skabelonen men de to reglers mekanik: (a) antag at alle handlede i god tro med den information de havde, (b) enhver saetning der peger paa en person omformuleres til at pege paa systemet - 'X burde have tjekket konfigurationen' bliver til 'hvad ved vores proces gjorde det nemt at overse den konfiguration'. Den anden regel er en faciliteringsfaerdighed han kan oeve i realtid. Handlingspunkter skal have navn og dato, ellers er de dekoration.",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "verificeret": true,
+   "tidsforbrug": "1,5 time for begge kapitler",
+   "hvad_springes_over": "Kommercielle incident-vaerktoejer (incident.io, Rootly, FireHydrant). Et markdown-dokument i repoet er nok ved ni ansatte."
+  },
+  {
+   "titel": "arc42 dokumentationsskabelon (arc42.org)",
+   "type": "skabelon",
+   "prioritet": "P2 - maaned 5, delvis brug",
+   "hvorfor": "Gratis, open source, 12 sektioner, findes i AsciiDoc og Markdown saa den diff'er rent i git. Version 9 er aktuel. Hans brug skal vaere kirurgisk: kun sektion 1 (Introduction & Goals - inkl. kvalitetsmaal), 2 (Constraints), 3 (Context & Scope), 4 (Solution Strategy), 8 (Crosscutting Concepts), 9 (Architecture Decisions - linker til hans ADR'er), 11 (Risks & Technical Debt). Sektion 1's kvalitetsmaal-tabel er specielt vaerdifuld for ham: den tvinger ham til at skrive NED hvad 'god nok' betyder for LeanLinkings platform, og det er en samtale han kan have med stifteren.",
+   "url": "https://arc42.org/",
+   "verificeret": true,
+   "tidsforbrug": "45 min at forstaa; 4-6 timer at udfylde de syv sektioner for LeanLinkings platform",
+   "hvad_springes_over": "Sektion 5, 6, 7, 10, 12 - de resterende fem sektioner, og hele idéen om at udfylde skabelonen komplet. Et halvt udfyldt arc42 der er sandt slaar et komplet der er forældet. Spring ogsaa SEI's 'Documenting Software Architectures' (600+ sider), TOGAF og ArchiMate helt over - de er skrevet til organisationer med hundredvis af ansatte."
+  },
+  {
+   "titel": "Architectural Katas (architecturalkatas.com, Ted Neward) + nealford.com/katas",
+   "type": "oevemateriale",
+   "prioritet": "P1 - loebende fra maaned 3",
+   "hvorfor": "Gratis bank af rigtige arkitekturproblemer med kunde, krav og begraensninger. Han skal bruge dem paa to maader: (1) alene som skrivetraening - traek en tilfaeldig kata, giv dig selv 90 minutter, producér ét C4 Context + ét Container-diagram og en Architecture Haiku paa én side, laeg vaek; (2) i gruppe, hvor kritikken er hele pointen. Katas er beregnet til smaa grupper paa 3-5, altsaa praecis LeanLinkings udviklerteam. O'Reilly koerer moderede kata-events med Neal Ford hvor hold konkurrerer og faar feedback - dét er ekstern feedback, og det er hele grunden til at deltage.",
+   "url": "https://www.architecturalkatas.com/",
+   "verificeret": true,
+   "tidsforbrug": "90 min per kata; 1 kata hver anden uge er nok",
+   "hvad_springes_over": "At loese katas 'ordentligt' med fuld dokumentation. Formaalet er reps under tidspres, ikke perfektion. Spring ogsaa O'Reillys betalte seks-ugers kohorte over foerste aar, medmindre LeanLinking betaler."
+  },
+  {
+   "titel": "Software Architecture Monday (Mark Richards, developertoarchitect.com)",
+   "type": "video / gratis",
+   "prioritet": "P2 - loebende, laveste indsats",
+   "hvorfor": "Gratis korte videolektioner om ét arkitekturemne ad gangen; siden 2025 udgives de foerste mandag i maaneden, og der er flere hundrede i arkivet. Vaerdien for ham er sproglig lige saa meget som teknisk: han hoerer hvordan en erfaren arkitekt formulerer en afvejning hoejt. Det er den billigste maade at kalibrere sit ordforraad naar der ikke er en arkitekt paa kontoret. Han skal se dem mens han spiser frokost, ikke afsaette tid til dem.",
+   "url": "https://www.developertoarchitect.com/lessons/",
+   "verificeret": true,
+   "tidsforbrug": "15-20 min per lektion, marginaltid",
+   "hvad_springes_over": "Hans betalte kurser og traeningsklasser foerste aar."
+  },
+  {
+   "titel": "Mermaid (indbygget i GitHub/GitLab markdown) - sequence diagrams og architecture-diagrammer",
+   "type": "vaerktoej",
+   "prioritet": "P1 - uge 4",
+   "hvorfor": "Mermaid.js er paa version 11.16.x i 2026 og aktivt udviklet; den har nu en dedikeret architecture-diagramtype med ikonpakker. Men den reelle grund til at bruge den er én ting ingen konkurrent kan: den renderes direkte i GitHub/GitLab markdown, i README, issues og pull requests, uden byggetrin. Til et sekvensdiagram i en pull request der forklarer et race condition i certifikat-varsling, er der ingen bedre loesning. GRAENSE han skal kende: Mermaids layout-motor bliver grim over cirka et dusin noder - det er praecis der han skal skifte til Structurizr DSL.",
+   "url": "https://mermaid.js.org/",
+   "verificeret": true,
+   "tidsforbrug": "2 timer paa sequenceDiagram-syntaksen; det er den ene han faktisk faar brug for",
+   "hvad_springes_over": "Mermaids oevrige 20+ diagramtyper (gantt, pie, mindmap, quadrant, sankey, timeline). Han skal kunne sequenceDiagram godt og flowchart nogenlunde. Resten er pynt. Spring ogsaa Mermaid Chart / Mermaid Studio (betalte produkter) over."
+  },
+  {
+   "titel": "PlantUML + C4-PlantUML (kun hvis han faar brug for rigtig UML)",
+   "type": "vaerktoej",
+   "prioritet": "P3 - kun ved behov",
+   "hvorfor": "Verificeret aktivt vedligeholdt i 2026 (version 1.2026.8 udgivet 5. september 2026; en rewrite til 'PlantUML 2' i Haxe er undervejs). Det er stadig den eneste diagrams-as-code-loesning med rigtig, komplet UML-daekning - state machine diagrams, activity diagrams, komplekse sekvensdiagrammer med alt/opt/par-blokke. Hvis han skal modellere en tilstandsmaskine for en leverandoerkvalificerings-workflow (draft -> under review -> godkendt -> udloebet -> spaerret), er en UML state machine stadig det rigtige og der findes ikke et bedre alternativ. Ellers ikke.",
+   "url": "https://plantuml.com/",
+   "verificeret": true,
+   "tidsforbrug": "0 indtil han rammer et konkret behov; derefter 2 timer",
+   "hvad_springes_over": "UML som helhed. Han skal IKKE laere UML 2.5.1. Han skal kunne praecis tre UML-diagramtyper: sequence, state machine og evt. ER-diagram til datamodellen. Class diagrams, use case diagrams, component diagrams, deployment diagrams i UML-notation - spring over, C4 daekker behovet bedre."
+  },
+  {
+   "titel": "EventStorming (eventstorming.com/resources + Brandolinis Leanpub-bog)",
+   "type": "teknik",
+   "prioritet": "P2 - maaned 6-7, kun i miniature",
+   "hvorfor": "Relevant for ham fordi LeanLinkings domaene ER en proces: onboarding -> kvalificering -> audit -> certifikatudloeb -> genkvalificering. Big Picture EventStorming med stifteren og en kundevendt kollega kan afdaekke domaenehaendelser der ikke findes i koden i dag. Bogen er beroemt uafsluttet paa Leanpub - laes ikke efter den, laes ressourcesiden og en enkelt guide. Der findes Miro-skabeloner til remote-udgaven. VIGTIGT FORBEHOLD: EventStorming er designet til mange deltagere fra flere afdelinger. Med ni ansatte er det en to-timers session ved en vaeg med post-its og en tidslinje, ikke en workshop. Hvis han forsoeger den fulde ceremoni, bliver det teater.",
+   "url": "https://www.eventstorming.com/resources/",
+   "verificeret": true,
+   "tidsforbrug": "1 time forberedelse, 2 timers session, én til to gange i loebet af aaret",
+   "hvad_springes_over": "Betalte EventStorming-kurser (Avanscoperta, ddd.academy) - de koster flere tusinde kroner og loeser ikke hans problem i aar. Ogsaa: Design Level EventStorming med aggregates og read models foerste aar."
+  },
+  {
+   "titel": "Amazons 6-pager og Working Backwards / PR-FAQ",
+   "type": "format / metode",
+   "prioritet": "P1 - maaned 3, som oevelse ikke som studie",
+   "hvorfor": "Han skal laere formatet, ikke litteraturen. Reglerne: seks sider maks, ingen bullets, ingen grafik, hele saetninger og afsnit, tallene i tabeller bagerst som appendix. Moedet begynder med at ALLE laeser i stilhed i 20-25 minutter, derefter diskussion. Grunden til at det virker for ham specifikt: et 9-mandsfirma har ingen tid til lange moeder, og et dokument der er laest i stilhed foerst goer et 60-minutters moede til 35 minutters reel diskussion. PR/FAQ-varianten (skriv pressemeddelelsen foerst, som om funktionen allerede var lanceret) er en snedig tvangsmekanisme for kundevendte forslag - hvis han ikke kan skrive en overbevisende pressemeddelelse om funktionen, skal den ikke bygges.",
+   "url": "https://www.theprfaq.com/articles/amazon-writing-culture",
+   "verificeret": true,
+   "tidsforbrug": "45 min at forstaa formatet; 4-6 timer at skrive sit foerste narrativ",
+   "hvad_springes_over": "Bogen 'Working Backwards' (Bryar & Carr) i fuld laengde - 300+ sider om Amazons kultur, hvoraf han skal bruge ét kapitel. Laes et resumé og skriv i stedet."
+  },
+  {
+   "titel": "Minto Pyramid Principle / SCQA / BLUF (Bottom Line Up Front)",
+   "type": "metode",
+   "prioritet": "P1 - uge 6, som regel ikke som bog",
+   "hvorfor": "Én regel der aendrer alle hans dokumenter og mails til stifteren: konklusion foerst, derefter to-fire grupperede argumenter, derefter data. Man taenker nedefra og op (data -> observation -> konklusion) men KOMMUNIKERER oppefra og ned. SCQA-strukturen (Situation, Complication, Question, Answer) er den korteste brugbare skabelon til et forslag paa en side, og den passer perfekt til en stifter der har fem minutter: 'Vi har X i dag. Problemet er Y. Spoergsmaalet er hvordan vi Z. Mit svar er A, det koster B, og alternativet C koster D.'",
+   "url": "https://modelthinkers.com/mental-model/minto-pyramid-scqa",
+   "verificeret": true,
+   "tidsforbrug": "1 time at forstaa; derefter livslang brug",
+   "hvad_springes_over": "Bogen 'The Pyramid Principle' i fuld laengde. Den er fra 1970'erne, konsulentorienteret og laenge om det. Reglen er kortere end bogen."
+  },
+  {
+   "titel": "Virtual DDD (virtualddd.com) + deres Discord",
+   "type": "community",
+   "prioritet": "P0 for ekstern feedback - maaned 2 og frem",
+   "hvorfor": "Aktiv i 2026 (sessioner afholdt i september 2026), gratis, online, og fokuseret paa praecis den slags problemer han sidder i: komplekse forretningsdomaener, modellering, systemgraenser. Discord'en er stedet hvor han kan poste et konkret designvalg med et diagram og faa svar fra folk der har seniorprofilen ingen paa LeanLinking har. Det er den enkeltbilligste loesning paa hans strukturelle problem. ddd-crew paa GitHub har desuden gratis, konkrete vaerktoejer (bl.a. til bounded context-kortlaegning) han kan bruge direkte.",
+   "url": "https://virtualddd.com/",
+   "verificeret": true,
+   "tidsforbrug": "30 min per post; 1 session per maaned",
+   "hvad_springes_over": "At laese med i et halvt aar foer han poster. Passiv tilstedevaerelse i communities giver nul feedback. Han skal poste inden for de foerste to uger."
+  },
+  {
+   "titel": "Architecture Weekly (Oskar Dudycz, architecture-weekly.com)",
+   "type": "nyhedsbrev",
+   "prioritet": "P2 - laesning + som publiceringsmaal",
+   "hvorfor": "Ugentligt kurateret nyhedsbrev om softwarearkitektur med over 12.000 abonnenter. To anvendelser: (1) den billigste maade at holde sig kalibreret paa hvad der diskuteres i faget lige nu, uden at drukne i indhold; (2) et konkret, falsificerbart publiceringsmaal - man kan foreslaa links via GitHub-repoet oskardudycz/ArchitectureWeekly. At faa ét eget indlaeg med i nyhedsbrevet er et bedre maalepunkt for offentlig skrivning end nogen LinkedIn-metrik, fordi det er en fagperson der har vurderet indholdet.",
+   "url": "https://www.architecture-weekly.com/",
+   "verificeret": true,
+   "tidsforbrug": "20 min om ugen",
+   "hvad_springes_over": "Alle oevrige arkitektur-nyhedsbreve. Ét er nok. Han har ikke timer til at holde sig opdateret bredt - han har timer til at blive god paa ét felt."
+  },
+  {
+   "titel": "The Software Architect Elevator (Gregor Hohpe, O'Reilly)",
+   "type": "bog",
+   "prioritet": "P3 - SPRING OVER i aar",
+   "hvorfor": "Bogen er god, og den er forkert til ham nu. Hele dens praemis er distancen mellem maskinrummet og direktionsgangen i en stor virksomhed - at arkitekten er den der kan koere elevatoren mellem etagerne. I LeanLinking er der ingen elevator. Stifteren sidder i samme rum. Alt om organisatorisk forandring, IT-strategi paa koncernniveau og transformationsprogrammer er ubrugeligt for ham i 12 maaneder. De to idéer der ER brugbare - at arkitektur er at koebe optioner, og at arkitekten lever i den foerste afledede (raten af forandring, ikke tilstanden) - kan han faa fra Hohpes gratis essays paa enterpriseintegrationpatterns.com paa en time. Kom tilbage til bogen naar han skifter til en virksomhed med over 100 ansatte.",
+   "url": "https://www.enterpriseintegrationpatterns.com/ramblings/79_elevator.html",
+   "verificeret": true,
+   "tidsforbrug": "1 time paa essayet i stedet for 10 timer paa bogen",
+   "hvad_springes_over": "Hele bogen. Ogsaa hans 'Cloud Strategy' og 'Platform Strategy'."
+  },
+  {
+   "titel": "GOTO Copenhagen 2026 (28. september - 2. oktober 2026, TAP1)",
+   "type": "konference",
+   "prioritet": "P2 - i aar kun hvis LeanLinking betaler",
+   "hvorfor": "Danmarks stoerste udviklerkonference, to masterclass-dage og tre konferencedage. Reel vaerdi for ham ligger i masterclass-dagene og i gangene, ikke i talks (de bliver optaget og kan ses gratis senere). Konkret handling nu: spoerg stifteren om firmaet betaler - i et 9-mandsfirma er det ét spoergsmaal, ikke en proces, og et 'ja' er sandsynligt hvis han kan begrunde det i kroner. Hvis nej: GOTO Meetups Aarhus er gratis, lokalt og hele aaret. NB: der er ikke fundet en GOTO Aarhus-konference i 2026; Koebenhavn er den danske udgave i aar.",
+   "url": "https://gotocph.com/",
+   "verificeret": true,
+   "tidsforbrug": "3-5 dage hvis han deltager",
+   "hvad_springes_over": "At betale selv. En junior skal ikke bruge 10-15.000 kr af egen lomme paa en konference. Feedback-vaerdien per krone er langt hoejere i et gratis community og en betalt mentor."
+  },
+  {
+   "titel": "Meetups i Aarhus: GOTO Meetups Aarhus, Aarhus DevOps, Tech Talk Aarhus, Tech Hub Aarhus",
+   "type": "community",
+   "prioritet": "P1 - fra maaned 3, som TALER ikke tilhoerer",
+   "hvorfor": "Gratis, lokalt, og - afgoerende - den eneste ansigt-til-ansigt-kanal han har til folk der er mere erfarne end ham. Men vaerdien ligger IKKE i at sidde i salen. Den ligger i at holde et 15-minutters lightning talk om et konkret designvalg fra LeanLinkings domaene og lade spoergsmaalstiden vaere den review han ikke kan faa paa kontoret. Meetup-arrangoerer i Aarhus mangler konstant talere; en foerstegangstaler med et konkret emne bliver sagt ja til. Det er lav risiko og hoej afkast, og det er den mest undervurderede feedback-kanal i planen.",
+   "url": "https://www.meetup.com/goto-meetups-aarhus/",
+   "verificeret": true,
+   "tidsforbrug": "6-8 timer forberedelse foerste gang, 2-3 timer per gang derefter; én talk i halvaaret",
+   "hvad_springes_over": "Networking som maal i sig selv. Han skal have ét formaal: at nogen siger 'det design holder ikke, og her er hvorfor'."
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "Spike 1: ADR'en der blev skrevet foer beslutningen - certifikatudloeb og varslingsvinduer",
+   "problem": "LeanLinkings platform holder styr paa leverandoercertifikater der udloeber. Der skal traeffes en beslutning om HVOR varslingslogikken hoerer hjemme og hvordan den er tidsstyret: en natlig batch der scanner alle certifikater; en kalkuleret 'next_notification_at'-kolonne med et indeks; eller planlagte beskeder i en koe naar certifikatet oprettes. Alle tre virker paa 100 certifikater. Ved en million med kunder i flere tidszoner, med regler der aendres bagudrettet (en kunde skifter varsling fra 30 til 60 dage) og med kravet om at man kan bevise at varslingen BLEV sendt, opfoerer de sig vidt forskelligt.",
+   "artefakter": "Én ADR i MADR-minimalformat, maks 1,5 side, i git i LeanLinkings repo, med udfyldt Decision Drivers og mindst tre Considered Options hver med konkrete pros og cons. Sektionen Decision skrives til sidst. Plus: én Mermaid sequenceDiagram i ADR'en der viser hvad der sker naar en kunde aendrer varslingsreglen bagudrettet - det er den svaere sti, og den er hele pointen. Plus: en git-log der viser at ADR'en blev committet FOER implementeringen begyndte.",
+   "kompetence": "Skriftlig beslutningsdokumentation; at goere en afvejning synlig i stedet for at praesentere et resultat; at invitere modstand skriftligt.",
+   "fremgangsmaade": "1) Skriv ADR'en med Decision-sektionen tom og teksten 'Forslag - ikke besluttet' oeverst. 2) Send den til den mest erfarne udvikler med praecis denne formulering: 'Jeg har skrevet tre muligheder ned. Jeg tror det er nummer to, men jeg er mest usikker paa punkt X. Hvor tager jeg fejl?' 3) Vent mindst 24 timer foer han argumenterer for noget som helst - lad kollegaen skrive foerst. 4) Udfyld Decision. 5) Hvis feedback aendrede hans valg, skriv det EKSPLICIT i ADR'en: 'Oprindeligt foreslog jeg X; efter kommentar fra N valgte vi Y fordi Z.' Det er den enkeltsaetning der beviser at han kan modtage modspil, og den kan ikke fabrikeres bagefter uden at git-historikken afsloerer det.",
+   "tid": "4-5 timer i alt over en uge (2 timer skrivning, 1 time analyse, resten ventetid og revision)",
+   "svaerhed": "Let teknisk, svaert psykologisk. Den reelle proeve er om han kan udgive et dokument hvor han ikke har svaret endnu.",
+   "domaenekobling": "Certifikatudloeb er LeanLinkings kerneproblem: supplier relationship management for virksomheder der er afhaengige af leverandoerdokumentation, hvor certifikater udloeber i stort tal. Han skal ikke opfinde problemet - det ligger i backlog'en."
+  },
+  {
+   "titel": "Spike 2: Design doc i Google-format - idempotent indlaesning af leverandoerstamdata fra kunders ERP",
+   "problem": "En kunde sender leverandoerstamdata fra sit ERP-system. Filen sendes igen i morgen. Nogle raekker er aendret, nogle er slettet i kilden, nogle har faaet nyt id fordi kunden har migreret system, og nogle gange sendes den samme fil to gange ved et uheld. Hvad er 'samme leverandoer'? Hvad sker der med den dokumentation en LeanLinking-bruger manuelt har knyttet til en leverandoer der ikke laengere findes i kilden? Hvad sker der hvis indlaesningen fejler halvvejs? Dette er et arkitekturproblem forklaedt som et importproblem, og det er det klassiske sted hvor SaaS-firmaer i hans branche brænder tid i aarevis.",
+   "artefakter": "Design doc paa 3-5 sider med Google-strukturen: Context and Scope, Goals, NON-GOALS (obligatorisk og eksplicit - fx 'vi loeser ikke automatisk entity resolution paa fritekstnavne i denne omgang'), Actual Design, Alternatives Considered (mindst to forkastede med begrundelse), Cross-cutting concerns (fejlhaandtering, observability, GDPR, hvad kundens support kan se). Ét C4 Container-diagram i Structurizr DSL. Ét sekvensdiagram for genkoerslen af den samme fil. En eksplicit sektion 'Hvad jeg er mest usikker paa'.",
+   "kompetence": "Design doc-skrivning; Non-Goals som scope-vaerktoej; at skrive alternativer man har forkastet uden at goere dem til stråmaend.",
+   "fremgangsmaade": "1) Skriv Goals og Non-Goals FOERST og alene - brug 45 minutter kun paa dem. 2) Skriv Alternatives Considered FOER Actual Design; det tvinger reel afvejning i stedet for efterrationalisering. 3) Test at hvert forkastet alternativ er beskrevet saa retfaerdigt at nogen kunne finde paa at vaelge det - hvis alle alternativer ser dumme ud, har han skrevet en salgstale. 4) Del med to laesere med forskellige spoergsmaal: en udvikler faar 'hvor knaekker det teknisk?', stifteren eller en kundevendt kollega faar 'hvad koster det os hvis vi tager fejl her?'. 5) Skriv en version 2 hvor mindst én ting er aendret paa grund af svarene.",
+   "tid": "8-10 timer over to uger",
+   "svaerhed": "Middel til svaer. Idempotens og identitet i stamdata er et reelt distribueret systemproblem, ikke en oevelse.",
+   "domaenekobling": "Direkte fra LeanLinkings formaal: supply chain web services for stoerre virksomheder der er afhaengige af leverandoerer. Enhver kunde med et ERP-system skaber praecis dette problem, og loesningen er en varig del af produktets vaerdi."
+  },
+  {
+   "titel": "Spike 3: Seks-sideren til stifteren - hvad et append-only revisionsspor koster og hvad det koeber",
+   "problem": "Kunderne skal kunne bevise over for en revisor eller tilsynsmyndighed hvem der godkendte hvilken leverandoer paa hvilket grundlag paa hvilket tidspunkt - og at posten ikke er aendret bagefter. Et append-only revisionsspor giver dét, men koster lagerplads, kompleksitet i sletning, og udviklingstid der ellers gik til funktioner der saelger. Beslutningen tilhoerer stifteren, ikke ham. Hans opgave er at goere den beslutning mulig at traeffe paa 35 minutter.",
+   "artefakter": "Et narrativ paa maks seks sider (realistisk fire) i proesa. NUL bullets i broedteksten. Konklusion i foerste afsnit. Tre navngivne muligheder med (a) udviklingstid i uger, (b) driftsomkostning i kroner per maaned per kunde ved realistisk datamaengde, (c) hvad hver mulighed goer ved sandsynligheden for at tabe en konkret handel eller fejle en kundes sikkerhedsgennemgang. En anbefaling. Tal i én tabel som appendix, ikke i teksten. Plus en én-siders FAQ med de fem indvendinger han forventer.",
+   "kompetence": "Oversaettelse af teknik til kroner og risiko; narrativ prosa uden bullets; at give en beslutningstager et reelt valg i stedet for et ja/nej.",
+   "fremgangsmaade": "1) Faa de faktiske tal foerst - LeanLinkings egen cloud-regning, den reelle datamaengde per kunde, hvad en times udvikling koster. Estimater uden kilde bliver skudt ned og med rette. 2) Skriv foerste udkast med bullets, og omskriv derefter hvert bullet til hele saetninger. Alt der ikke overlever omskrivningen var alligevel ikke et argument. 3) Kaer test: giv den til en ikke-teknisk person (en saelger, en ven, en kaereste), lad dem laese i 15 minutter, tag dokumentet fra dem og bed dem forklare valget tilbage. Hvis de ikke kan gengive de tre muligheder og prisen paa hver, er dokumentet ikke faerdigt. Gentag. 4) Bed derefter om 40 minutter med stifteren og START med at han laeser i stilhed i 15 - foreslaa det eksplicit, det foeles akavet én gang og normalt anden gang.",
+   "tid": "10-12 timer over tre uger inkl. dataindsamling og to omskrivninger",
+   "svaerhed": "Svaer. Dette er det enkeltdokument i hele planen der er taettest paa rigtigt arkitektarbejde.",
+   "domaenekobling": "Revisionsspor der kan holde til en audit er praecis det LeanLinkings kunder koeber. NIS2 er live i dansk ret siden 1. juli 2025 med krav til leverandoerkaedesikkerhed i artikel 21, og tilsynet skalerer op i 2026 - der er reel koebervilje bag argumentet lige nu. Han skal derimod IKKE bygge argumentet paa CSDDD: Omnibus I (Direktiv (EU) 2026/470) indsnaevrede omfanget til over 5.000 ansatte og 1,5 mia. EUR og udskoed anvendelsen til 26. juli 2029."
+  },
+  {
+   "titel": "Spike 4: Den kundevendte arkitekturbriefing - 'hvordan er vores data adskilt fra andres?'",
+   "problem": "En stoerre kunde er ved at koebe. Deres sikkerhedsansvarlige eller IT-arkitekt stiller det spoergsmaal alle stiller: hvordan garanterer I at vores leverandoerdata ikke kan ses af en anden kunde, hvem hos jer kan se dem, hvor ligger de geografisk, og hvad sker der naar vi opsiger? I et 9-mandsfirma er der ingen praesalgsafdeling til at svare. Enten svarer stifteren upraecist, eller ogsaa svarer nogen der forstaar systemet.",
+   "artefakter": "Ét C4 Container-diagram tegnet SPECIFIKT til en ekstern, sikkerhedsorienteret laeser - andre bokse, andre pilenavne og andre udeladelser end det interne diagram af samme system. Én side prosa: isolationsmodel, kryptering i transit og hvile, adgangsstyring internt, geografisk placering, og hvad der sker ved opsigelse. En liste over de ti spoergsmaal han forventer, med svar han faktisk kan staa inde for - inklusive mindst ét 'det goer vi ikke i dag, og her er hvorfor'. En 10-minutters mundtlig version.",
+   "kompetence": "Publikumstilpasning af samme model; kundevendt praesentation; at kunne sige 'det goer vi ikke' uden at tabe rummet.",
+   "fremgangsmaade": "1) Tegn det interne container-diagram foerst, tegn saa det eksterne fra bunden - IKKE ved at slette bokse fra det foerste. Det er kernen i oevelsen: samme model, nyt view, ny laeser. 2) Koer Simon Browns diagram-review-checklist paa det. 3) Proev den mundtlige version paa en kollega der spiller den skeptiske kunde og har faaet besked paa at afbryde. 4) Bed stifteren om at maatte deltage i naeste kundemoede hvor emnet kommer op - foerst som lytter, anden gang med de ti minutter. I et firma paa ni er det ét spoergsmaal, og svaret er sandsynligvis ja fordi det sparer stifteren tid. 5) Efter moedet: skriv ned hvilke spoergsmaal han IKKE havde forudset. Den liste er guld og vokser med hvert moede.",
+   "tid": "6-8 timer forberedelse, derefter 1-2 timer per genbrug",
+   "svaerhed": "Middel teknisk, hoej eksponering. Foerste gang er ubehagelig.",
+   "domaenekobling": "Multi-tenant isolation hvor hver kunde har egne compliancekrav er en af de definerende arkitekturudfordringer i LeanLinkings produkt, og dokumentet er samtidig salgsmateriale. Dette er den ene spike der giver tre udbytter paa samme timer: portefoelje, forretningsvaerdi og adgang til kundens arkitekt."
+  },
+  {
+   "titel": "Spike 5: RFC'en med indbygget uenighed - GDPR-sletning under legal hold",
+   "problem": "En leverandoerkontaktperson beder om at blive slettet efter GDPR. Den samme persons navn staar paa en godkendelse i et revisionsspor som kunden er forpligtet til at bevare, og som maaske er omfattet af en verserende sag (legal hold). De to krav er i direkte konflikt, og der findes ingen loesning uden tab - kun forskellige former for tab. Det er den type problem hvor det tekniske valg og det juridiske valg ikke kan traeffes hver for sig.",
+   "artefakter": "En RFC paa 2-3 sider i Oxide-stil: status (draft/discussion/accepted), forfatter, dato, og en eksplicit sektion 'Open questions' med spoergsmaal han IKKE kan svare paa. Mindst to reelle muligheder (fx kryptografisk sletning ved at destruere en per-person-noegle mens den krypterede post bevares; kontra pseudonymisering hvor identitet erstattes af en stabil token og identitetstabellen kan tømmes) med konsekvenser for revisionssporets bevisvaerdi beskrevet ærligt for begge. Ét sekvensdiagram for sletteanmodningen naar legal hold er aktivt.",
+   "kompetence": "RFC-format; at skrive under reel usikkerhed; at eskalere et spoergsmaal opad uden at aflevere problemet.",
+   "fremgangsmaade": "1) Skriv Open questions-sektionen foerst og goer den lang. Modet til at skrive 'jeg ved det ikke, og her er praecis hvad jeg ikke ved' er en arkitektkompetence, ikke en svaghed. 2) Del RFC'en tre steder med tre forskellige spoergsmaal: internt hos LeanLinking ('holder det teknisk?'), i Virtual DDD Discord eller lignende ('har nogen loest dette foer, og hvad gik galt?'), og - hvis stifteren giver lov - til en kundes compliance-ansvarlige ('vil dette holde i jeres audit?'). 3) Skriv version 2 med et changelog nederst der viser hvad der aendrede sig og hvem der fik ham til det.",
+   "tid": "6-8 timer over to-tre uger",
+   "svaerhed": "Svaer. Det er et problem uden rigtigt svar, og det er derfor det er godt at oeve paa.",
+   "domaenekobling": "Sletning under GDPR med legal hold ovenpaa er et konkret problem for enhver platform der gemmer leverandoerdokumentation for regulerede kunder. Det er ogsaa et emne der er godt nok til offentlig skrivning, fordi de fleste blogindlaeg om GDPR-sletning ignorerer legal hold helt."
+  },
+  {
+   "titel": "Spike 6: Diagram-kata - tyve gentagelser af samme faerdighed",
+   "problem": "Han kan ikke blive god til at tegne forklarende diagrammer ved at tegne fem stykker over 12 maaneder. Faerdigheden kraever reps med feedback, og feedbacken skal komme fra nogen der ikke kender systemet. Dette er den mest undervurderede oevelse i hele planen, fordi den ser triviel ud og ikke er det.",
+   "artefakter": "Tyve diagrammer over 12 maaneder, hver med tre ting: (1) en angivelse af hvem laeseren er og hvad de skal kunne bagefter, (2) resultatet af blindtesten - hvad forstod testpersonen forkert, ordret noteret, (3) den rettede version. Alle i ét repo med dato. Serien i sig selv er portefoeljemateriale: en synlig progression fra rodet til klart er staerkere dokumentation for kompetence end ét pænt diagram.",
+   "kompetence": "Visuel forklaring; publikumsbevidsthed; at behandle sit eget arbejde som noget der maales, ikke noget der forsvares.",
+   "fremgangsmaade": "Rytme: ét diagram hver anden uge, timeboxet til 60 minutter, ikke mere. Halvdelen fra LeanLinkings rigtige systemer, halvdelen fra tilfaeldige architectural katas. Fast protokol hver gang: (a) tegn, (b) koer Simon Browns review-checklist paa det selv, (c) BLINDTEST - giv det til en person der aldrig har set systemet, sig intet, bed dem forklare hvad de ser, og NOTÉR hver misforstaaelse uden at rette dem undervejs, (d) ret diagrammet, ikke personen, (e) skriv én linje om hvad han laerte. Testpersonen kan vaere en anden udvikler, en saelger, en medstuderende, en ikke-teknisk ven - variation er en fordel.",
+   "tid": "60-90 min hver anden uge = ca. 30 timer over aaret",
+   "svaerhed": "Let per gang, svaer at holde ved. Gentagelsen ER oevelsen; hvis han springer over efter otte, virkede den ikke.",
+   "domaenekobling": "Mindst ti af de tyve tegnes over LeanLinkings faktiske systemer: dokumentlagring, kvalificeringsflow, integrationslag mod kunders systemer, notifikationsvej, tenant-isolation. De bliver dermed brugbare paa arbejdet med det samme og bliver samtidig hans portefoelje."
+  },
+  {
+   "titel": "Spike 7: Facilitering i miniature - tre sessioner han foreslaar uden at spoerge om lov",
+   "problem": "Facilitering er den faerdighed en arkitekt bruger mest og som han har svaerest ved at oeve alene. Med 3-5 udviklere kan han ikke koere store workshops. Han kan koere tre smaa formater, og han kan foreslaa dem selv - i et 9-mandsfirma er beslutningsvejen én samtale.",
+   "artefakter": "(A) Risk storming, 90 min: et C4 Container-diagram paa vaeggen eller i Miro, farvekodede risici skrevet individuelt og i stilhed, derefter placeret og diskuteret, derefter tre handlinger med navn og dato. (B) Design review, 45 min: dokumentet rundsendes 48 timer foer, foerste 10 minutter er stille laesning, resten er kun spoergsmaal - referat med aendringer der faktisk blev lavet. (C) Blameless postmortem paa en RIGTIG haendelse, 60 min: tidslinje af fakta foerst, ingen navne i aarsagsbeskrivelsen, handlingspunkter med ejer og dato. Til hver session: hans egne noter om hvad der gik galt i faciliteringen.",
+   "kompetence": "Facilitering; at holde mund; at omformulere skyld til systembeskrivelse i realtid.",
+   "fremgangsmaade": "Én session i kvartalet, altsaa tre-fire paa aaret. Fast maaling hver gang: bed en kollega taelle hans taletid, eller optag og maal bagefter. Maalet er under 30 %. Foerste gang bliver det formentlig over 60 % - det er dataen, ikke en fiasko. Til postmortem: oev én saetning paa forhaand saa den sidder, fx 'lad os holde det ved hvad systemet gjorde muligt' - den skal kunne siges uden at taenke, for i situationen er der ikke tid til at formulere sig. Til risk storming: det tavse individuelle skrivetrin er det vigtigste og det foerste folk vil springe over - han skal insistere paa det.",
+   "tid": "3-4 timer per session inkl. forberedelse og noter; ca. 14 timer paa aaret",
+   "svaerhed": "Middel. Den svaere del er at lade stilhed staa i rummet uden at fylde den.",
+   "domaenekobling": "Risk storming koeres paa LeanLinkings egen platform - dokumentlagring, integrationer, notifikationer. Postmortem koeres paa en rigtig hændelse hos LeanLinking (en mislykket import, en varsling der ikke blev sendt, en fejl i produktionen), ikke paa et opdigtet scenarie."
+  },
+  {
+   "titel": "Spike 8: Offentlig skrivning som feedback-motor - fire indlaeg, ikke fyrre",
+   "problem": "Ingen paa arbejdet kan give ham kvalificeret modspil paa et designvalg. Offentlig skrivning er en af faa maader at hente det udefra. Men de fleste offentlige tekniske indlaeg faar nul kvalificeret kritik, fordi de er skrevet for at se kloge ud. Et indlaeg der er skrevet for at faa modspil ser anderledes ud og opfoerer sig anderledes.",
+   "artefakter": "Fire indlaeg over 12 maaneder, hvert 1.200-2.000 ord, paa engelsk, paa et domaene han selv ejer (kanonisk kopi), evt. syndikeret til dev.to eller Hashnode. Hvert indlaeg SKAL have: et konkret problem med tal, en loesning med kode eller diagram, en sektion 'What I am least sure about' med mindst to punkter, og en afsluttende invitation der er specifik ('hvis du har koert dette paa over 10 mio. raekker, saa fortael mig hvor det knaekker' - ikke 'kommentarer er velkomne'). Foreslaaede emner: (1) NIS2 artikel 21's leverandoerkaedekrav oversat til konkrete datakrav i et SaaS-produkt, (2) sletning under GDPR naar et revisionsspor er i legal hold, (3) idempotent stamdataindlaesning fra ERP naar kilden ikke har stabile id'er, (4) hvad multi-tenant isolation faktisk koster naar hver tenant har sit eget compliance-regime.",
+   "kompetence": "Offentlig teknisk skrivning; at invitere kritik; niche-positionering; at haandtere at tage fejl offentligt.",
+   "fremgangsmaade": "Ét indlaeg per kvartal, ikke mere - kadence er portefoeljens fjende naar man har 10-15 timer. Rytme per indlaeg: uge 1 udkast, uge 2 lad det ligge, uge 3 skaer 30 % vaek og udgiv. AKTIV distribution bagefter, ellers sker der intet: post i Virtual DDD Discord med et konkret spoergsmaal, foreslaa det til Architecture Weekly via deres GitHub-repo, del i relevante subreddits, send det direkte til to-tre navngivne fagfolk med en kort, specifik besked ('du skrev om X - jeg tror jeg tager fejl paa punkt Y, har du fem minutter?'). Direkte henvendelse til navngivne personer giver mere reel kritik end tusind visninger. SIKKERHEDSREGLER, ikke til forhandling: ingen kundenavne, ingen skaermbilleder fra produktion, ingen rigtige datamaengder eller omsaetningstal, ingen sikkerhedsdetaljer der kan bruges mod LeanLinking, og alt der naevner arbejdspladsen skal ses af stifteren foerst. Skriv om PROBLEMKLASSEN, ikke om kunden.",
+   "tid": "8-10 timer per indlaeg inkl. distribution = ca. 36 timer paa aaret",
+   "svaerhed": "Middel at skrive, svaert at udgive foerste gang.",
+   "domaenekobling": "Hele pointen. Alle fire emner kommer fra leverandoerkaede-, dokumentations- og compliancedomaenet, som er hvor han sidder. En generisk artikel om event sourcing er skrevet af tusind andre; en artikel om revisionsspor og legal hold i leverandoerdokumentation er skrevet af naesten ingen paa dansk eller engelsk, og den kan han kun skrive fordi han sidder der."
+  },
+  {
+   "titel": "Spike 9: Architecture Haiku - én side om LeanLinkings platform, skrevet fire gange",
+   "problem": "Han kan ikke destillere et system til det vaesentlige, og det er praecis dét en arkitekt maales paa. En Architecture Haiku (George Fairbanks; Activity 21 i Keelings 'Design It!') er en én-sides beskrivelse med ekstremt haard pladsbegraensning: forretningsformaal, prioriterede kvalitetsattributter, arkitekturstil, de vigtigste designbeslutninger med begrundelse, begraensninger, og de afvejninger man bevidst har accepteret. Begraensningen er hele metoden.",
+   "artefakter": "Fire haikus paa hver præcis én side, skrevet i maaned 1, 4, 8 og 11 for LeanLinkings platform - uden at genlaese de tidligere foer den nye er skrevet. Til sidst en halv side der sammenligner de fire: hvad aendrede sig i hans forstaaelse, og hvad var han sikker paa i maaned 1 som var forkert? Den sammenligning er et af de staerkeste enkeltdokumenter han kan have i sin portefoelje, fordi den viser laering over tid og ikke kan fabrikeres bagefter.",
+   "kompetence": "Destillation; at prioritere kvalitetsattributter eksplicit i stedet for at ville have dem alle; at kunne se sin egen udvikling.",
+   "fremgangsmaade": "Timebox: 45 minutter per haiku, haardt. Prioriteringen af kvalitetsattributter er den svaere del - han skal tvinge sig til en RANGORDNET liste hvor noget staar sidst. 'Baade skalerbarhed og sikkerhed og udviklingshastighed' er en ikke-beslutning. Efter haiku nummer to: vis den til stifteren og spoerg 'er det her hvad du synes systemet handler om?'. Uenigheden i det svar er den mest vaerdifulde information han faar hele aaret, fordi den afsloerer om hans tekniske model og forretningens model peger samme vej.",
+   "tid": "45 min x 4 + 1 time sammenligning = under 4 timer i alt paa aaret",
+   "svaerhed": "Ser trivielt ud. Er det ikke. Den bedste vaerdi-per-time i hele planen.",
+   "domaenekobling": "Objektet er LeanLinkings faktiske platform. Samtalen med stifteren om prioriterede kvalitetsattributter er ogsaa i sig selv et stykke arkitektarbejde med reel forretningsvaerdi."
+  },
+  {
+   "titel": "Spike 10: Uenighedsjournalen - at tabe pænt, skriftligt, tre gange",
+   "problem": "At vaere uenig med en mere erfaren udvikler uden at tabe - og at TABE ordentligt naar man har uret - er en faerdighed man kun kan traene i rigtige situationer. Der findes ingen kata for den. Men den kan maales, og det der maales bliver traenet.",
+   "artefakter": "En privat journal med mindst seks poster over 12 maaneder. Hver post: (1) hvad var uenigheden, (2) hvad var min position og hvorfor, (3) hvad var deres position saa staerkt formuleret som jeg kan (steelman - skriv deres argument bedre end de selv gjorde), (4) hvordan gik det, (5) hvem havde ret set i bakspejlet, (6) hvad ville jeg goere anderledes. Mindst to poster skal vaere sager han TABTE og hvor han bagefter mener det var rigtigt at han tabte.",
+   "kompetence": "Faglig uenighed; steelmanning; at aendre mening offentligt uden at miste anseelse.",
+   "fremgangsmaade": "Standardtraek naar en uenighed opstaar: flyt den til skrift og asynkront. 'Jeg skriver en halv side med begge muligheder og hvad jeg tror vi risikerer ved hver - kan du rette hvor jeg tager fejl?' Det virker af tre grunde: skrift favoriserer det bedste argument frem for den mest selvsikre stemme; asynkront giver den erfarne kollega tid til at overveje uden at skulle forsvare sig i realtid; og halvsiden bliver et artefakt uanset udfaldet. Steelman-punktet er obligatorisk og skal skrives FOER hans eget argument. Naar han taber: han skriver selv opdateringen i dokumentet med hvad der overbeviste ham. Efter tredje gang begynder folk at give ham aerlig feedback i stedet for hoeflig feedback, og det er hele forskellen paa at oeve rigtigt og at oeve forkert i 12 maaneder.",
+   "tid": "30-45 min per post; under 5 timer paa aaret",
+   "svaerhed": "Let at skrive, svaer at vaere aerlig i.",
+   "domaenekobling": "Uenighederne kommer af sig selv fra rigtige tekniske valg hos LeanLinking - datamodel, integrationsdesign, hvor logikken hoerer hjemme, hvornaar noget er godt nok. Han skal ikke opsoege konflikt; han skal dokumentere den der allerede er der."
+  }
+ ],
+ "paa_jobbet": [
+  "Skriv et referat af hvert eneste teknisk moede han deltager i, uopfordret, og send det til deltagerne inden for en time. Format: beslutninger truffet, aabne spoergsmaal, hvem goer hvad inden hvornaar. Ingen beder om det, ingen siger nej til det, og i et 9-mandsfirma bliver han inden for otte uger den person hvis version af hvad der blev besluttet er den gaeldende. Det er den billigste og hurtigste indflydelsesmekanisme der findes, og den kraever nul mandat.",
+  "Opret mappen /docs/adr i LeanLinkings repo med MADR-minimalskabelonen og skriv den foerste ADR om en beslutning der allerede er truffet (som markeret retrospektiv). Spoerg ingen om lov. Naevn det i naeste standup med én saetning: 'jeg er begyndt at skrive vores beslutninger ned, ligger i repoet'. Hvis nogen siger det er unoedvendigt, koster det ham en time. Hvis ingen siger noget, har han lige indfoert en praksis.",
+  "Tilfoej et diagram til enhver pull request der aendrer noget strukturelt. Mermaid sequenceDiagram i PR-beskrivelsen renderes direkte i GitHub uden byggetrin. Det goer to ting: det goer hans PR'er nemmere at reviewe (saa de bliver merged hurtigere, hvilket er en maalbar forretningsgevinst), og det giver ham 20-30 gratis diagram-reps om aaret paa et publikum der faktisk laeser dem.",
+  "Skriv ét dokument der forklarer LeanLinkings systemlandskab for en ny medarbejder - ét C4 Context og ét Container-diagram plus to siders tekst. I et firma paa ni findes dette dokument naesten helt sikkert ikke, eller det er tre aar gammelt. Det er den mest sikre 'ja tak' han kan levere, det bliver laest af stifteren, og det etablerer ham som den der ejer systembilledet. Vedligehold det derefter, for et forældet oversigtsdokument er vaerre end ingen.",
+  "Bed om at maatte lytte med paa kundemoeder hvor teknik kommer op - foerst som referent. Formuleringen der virker: 'jeg skriver referat, saa du ikke skal'. Det er en tjeneste, ikke en anmodning. Efter tre-fire moeder som referent er skridtet til at svare paa ét teknisk spoergsmaal selv naturligt, og efter det er 10 minutters arkitekturbriefing en formalitet.",
+  "Foer han bygger noget der tager over en uge: send tre saetninger til stifteren eller den mest erfarne udvikler. Hvad jeg tror problemet er, hvad jeg vil goere, hvad jeg er usikker paa. Tre saetninger, ikke et dokument. Det tager fem minutter og forhindrer den hyppigste juniorfejl - at bygge det rigtige svar paa det forkerte spoergsmaal. Det etablerer ogsaa vanen med at taenke hoejt foer man taster, hvilket ER arkitektarbejde.",
+  "Foeer en liste over ethvert teknisk spoergsmaal en kunde stiller, ordret. Efter 12 maaneder er den liste kortlaegningen af hvad markedet faktisk bekymrer sig om i leverandoerkaede-compliance - og den er en informationsressource ingen udvikler i et stort firma har adgang til. Den er raamateriale til hans offentlige skrivning og til hans argumenter over for stifteren.",
+  "Naar noget gaar galt i produktionen: skriv en kort blameless postmortem, ogsaa hvis ingen har bedt om det og ogsaa hvis det var hans egen fejl. Isaer hvis det var hans egen fejl - det er den hurtigste maade at etablere at postmortems ikke handler om skyld, og han er den eneste der kan goere det uden at det ligner en anklage mod nogen anden.",
+  "Foreslaa 'stille foerste ti minutter' naeste gang der er et moede om et dokument han har skrevet. Formuleringen: 'lad os laese det i stilhed foerst, saa slipper jeg for at gennemgaa det'. Det er en tidsbesparelse for de andre, saa det bliver sagt ja til. Anden gang er det normen. Han har dermed indfoert Amazons vigtigste moedemekanik i et firma paa ni uden at naevne Amazon.",
+  "Bed stifteren om lov til at sende ét af sine dokumenter til en kundes IT-arkitekt eller sikkerhedsansvarlige og bede om deres kommentarer. Ramme det som kundepleje, for det ER kundepleje: en kunde der bliver spurgt til raads, bliver mere knyttet til produktet. Han faar samtidig kvalificeret arkitektkritik gratis fra en person der har den seniorprofil ingen paa LeanLinking har. Dette er den eneste kanal i hele planen der er unik for hans situation, og den er gratis.",
+  "Laes hver eneste supportsag og hver eneste onboarding af en ny kunde. I et 9-mandsfirma faar han lov, og det er den bredde en junior i en 500-mands virksomhed aldrig faar. Det er ogsaa den eneste vej til at kunne skrive et forslag der bliver sagt ja til - fordi et forslag bliver sagt ja til naar det loeser et problem beslutningstageren allerede foeler, og supportsager er hvor de problemer bor.",
+  "Skriv ét forslag i kvartalet han ikke er blevet bedt om, paa maks én side, i SCQA-form: situation, problem, spoergsmaal, mit svar med pris og alternativ. Maalet er ikke at faa ja hver gang - maalet er at komme op paa mindst ét gennemfoert forslag om aaret som han selv rejste. Dét er forskellen paa en udvikler der loeser tildelte opgaver og en der saetter retning, og det er det eneste indflydelsessignal en ekstern hiring manager kan verificere uafhaengigt af titel."
+ ],
+ "faldgruber": [
+  "At tegne alle fire C4-niveauer for alt. Level 3 (Component) raadner hurtigst fordi koden aendrer sig under det, og Level 4 (Code) skal aldrig tegnes i haanden. Kontekst og Container baerer naesten hele vaerdien. Folk der tegner komplette C4-hierarkier bruger arkitektur som prokrastination fra at traeffe beslutninger.",
+  "AT OPRETTE EN STRUCTURIZR CLOUD-KONTO. Cloud-tjenesten lukker 30. september 2026 og har vaeret read-only siden 1. juli 2026. Enhver tutorial eller AI-genereret guide der starter med 'opret en konto paa structurizr.com' er nu forældet. Structurizr Lite i Docker, workspace.dsl i git.",
+  "ADR-spam. At skrive ADR'er for hvert bibliotekvalg og hver navngivningskonvention draeber praksissen inden for tre maaneder, fordi ingen orker at laese dem og de derfor ikke bliver skrevet foer beslutningen. Taerskel: kun beslutninger der er dyre at rulle tilbage. Under 20 ADR'er paa et aar i et firma paa ni er sundt; 60 er et symptom.",
+  "ADR'er skrevet efter beslutningen. Det er ikke arkitektur, det er referat. Vaerdien ligger i at dokumentet eksisterer FOER, saa nogen kan vaere uenige mens det stadig er billigt. Git-historikken afsloerer hvad man gjorde, og en ekstern hiring manager kan laese den.",
+  "At forvente at et dokument bliver laest fordi det er godt. Det bliver ikke. Han skal LEVERE det - sende det til en navngiven person med et konkret spoergsmaal og en deadline. 'Kan du kigge paa det?' giver ingenting. 'Jeg er mest usikker paa afsnit 3 - holder det, og kan du svare inden torsdag?' giver svar.",
+  "At bruge ordene 'teknisk gaeld', 'kvalitet', 'best practice' eller 'det er ikke skalerbart' over for stifteren. De har ingen plads i et runway-regneark og laeses som 'udvikleren vil have lov at rydde op'. Oversaet altid til én af fire enheder: kroner per maaned, timer per maaned, sandsynlighed for at tabe en konkret handel, sandsynlighed for at fejle en kundes audit.",
+  "At praesentere én loesning. En stifter der kun faar ét forslag kan kun sige ja eller nej, og saa handler samtalen om tillid til ham i stedet for om sagen. To eller tre muligheder med pris, tid og risiko - og en klar anbefaling. Ingen anbefaling er den modsatte fejl og lige saa daarlig: det er at aflevere problemet opad.",
+  "Enterprise-indflydelseslitteratur. Sponsorer, architecture review boards, stakeholder power/interest-matricer, RACI, 'architect elevator' mellem maskinrum og direktionsgang. Elevatoren i LeanLinking har én etage. Hver time paa den litteratur er stjaalet fra noget der virker.",
+  "At vinde mundtligt over en mere erfaren udvikler. Selv naar han har ret, koster det. Skift til skrift og asynkront - der vinder argumentet oftere end anciennitet, og der bliver et artefakt uanset udfaldet.",
+  "'Strong opinions, loosely held' som selvbillede. I praksis belønner det den mest selvsikre stemme og giver den erfarne udvikler ret pr. automatik. Bedre regel for ham: skriv den anden persons argument ned saa staerkt du kan (steelman) FOER du skriver dit eget. Hvis han ikke kan formulere modparten overbevisende, har han ikke forstaaet uenigheden endnu.",
+  "At forveksle raekkevidde med feedback. Tusind LinkedIn-visninger og fyrre likes er nul kvalificeret modspil. Én udvikler der skriver 'det holder ikke naar X, fordi Y' er hele udbyttet. Han skal maale paa antal substantielle tekniske indvendinger fra fremmede, ikke paa engagement - og han skal aktivt afvise personal branding som ramme, for den ramme goer teksten defensiv og lukker for kritik.",
+  "At skrive generisk indhold. 'Introduktion til multi-tenancy', 'Hvad er event sourcing', 'Fem tips til bedre arkitektur' - der findes tusind af dem, de faar ingen kvalificeret kritik, og de er vaerdiloese som portefoelje. Hans eneste konkurrencefordel er domaenet. Én artikel om revisionsspor og legal hold i leverandoerdokumentation slaar tyve generiske.",
+  "At faa fakta forkert i en niche hvor faa laesere kan tjekke dem - det er praecis der troværdighed dør. Konkret faelde lige nu: at skrive at CSDDD stiller krav fra 2027. Omnibus I (Direktiv (EU) 2026/470, i kraft 18. marts 2026) indsnaevrede omfanget til over 5.000 ansatte og 1,5 mia. EUR omsaetning (fra ca. 13.000 til ca. 6.000 virksomheder), fjernede den EU-daekkende civilretlige ansvarsordning, og flyttede anvendelsen til 26. juli 2029 med transponering senest 26. juli 2028. NIS2 er derimod live i dansk ret siden 1. juli 2025. Skriv om NIS2 i aar.",
+  "At laekke noget i offentlig skrivning. Kundenavne, skaermbilleder fra produktion, rigtige datamaengder, omsaetningstal, sikkerhedsdetaljer. Det kan koste jobbet og hele nichen paa én gang. Regel: skriv om PROBLEMKLASSEN, aldrig om kunden, og lad stifteren se alt der naevner arbejdspladsen foer det udgives.",
+  "At tale mere end 30 % af tiden i en session han faciliterer. Saa faciliterede han ikke, saa holdt han foredrag - og han fik ingen information han ikke allerede havde. Lad nogen taelle, eller optag og maal.",
+  "At springe det tavse individuelle trin over i risk storming eller det stille laesetrin i et design review, fordi det foeles akavet. Praecis de trin er hvorfor teknikkerne virker: de forhindrer at den foerste stemme saetter rammen for alle andre. Uden dem er det bare et moede.",
+  "At bruge Mermaid til store diagrammer. Layoutmotoren bliver rodet over cirka et dusin noder, og han spilder en time paa at flytte kasser. Mermaid til sekvensdiagrammer i pull requests; Structurizr DSL til alt der har en model bag sig.",
+  "Vaerktoejsjagt som prokrastination. IcePanel, Miro Enterprise, D2, Excalidraw Plus, LikeC4, diagram-plugins. Ingen af dem loeser hans problem, som er at han ikke har skrevet noget endnu. Én gratis tegneloesning (Structurizr Lite) plus Mermaid i markdown, og saa aldrig mere tid paa vaerktoejsvalg i 12 maaneder.",
+  "At laere UML. UML som helhed er ikke pengene vaerd for ham. Tre diagramtyper er stadig bedst i klassen og skal kunnes: sequence diagram (samspil over tid), state machine diagram (en leverandoers eller et certifikats livscyklus) og ER-diagram (datamodel). Class diagrams, use case diagrams, component diagrams i UML-notation: spring over, C4 daekker det bedre.",
+  "Lange dokumenter som bevis paa grundighed. Amazon caper seks sider af en grund. Et ti-siders design doc bliver skimmet af én person; et tre-siders bliver laest af alle. Han skal timeboxe skrivningen OG saette et sideloft foerst.",
+  "At vente paa tilladelse til at skrive. Der findes ingen der giver den. Det er ogsaa den enkeltfaelde der koster flest maaneder, fordi den foeles som hoeflighed og er passivitet.",
+  "At blive rigtig god til at skrive dokumenter ingen kvalificeret har laest. Det er planens stoerste enkeltrisiko, og den ser ud som succes hele vejen indtil maaned 12. Hvert artefakt skal have en navngiven ekstern laeser fra dag ét - ellers er det et ekkokammer med versionsstyring."
+ ],
+ "maalepunkter": [
+  "MODSTANDSTESTEN (kan ikke fabrikeres bagefter): mindst tre ADR'er hvor git-historikken viser at dokumentet blev committet FOER implementeringen begyndte, og mindst én hvor Decision-sektionen blev aendret som foelge af feedback, med en eksplicit saetning om hvem der aendrede hans mening og hvorfor. Fejler han denne, har han skrevet referater og ikke arkitektur - uanset hvor mange dokumenter der ligger i mappen.",
+  "GENFORTAELLINGSTESTEN: en person uden teknisk baggrund laeser hans vigtigste design doc i 15 minutter, dokumentet tages fra dem, og de gengiver mundtligt problemet, de tre muligheder og hvad hver koster. Bestaaet kraever at alle tre muligheder og deres omtrentlige pris kommer med. Skal bestaas med to forskellige personer der ikke har set dokumentet foer.",
+  "BLINDDIAGRAMTESTEN, tyve gange dokumenteret: for hvert af tyve diagrammer findes en noteret liste over hvad en foerstegangslaeser misforstod, og en rettet version. Gate-kriterie: paa de sidste fem diagrammer skal antallet af misforstaaelser vaere lavere end paa de foerste fem. Ingen forbedring over tyve reps betyder at han lavede diagrammer og ikke traenede.",
+  "FORSLAGSTESTEN: mindst ét forslag han selv rejste - som ingen bad om - blev accepteret OG implementeret, og han kan pege paa dokumentet og paa koden. Dette er det eneste indflydelsessignal en ekstern hiring manager kan verificere uafhaengigt af hans titel, og det er derfor det tungeste punkt paa hele listen.",
+  "SEKS-SIDER-TESTEN: mindst ét narrativ paa maks seks sider i ren prosa uden et eneste bullet i broedteksten, om en reel beslutning med reelle tal, laest i stilhed af beslutningstageren i starten af et moede. Bestaaet naar dokumentet faktisk foerte til en beslutning - ja eller nej, begge taeller.",
+  "TALETIDSTESTEN: mindst tre faciliterede sessioner (risk storming, design review, blameless postmortem) hvor hans egen taletid er MAALT - taelt af en kollega eller optaget - og under 30 % i mindst to af dem. Denne er bevidst brutal, fordi facilitering er den kompetence der er lettest at bilde sig ind at man har.",
+  "KRITIKTESTEN (den vigtigste for ekstern feedback): mindst fire offentlige indlaeg udgivet, og mindst to substantielle tekniske indvendinger modtaget fra fremmede - defineret som en indvending der peger paa et konkret sted hvor loesningen knaekker, ikke en kommentar eller et like. Mindst ét dokumenteret tilfaelde hvor han offentligt aendrede sin position paa grund af en saadan indvending. Likes, visninger og foelgere taeller nul.",
+  "EKSTERN-ARKITEKT-TESTEN: mindst ét af hans arkitekturdokumenter er blevet laest og kommenteret af en person med reel arkitekterfaring uden for LeanLinking - betalt mentor, en kundes IT-arkitekt, eller en navngiven fagperson fra et community - og han kan pege paa hvad de aendrede i dokumentet. Dette er den direkte maaling paa om ekstern feedback rent faktisk skete, eller om det blev ved intentionen.",
+  "KUNDETESTEN: han har staaet foran mindst én rigtig kunde og forklaret en arkitekturbeslutning mundtligt, og han har en noteret liste over hvilke spoergsmaal han IKKE havde forudset. Listen er beviset paa at det skete.",
+  "TABERTESTEN: mindst to poster i uenighedsjournalen hvor han tabte diskussionen, hvor han selv skrev opdateringen i dokumentet, og hvor han i dag mener det var rigtigt at han tabte. Hvis han ikke har tabt nogen faglig uenighed paa 12 maaneder, har han enten ikke rejst nogen reelle - eller ingen tør sige ham imod, og begge dele er alvorligere problemer end det ser ud.",
+  "HAIKU-DRIFT-TESTEN: fire Architecture Haikus fra maaned 1, 4, 8 og 11, plus en halv sides sammenligning der navngiver mindst tre ting han var sikker paa i maaned 1 og som var forkerte. Dette maaler noget ingen anden test rammer: om han kan se sin egen udvikling og indroemme den skriftligt.",
+  "VEDLIGEHOLDELSESTESTEN: det systemoversigtsdokument han skrev i maaned 1 er stadig sandt i maaned 10, fordi han har opdateret det. Et forældet oversigtsdokument er en negativ score, ikke en neutral - det viser at han kan lide at skrive og ikke at eje."
+ ],
+ "kompetencer": [
+  {
+   "navn": "Beslutningsskrivning (ADR)",
+   "hvorfor": "Den hoejeste return-on-effort i hele planen. En ADR koster 45-90 minutter, skabes af arbejde han alligevel laver, ligger i git hvor den kan verificeres af enhver ekstern, og loeser samtidig hans stoerste strukturelle problem: den giver folk noget konkret at vaere uenige i, hvilket er den eneste maade han kan faa modspil naar der ikke er en arkitekt paa kontoret. Uden dette artefakt er hans arkitektarbejde usynligt for alle uden for LeanLinking.",
+   "hvordan_traenes": "MADR-minimalskabelon i /docs/adr i LeanLinkings repo. Skriv ADR'en FOER beslutningen, med Decision-sektionen tom og 'Forslag - ikke besluttet' oeverst. Send til den mest erfarne udvikler med ét specifikt spoergsmaal. Vent 24 timer foer han forsvarer noget. Udfyld Decision til sidst, og skriv eksplicit hvis feedback aendrede valget. Frekvens: 1-2 om maaneden, kun paa beslutninger der er dyre at rulle tilbage. Maal: 12-20 paa aaret, ikke 60.",
+   "niveauskala": "1: skriver ingenting ned. 2: skriver ADR'er efter beslutningen, som referat. 3: skriver foer beslutningen med reelle alternativer og konkrete pros/cons. 4: ADR'erne aendrer faktisk beslutninger fordi kolleger indvender noget - dokumenteret i historikken. 5: ADR-praksissen er blevet teamets norm og andre skriver dem uden at blive bedt om det."
+  },
+  {
+   "navn": "Design doc / RFC",
+   "hvorfor": "Formatet der loefter ham fra 'udvikler der loeser den tildelte opgave' til 'person der definerer hvad opgaven er'. Non-Goals og Alternatives Considered er de to sektioner juniorer springer over, og de er hele forskellen paa et dokument der viser taenkning og et der viser en plan. Det er ogsaa det format hvor han kan invitere modstand fra flere kanter samtidig - internt, fra et community, og fra en kundes arkitekt.",
+   "hvordan_traenes": "Google-strukturen: Context and Scope, Goals, Non-Goals, Actual Design, Alternatives Considered, Cross-cutting concerns. Fast disciplin: skriv Goals/Non-Goals foerst og alene i 45 min; skriv Alternatives Considered FOER Actual Design; test at hvert forkastet alternativ er beskrevet saa retfaerdigt at nogen kunne vaelge det. Sideloft: tre til fem sider. Frekvens: ét ordentligt design doc i kvartalet, altsaa fire paa aaret. Laes fem rigtige Oxide-RFD'er som forbilleder frem for at laese flere skabeloner.",
+   "niveauskala": "1: koder foerst, forklarer bagefter. 2: skriver en plan uden alternativer. 3: skriver med reelle alternativer og eksplicitte non-goals. 4: dokumentet aendrer sig maerkbart mellem v1 og v2 paa grund af feedback fra mindst to forskellige laeserprofiler. 5: andre bruger hans dokument som skabelon, og stifteren beder om et design doc foer stoerre arbejde."
+  },
+  {
+   "navn": "Visuel forklaring (C4 + sekvensdiagram)",
+   "hvorfor": "Diagrammet er det foerste en anden person moeder, og det afgoer om resten bliver laest. I hans situation er det ogsaa kundevendt materiale: en kundes sikkerhedsansvarlige vurderer LeanLinking delvist paa om firmaet kan forklare sit eget system. Faerdigheden kraever reps med feedback - den kan ikke laeses ind.",
+   "hvordan_traenes": "Structurizr Lite i Docker med workspace.dsl i git til alt der har en model bag sig; Mermaid sequenceDiagram i pull requests og markdown til alt under et dusin noder. Simon Browns review-checklist paa HVERT diagram. Blindtest: giv diagrammet til en der aldrig har set systemet, sig intet, notér hver misforstaaelse, ret DIAGRAMMET. Tyve reps over 12 maaneder, ét hver anden uge, timeboxet til 60 minutter. Halvdelen fra LeanLinkings rigtige systemer, halvdelen fra architectural katas.",
+   "niveauskala": "1: tegner kasser og pile uden tekst paa pilene. 2: bruger C4-niveauer korrekt men uden legend og med utekstede relationer. 3: hvert diagram har titel, dato, legend, teknologi i kasserne og verbum paa hver pil, og bestaar checklisten. 4: tegner FORSKELLIGE views af samme model til forskellige laesere - internt udviklerview og eksternt sikkerhedsview - uden at genbruge det ene som det andet. 5: en foerstegangslaeser kan forklare systemet korrekt uden at han siger noget."
+  },
+  {
+   "navn": "Oversaettelse til kroner og risiko",
+   "hvorfor": "Den enkeltfaerdighed der afgoer om han faar indflydelse i et lille firma. En stifter med ansvar for runway traeffer beslutninger i kroner, tid og risiko for tabte handler. En udvikler der taler om kvalitet, teknisk gaeld og skalerbarhed bliver hoert, ikke fulgt. Denne faerdighed er ogsaa det tydeligste arkitektsignal en ekstern hiring manager leder efter, fordi den ikke kan laeres af at laese kode.",
+   "hvordan_traenes": "Fast regel: enhver teknisk paastand oversaettes til én af fire enheder foer den siges hoejt - kroner per maaned, timer per maaned brugt manuelt, sandsynlighed for at tabe en konkret handel, sandsynlighed for at fejle en kundes audit. Traening: hent LeanLinkings faktiske cloud-regning, faktiske datamaengder, faktisk timepris. Skriv tre forslag paa aaret i SCQA-form paa maks én side med to-tre prissatte muligheder og en klar anbefaling. Foer hver samtale med stifteren: skriv den ene saetning der siger hvad det koster, og oev den.",
+   "niveauskala": "1: argumenterer med tekniske egenskaber. 2: naevner tid, men gaetter uden kilde. 3: praesenterer to-tre muligheder med begrundede tal fra virkelige kilder. 4: knytter hver mulighed til en konkret forretningsrisiko - en navngiven handel, en kundes auditkrav - og har en klar anbefaling. 5: stifteren spoerger ham foer der traeffes tekniske beslutninger med oekonomiske konsekvenser."
+  },
+  {
+   "navn": "Facilitering i miniature",
+   "hvorfor": "Den kompetence der tydeligst skiller en dygtig senior udvikler fra en arkitekt, og den er svaerest at oeve alene. Med 3-5 udviklere er formaterne smaa, men mekanikken er den samme som i store organisationer - og han kan foreslaa dem uden mandat, hvilket han ikke kunne i et stort firma. Det er en af de faa steder hvor mikrofirmaet er en fordel.",
+   "hvordan_traenes": "Tre formater, én session i kvartalet: risk storming (90 min, C4-diagram, individuelle tavse post-its foerst, farvekodet, derefter tre handlinger med navn og dato); design review (45 min, dokument rundsendt 48 timer foer, foerste 10 min stille laesning, resten kun spoergsmaal); blameless postmortem paa en RIGTIG hændelse (60 min, faktatidslinje foerst, ingen navne i aarsagsbeskrivelsen, handlinger med ejer og dato). Maaling hver gang: taletid taelt af en kollega eller maalt fra en optagelse, maal under 30 %. Oev én omformuleringssaetning paa forhaand saa den kan siges uden at taenke.",
+   "niveauskala": "1: har aldrig faciliteret. 2: faciliterer, men taler mest selv og fylder stilheden. 3: bruger et struktureret format og holder tiden, taletid under 50 %. 4: taletid under 30 %, faar de stille deltagere paa banen, og omformulerer skyld til systembeskrivelse i realtid. 5: sessionerne producerer beslutninger og handlinger der faktisk gennemfoeres, og teamet beder om dem."
+  },
+  {
+   "navn": "Faglig uenighed og at tabe pænt",
+   "hvorfor": "Uden denne faerdighed er han enten en junior der giver sig hver gang - og saa laerer han intet og faar aldrig indflydelse - eller en der vinder mundtligt og bliver umulig at arbejde med i et team paa fem. Der er ingen tredje mulighed. Og i et firma paa ni kan man ikke gaa til en anden afdeling naar man har brændt en relation.",
+   "hvordan_traenes": "Standardtraek: flyt uenigheden til skrift og asynkront med formuleringen 'jeg skriver en halv side med begge muligheder og hvad jeg tror vi risikerer ved hver - kan du rette hvor jeg tager fejl?'. Obligatorisk steelman: skriv modpartens argument saa staerkt du kan FOER dit eget. Naar han taber: han skriver selv opdateringen i dokumentet, med hvad der overbeviste ham. Uenighedsjournal med mindst seks poster paa aaret, hvoraf mindst to er tab han i dag mener var rigtige.",
+   "niveauskala": "1: giver sig eller undgaar konflikten. 2: argumenterer mundtligt og taber paa anciennitet. 3: flytter uenigheden til skrift med reelle alternativer. 4: kan formulere modpartens argument bedre end de selv gjorde, og aendrer synligt mening naar de har ret. 5: kolleger opsoeger hans uenighed fordi den goer beslutningen bedre, og de giver ham aerlig frem for hoeflig feedback."
+  },
+  {
+   "navn": "Offentlig teknisk skrivning som feedback-mekanisme",
+   "hvorfor": "Den eneste skalerbare kanal til kvalificeret modspil naar ingen paa arbejdet kan give det. Sekundaert: den bygger nichen 'arkitektur til compliance i leverandoerkaeder', hvor der er meget faa i Danmark, og som han kun kan bygge fordi han sidder hos LeanLinking. Rammen skal vaere feedback, ikke branding - de to giver bogstaveligt talt forskellige tekster, og branding-teksten faar ingen kritik.",
+   "hvordan_traenes": "Fire indlaeg paa 12 maaneder, hvert 1.200-2.000 ord paa engelsk, paa eget domaene med evt. syndikering. Hvert indlaeg SKAL indeholde en 'What I am least sure about'-sektion med mindst to punkter og en specifik invitation til kritik. Rytme: uge 1 udkast, uge 2 hviler, uge 3 skaer 30 % og udgiv. Aktiv distribution er obligatorisk: post i Virtual DDD Discord med et konkret spoergsmaal, foreslaa til Architecture Weekly via deres GitHub-repo, og send direkte til to-tre navngivne fagfolk med en specifik henvendelse. Sikkerhedsregler: ingen kundenavne, ingen produktionsdata, alt der naevner arbejdspladsen godkendes af stifteren.",
+   "niveauskala": "1: skriver ikke offentligt. 2: udgiver, men generisk indhold uden domaeneforankring og faar ingen kritik. 3: udgiver domaeneforankret indhold med eksplicit usikkerhed og aktiv distribution. 4: modtager substantielle tekniske indvendinger fra fremmede og aendrer offentligt position mindst én gang. 5: bliver kontaktet af fagfolk om emnet, og folk i nichen kender hans navn i sammenhaeng med den."
+  },
+  {
+   "navn": "Destillation",
+   "hvorfor": "Evnen til at koge et system ned til det vaesentlige er det tydeligste enkeltsignal paa arkitektforstaaelse. Alle kan skrive ti sider. Den, der kan skrive én side der er sand og fuldstaendig nok til at traeffe beslutninger paa, har forstaaet systemet. Det er ogsaa den faerdighed der goer alle hans andre dokumenter kortere og dermed laeste.",
+   "hvordan_traenes": "Architecture Haiku paa præcis én side, fire gange over aaret (maaned 1, 4, 8, 11), timeboxet til 45 minutter, uden at genlaese de tidligere. Haard disciplin paa den prioriterede - ikke opremsede - liste over kvalitetsattributter: noget skal staa sidst. Sekundaert: gaa hvert stoerre dokument igennem og skaer 30 % vaek som fast trin foer udgivelse. Vis haiku nummer to til stifteren og spoerg om det er hvad han synes systemet handler om.",
+   "niveauskala": "1: kan ikke sammenfatte uden at miste det vaesentlige. 2: kan skrive et resumé men uden prioritering. 3: kan rangordne kvalitetsattributter og forsvare raekkefoelgen. 4: én side er nok til at en anden kan traeffe en beslutning paa den. 5: hans sammenfatning bliver den version andre bruger, ogsaa stifteren."
+  }
+ ],
+ "feedback_udefra": [
+  "EN BETALT MENTOR ER DEN VIGTIGSTE ENKELTUDGIFT I HELE PLANEN. MentorCruise ligger typisk paa 70-350 USD per maaned for en-to samtaler plus asynkron feedback; ADPList er gratis men kvaliteten svinger stærkt. Anbefaling: brug ADPList til at moede fire-fem forskellige arkitekter gratis i maaned 1-2, vaelg én der faktisk giver modstand, og betal derefter for kontinuitet. Kontrakten skal vaere eksplicit fra foerste session: 'jeg sender ét dokument om maaneden og vil have at du river det fra hinanden - jeg har ingen arkitekt paa arbejdet.' Uden den formulering faar han opmuntring, og opmuntring er praecis dét han ikke mangler.",
+  "KUNDENS ARKITEKT ER DEN MEST OVERSETE KANAL, OG DEN ER UNIK FOR HANS SITUATION. LeanLinking saelger til stoerre virksomheder - de har solution architects og sikkerhedsansvarlige, altsaa praecis den profil der ikke findes paa kontoret i Skejby. Konkret handling: bed stifteren om lov til at sende ét arkitekturdokument til en kundes IT-arkitekt med et specifikt spoergsmaal. Ram det som kundepleje, for det ER kundepleje - en kunde der bliver spurgt til raads, knytter sig taettere til produktet. Han faar ekspertkritik gratis. Ingen anden kanal giver samtidig feedback, forretningsvaerdi og en relation.",
+  "VIRTUAL DDD (virtualddd.com + deres Discord). Gratis, aktivt i 2026, og fokuseret paa komplekse forretningsdomaener - hvilket er praecis hvad leverandoerkvalificering og compliancedokumentation er. Han skal poste inden for de foerste to uger, ikke laese med i et halvt aar foerst: passiv tilstedevaerelse i communities giver nul feedback. Format der virker: et konkret designvalg, et diagram, to muligheder, og spoergsmaalet 'hvad overser jeg?'. Spoergsmaal uden diagram faar generiske svar.",
+  "ARCHITECTURAL KATAS MED FREMMEDE. Katas er beregnet til grupper paa 3-5 og findes gratis paa architecturalkatas.com og nealford.com/katas. Vaerdien er ikke opgaven - det er at fremmede kritiserer hans loesning uden at kende ham og uden at skulle arbejde sammen med ham i morgen. O'Reilly koerer moderede kata-events med Neal Ford hvor hold faar direkte feedback; deltagelse kraever et O'Reilly-medlemskab paa holdet. Alene-varianten (traek en tilfaeldig kata, 90 minutter, ét Context- og ét Container-diagram plus en haiku) giver reps men ikke feedback - han skal have begge dele.",
+  "LOKALE MEETUPS I AARHUS - SOM TALER, IKKE SOM TILHOERER. GOTO Meetups Aarhus, Aarhus DevOps, Tech Talk Aarhus. Gratis, lokalt, og den eneste ansigt-til-ansigt-kanal til folk mere erfarne end ham. Men vaerdien ligger i spoergsmaalstiden efter et 15-minutters lightning talk, ikke i at sidde i salen. Arrangoerer mangler konstant talere, saa en foerstegangstaler med et konkret emne bliver sagt ja til. Emne: ét konkret designvalg fra hans domaene, ikke en oversigt. Maal: to talks paa 12 maaneder.",
+  "CODE- OG DOKUMENT-REVIEW-BYTTE MED ÉN NAVNGIVEN PERSON. Find én anden udvikler paa samme bane - fra et meetup, fra Discord, fra studiet - og lav en fast maanedlig aftale: 60 minutter, hver sender ét dokument 48 timer foer, hver skriver mindst tre konkrete indvendinger. Gensidighed er hele mekanikken: en person der selv faar noget, giver aerlig kritik i stedet for hoeflig. Det er ogsaa den kanal med den laveste opstartsomkostning i hele listen, og den mest forsoemte.",
+  "OFFENTLIG SKRIVNING MED INDBYGGET INVITATION. Et indlaeg der slutter med 'kommentarer velkomne' faar nul. Et der slutter med 'her er hvad jeg tror er svagest ved min loesning, og hvis du har koert dette paa over 10 mio. raekker, saa fortael mig hvor det knaekker' faar svar fra praecis de mennesker der ved noget. Distribution er ikke valgfri: direkte, specifikke henvendelser til to-tre navngivne fagfolk giver mere reel kritik end tusind visninger.",
+  "ARCHITECTURE WEEKLY (architecture-weekly.com) SOM FALSIFICERBART PUBLICERINGSMAAL. Ugentligt kurateret nyhedsbrev med over 12.000 abonnenter; man kan foreslaa links via GitHub-repoet oskardudycz/ArchitectureWeekly. At faa ét eget indlaeg med er et bedre maalepunkt end nogen LinkedIn-metrik, fordi en fagperson har vurderet indholdet. Det er ogsaa den billigste maade at holde sig kalibreret paa hvad faget diskuterer lige nu - 20 minutter om ugen, ét nyhedsbrev, ikke fem.",
+  "REDDIT r/softwarearchitecture, LOBSTERS OG HACKER NEWS SOM KANARIEFUGL, IKKE SOM SANDHED. Kvaliteten svinger voldsomt og der er meget selvsikker uvidenhed. Brug dem til at opdage om han har overset noget aabenlyst - hvis fem uafhaengige mennesker peger paa samme svaghed, er den formentlig reel - men lad aldrig en anonym kommentar veje tungere end mentoren eller kundens arkitekt. Anonymt internet er godt til at finde fejl, daarligt til at vurdere afvejninger.",
+  "SOFTWARE ARCHITECTURE MONDAY (developertoarchitect.com) SOM SPROGLIG KALIBRERING. Ikke feedback, men det naermeste han kommer paa at hoere hvordan en erfaren arkitekt formulerer en afvejning hoejt - hvilket er praecis hvad han ikke kan hoere paa kontoret. Gratis, korte lektioner, ny hver maaned, flere hundrede i arkivet. Marginaltid: se dem i frokostpausen, afsæt ikke tid til dem.",
+  "GOTO COPENHAGEN (28. september - 2. oktober 2026, TAP1) - KUN HVIS FIRMAET BETALER. Reel vaerdi ligger i masterclass-dagene og i gangene; talks bliver optaget og kan ses gratis senere. Konkret handling i naeste uge: spoerg stifteren. I et firma paa ni er det ét spoergsmaal og ikke en proces, og et 'ja' er sandsynligt hvis han kan begrunde det i kroner. Han skal IKKE betale selv - feedback-vaerdien per krone er langt hoejere i et gratis community og en betalt mentor.",
+  "DEN ORDNING DER GOER HELE FORSKELLEN: ét fast maanedligt eksternt review-slot i kalenderen, med et navn paa. Ikke 'jeg finder nogen at spoerge naar jeg har noget'. Det sker ikke, og det er praecis saadan de 12 maaneder gaar med at oeve sig forkert uden at opdage det. Kalenderaftale, samme dag hver maaned, ét dokument, én ekstern laeser. Alt andet i denne liste er supplement til den ene mekanisme."
+ ],
+ "web_verifikation": "\"Verificeret via websoegning og -hentning 10. september 2026. VAESENTLIGT AENDRET SIDEN GAENGSE RAAD: (1) Structurizr cloud service naar end-of-life 30. september 2026 - alle workspaces har vaeret read-only siden 1. juli 2026, annonceret marts 2026. Structurizr Lite og CLI forbliver gratis; fra 'Structurizr vNext' kraever on-premises-serveren licens for praebyggede binaries, mens open core stadig kan bygges fra kilde. Enhver guide der starter med 'opret konto paa structurizr.com' er nu forkert. Docker-kommandoen er verificeret: docker run -it --rm -p 8080:8080 -v <sti>:/usr/local/structurizr structurizr/lite. (2) NY KANONISK KILDE: Simon Brown, 'The C4 Model: Visualizing Software Architecture', O'Reilly, paperback 21. juli 2026 (Kindle 12. juni 2026), 177 sider, ISBN 979-8341660120 - erstatter hans aeldre Leanpub-titler som foerste reference. (3) Diagram-review-checklisten ligger paa c4model.com/diagrams/checklist (domaenet kunne ikke hentes direkte gennem proxy, men siden er verificeret via soegeindeks med korrekt titel). VAERKTOEJSSTATUS 2026: Mermaid.js er paa 11.16.x med en dedikeret architecture-diagramtype og ikonpakker, og renderer fortsat natively i GitHub/GitLab markdown; layout bliver upaalideligt over ca. et dusin noder. PlantUML er aktivt vedligeholdt (1.2026.8 udgivet 5. september 2026; en rewrite 'PlantUML 2' i Haxe er undervejs) og er stadig eneste komplette UML-daekning inkl. C4-PlantUML-stdlib. LikeC4 er aktivt (v1.59.x, ca. 5.700 stjerner, MCP-integration) men et unoedvendigt tredje vaerktoej for ham. D2 er levende men mindre standardiseret. arc42 er paa version 9 (tysk 9.1 dec. 2025, ungarsk oversaettelse maj 2026), gratis, 12 sektioner, markdown/asciidoc. MADR er aktivt vedligeholdt med fuld/minimal og annoteret/bar variant; YAML-varianten YADR kom marts 2026. Google Technical Writing One/Two/Accessibility er fortsat gratis paa developers.google.com/tech-writing. Mark Richards' Software Architecture Monday er fortsat gratis med ny lektion foerste mandag i maaneden (lektioner verificeret frem til maj 2026). Virtual DDD afholdt session 9. september 2026. LOVGIVNING VERIFICERET (kritisk for hans offentlige skrivning): NIS2 er implementeret i dansk ret - loven vedtaget 29. april 2025, i kraft 1. juli 2025, artikel 21 indeholder krav til leverandoerkaedesikkerhed, ca. 6.000 danske enheder omfattet, tilsyn skalerer op i 2026. CSDDD er derimod udskudt og indsnaevret af Omnibus I: Direktiv (EU) 2026/470, offentliggjort i EU-Tidende 26. februar 2026, i kraft 18. marts 2026; omfang reduceret til virksomheder over 5.000 ansatte og 1,5 mia. EUR omsaetning (fra ca. 13.000 til ca. 6.000 selskaber), EU-daekkende civilretligt ansvar fjernet, klimaomstillingsplankrav slettet, transponering senest 26. juli 2028 og anvendelse fra 26. juli 2029. CERTIFICERING (sidebemaerkning til andre emner): AZ-305 er IKKE pensioneret - engelsk version opdateret 17. april 2026, 165 USD, kraever AZ-104 som forudsaetning for Expert-titlen. KONFERENCE: GOTO Copenhagen 2026 afholdes 28. september - 2. oktober 2026 paa TAP1; der er ikke fundet en GOTO Aarhus-konference i 2026, men GOTO Meetups Aarhus er aktiv. KUNNE IKKE HENTES DIREKTE (blokeret af netvaerksproxy, men bekraeftet via soegeindeks): c4model.com, docs.structurizr.com, adr.github.io, industrialempathy.com, dev.to, developertoarchitect.com, blog.ploeh.dk, workingsoftware.dev, patreon.com. Alle URL'er i ressourcelisten stammer fra faktiske soegeresultater eller vellykkede hentninger - ingen er konstrueret.\""
+}

@@ -1,0 +1,488 @@
+{
+ "kernepointer": [
+  "TIDSBUDGET FOR DETTE EMNE: Positionering maa maksimalt tage 2-3 timer om ugen i gennemsnit af de 10-15. Cirka 20 procent. Resten er teknisk arbejde. Grunden er ikke beskedenhed, men aarsagsretning: synlighed er en funktion af substans, ikke omvendt. Den klassiske fejl er at en junior bruger 6 timer om ugen paa LinkedIn og skriveri om arbejde han ikke har lavet, og efter 12 maaneder har han en foelgeskare og ingen kompetence. Nogle uger er positionering 0 timer. I ugen foer et oplaeg er den 6. Gennemsnittet skal holde.",
+  "NICHENS STYRKE ER MATEMATISK, IKKE RETORISK. Som generalist uden titel konkurrerer Simon med alle andre uden titel, og der er tusindvis i Danmark. Som den person der kan foere en teknisk samtale om hvad en CSDDD- eller NIS2-audit faktisk kraever af en datamodel, konkurrerer han med et tal der plausibelt ligger under 50 i Danmark. Han kan ikke vinde den brede konkurrence paa 12 maaneder. Han kan vinde den smalle. VERIFICERET UNDERSTOETTELSE (GitHub-soegning 10. september 2026): soegning paa 'multi-tenant SaaS architecture dotnet' giver 24 repositories, hvoraf stort set alle har 0-2 stjerner og er oprettet i 2026, og naesten alle kalder sig selv 'reference architecture', 'starter kit' eller 'template'. Soegning paa 'supplier due diligence supply chain compliance platform' giver 1 repository med 0 stjerner. Soegning paa 'CSRD ESRS sustainability reporting compliance open source' giver 0 repositories. Det generiske omraade er maettet med usynligt arbejde. Det domaenespecifikke omraade er tomt. Det er ikke en meningstilkendegivelse, det er et optaellingsresultat.",
+  "NAVNEKOLLISIONEN ER DEN FARLIGSTE ENKELTFEJL I HELE POSITIONERINGEN. I softwarebranchen betyder 'supply chain security' i 2026 SBOM, SLSA, sigstore, in-toto, attestation og afhaengighedsscanning. Det er software supply chain, ikke leverandoerkaeder. VERIFICERET: soegning paa 'software supply chain security SBOM attestation' giver et etableret felt med aktive projekter (chainloop-dev/chainloop 584 stjerner, bureado/awesome-software-supply-chain-security 380 stjerner). Hvis Simon brander sig som 'supply chain security architect' bliver han laest som DevSecOps-menneske, og hans faktiske domaene forsvinder. Han skal bruge ord der ikke kolliderer: 'supplier compliance', 'leverandoercompliance', 'regulatory document workflows', 'supplier data architecture', 'compliance evidence systems'. Ordet 'supplier' er entydigt. Ordet 'supply chain' er det ikke.",
+  "POSITIONERINGSSAETNINGEN SKAL VAERE EN SAETNING, OG DEN SKAL VAERE FALSIFICERBAR. Foreslaaet form: 'Jeg bygger systemer der skal kunne bevise noget over for en revisor: leverandoerdata, dokumentation og audit trails der holder under CSDDD, NIS2 og GDPR paa samme tid.' Testen paa om saetningen virker: en fremmed skal kunne gentage den efter at have hoert den en gang, og en fagperson skal kunne stille et opfoelgende spoergsmaal som Simon kan svare paa i dybden. Hvis han ikke kan svare i dybden, er saetningen for bred og skal snaevres, ikke pyntes.",
+  "TITEL VERSUS EVIDENS. Han har ingen titel og faar ikke en troværdig en i et 9-mandsfirma. Konsekvensen er ikke at han skal skrive noget andet paa CV'et; det er at CV'et skal baere BESLUTNINGER i stedet for ANSVARSOMRAADER. Formatet der virker per punkt: hvilken beslutning, hvilke alternativer der blev fravalgt, hvilken begraensning der afgjorde det, hvad der blev maalt bagefter. 'Valgte append-only event log frem for mutable rows med history-tabel til audit trail, fordi revisor kraevede at ingen historik kan overskrives; kostede 30 procent mere storage, maalt over 18 maaneders data.' Det er verificerbart, det kan forsvares i et interview, og det kraever ingen titel. Sammenlign med 'Ansvarlig for backend-arkitektur', som ingen tror paa fra en 23-aarig og som ikke kan forsvares.",
+  "VERBERNE PAA CV'ET ER LOAD-BEARING. 'Designede', 'valgte', 'afviste', 'maalte', 'migrerede', 'ejede' er paastande der kan efterproeves. 'Var med til', 'deltog i', 'bidrog til', 'hjalp med', 'arbejdede med' er stoej og signalerer typisk at personen ikke traf beslutningen. Hvis han ikke traf beslutningen, skal punktet ud, ikke omskrives. Et CV med fire skarpe punkter slaar et med tolv vage.",
+  "9-MANDSFIRMAET SKAL FRAMES SOM SCOPE, IKKE SOM STOERRELSE. Forkert: 'En af tre udviklere i et lille firma.' Rigtigt: 'Jeg ejede designet af integrationsfladen mod kundernes ERP-systemer fra kravafklaring til drift, inklusive kundedialog og fejlretning i produktion.' Det andet er sandt, siger noget en hiring manager ikke kan faa fra en junior i et 500-mandsfirma, og naevner slet ikke antal ansatte. Bredden er hans faktiske konkurrencefordel: en junior i en stor virksomhed rammer aldrig drift, database, integration, kundesamtale og support paa samme aar. Det skal staa eksplicit, for det er ikke indlysende for laeseren.",
+  "SYNLIGHED HAR ET LANGT LAG. Det han publicerer i maaned 3 betaler foerst i maaned 20-30. Det er praecis derfor det skal starte NU, hvor han ikke soeger job. Materiale publiceret af en der ikke leder efter noget laeses som fagligt; det samme materiale publiceret tre uger efter en opsigelse laeses som markedsfoering. Han har et sjaeldent vindue: han kan bygge ekstern vaerdi uden at have brug for den. Det vindue lukker den dag han har brug for den.",
+  "PLATFORMSTRATEGI DER ER ROBUST OVER FOR AT PLATFORMENE SKIFTER: eget domaene som kanonisk hjem, syndikering udad. Konkret: koeb et domaene i hans eget navn, publicer i markdown paa noget statisk (GitHub Pages er gratis og verificeret tilgaengeligt), og post derefter et uddrag med link paa LinkedIn og i relevante fora. Grunden er ikke idealisme: en artikel paa eget domaene kan stadig linkes om fem aar, kan indekseres, og forsvinder ikke naar en platform aendrer algoritme eller doer. LinkedIn er distribution, ikke arkiv. Skriv aldrig originalt indhold der kun findes paa LinkedIn.",
+  "SPROGVALG: ENGELSK TIL DET SKRIFTLIGE, DANSK TIL NETVAERK. Hans nichepublikum er europaeisk, fordi regulativerne er europaeiske. Det danske marked for 'arkitektur til leverandoercompliance' er for lille til at baere en skriftlig tilstedevaerelse alene. Meetups, kaffemoeder og lokal netvaerksopbygning foregaar paa dansk i Aarhus. LinkedIn-profil paa engelsk.",
+  "FREKVENS: 1-2 udgivelser om maaneden, ikke ugentligt. Ugentligt fejler for en fuldtidsansat med 10-15 timer, og naar det fejler stopper han helt. Tolv gode indlaeg paa tolv maaneder er en portefoelje. Fyrre halve indlaeg er stoej. Kvalitetstaerskel per udgivelse: den skal indeholde mindst eet tal han selv har maalt, og mindst eet sted hvor han skriver hvad han tog fejl af.",
+  "KONFERENCESTIGEN ER FIRE TRIN, IKKE ET SPRING. Internt oplaeg for de ni kolleger, derefter lightning talk paa 10 minutter til et lokalt meetup, derefter fuldt oplaeg paa 30-45 minutter til et meetup, derefter CFP til community- eller lightning-track paa en konference. Realistisk maal inden for 12 maaneder: eet leveret meetup-oplaeg og tre indsendte CFP'er. Inden for 24 maaneder: eet accepteret konferenceoplaeg. Main track paa en stor konference inden for 24 maaneder som junior er ikke realistisk PAA GENERISKE EMNER. Paa hans emne er det ikke udelukket, fordi kurateringsudvalg mangler indhold der ikke er endnu et microservices-foredrag. Emnets saerhed er hans eneste loeftestang, og den er reel.",
+  "MEETUP-ARRANGOERER MANGLER KRONISK TALERE. Det er den mest undervurderede kendsgerning i hele synlighedsdelen. Acceptraten paa en mail der siger 'jeg kan holde 10 minutter om hvad en compliance-audit kraever af en datamodel, jeg har gjort det i praksis' er meget hoej, fordi arrangoeren skal fylde en aften og hellere vil have et konkret 10-minutters oplaeg end ingenting. Han skal skrive den mail, ikke vente paa at blive spurgt.",
+  "IKKE-DEV-KONFERENCER ER EN AABEN FLANKE. Indkoebs-, logistik- og compliance-branchen holder ogsaa konferencer, og der er naesten ingen konkurrence fra teknikere. Et oplaeg om 'hvad der teknisk skal vaere paa plads foer jeres leverandoerdokumentation kan holde til en audit' til et indkoebspublikum er lettere at faa igennem end det samme oplaeg til et udviklerpublikum, og LeanLinking vil sandsynligvis betale for det, fordi det er markedsfoering for dem. Dobbeltgevinst: han faar taletid og arbejdsgiveren faar vaerdi. Dette skal han foreslaa stifteren direkte.",
+  "OPEN SOURCE I HANS EGET DOMAENE ER IKKE EN VEJ. VERIFICERET: der findes praktisk taget ingen open source i leverandoer- og indkoebscompliance (0-1 repositories fundet). Der er intet at bidrage til. Vejen gaar i stedet gennem TEKNISK TILSTOEDENDE projekter i .NET-oekosystemet, hvor problemklasserne overlapper hans domaene: JasperFx/marten (3.452 stjerner, aktivt pushet 10. september 2026, MIT, event sourcing og append-only projections, praecis mekanikken bag et audit trail) og Finbuckle/Finbuckle.MultiTenant (1.620 stjerner, aktivt, multi-tenant isolation i .NET). Vaerdien er ikke stjerner paa hans profil; det er at en maintainer reviewer hans designvalg haardt og offentligt. Det er ekstern feedback han ikke kan faa paa arbejdet.",
+  "SYSTEM DESIGN-INTERVIEWS ER ET MAALEINSTRUMENT, IKKE JOBFORBEREDELSE. Det er den mest ærlige og bedste ramme i hele planen for hans situation, fordi det er den eneste selvtest hvor han ikke kan snyde: 45 minutter, ingen opslag, taler hoejt, optager sig selv. Hvis han ikke kan forklare sit eget designvalg sammenhaengende paa 45 minutter, kan han det ikke. Bruges maaned 0, 3, 6 og 9 mod SAMME rubrik, saa scoren er sammenlignelig. Det er en velegnet komponent i kompetenceporten i maaned 9-10, fordi den er falsificerbar og gradbar udefra.",
+  "ADVARSEL MOD DET POPULAERE SYSTEM DESIGN-MATERIALE: det er kalibreret til FAANG-skala. system-design-primer (verificeret 369.184 stjerner, aktivt) laerer at designe Twitter til 500 millioner daglige brugere. Simons systemer har maaske 50 tenants og titusindvis til millioner af dokumenter. Hvis han optimerer sin traening mod sharding, CDN og global replikering, traener han et problem han aldrig faar, og han bliver til den arkitekt der overdesigner. BRUG METODEN (kravafklaring, estimering, datamodel, flaskehalse, fejltilstande, tradeoffs), UDSKIFT PROBLEMERNE med hans egne domaeneproblemer. Architecture katas er af samme grund et bedre format for ham end interviewspoergsmaal, fordi katas indeholder forretningskontekst og kvalitetsattributter, og det er praecis der hans domaenefordel ligger.",
+  "DET DANSKE IT-MARKED 2026 - HVAD JEG IKKE KUNNE VERIFICERE OG HVAD DER ALLIGEVEL GAELDER. Jeg kunne IKKE verificere aktuelle danske markedstal denne session (se web_verifikation). Skriv ikke tal om markedet som om de er tjekket. Hvad der derimod er struktureltn og ikke afhaenger af konjunkturen: de opgaver AI-vaerktoejer i 2026 loeser godt er at skrive ligefrem kode ud fra en klar specifikation, og det er praecis de opgaver juniorer historisk blev ansat til. De opgaver de loeser daarligt er at afgoere hvad der skal bygges, at vaelge under modstridende begraensninger, at kende domaenet, og at drive systemet i produktion. Uanset om markedsdata bekraefter en juniorafmatning eller ej, peger kompetenceforskydningen i den retning Simon allerede har valgt. VAER AERLIG OM AT KAUSALITETEN ER OMSTRIDT: juniornedgangen siden 2023 falder sammen baade med AI-vaerktoejernes udbredelse OG med rentedrevet ansaettelsesstop, og at adskille de to er ikke afgjort i litteraturen. Enhver der paastaar sikkerhed om det, spekulerer.",
+  "HANS RISIKO ER IKKE 'KAN JEG FAA JOB'. Han HAR job og gaar paa fuldtid. Det fjerner ham fra den haardeste del af markedet, som er indgangen. Hans faktiske risiko er 'er mine kompetencer noget vaerd om tre aar, og har jeg noget at vise for det ud over en jobtitel i et firma ingen har hoert om'. Det er en anden risiko og kraever en anden strategi: akkumulerede, daterede, offentlige artefakter. Skriv sektionen ud fra den risiko.",
+  "LOEN - INDIKATIVE NIVEAUER, IKKE VERIFICERET DENNE SESSION. Foelgende bands er fra traeningsviden og SKAL tjekkes mod IDA's loenstatistik og Jobindex foer de bruges i den faerdige tekst: nyuddannet softwareudvikler i privat sektor i Danmark cirka DKK 38.000-45.000 om maaneden inklusive pension; mid-level med 3-5 aar cirka DKK 48.000-58.000; senior med 7 aar og opefter cirka DKK 60.000-75.000; solution architect cirka DKK 65.000-85.000 med det hoeje spaend i konsulenthuse, finans og pharma. Koebenhavn ligger typisk 5-10 procent over Aarhus. Mikrovirksomheder ligger typisk under markedet paa grundloen. Marker eksplicit i teksten at tallene er indikative og henvis til kilden.",
+  "LOENLOFTET HOS LEANLINKING KAN REGNES UD AF DE VERIFICEREDE TAL, OG DET SKAL HAN GOERE FOER HAN FORHANDLER. Bruttofortjeneste DKK 4,2 mio. i 2025 fordelt paa 7 aarsvaerk er DKK 600.000 i bruttofortjeneste per aarsvaerk. En fuldtidsansat til DKK 40.000 om maaneden koster fuldt indlaest cirka DKK 540.000-560.000 aarligt inklusive pension; til DKK 45.000 cirka DKK 600.000-630.000. Med andre ord: firmaets bruttofortjeneste per aarsvaerk daekker cirka een fuldt indlaest medarbejder OG SAA SKAL HUSLEJE, SOFTWARE, SALG OG OVERSKUD OGSAA BETALES AF DEN. FORBEHOLD: jeg har ikke personaleomkostninger eller resultatlinjen, kun bruttofortjeneste og aarsvaerk, saa regnestykket er en oevre ramme, ikke en praecis konklusion. Den praktiske konsekvens er entydig: der er ikke plads til et stort loenspring, og hvis han gaar ind og kraever DKK 50.000 uden at kende det tal, laeser stifteren ham som en der ikke forstaar forretningen. Det er det modsatte af arkitektsignal.",
+  "DERFOR SKAL FORHANDLINGEN HANDLE OM MERE END LOEN. Ting der koster et 9-mandsfirma naesten ingenting og er meget vaerd for ham: skriftlig ret til at publicere sanitiseret fagligt indhold fra arbejdet; et navngivet uddannelsesbudget (DKK 15.000-25.000 aarligt daekker certificeringer, boeger, en konferencebillet); betalt konferencedeltagelse hvor han holder oplaeg; en dag om maaneden til fokuseret arkitekturarbejde; adgang til kundemoeder og til at besvare sikkerhedsspoergeskemaer; en skriftlig aftale om hvad der skal vaere sandt for at rollen aendrer sig; og en fastlagt loensamtale efter 12 maaneder med kriterier aftalt PAA FORHAND. Det sidste er det vigtigste, fordi det konverterer kompetenceporten til penge automatisk i stedet for at kraeve en ny konfrontation.",
+  "MODYDELSEN HAN KAN PEGE PAA ER KONKRET OG SJAELDEN I ET MIKROFIRMA. Hvis han kan vise at han har afkortet svartiden paa kunders sikkerhedsspoergeskemaer, fjernet en supportkategori, eller gjort en compliancefunktion demonstrerbar i en salgssituation, argumenterer han paa bruttofortjenestelinjen i stedet for paa omkostningslinjen. Det er den eneste argumentation der virker i et firma med tynde marginer. Loenkrav baseret paa 'markedet betaler X' virker daarligt i et mikrofirma fordi svaret er 'saa maa markedet betale det'.",
+  "KRITISK KONTRAKTPUNKT FOER HAN SKRIVER UNDER PAA FULDTIDSKONTRAKTEN: IP-KLAUSULEN. Hvis kontrakten overdrager rettigheder til alt hvad han frembringer, ogsaa uden for arbejdstid, saa tilhoerer hele hans spike-portefoelje juridisk arbejdsgiveren, og hele planen er vaerdiloes som ekstern portefoelje. Han skal have en skriftlig undtagelse for arbejde udfoert i egen tid paa eget udstyr, og en skriftlig tilladelse til at publicere sanitiseret materiale. Det er ikke en konfrontation i et 9-mandsfirma; det er en samtale paa ti minutter med stifteren FOER underskrift. Efter underskrift er forhandlingspositionen vaek.",
+  "ANDET KRITISK KONTRAKTPUNKT: KONKURRENCE- OG KUNDEKLAUSUL. En konkurrenceklausul rammer en specialist uforholdsmaessigt haardere end en generalist. Hvis han bygger sin identitet paa leverandoercompliance og samtidig er afskaaret fra at arbejde hos nogen i det felt, har han bygget en niche han ikke maa bruge. Dansk ret (ansaettelsesklausulloven) stiller krav om kompensation, skriftlighed og en minimumsanciennitet for at saadanne klausuler er gyldige - jeg kunne IKKE verificere de praecise gaeldende krav i 2026, saa faa kontrakten laest af IDA eller en advokat foer underskrift i stedet for at gaette. Dette er praecis den ydelse et fagforeningsmedlemskab er vaerd.",
+  "A-KASSE ER TIDSKRITISK OG BLIVER RUTINEMAESSIGT OVERSET. En a-kasse er arbejdsloeshedsforsikring og er noget ANDET end en fagforening; man kan vaere medlem af den ene uden den anden. Hovedreglen er et aars medlemskab foer der er ret til dagpenge, MEN der findes en saerregel for nyuddannede (dimittendregel) med kort optagelsesfrist efter endt uddannelse. Fristen er kort og ufravigelig. Han skal melde sig ind SOM STUDERENDE, hvor det typisk er gratis eller naesten gratis, og under alle omstaendigheder undersoege dimittendfristen umiddelbart foer han bliver faerdig. Jeg kunne IKKE verificere de gaeldende frister og dimittendsatser i 2026 - de er blevet aendret ved reformer inden for de seneste aar - saa den faerdige tekst skal sende ham til a-kassens egen side, ikke opgive et tal. Relevante a-kasser: Akademikernes A-kasse, Min A-kasse, Ase, MA. Alle uverificerede med hensyn til aktuelle vilkaar.",
+  "FAGFORENING - DEN KONKRETE VAERDI FOR HAM ER TO TING, IKKE SOLIDARITET. En: loenstatistik han kan bruge som forhandlingsgrundlag over for stifteren, hvilket er langt staerkere end mavefornemmelse. To: kontraktgennemgang foer underskrift, som daekker IP-klausulen og konkurrenceklausulen ovenfor. IDA er den naturlige for en ingenioeruddannet og har begge dele; PROSA er alternativet for IT-professionelle. Et aars medlemskab koster mindre end den fejl han undgaar i kontrakten. Studenterrabat er typisk betydelig. Uverificeret med hensyn til priser og aktuelle ydelser.",
+  "AT FORLADE ET LILLE FIRMA GODT BEGYNDER AAR FOER OPSIGELSEN. I et 9-mandsfirma er en opsigelse personlig for stifteren, og en overraskelse laeses som svigt. Modgiften er en aarlig, aaben samtale: 'her er hvor jeg vil vaere om to aar - kan det ske her?' Stillet hvert aar er det planlaegning. Stillet en gang, tre uger foer en opsigelse, er det en trussel. Den samtale beskytter ogsaa ham: hvis svaret aerligt er nej, faar han det at vide to aar foer i stedet for at opdage det bagefter.",
+  "NAAR HAN EN DAG GAAR: giv laengere opsigelse end han skylder. Funktionaerloven kraever typisk en maaned fra medarbejderen (verificer den praecise regel og hvad kontrakten siger). At tilbyde to eller tre koster ham naesten intet og koeber tyve aars velvilje i et marked hvor alle kender alle. Aflever dokumentation: de C4-diagrammer og ADR'er han har skrevet ER overleveringen, hvilket er endnu en grund til at skrive dem fra dag et. Rekrutter aldrig kolleger med ud. Tag aldrig kunder. Tal aldrig nedsaettende om firmaet offentligt - heller ikke i et jobinterview, hvor det udelukkende skader ham. Timing: gaa ikke midt i det arbejde der er hans portefoelje, for saa mister han baade referencen og historien.",
+  "AARHUS-MARKEDET ER LILLE NOK TIL AT DET KAN KORTLAEGGES OG STORT NOK TIL AT DET BETYDER NOGET. Praktisk konsekvens: 30 substantielle samtaler over et aar svarer til at kende miljoeet. Det er et opnaaeligt tal - en om maaneden plus meetups. Samme lille marked betyder at stifteren hos LeanLinking vil vaere en reference i tyve aar, og at en daarlig afsked foelger ham. Behandl begge dele som samme kendsgerning.",
+  "'AABEN FOR ARBEJDE'-MARKOEREN PAA LINKEDIN SKAL VAERE SLUKKET. Han soeger ikke job, og markoeren undergraver hele positioneringen: den flytter ham fra 'fagperson med et emne' til 'kandidat'. Alt hvad han skriver bliver laest gennem den linse. Det samme gaelder om at ansoege om stillinger 'for at oeve sig' - i et lille dansk marked bliver det bemaerket.",
+  "OVERSAELG ER DEN NEMMESTE MAADE AT OEDELAEGGE DET PAA, OG DEN KONKRETE FORM DET TAGER ER TITLEN. At skrive 'Solution Architect' eller bare 'Architect' i LinkedIn-headeren foer han har titlen og jobbet er den enkeltfejl der koster mest, fordi den er let at opdage og fordi det danske miljoe er lille. Alternativet er ikke beskedenhed, men praecision: rollen staar som den er, og EMNET staar tydeligt. Eksempel paa header der virker: 'Software Engineer at LeanLinking - supplier compliance, audit trails and document-heavy systems'. Ingen titelpaastand, fuldstaendig klar niche, intet at afsloere."
+ ],
+ "ressourcer": [
+  {
+   "titel": "ArchKatas - Ted Newards samling af architecture katas i JSON",
+   "type": "repository / oevesamling",
+   "prioritet": "1 - kernemotoren i solo-traeningen",
+   "hvorfor": "35+ konkrete arkitekturopgaver med forretningskontekst og kvalitetsattributter, ikke bare tekniske skalaproblemer. Det er formatet der passer ham, fordi katas indeholder de begraensninger hans domaene handler om. Gratis. Verificerede kata-navne inkluderer Road Warrior, SantasWorkshop, GoingGreen, AmISick, CheckYourWork, RoomWithAView. Ted Neward er ophavsmanden til formatet.",
+   "url": "https://github.com/tedneward/ArchKatas",
+   "verificeret": true,
+   "tidsforbrug": "3-4 timer per kata, cirka en per maaned",
+   "hvad_springes_over": "Repoet indeholder kun opgaverne, ikke en metode. Han skal selv paalaegge sig tidsboks og rubrik, ellers bliver det tidsfordriv. Spring alle katas over der ikke har et dokument-, data- eller compliancetungt element - de traener ikke hans niche."
+  },
+  {
+   "titel": "Architecture Decision Records - samling af ADR-eksempler og templates",
+   "type": "repository / template",
+   "prioritet": "1 - det vigtigste enkeltartefakt i hele positioneringen",
+   "hvorfor": "ADR'er er den eneste maade at goere arkitekturarbejde synligt paa naar man ikke har titlen. De er daterede, de indeholder alternativer og begrundelse, de kan sanitiseres og publiceres, og de fungerer som overlevering den dag han gaar. 16.877 stjerner, aktivt. BEMAERK: repoet laa tidligere under joelparkerhenderson og er flyttet til sin egen organisation - gamle links redirecter, men brug den nye adresse.",
+   "url": "https://github.com/architecture-decision-record/architecture-decision-record",
+   "verificeret": true,
+   "tidsforbrug": "1 time til at laese templates, derefter 20-30 minutter per ADR",
+   "hvad_springes_over": "Laes IKKE hele samlingen. Vaelg EEN template (MADR eller Nygards oprindelige korte form), brug den konsekvent, og lad vaere med at skifte format undervejs. Skift af template er den maade ADR-arkiver doer paa."
+  },
+  {
+   "titel": "adr-tools (npryce) og log4brains (thomvaill)",
+   "type": "vaerktoej",
+   "prioritet": "4 - valgfrit, kan helt undvaeres",
+   "hvorfor": "Kommandolinjevaerktoejer til at oprette og publicere ADR'er. adr-tools har 5.683 stjerner, log4brains 1.583 med 57 aabne issues. BEMAERK OM VERIFIKATION: GitHubs updated_at-felt aendrer sig ogsaa naar nogen giver en stjerne, saa det er IKKE bevis paa aktiv commit-aktivitet. Vurder selv commit-historikken foer han goer sig afhaengig af dem.",
+   "url": "https://github.com/npryce/adr-tools",
+   "verificeret": true,
+   "tidsforbrug": "30 minutter",
+   "hvad_springes_over": "Spring det over til at begynde med. En mappe med nummererede markdown-filer loeser problemet. Vaerktoejsvalg her er en udmaerket maade at udskyde at skrive den foerste ADR paa."
+  },
+  {
+   "titel": "system-design-primer (donnemartin)",
+   "type": "repository / laeremateriale",
+   "prioritet": "2 - men kun metoden, ikke indholdet",
+   "hvorfor": "369.184 stjerner, aktivt. Den bedste gratis gennemgang af system design-metodikken: hvordan man afklarer krav, estimerer, tegner datamodel, finder flaskehalse, argumenterer for tradeoffs. Metoden er den han skal bruge til sine maaned 0/3/6/9-selvtests.",
+   "url": "https://github.com/donnemartin/system-design-primer",
+   "verificeret": true,
+   "tidsforbrug": "6-8 timer til metodedelen, spredt over de foerste to maaneder",
+   "hvad_springes_over": "SPRING DE FLESTE DESIGNOPGAVER OVER. 'Design Twitter timeline', 'design a web crawler', 'design Pastebin' er kalibreret til hundredvis af millioner brugere. Simons systemer har titalls tenants. Spring ogsaa afsnittene om CDN, global replikering og aggressiv sharding over - han faar ikke de problemer, og hvis han traener dem bliver han til den arkitekt der overdesigner. Anki-kortene er ogsaa spild for hans formaal."
+  },
+  {
+   "titel": "Sysops Squad architecture kata (team7katas)",
+   "type": "worked example",
+   "prioritet": "2 - som facitliste for hvordan et faerdigt arkitekturprodukt ser ud",
+   "hvorfor": "307 stjerner. Sysops Squad er kataen fra Richards og Fords 'Software Architecture: The Hard Parts', og dette repo er en gennemarbejdet loesning. Vaerdien for ham er ikke loesningen, men FORMATET: hvad et faerdigt arkitekturdokument indeholder, hvor detaljeret det er, og hvordan tradeoffs praesenteres. Han har aldrig set et, fordi der ikke findes et hos LeanLinking.",
+   "url": "https://github.com/team7katas/sysopsquad",
+   "verificeret": true,
+   "tidsforbrug": "2 timer, en gang",
+   "hvad_springes_over": "Laes det som formateksempel, ikke som pensum. Genlaes det aldrig."
+  },
+  {
+   "titel": "archcolider (ldynia) - O'Reillys foerste Software Architectural Kata",
+   "type": "worked example",
+   "prioritet": "3",
+   "hvorfor": "248 stjerner. Endnu et gennemarbejdet kata-output. Nyttigt som andet formateksempel, saa han ser variationen og ikke kopierer eet format slavisk.",
+   "url": "https://github.com/ldynia/archcolider",
+   "verificeret": true,
+   "tidsforbrug": "1 time",
+   "hvad_springes_over": "Kan helt undvaeres hvis Sysops Squad er laest."
+  },
+  {
+   "titel": "ddd-starter-modelling-process (ddd-crew)",
+   "type": "metode / canvas-samling",
+   "prioritet": "2 - saerligt Bounded Context Canvas",
+   "hvorfor": "Leverer faerdige canvasser: Bounded Context Canvas, Aggregate Design Canvas, Core Domain Chart, Domain Message Flow. To grunde til at det passer ham praecist. Foerst: et udfyldt Bounded Context Canvas for LeanLinkings produkt er et PUBLICERBART ARTEFAKT der beviser domaeneforstaaelse. Dernaest: Core Domain Chart tvinger ham til at skelne mellem hvad der er kernedomaene (compliancelogik) og hvad der er generisk (fillagring, brugerstyring), og den skelnen er selve arkitektbeslutningen.",
+   "url": "https://github.com/ddd-crew/ddd-starter-modelling-process",
+   "verificeret": true,
+   "tidsforbrug": "4 timer til at laese og udfylde tre canvasser for eget produkt",
+   "hvad_springes_over": "Spring EventStorming-workshopdelen over. Den kraever en gruppe og en dag, og det faar han ikke igennem i et 9-mandsfirma foerste aar. Spring ogsaa 'Organise'-trinnet over - det handler om teamstruktur og er meningsloest ved syv aarsvaerk."
+  },
+  {
+   "titel": "JasperFx/marten",
+   "type": "open source-projekt / bidragsmaal",
+   "prioritet": "2 - som kilde til ekstern review, ikke som CV-punkt",
+   "hvorfor": "3.452 stjerner, MIT-licens, pushet 10. september 2026 (altsaa reelt aktivt, ikke bare metadata-opdateret), 7 aabne issues, har Discussions slaaet til. .NET event store paa PostgreSQL. Mekanikken er praecis den bag et append-only revisionsspor der kan holde til en audit. At laese kildekoden er arkitekturuddannelse; at faa en PR reviewet af maintainerne er en af de faa gratis kilder til haard, kvalificeret, ekstern kritik af hans designvalg.",
+   "url": "https://github.com/JasperFx/marten",
+   "verificeret": true,
+   "tidsforbrug": "8-12 timer for foerste meningsfulde bidrag; laesning af kildekode 2-3 timer",
+   "hvad_springes_over": "Gaa ikke efter store features. Start i Discussions med et praecist spoergsmaal, derefter dokumentation eller en lille afgraenset fejlretning. En junior der aabner en stor arkitektur-PR i et modent projekt faar den lukket, og det er demotiverende paa den ubrugelige maade."
+  },
+  {
+   "titel": "Finbuckle.MultiTenant",
+   "type": "open source-projekt / kildekode at laese",
+   "prioritet": "3",
+   "hvorfor": "1.620 stjerner, aktivt, 37 aabne issues. Den de facto multi-tenancy-bibliotek i .NET. At laese HVORDAN de har loest tenant-resolution, per-tenant konfiguration og EF Core-query filters er mere laererigt end at bygge sin egen halvdaarlige version. Direkte relevant for multi-tenant isolation med per-kunde compliancekrav.",
+   "url": "https://github.com/Finbuckle/Finbuckle.MultiTenant",
+   "verificeret": true,
+   "tidsforbrug": "3 timer kildekodelaesning",
+   "hvad_springes_over": "Han skal ikke bygge sit eget multi-tenancy-framework som spike. Det er loest. Spiken skal handle om ISOLATIONSGARANTIER og hvordan man BEVISER dem, ikke om plumbing."
+  },
+  {
+   "titel": "system-design-101 (ByteByteGo), karanpratapsingh/system-design, awesome-system-design-resources (ashishps1)",
+   "type": "laeremateriale",
+   "prioritet": "4 - skim, ikke laesning",
+   "hvorfor": "Verificeret aktive med henholdsvis 89.048, 46.017 og 41.303 stjerner. Nyttige som hurtigt opslag naar han moeder et begreb han ikke kender.",
+   "url": "https://github.com/ByteByteGoHq/system-design-101",
+   "verificeret": true,
+   "tidsforbrug": "Opslag efter behov, ikke sammenhaengende laesning",
+   "hvad_springes_over": "SPRING ALLE TRE OVER SOM PENSUM. Det er samme materiale i tre indpakninger, og at laese dem alle foeles produktivt uden at vaere det. Vaelg een, brug den som ordbog. At laese awesome-lister er den mest udbredte form for produktiv udskydelse i faget."
+  },
+  {
+   "titel": "IDA loenstatistik",
+   "type": "loendata / forhandlingsgrundlag",
+   "prioritet": "1 - foer fuldtidsforhandlingen",
+   "hvorfor": "Den mest anvendte loenstatistik for ingenioer- og techuddannede i Danmark, med opdeling paa anciennitet, region og branche. Det er det tal han skal have med til samtalen i stedet for en mavefornemmelse. Medlemsskab giver adgang og typisk ogsaa kontraktgennemgang.",
+   "url": "ida.dk",
+   "verificeret": false,
+   "tidsforbrug": "2 timer",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES DENNE SESSION - ida.dk er blokeret af netvaerkspolitikken. Verificer aktuel adgang, medlemspris og hvilke opdelinger statistikken faktisk indeholder foer det skrives ind i den faerdige tekst."
+  },
+  {
+   "titel": "PROSA loenstatistik",
+   "type": "loendata",
+   "prioritet": "3 - som krydstjek af IDA",
+   "hvorfor": "Fagforening for IT-professionelle med egen loenstatistik. Nyttig som andet datapunkt, saerligt hvis han ikke er klassisk ingenioeruddannet og derfor ikke er IDA's kernemaalgruppe.",
+   "url": "prosa.dk",
+   "verificeret": false,
+   "tidsforbrug": "1 time",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - prosa.dk er blokeret. Vaelg EEN fagforening, ikke to. Dobbeltmedlemskab er spild."
+  },
+  {
+   "titel": "Jobindex loentjek og jobindeks",
+   "type": "loendata og markedsdata",
+   "prioritet": "2",
+   "hvorfor": "To ting: dels selvrapporteret loendata paa stillingsbetegnelse og region, dels et loebende indeks over antal jobopslag som er det bedste offentligt tilgaengelige maal for om det danske IT-marked strammer eller loesner. Sidstnaevnte er praecis hvad der skal bruges til at udtale sig om markedet i 2026 i stedet for at gaette.",
+   "url": "jobindex.dk",
+   "verificeret": false,
+   "tidsforbrug": "1-2 timer",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - jobindex.dk er blokeret. Selvrapporteret loendata har en systematisk skaevhed opad; brug den som interval, ikke som facit, og lad IDA veje tungest."
+  },
+  {
+   "titel": "A-kasse - Akademikernes A-kasse, Min A-kasse, Ase eller MA",
+   "type": "forsikring / tidskritisk handling",
+   "prioritet": "1 - deadline-drevet, hoejeste hastegrad af alt i denne sektion",
+   "hvorfor": "Dimittendreglen giver nyuddannede ret til dagpenge uden det saedvanlige aars medlemskab, MEN kun hvis man melder sig ind inden for en kort frist efter endt uddannelse. Fristen er ufravigelig. Studerende har typisk gratis eller staerkt nedsat medlemskab, saa der er ingen grund til at vente.",
+   "url": "Findes hos den enkelte a-kasse",
+   "verificeret": false,
+   "tidsforbrug": "1 time til at vaelge og melde sig ind",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - hverken frister, dimittendsatser eller karensregler kunne tjekkes denne session, og de er blevet aendret ved reformer inden for de seneste aar. DEN FAERDIGE TEKST MAA IKKE ANGIVE ET TAL ELLER EN FRIST. Den skal sende ham til a-kassens egen side med en konkret opfordring til at tjekke fristen inden studiets afslutning."
+  },
+  {
+   "titel": "Fagforening - IDA eller PROSA, med kontraktgennemgang som primaer ydelse",
+   "type": "medlemskab / risikoafdaekning",
+   "prioritet": "1 - FOER han underskriver fuldtidskontrakten",
+   "hvorfor": "Den konkrete vaerdi er ikke solidaritet, men to ting: loenstatistik som forhandlingsgrundlag, og en jurist der laeser hans ansaettelseskontrakt FOER underskrift. Det sidste daekker de to klausuler der kan oedelaegge hele planen: IP-overdragelse (der ellers goer hans spike-portefoelje til arbejdsgiverens ejendom) og konkurrenceklausul (der ellers spaerrer ham ude af praecis den niche han bygger). Et aars kontingent er billigere end en af de fejl.",
+   "url": "ida.dk eller prosa.dk",
+   "verificeret": false,
+   "tidsforbrug": "1 time indmeldelse, 1-2 uger ventetid paa kontraktgennemgang - saa start i god tid foer kontrakten skal underskrives",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - kontingenter og aktuelle medlemsydelser er ikke tjekket. Spring alt andet i medlemskabet over til at begynde med; kontraktgennemgangen alene retfaerdiggoer det."
+  },
+  {
+   "titel": "Sessionize",
+   "type": "platform til call for papers",
+   "prioritet": "2 - fra maaned 6",
+   "hvorfor": "Er efter min viden den platform de fleste europaeiske udvikler- og arkitekturkonferencer bruger til CFP'er og talerprofiler. En profil samler alle hans oplaeg ét sted og fungerer som talerside i sig selv, hvilket er nyttigt selv foer han har holdt mange.",
+   "url": "sessionize.com",
+   "verificeret": false,
+   "tidsforbrug": "1 time til profil, 1-2 timer per CFP-indsendelse",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - sessionize.com er blokeret af netvaerkspolitikken. Bekraeft at platformen stadig er den dominerende foer det skrives som anbefaling. Spring uanset hvad alle CFP'er over de foerste seks maaneder - han skal have holdt et meetup-oplaeg foerst, ellers har han intet at referere til i sin talerbio."
+  },
+  {
+   "titel": "Meetup.com - soegning paa Aarhus og omegn",
+   "type": "netvaerk / talermuligheder",
+   "prioritet": "2",
+   "hvorfor": "Den praktiske indgang til lokale faglige miljoeer. Metoden er vigtigere end navnene: soeg paa Aarhus efter .NET, software architecture, cloud, data og Java-grupper, gaa til tre forskellige, og vaelg derefter EEN at komme i hver maaned. At komme fast eet sted slaar at komme sporadisk fem steder, fordi genkendelse er hele mekanismen.",
+   "url": "meetup.com",
+   "verificeret": false,
+   "tidsforbrug": "2-3 timer om maaneden inklusive transport",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - jeg kunne ikke tjekke hvilke grupper der faktisk er aktive i Aarhus i 2026, og den faerdige tekst maa IKKE opfinde gruppenavne. Skriv metoden, ikke navnene. Spring desuden rene rekrutteringsarrangementer over - der er ingen faglig feedback at hente."
+  },
+  {
+   "titel": "GOTO Copenhagen og Copenhagen Developers Festival",
+   "type": "konference",
+   "prioritet": "3 - som deltager i aar 1, som CFP-maal i aar 2",
+   "hvorfor": "De stoerste danske udviklerkonferencer efter min viden, begge med et publikum der matcher hans ambition. Vaerdien i aar 1 er ikke oplaeggene, men at moede mennesker der arbejder paa hans niveau plus fem aar.",
+   "url": "Verificer gotocph.com og cphdevfest.com",
+   "verificeret": false,
+   "tidsforbrug": "1-2 dage plus rejse",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - hverken eksistens, datoer, priser eller CFP-frister i 2026. Bed arbejdsgiveren betale billetten; det er et rimeligt oenske i et 9-mandsfirma og et godt foerste testspoergsmaal om uddannelsesbudget. Spring flere konferencer over - en om aaret er nok, og to er tabt tid."
+  },
+  {
+   "titel": "Branchekonferencer for indkoeb, logistik og compliance",
+   "type": "konference / talermulighed med lav konkurrence",
+   "prioritet": "2 - den mest oversete mulighed i hele synlighedsdelen",
+   "hvorfor": "Konkurrencen om taletid er dramatisk lavere end paa udviklerkonferencer, fordi der naesten ikke er teknikere der byder ind. Et oplaeg om hvad leverandoerdokumentation teknisk kraever for at kunne holde til en audit rammer et publikum der har problemet og ingen der kan forklare det. Og LeanLinking vil sandsynligvis betale, fordi det er markedsfoering for dem.",
+   "url": "Verificer aktuelle danske arrangoerer i indkoebs- og logistikbranchen",
+   "verificeret": false,
+   "tidsforbrug": "10-15 timer til foerste oplaeg inklusive forberedelse",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - jeg kunne ikke tjekke hvilke danske branchearrangoerer der er aktive i 2026, og der maa ikke opfindes navne. Den rigtige fremgangsmaade er at spoerge stifteren hvilke arrangementer LeanLinking selv gaar til eller udstiller paa - han ved det, og det er et ti-sekunders spoergsmaal."
+  },
+  {
+   "titel": "Betalte mock system design-interviews med senior interviewers",
+   "type": "ekstern kalibrering",
+   "prioritet": "1 - den eneste maade at KOEBE kvalificeret modspil paa",
+   "hvorfor": "Dette er det direkte modtraek mod planens stoerste risiko. Han har ingen arkitekt paa arbejdet, og et betalt mock-interview er et af faa steder hvor man for penge faar en erfaren person til at gradere ens arkitekturtaenkning struktureret og ubarmhjertigt. Et interview i maaned 3, 6 og 9 giver tre kalibrerede maalinger han ikke selv kan farve.",
+   "url": "Verificer aktuelle udbydere",
+   "verificeret": false,
+   "tidsforbrug": "1,5 time per session plus 1 times efterbearbejdning",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - jeg kunne ikke tjekke hvilke platforme der eksisterer, virker og koster hvad i 2026, og der maa ikke opfindes navne eller priser. Spring gratis peer-mock-interviews med andre juniorer over: to der ikke kan faget kan ikke gradere hinanden, og de bekraefter hinandens fejl."
+  },
+  {
+   "titel": "Betalt mentor - 1 time om maaneden med en rigtig arkitekt",
+   "type": "ekstern feedback",
+   "prioritet": "1 - hoejeste afkast per krone i hele planen",
+   "hvorfor": "Billigere end en certificering og vaerd mere. En time om maaneden med en person der har vaeret solution architect i ti aar loeser praecis det problem der ikke kan loeses internt. Betaling er ikke en ulempe, men en fordel: det fjerner den sociale forpligtelse der goer gratis mentorer hoeflige, og hoeflighed er vaerdiloest her.",
+   "url": "Verificer aktuelle mentorplatforme; alternativt direkte henvendelse",
+   "verificeret": false,
+   "tidsforbrug": "1 time om maaneden plus 1 times forberedelse",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - mentorplatformes status i 2026 er ikke tjekket. Den robuste vej er direkte henvendelse: identificer 10 arkitekter i Aarhus-omraadet paa LinkedIn, skriv til alle 10 med et konkret og afgraenset oplaeg (en time om maaneden, han betaler, han medbringer et faerdigt designdokument og tre spoergsmaal). To siger ja. Spring vage foresporgsler som 'vil du vaere min mentor' over - de har naesten nul svarprocent fordi de er en ubegraenset forpligtelse."
+  },
+  {
+   "titel": "Fundamentals of Software Architecture (Richards og Ford) og The Software Architect Elevator (Hohpe)",
+   "type": "boeger",
+   "prioritet": "2 for den foerste, 4 for den anden",
+   "hvorfor": "Fundamentals er det naermeste faget har paa en laerebog i arkitekturtradeoffs og kvalitetsattributter, og det sprog er praecis det hans CV og hans oplaeg skal skrives i. Hohpes bog er god paa kommunikation mellem teknisk og forretningsniveau.",
+   "url": "Verificer aktuel udgave og udgivelsesaar",
+   "verificeret": false,
+   "tidsforbrug": "15-20 timer for Fundamentals over tre maaneder",
+   "hvad_springes_over": "KUNNE IKKE VERIFICERES - udgavestatus er ikke tjekket. VIGTIG ADVARSEL OM HOHPE: bogen er skrevet til arkitekter i store organisationer og handler i vidt omfang om at navigere koncernpolitik, architecture review boards og sponsorforhold. Det er direkte ubrugeligt ved syv aarsvaerk, hvor mandat faas ved at spoerge stifteren. Laes kapitlerne om at kommunikere teknik til ikke-teknikere; spring hele transformations- og organisationsdelen over. I Fundamentals springes kapitlerne om teamtopologier og arkitektrollens organisatoriske placering ligeledes over."
+  }
+ ],
+ "spikes": [
+  {
+   "titel": "Nichesaetningen og navnekollisionstesten",
+   "problem": "Han har ingen formulering af hvad han er ved at blive god til, og risikerer at lande paa et ord der betyder noget andet i branchen end det han mener. Uden en fast formulering bliver LinkedIn, CV, oplaegstitler og artikler indbyrdes inkonsistente, og saa akkumulerer intet.",
+   "artefakter": "Et dokument paa en side med: (1) én positioneringssaetning paa maks 25 ord, (2) tre problemklasser inden for nichen han vil kunne tale om i dybden, (3) en eksplicit liste over ord han IKKE bruger, med 'supply chain security' oeverst og begrundelsen, (4) tre saetninger i faldende laengde - 25 ord, 12 ord, 5 ord - til brug i henholdsvis LinkedIn-om, LinkedIn-header og mundtlig praesentation.",
+   "kompetence": "Nichedefinition og positionering",
+   "tid": "3 timer i maaned 1, revideres 1 time i maaned 6",
+   "svaerhed": "Lav teknisk, hoej disciplinaer - fristelsen til at holde saetningen bred for ikke at udelukke noget er staerk og skal modstaas",
+   "fremgangsmaade": "Skriv fem kandidatsaetninger. Test hver mod to kriterier: kan en fremmed gentage den efter én gennemhoering, og kan Simon svare i dybden paa det foerste opfoelgende spoergsmaal en fagperson vil stille. Saetninger der fejler det andet kriterium er for brede. Soeg derefter de centrale ord paa GitHub og LinkedIn og se hvad der faktisk kommer op - hvis der kommer SBOM-vaerktoejer op, er ordet forkert. Laeg saetningen fast og skift den ikke i 12 maaneder.",
+   "domaenekobling": "Selve saetningen er hentet fra domaenet: leverandoerkvalificering, certifikatudloeb, revisionsspor og compliancedokumentation. Uden domaenet er der ingen niche at formulere."
+  },
+  {
+   "titel": "As-is C4 context- og containerdiagram for LeanLinkings produkt",
+   "problem": "Et 9-mandsfirma har med naesten fuldstaendig sikkerhed ingen samlet arkitekturtegning. Ingen har det fulde billede paa skrift, kun i hovedet paa stifteren og maaske en senior. Det er samtidig den hurtigste vej for en junior til at blive den person der forstaar hele systemet.",
+   "artefakter": "To C4-diagrammer som kode (Structurizr DSL eller Mermaid, versionsstyret i firmaets repo): system context og container. Plus en liste over ti ting han opdagede undervejs som ingen havde skrevet ned. Plus en sanitiseret variant uden kundenavne og interne systemnavne, godkendt skriftligt af stifteren, til hans egen offentlige portefoelje.",
+   "kompetence": "Beslutningsdokumentation uden titel; systemoverblik",
+   "tid": "8-10 timer, fordelt over maaned 1-2",
+   "svaerhed": "Middel - det tekniske er let, det svaere er at turde spoerge nok gange om ting man foelte man burde vide",
+   "fremgangsmaade": "Tegn foerst efter hvad han selv kan udlede af kodebasen og infrastrukturen. Vis derefter udkastet til stifteren og den mest erfarne udvikler med spoergsmaalet 'hvad er der galt her'. Ret. Gentag én gang. Den anden version er typisk rigtig. Laeg den i repoet saa den bliver firmaets, ikke hans private note - det er det der goer den til et bidrag frem for en oevelse.",
+   "domaenekobling": "Diagrammet ER leverandoerkaededomaenet: integrationer mod kunders ERP, dokumentlager, certifikatregister, notifikationsmotor, tenant-grænser. At tegne det er at laere domaenets faktiske form."
+  },
+  {
+   "titel": "Fem ADR'er skrevet bagud paa beslutninger der allerede er truffet",
+   "problem": "Han har ingen dokumenteret arkitekturhistorik, og han kan ikke vente 12 maaneder paa at der bliver truffet fem nye beslutninger han er med i. Men firmaet HAR truffet dem - de er bare kun dokumenteret som kode.",
+   "artefakter": "Fem ADR'er i fast format, hver med kontekst, besluttet valg, fravalgte alternativer, den begraensning der afgjorde det, og konsekvenserne som de faktisk viste sig. Sanitiseret version af mindst tre til offentlig publicering, med skriftlig tilladelse.",
+   "kompetence": "Beslutningsdokumentation; tradeoff-artikulation",
+   "tid": "6 timer i alt, cirka 1 time per ADR plus research",
+   "svaerhed": "Middel - kraever at han interviewer kolleger om beslutninger der blev truffet foer han kom",
+   "fremgangsmaade": "Vaelg fem beslutninger der stadig er synlige i systemet: hvordan tenants isoleres, hvordan dokumenter lagres, hvordan certifikatudloeb opdages, hvordan indlaesning fra kundesystemer haandterer gentagelser, hvordan sletning haandteres. Spoerg den der traf beslutningen: hvad var alternativet, og hvorfor blev det ikke valgt. Skriv det ned i templaten. VAERDIEN ER DOBBELT: firmaet faar dokumentation det manglede, og han faar et arkiv der viser at han kan taenke i tradeoffs. Det er ogsaa den bedste maade at laere domaenet paa, fordi han faar begrundelserne og ikke bare koden.",
+   "domaenekobling": "Alle fem beslutninger er compliance- og leverandoerdrevne. Isolation fordi kunder har forskellige compliancekrav; dokumentlagring fordi bevismateriale skal kunne fremvises; certifikatudloeb fordi manglende varsling er en auditfejl."
+  },
+  {
+   "titel": "Foerste offentlige teknisk artikel - certifikatudloeb i millionskala",
+   "problem": "Han har ingen offentlig skriftlig tilstedevaerelse. Den foerste artikel er den svaereste og den mest udskudte, og hvis den ikke er skrevet inden maaned 4 bliver den aldrig skrevet.",
+   "artefakter": "En publiceret artikel paa eget domaene, paa engelsk, 1200-2000 ord, med mindst ét tal han selv har maalt og mindst ét afsnit om hvad han foerst gjorde forkert. Plus et LinkedIn-opslag der linker til den. Plus dokumentation af at han har sendt den til fem navngivne personer med et konkret spoergsmaal.",
+   "kompetence": "Teknisk skrivning der inviterer kritik",
+   "tid": "10-12 timer for den foerste (skrivning er langsom foerste gang), derefter 5-6 timer per artikel",
+   "svaerhed": "Hoej psykologisk, lav teknisk",
+   "fremgangsmaade": "Emnet skal vaere snaevert nok til at han faktisk ved noget: ikke 'notifikationer i distribuerede systemer', men 'hvorfor et naivt dagligt job der scanner for udloebende certifikater falder fra hinanden, og hvad man goer i stedet'. Struktur: problemet, den oplagte loesning, hvorfor den fejler, hvad der virker, hvad det kostede, hvad han stadig er i tvivl om. DET SIDSTE AFSNIT ER DET VIGTIGSTE - eksplicit tvivl er det der faar kompetente laesere til at svare i stedet for at like. Publicer paa eget domaene, syndiker paa LinkedIn. AFGOERENDE SIDSTE SKRIDT: send den til fem konkrete mennesker med spoergsmaalet 'hvad ville du have gjort anderledes i afsnit 3'. Uden det skridt er publicering ikke feedback, kun sendetid.",
+   "domaenekobling": "Certifikatudloeb i stor maengde er en af domaenets kerneproblemklasser og en direkte konsekvens af leverandoerkvalificering. Ingen generisk artikel om cron jobs har samme signalvaerdi."
+  },
+  {
+   "titel": "Solo architecture kata mod tidsboks, med publiceret loesning",
+   "problem": "Han har ingen erfaring med at designe et system fra bar bund under tidspres og derefter forsvare valgene. Paa arbejdet faar han tickets, ikke aabne problemer.",
+   "artefakter": "Per kata: et designdokument paa 3-5 sider med krav, antagelser, C4-diagram, datamodel, tre eksplicitte tradeoffs med fravalgte alternativer, fejltilstande og hvad han ville maale. Efter tre katas: en publiceret sammenskrivning af hvad han tog fejl af den foerste gang.",
+   "kompetence": "System design under tidspres; tradeoff-artikulation",
+   "tid": "3-4 timer per kata, én kata om maaneden fra maaned 2",
+   "svaerhed": "Hoej og stigende - det er meningen",
+   "fremgangsmaade": "Vaelg fra tedneward/ArchKatas, men KUN katas med et dokument-, data- eller compliancetungt element - resten traener ikke hans niche. Tidsboks paa 90 minutter til foerste udkast, ingen opslag undervejs. Derefter to timer med opslag til at rette. Sammenlign format og dybde mod team7katas/sysopsquad, som er facitlisten paa hvordan et faerdigt arkitekturprodukt ser ud. Send hver tredje kata til mentor eller review-partner med spoergsmaalet 'hvor ville det her braekke'.",
+   "domaenekobling": "Filtrer katas paa domaenelighed. Katas med regulatoriske krav, mange interessenter, revisionsbehov eller tung dokumenthaandtering rammer hans niche; katas om spilservere og streaming goer ikke."
+  },
+  {
+   "titel": "System design-selvtest mod fast rubrik, maaned 0, 3, 6 og 9",
+   "problem": "Han har ingen maade at vide om han bliver bedre. Foelelsen af fremgang er ikke fremgang, og uden en sammenlignelig maaling kan kompetenceporten i maaned 9-10 ikke afgoeres objektivt.",
+   "artefakter": "Fire videooptagelser af 45 minutters selvstaendig gennemgang af SAMME opgavetype. Fire udfyldte rubrikker med scorer paa ni akser. En kurve. Dette er det bedst egnede instrument i hele planen til kompetenceporten, fordi det er falsificerbart og kan graderes af en udefrakommende.",
+   "kompetence": "Selvkalibrering; mundtlig forsvarelse af designvalg",
+   "tid": "2 timer per maaling (45 min oevelse, 45 min gennemsyn, 30 min scoring). 8 timer i alt over 9 maaneder",
+   "svaerhed": "Middel teknisk, meget hoej ubehagsgrad ved at se sig selv",
+   "fremgangsmaade": "Fast rubrik med ni akser, hver scoret 1-5: (1) kravafklaring foer design, (2) eksplicitte antagelser, (3) stoerrelsesestimering, (4) datamodel, (5) API-flade, (6) identifikation af flaskehalse, (7) tradeoffs med navngivne fravalg, (8) fejltilstande og hvad der sker naar de indtraeffer, (9) drift, omkostning og hvad der skal maales. Regler: 45 minutter, papir eller whiteboard, ingen opslag, tal hoejt, optag. Brug ET domaeneproblem, ikke 'design Twitter'. Score selv umiddelbart efter, og faa MINDST én af de fire scoret af mentor eller review-partner - hvis hans egen score og den eksterne afviger meget, er selvkalibreringen selve problemet, og det er en vigtigere opdagelse end scoren.",
+   "domaenekobling": "Opgaven skal hver gang vaere hentet fra domaenet, for eksempel: design et system der kan bevise over for en revisor at et bestemt dokument var gyldigt paa en bestemt dato, for 200 tenants med hver deres opbevaringskrav."
+  },
+  {
+   "titel": "Sikring af ekstern reviewer - det hoejest prioriterede enkeltpunkt i hele planen",
+   "problem": "Ingen paa arbejdet kan give kvalificeret modspil paa et designvalg. Uden ekstern kalibrering er den mest sandsynlige udgang at han oever forkert i 12 maaneder med stigende selvtillid og uaendret kompetence. Det er ikke en risiko blandt flere; det er den risiko der afgoer om planen virker.",
+   "artefakter": "En skriftlig aftale med mindst én ekstern person om et fast, tilbagevendende review. Plus et loggede spor af hver session: hvad han fremlagde, hvad kritikken var, hvad han aendrede. Efter 9 maaneder skal loggen vise mindst 6 gennemfoerte reviews.",
+   "kompetence": "Netvaerksopbygning; at modtage og bruge kritik",
+   "tid": "6 timer opsoegende arbejde i maaned 1, derefter 2 timer om maaneden loebende",
+   "svaerhed": "Lav teknisk, hoej social - og det er derfor det bliver udskudt",
+   "fremgangsmaade": "Koer tre spor parallelt og accepter at to fejler. Spor 1, betalt mentor: identificer 10 arkitekter i Aarhus-omraadet paa LinkedIn, skriv til alle 10 med et AFGRAENSET og BETALT oplaeg - én time om maaneden, han betaler, han medbringer et faerdigt dokument og tre konkrete spoergsmaal. Vage foresporgsler som 'vil du vaere min mentor' har naesten nul svarprocent fordi de er en ubegraenset forpligtelse; en konkret, betalt, tidsafgraenset aftale har en helt anden. Spor 2, byttehandel: find via meetups én eller to paa lignende niveau i andre firmaer og lav et gensidigt 90-minutters designreview om maaneden. Spor 3, betalt mock-interview i maaned 3, 6 og 9. Maalet er ikke alle tre, men at MINDST ÉT loeber i maaned 2.",
+   "domaenekobling": "Det materiale han medbringer til review er altid hans domaenespikes og ADR'er, ikke abstrakte oevelser. Det er ogsaa selve nichens salgstale over for mentoren: faa arkitekter har set en compliancedrevet datamodel, og det goer samtalen interessant for dem, hvilket er grunden til at de bliver ved med at sige ja."
+  },
+  {
+   "titel": "Foerste mundtlige oplaeg - internt foerst, derefter lightning talk til meetup",
+   "problem": "Han har aldrig forsvaret et teknisk valg foran fremmede. Skriftlig fremstilling kan redigeres i det uendelige; mundtlig fremstilling under spoergsmaal kan ikke, og det er derfor det er en anden og haardere test.",
+   "artefakter": "Trin 1: et 20-minutters internt oplaeg for de ni kolleger over C4-diagrammet, med spoergsmaal. Trin 2: en 10-minutters lightning talk til et Aarhus-meetup inden maaned 9. Artefakter: slides, en optagelse eller referat af spoergsmaalene, og en skriftlig note om hvilke spoergsmaal han ikke kunne svare paa - den liste er hans naeste pensum.",
+   "kompetence": "Mundtlig formidling til fremmede",
+   "tid": "4 timer til det interne, 10-12 timer til det foerste eksterne inklusive oevelse",
+   "svaerhed": "Hoej psykologisk",
+   "fremgangsmaade": "Det interne oplaeg er gratis og risikofrit og skal ligge i maaned 2-3 - i et 9-mandsfirma kraever det én saetning til stifteren. Til meetuppet: skriv til arrangoeren og TILBYD et konkret 10-minutters oplaeg med titel og tre punkter. Arrangoerer mangler kronisk talere og acceptraten paa en konkret henvendelse er hoej; det er den mest undervurderede kendsgerning i hele synlighedsdelen. Titlen skal love noget publikum ikke kan faa andre steder, for eksempel: 'Hvad en compliance-audit faktisk kraever af din datamodel'. Ti minutter, tre pointer, ét diagram, ét tal. Oev det hoejt fem gange med stopur - ikke i hovedet.",
+   "domaenekobling": "Emnet er hans domaene, og det er selve grunden til at han bliver accepteret. Endnu et oplaeg om microservices konkurrerer med hundrede andre; et oplaeg om revisionskrav til datamodeller konkurrerer med naesten ingen. Domaenet er hans adgangsbillet, ikke en begraensning."
+  },
+  {
+   "titel": "Tre CFP-indsendelser inden maaned 12",
+   "problem": "Konferenceoplaeg foeles utilgaengeligt og bliver derfor aldrig forsoegt. Men indsendelsen er den kontrollerbare del; accepten er ikke. At maale paa indsendelser i stedet for accepter goer maalet opnaaeligt og aerligt.",
+   "artefakter": "Tre indsendte CFP'er med gemte abstracts, plus en talerprofil med bio og de oplaeg han har holdt. Accept er ikke et krav for at bestaa dette punkt.",
+   "kompetence": "Skriftlig positionering; mundtlig formidling",
+   "tid": "1 time til profil, 2 timer per abstract, i alt cirka 7 timer spredt over maaned 8-12",
+   "svaerhed": "Middel",
+   "fremgangsmaade": "Sigt paa community-, lightning- eller foerstegangstalertracks, ikke main track. Abstractstruktur der virker: hvilket problem publikum har, hvorfor de gaengse svar ikke loeser det, hvad han konkret gjorde, hvad de gaar derfra med. 150-250 ord, konkret, ingen superlativer. Bio paa 50 ord der naevner nichen og ikke paastaar en titel. Send ogsaa til mindst én IKKE-udviklerkonference i indkoebs- eller compliancebranchen, hvor konkurrencen om taletid er markant lavere og hvor arbejdsgiveren sandsynligvis betaler.",
+   "domaenekobling": "Alle tre abstracts skal ligge inden for nichen. En junior der byder ind med et generisk emne bliver valgt fra; en junior der er den eneste indsender med foerstehaandserfaring med et regulatorisk problem kan blive valgt til trods for manglende taleerfaring. Emnets saerhed er hele loeftestangen."
+  },
+  {
+   "titel": "CV og LinkedIn omskrevet til arkitektspor, med blindtest",
+   "problem": "Hans nuvaerende profil beskriver med stor sandsynlighed teknologier og ansvarsomraader i stedet for beslutninger og konsekvenser, og den siger sandsynligvis intet om nichen. Uden omskrivning akkumulerer 12 maaneders arbejde i et dokument der ikke viser det.",
+   "artefakter": "Et CV paa én side i beslutningsformat. En LinkedIn-profil med header, om-sektion og udvalgte artefakter. En separat portefoelje-side med én afsnit per spike. Plus resultatet af en blindtest.",
+   "kompetence": "Skriftlig positionering uden titelpaastand",
+   "tid": "6 timer i maaned 6, 3 timers revision i maaned 11",
+   "svaerhed": "Middel",
+   "fremgangsmaade": "CV-punkter i formatet beslutning, fravalgte alternativer, afgoerende begraensning, maalt resultat. Verber: designede, valgte, afviste, maalte, migrerede, ejede. Aldrig: var med til, deltog i, bidrog til. Naevn ikke firmastoerrelse; beskriv scope. LinkedIn-header uden titelpaastand, med nichen eksplicit, paa engelsk. 'Aaben for arbejde' skal vaere slukket. Porteføljesiden skal have ét afsnit per spike med domaeneproblem, begraensning, beslutning, maaling og hvad han ville goere anderledes - IKKE en liste over repositories. BLINDTESTEN ER ACCEPTKRITERIET: giv CV'et til to personer der ikke kender ham, og bed dem sige hans specialomraade i én saetning og naevne to beslutninger han har truffet. Kan de ikke det, er dokumentet ikke faerdigt, uanset hvor godt det foeles.",
+   "domaenekobling": "Nichen skal staa i header, i foerste linje af om-sektionen og i mindst tre CV-punkter. Det er den eneste maade en laeser der bruger otte sekunder opdager den paa."
+  },
+  {
+   "titel": "Forhandlingspakke til overgangen fra studiejob til fuldtid",
+   "problem": "Overgangen fra studentermedhjaelper til fuldtid er det stoerste og mest forudsigelige loenspring han faar de naeste aar, og det er den eneste gang han har fuld forhandlingsposition. Gaar den samtale uforberedt, er den tabt i to aar. Og den vigtigste del af forhandlingen er ikke loennen.",
+   "artefakter": "Et forhandlingsdokument til eget brug med: loental fra IDA og Jobindex for hans profil og region; regnestykket paa firmaets bruttofortjeneste per aarsvaerk; en liste over hans egne bidrag udtrykt paa indtaegtssiden; en prioriteret liste over ikke-loen-krav; og en formuleret 12-maaneders klausul med kriterier. Plus en kontrakt gennemlaest af IDA eller advokat FOER underskrift.",
+   "kompetence": "Loen- og rammeforhandling",
+   "tid": "8 timer forberedelse, plus 1-2 ugers ventetid paa kontraktgennemgang - start i god tid",
+   "svaerhed": "Middel teknisk, hoej ubehagsgrad",
+   "fremgangsmaade": "Foerst regnestykket: DKK 4,2 mio. bruttofortjeneste divideret med 7 aarsvaerk er DKK 600.000 per aarsvaerk, og af det skal ogsaa husleje, software, salg og overskud betales. At kende det tal foer samtalen aendrer den fra krav til forretningssamtale, og det er i sig selv arkitektsignal. Argumenter paa indtaegtssiden, ikke omkostningssiden: hurtigere svar paa kunders sikkerhedsspoergeskemaer, fjernet supportkategori, compliancefunktion der kan demonstreres i en salgssituation. Bed derefter om det der er billigt for firmaet og dyrt for ham: skriftlig ret til at publicere sanitiseret fagligt materiale; navngivet uddannelsesbudget; betalt konferencedeltagelse mod at han holder oplaeg; adgang til kundemoeder og sikkerhedsspoergeskemaer; en dag om maaneden til arkitekturarbejde; og VIGTIGST en aftalt loensamtale efter 12 maaneder med kriterier fastlagt paa forhaand, saa kompetenceporten automatisk konverteres til penge uden en ny konfrontation. TO KONTRAKTPUNKTER DER KAN VAELTE HELE PLANEN OG SKAL TJEKKES FOER UNDERSKRIFT: IP-klausulen (hvis alt hvad han frembringer tilhoerer arbejdsgiveren, ogsaa uden for arbejdstid, er hans offentlige portefoelje juridisk ikke hans) og konkurrenceklausulen (der rammer en specialist langt haardere end en generalist, fordi den kan spaerre ham ude af praecis den niche han bygger).",
+   "domaenekobling": "Hans forhandlingsargument ER domaenet: han er ved at blive den i firmaet der forstaar hvordan compliancekrav oversaettes til systemdesign, og det er en kompetence firmaet ikke kan koebe billigt ind i Aarhus. Det er ogsaa grunden til at retten til at publicere er rimelig at bede om: nichen gavner ogsaa dem."
+  }
+ ],
+ "paa_jobbet": [
+  "Tegn as-is C4 context- og containerdiagram for hele produktet. Ingen skal give lov, det tager ingen tid fra nogen, og der findes med naesten fuldstaendig sikkerhed ikke et i forvejen. Det er den hurtigste vej fra 'ham der laver tickets' til 'ham der forstaar systemet', og det er samtidig raamateriale til baade ADR'er, artikler og oplaeg.",
+  "Skriv en ADR paa hver ikke-triviel beslutning han selv traeffer, ogsaa smaa. Ingen kan forhindre en i at dokumentere hvorfor man gjorde som man gjorde. Efter 12 maaneder er det forskellen paa at have en historik og at have en foelelse af at have lavet noget.",
+  "Laes de kontrakter, databehandleraftaler og sikkerhedsspoergeskemaer firmaet besvarer over for kunder. Det er de faktiske kravdokumenter bag arkitekturen, de er langt mere specifikke end nogen lovtekst, og ingen taenker paa at vise dem til en junior. Det er den enkeltstaaende stoerste kilde til domaeneviden i firmaet.",
+  "Bed om at besvare - eller i det mindste sidde med ved - det naeste kundesikkerhedsspoergeskema. Det er stedet hvor compliance og arkitektur moedes mest konkret, det er direkte salgskritisk, og det er en oplagt ting at give til en der gerne vil.",
+  "Bed om at komme med til én kundesamtale eller ét onboardingmoede i kvartalet. I et 9-mandsfirma er det ét spoergsmaal til stifteren. At hoere en indkoebschef beskrive sit problem med sine egne ord er mere vaerd end ti artikler om domaenet.",
+  "Laes supporttickets - ogsaa dem han ikke selv skal loese. Supportkoeen er den mest aerlige beskrivelse af hvor arkitekturen faktisk goer ondt, og den er gratis tilgaengelig.",
+  "Foer en 'overraskelseslog': hver gang noget i domaenet overrasker ham, én linje med hvad han troede og hvad der var sandt. Efter tre maaneder er den logbog en publiceringsplan, fordi det der overraskede ham vil overraske andre udviklere.",
+  "Instrumenter noget og rapporter et tal ingen kendte. Hvor mange certifikater udloeber der faktisk om maaneden, hvor lang tid tager den tungeste indlaesning, hvor mange dokumenter ligger der per tenant, hvor stor er databasen per kunde. Juniorer maaler naesten aldrig noget, og et tal ingen kendte skaber troværdighed hurtigere end noget andet.",
+  "Regn cloud-omkostningen per tenant ud. Omkostning er en arkitektonisk kvalitetsattribut paa linje med latency, den er direkte relevant i en dokumenttung forretning, og i et 9-mandsfirma er der ofte ingen der har set paa den siden opstarten.",
+  "Spoerg stifteren: hvad braekker hvis vi faar ti gange saa mange leverandoerer per kunde? Find derefter selv ud af om svaret holder. Det er en arkitekturanalyse forklaedt som et spoergsmaal, og det kraever intet mandat.",
+  "Spoerg hvad der er de tre hyppigste grunde til at handler traekker ud eller tabes. I B2B-software med compliance er svaret ofte en sikkerhedsgennemgang eller et dokumentationskrav - altsaa et arkitekturkrav i forklaedning, og et der kan maales paa indtaegtssiden ved naeste loensamtale.",
+  "Bed om skriftlig tilladelse til at publicere sanitiseret fagligt materiale, TIDLIGT. Det er et fem-minutters spoergsmaal nu og en umulig samtale efter at han har publiceret noget. Formuler det som en fordel for firmaet, hvilket det ogsaa er: det er gratis fagligt omdoemme i en niche hvor de saelger.",
+  "Tag med til de branchearrangementer firmaet alligevel deltager i. Rejsen er betalt, netvaerket er hans domaene, og konkurrencen fra andre teknikere er naesten ikke-eksisterende.",
+  "Foreslaa at han holder et internt oplaeg for de ni kolleger over arkitekturdiagrammet. Gratis oevebane til den mundtlige del, ingen risiko, og det placerer ham som den der har overblikket."
+ ],
+ "faldgruber": [
+  "AT SKRIVE 'SOLUTION ARCHITECT' ELLER BARE 'ARCHITECT' PAA LINKEDIN FOER HAN HAR TITLEN OG JOBBET. Det er den enkeltfejl der koster mest, fordi den er triviel at opdage og fordi det danske techmiljoe er lille nok til at den bliver opdaget. Den oedelaegger samtidig alt det aegte arbejde bagved, fordi laeseren nu mistaenker resten. Alternativet er ikke beskedenhed, men praecision: rollen staar som den er, emnet staar tydeligt.",
+  "AT BRUGE ORDET 'SUPPLY CHAIN' OM SIN NICHE. VERIFICERET KOLLISION: i software betyder 'supply chain security' i 2026 SBOM, SLSA, sigstore og afhaengighedsscanning - et etableret felt med aktive projekter (chainloop 584 stjerner, dedikeret awesome-liste 380 stjerner). Han bliver laest som DevSecOps-menneske og hans faktiske domaene forsvinder. Brug 'supplier' og 'compliance', aldrig 'supply chain' alene.",
+  "AT BYGGE EN GENERISK PORTEFOELJE. VERIFICERET: en soegning paa 'multi-tenant SaaS architecture dotnet' giver 24 repositories, naesten alle med 0-2 stjerner, naesten alle oprettet i 2026, naesten alle selvbeskrevet som 'reference architecture' eller 'starter kit'. Det er et gravsted. Endnu et generisk multi-tenant-projekt tilfoejer ingen information om ham overhovedet. Til sammenligning gav soegninger paa leverandoercompliance 0-1 resultater. Forskellen i signalvaerdi er ikke marginal, den er kategorisk.",
+  "AT LADE POSITIONERING SPISE DET TEKNISKE BUDGET. Grænsen er 2-3 timer om ugen i gennemsnit af de 10-15. Overskrides den, skriver han om arbejde han ikke har lavet, og det gennemskuer kompetente laesere oejeblikkeligt. Rækkefoelgen er: gør det, maal det, skriv om det. Aldrig omvendt.",
+  "AT PUBLICERE NOGET KUNDEIDENTIFICERBART ELLER KONTRAKTUELT FORTROLIGT. I et 9-mandsfirma med enterprise-kunder kan én laek afslutte baade ansaettelsen og nichen paa én gang. Skriftlig tilladelse foerst, sanitisering hver gang, og ved tvivl: spoerg. Reglen er at ingen laeser skal kunne udpege kunden.",
+  "AT UNDERSKRIVE FULDTIDSKONTRAKTEN UDEN AT FAA IP-KLAUSULEN LAEST. Hvis kontrakten overdrager rettigheder til alt han frembringer, ogsaa i egen tid paa eget udstyr, tilhoerer hele spike-portefoeljen juridisk arbejdsgiveren, og hele planens eksterne vaerdi forsvinder. Efter underskrift er forhandlingspositionen vaek. Dette er den dyreste af alle faldgruberne fordi den er permanent.",
+  "AT ACCEPTERE EN KONKURRENCEKLAUSUL UDEN AT REGNE PAA HVAD DEN KOSTER EN SPECIALIST. En generalist kan absorbere en konkurrenceklausul; en der har brugt to aar paa at blive kendt for leverandoercompliance kan ikke, fordi klausulen praecis rammer det felt han har gjort sig til ekspert i. Niche plus konkurrenceklausul er en faelde. Faa den laest, og forhandl geografisk og saglig afgraensning ned.",
+  "AT JAGE ENGAGEMENT I STEDET FOR KVALIFICERET MODSPIL. Likes fra rekrutteringskonsulenter og andre juniorer er ikke signal. Det eneste maal der taeller er om en person der ved mere end ham svarer med en indvending. Én kvalificeret indvending er mere vaerd end tusind visninger, og de to maal peger ofte i modsat retning.",
+  "AT PUBLICERE OG HAABE. Uden aktiv distribution - at sende artiklen til fem navngivne personer med ét konkret spoergsmaal - er publicering ikke en feedbackmekanisme, men kun sendetid. Det er den maade skriveplaner doer paa: tre artikler, ingen reaktion, konklusionen 'det virker ikke', stop. Fejlen var ikke skrivningen, men at der aldrig blev spurgt nogen.",
+  "AT GOERE LINKEDIN TIL HJEMMET FOR SIT SKRIFTLIGE ARBEJDE. Originalt indhold der kun findes paa LinkedIn kan ikke indekseres ordentligt, ikke linkes paalideligt om fem aar, og forsvinder hvis platformen aendrer sig. Eget domaene som arkiv, LinkedIn som distribution.",
+  "AT TAGE ENTERPRISE-ARKITEKTRAAD ALVORLIGT VED SYV AARSVAERK. Raad om sponsorer, architecture review boards, interessentanalyser og organisatorisk indflydelse - herunder store dele af den mest anbefalede litteratur - er skrevet til organisationer med hundredvis af ansatte. Ved ni mennesker faas mandat ved at spoerge stifteren over frokosten. At oeve enterprise-politik her er at traene en muskel han ikke har brug for i to-tre aar.",
+  "AT SAMLE CERTIFICERINGER SOM ERSTATNING FOR EVIDENS. En certificering er en deadline-motor og et filter i en ansoegningsbunke, ikke et bevis paa arkitekturkompetence. To-tre stykker kirurgisk valgt. Den fjerde certificering signalerer at han foretraekker pensum frem for problemer, og det er praecis den modsatte af arkitektsignalet.",
+  "AT TRAENE SYSTEM DESIGN PAA FORKERT SKALA. Det populaere materiale er kalibreret til hundredvis af millioner brugere. Hans systemer har titalls tenants og dokumentmaengder, ikke global trafik. Traener han sharding og global replikering, bliver han til den arkitekt der overdesigner - hvilket er den mest almindelige maade en dygtig junior oedelaegger et system paa. Brug metoden, udskift problemerne.",
+  "AT FORVENTE AT NICHEN BETALER SIG INDEN FOR 12 MAANEDER. Den er et 24-36 maaneders aktiv. Hvis han maaler den paa afkast i maaned 12, konkluderer han at den ikke virker, og stopper praecis foer den begynder at virke. Maal i stedet paa akkumulerede artefakter, som er det han kontrollerer.",
+  "AT PUBLICERE ANONYMT ELLER UNDER PSEUDONYM. Hele mekanismen er at navnet og emnet knyttes sammen over tid. Anonymt materiale bygger intet.",
+  "AT SIGE OP UDEN VARSEL I ET 9-MANDSFIRMA. En opsigelse der kommer som en overraskelse laeses som personligt svigt af stifteren, og han er en reference i tyve aar i et lille marked. Modgiften er en aarlig aaben samtale om hvor han vil hen, stillet hvert aar saa den er planlaegning og ikke en trussel.",
+  "AT SAETTE 'AABEN FOR ARBEJDE' PAA LINKEDIN ELLER SOEGE STILLINGER 'FOR AT OEVE SIG'. Det flytter ham fra fagperson til kandidat, alt hvad han skriver laeses derefter som markedsfoering, og i et lille dansk marked bliver ansoegninger bemaerket - ogsaa af nuvaerende arbejdsgiver.",
+  "AT FORHANDLE FULDTIDSLOENNEN UDEN AT KENDE FIRMAETS TAL, ELLER AT FORHANDLE LOEN ALENE. DKK 600.000 i bruttofortjeneste per aarsvaerk er en haard ramme. Et krav der ignorerer den laeses som manglende forretningsforstaaelse, hvilket er det stik modsatte af arkitektsignal. Og de ting der er billige for firmaet og dyre for ham - publiceringsret, uddannelsesbudget, kundeadgang, aftalt 12-maaneders revurdering - er lettere at faa og ofte mere vaerd end de sidste 2.000 kroner om maaneden.",
+  "AT UDSAETTE A-KASSE-INDMELDELSEN TIL EFTER STUDIET. Dimittendreglen har en kort og ufravigelig frist. Som studerende er medlemskabet typisk gratis eller naesten gratis. Der er ingen grund til at vente og en reel omkostning ved at glemme det."
+ ],
+ "maalepunkter": [
+  "ARTEFAKTER: mindst 8 offentligt publicerede, daterede artefakter med hans navn paa inden maaned 12, alle inden for nichen. Fordeling: mindst 4 tekniske artikler, mindst 3 sanitiserede ADR'er eller designdokumenter, mindst 1 kata-loesning. Taelles paa eget domaene, ikke paa LinkedIn.",
+  "MAALINGER I ARTEFAKTERNE: mindst 6 af de 8 artefakter indeholder mindst ét tal han selv har maalt. Uden tal er det en holdning, ikke evidens. Dette er et hovedkriterium, ikke et pyntekriterium.",
+  "EKSTERN FEEDBACK - PLANENS VIGTIGSTE ENKELTMAAL: mindst 6 gennemfoerte designreviews med en person uden for LeanLinking inden maaned 9, logget med dato, fremlagt materiale, modtaget kritik og foretaget aendring. Under 6 betyder at planens stoerste risiko ikke er afdaekket, uanset hvordan alt andet ser ud. FOERSTE REVIEW SKAL LIGGE I MAANED 2 - hvis det ikke goer, er sporet ved at fejle.",
+  "SYSTEM DESIGN-SELVTEST: fire maalinger i maaned 0, 3, 6 og 9 mod SAMME ni-akse-rubrik, hver optaget. Bestaaelseskriterium: samlet score skal stige med mindst 40 procent fra maaned 0 til maaned 9, OG han skal score mindst 3 af 5 paa hver af de tre akser der maaler tradeoffs, fejltilstande og drift/omkostning. Kun samlet fremgang uden bund paa de tre akser er ikke bestaaet - det er de tre akser der adskiller en arkitekt fra en dygtig udvikler.",
+  "EKSTERN KALIBRERING AF SELVTESTEN: mindst én af de fire selvtests skal scores af en udefrakommende. Hvis Simons egen score og den eksterne afviger med mere end 1 point i gennemsnit, er selvkalibreringen selve problemet, og det skal behandles som en selvstaendig konklusion - ikke som stoej.",
+  "MUNDTLIGT: mindst 1 oplaeg leveret til et publikum af fremmede paa mindst 15 personer inden maaned 12. Internt oplaeg for kollegerne taeller ikke, men skal vaere gennemfoert inden maaned 3 som forudsaetning.",
+  "CFP: mindst 3 indsendte call for papers inden maaned 12. Accept er IKKE et kriterium - indsendelsen er det han kontrollerer, accepten er det andre kontrollerer, og at maale paa accept goer maalet uaerligt.",
+  "INDGAAENDE KONTAKT: mindst 2 uopfordrede henvendelser fra personer han ikke kender, om et emne inden for nichen, inden maaned 12. Rekrutteringsmails taeller ikke. Dette er det eneste maal der maaler om positioneringen faktisk naar nogen, og det er derfor det staar med lav vaerdi og hoej betydning.",
+  "BLINDTEST AF CV: to personer der ikke kender ham skal efter at have laest CV'et kunne (a) angive hans specialomraade i én saetning og (b) naevne to konkrete beslutninger han har truffet. Fejler begge dele, er dokumentet ikke faerdigt uanset hvor godt det foeles.",
+  "SPROGLIG TEST AF NICHEN: han skal kunne sige nichesaetningen paa fem ord, og en fagperson skal kunne stille ét opfoelgende spoergsmaal han kan svare paa i fem minutters dybde. Kan han ikke det, er nichen for bred og skal snaevres.",
+  "KONTRAKT: fuldtidskontrakten er gennemlaest af IDA eller advokat FOER underskrift, og der foreligger skriftlig aftale om (a) ret til at publicere sanitiseret fagligt materiale og (b) at arbejde udfoert i egen tid paa eget udstyr tilhoerer ham. Dette er et binaert bestaa-eller-dump-kriterium: uden det er den offentlige portefoelje ikke hans, og hele positioneringssporet er formelt vaerdiloest.",
+  "FORHANDLING: fuldtidskontrakt underskrevet med navngivet loen, plus mindst 3 af de ikke-loen-punkter (uddannelsesbudget, konferencedeltagelse, kundeadgang, arkitekturtid, publiceringsret), plus en SKRIFTLIGT AFTALT loensamtale efter 12 maaneder med kriterier fastlagt paa forhaand.",
+  "A-KASSE: indmeldt foer studiets afslutning, med dimittendfristen tjekket paa a-kassens egen side. Binaert.",
+  "TIDSBUDGET: positionering har i gennemsnit over 12 maaneder ikke overskredet 3 timer om ugen. Foeres som log. Overskridelse er ikke flid, men fejlprioritering, og skal behandles som en afvigelse paa linje med de andre."
+ ],
+ "feedback_udefra": [
+  "BETALT MENTOR ER DET HOEJESTE AFKAST PER KRONE I HELE PLANEN. En time om maaneden med en der har vaeret solution architect i ti aar loeser praecis det hul LeanLinking ikke kan fylde. Budgetter DKK 1.000-2.500 om maaneden - billigere end en certificering, vaerd mere. Betaling er en FORDEL, ikke en ulempe: den fjerner den sociale forpligtelse der goer gratis mentorer hoeflige, og hoeflighed er praecis det der ikke er brug for.",
+  "FREMGANGSMAADEN DER VIRKER TIL AT SKAFFE MENTOREN: identificer 10 arkitekter i Aarhus-omraadet paa LinkedIn og skriv til alle 10 med et AFGRAENSET, BETALT og KONKRET oplaeg - én time om maaneden, han betaler, han medbringer et faerdigt designdokument og tre skrevne spoergsmaal. To siger ja. Til sammenligning har den aabne foresporgsel 'vil du vaere min mentor?' naesten nul svarprocent, fordi den beder om en ubegraenset forpligtelse uden defineret slutning. Forskellen paa de to henvendelser er hele forskellen paa om sporet lykkes.",
+  "REVIEW-BYTTE MED EN JAEVNBYRDIG I ET ANDET FIRMA. Find via meetups én eller to paa lignende eller lidt hoejere niveau og lav en fast gensidig aftale: 90 minutter om maaneden, hver fremlaegger et designvalg, den anden angriber det. Gratis, gensidigt og derfor holdbart over 12 maaneder paa en maade ensidige tjenester ikke er. Svagheden er kalibreringen - to der ikke kan faget kan ikke gradere hinanden - saa dette skal supplere en mentor, ikke erstatte den.",
+  "BETALTE MOCK SYSTEM DESIGN-INTERVIEWS MED RIGTIGE SENIORER I MAANED 3, 6 OG 9. Dette er et af de faa steder man for penge kan koebe en struktureret, ubarmhjertig og KALIBRERET vurdering af sin arkitekturtaenkning fra en der har vurderet mange andre. Kalibreringen er det afgoerende - en mentor kan sige 'det er godt', men en interviewer der har set hundrede kandidater kan sige 'det er godt til hvad'. Verificer aktuelle udbydere; jeg kunne ikke tjekke dem denne session.",
+  "OPEN SOURCE-BIDRAG SOM GRATIS, HAARD, OFFENTLIG REVIEW. Verificerede aktive .NET-projekter hvis problemklasser overlapper hans domaene: JasperFx/marten (3.452 stjerner, reelt aktivt pushet 10. september 2026, append-only event store og projections - selve mekanikken bag et revisionsspor) og Finbuckle/Finbuckle.MultiTenant (1.620 stjerner, multi-tenant isolation). Maintainere reviewer designvalg haardt, gratis og offentligt. Start i Discussions med et praecist spoergsmaal, ikke med en stor PR - den bliver lukket, og det demotiverer paa den ubrugelige maade. BEMAERK: der findes praktisk taget ingen open source i hans EGET domaene (verificeret: 0-1 repositories), saa dette spor gaar via teknisk tilstoedende projekter, ikke via domaenet.",
+  "AT PUBLICERE ER KUN FEEDBACK HVIS HAN SPOERGER NOGEN KONKRET. Det obligatoriske sidste skridt efter hver udgivelse: send den til fem NAVNGIVNE personer med ÉT konkret spoergsmaal - 'hvad ville du have gjort anderledes i afsnit 3?'. Et generelt 'feedback modtages gerne' giver nul svar; et snaevert, besvarbart spoergsmaal til en navngiven person giver ofte svar. Uden dette skridt er publicering sendetid, ikke feedback, og det er den maade skriveplaner doer paa.",
+  "SKRIV EKSPLICIT TVIVL IND I ALT HVAD HAN PUBLICERER. Et afsnit der siger 'jeg er stadig i tvivl om X, og her er hvorfor' er den mest paalidelige maade at faa kompetente laesere til at SVARE i stedet for at like. Sikker fremstilling inviterer applaus; erklaeret usikkerhed inviterer korrektion. Han skal have korrektionen.",
+  "AT HOLDE OPLAEG ER FEEDBACK; AT DELTAGE ER DET IKKE. Spoergerunden efter et oplaeg er kvalificeret, oejeblikkelig og ufiltreret kritik fra fremmede - det taetteste han kommer paa et review board uden at have et. Listen over spoergsmaal han IKKE kunne svare paa er hans naeste pensum, og den skal skrives ned samme aften mens den stadig goer ondt.",
+  "REVISOREN OG KUNDENS SIKKERHEDSSPOERGESKEMA ER EN INDBYGGET EKSTERN ORAKEL, OG DET ER EN FORDEL VED HANS DOMAENE SOM ANDRE DOMAENER IKKE HAR. En revisor kan ikke overtales, en auditkrav kan ikke forhandles, og et kundesikkerhedsspoergeskema afsloerer praecist hvor designet ikke holder. Det er ekstern, gratis, ufejlbarligt aerlig feedback paa arkitekturen, og den ligger allerede i firmaets indbakke. De fleste udviklere har ikke adgang til noget tilsvarende. Han skal aktivt opsoege den.",
+  "STIFTEREN ER IKKE TEKNISK REVIEWER, MEN HAN ER KRAVREVIEWER - OG DET ER LIGE SAA VIGTIGT. Han kan ikke falsificere et designvalg, men han kan falsificere PRAEMISSEN: 'nej, kunderne kraever faktisk ikke det', 'jo, det sker hver maaned'. Halvdelen af daarlige designs skyldes forkerte krav, ikke daarlig teknik. Brug ham praecist til det og forlang ikke andet.",
+  "DE DYGTIGE UDVIKLERE INTERNT ER GODE TIL IMPLEMENTERINGSREVIEW, DAARLIGE TIL DESIGNREVIEW. Det er ikke kritik af dem, men en rollebeskrivelse. Brug dem til 'holder den her kode', ikke til 'er den her arkitektur rigtig'. At bede dem om det andet giver et hoefligt ja der foeles som validering og ikke er det - og falsk validering er farligere end ingen validering, fordi den fjerner motivationen til at soege ekstern kritik.",
+  "TRE SPOR PARALLELT, MED FORVENTNING OM AT TO FEJLER. Betalt mentor, review-bytte og betalt mock-interview startes ALLE i maaned 1-2. Sandsynligheden for at ét enkelt spor loeber i 12 maaneder er lav; sandsynligheden for at mindst ét af tre goer er hoej. Hvis intet spor loeber i maaned 2, er det ikke en forsinkelse, men planens vigtigste tidlige advarselssignal, og det skal behandles som en stopklods for resten."
+ ],
+ "kompetencer": [
+  {
+   "navn": "Nichedefinition og positionering",
+   "hvorfor": "Uden en fast, snaever formulering bliver LinkedIn, CV, oplaegstitler og artikler indbyrdes inkonsistente, og saa akkumulerer 12 maaneders arbejde ikke til noget nogen kan huske. Nichen er ogsaa det eneste sted en junior kan vinde: han taber den brede konkurrence og kan vinde den smalle. VERIFICERET GRUNDLAG: 24 generiske multi-tenant .NET-repositories med 0-2 stjerner mod 0-1 repositories i leverandoercompliance.",
+   "hvordan_traenes": "Skriv fem kandidatsaetninger, test hver mod to kriterier (kan en fremmed gentage den efter en gennemhoering; kan han svare i dybden paa det foerste opfoelgende fagspoergsmaal), soeg de centrale ord paa GitHub og LinkedIn for at afsloere navnekollisioner, laeg saetningen fast og skift den ikke i 12 maaneder. Revideres én gang i maaned 6.",
+   "niveauskala": "1: kan naevne teknologier han arbejder med. 2: kan naevne et domaene. 3: har én fast saetning han bruger konsekvent alle steder. 4: kan besvare det foerste opfoelgende fagspoergsmaal med fem minutters dybde. 5: bliver kontaktet uopfordret om emnet af folk han ikke kender."
+  },
+  {
+   "navn": "Beslutningsdokumentation uden titel (ADR og C4)",
+   "hvorfor": "Det er den ENESTE maade at goere arkitekturarbejde synligt paa naar man ikke har titlen, og den ENESTE maade at have en historik efter 12 maaneder i stedet for en foelelse. Dokumenterne er samtidig raamateriale til artikler, oplaeg og CV-punkter, og de er overleveringen den dag han gaar. Ét stykke arbejde, fire formaal.",
+   "hvordan_traenes": "Skriv en ADR paa hver ikke-triviel beslutning, ogsaa smaa, ogsaa uden at nogen har bedt om det. Skriv fem ADR'er bagud paa beslutninger truffet foer han kom, ved at interviewe dem der traf dem. Tegn as-is C4 context og container for hele produktet. Én fast template, aldrig skiftet.",
+   "niveauskala": "1: dokumenterer intet. 2: skriver ned hvad der blev besluttet. 3: skriver ogsaa hvilke alternativer der blev fravalgt og hvorfor. 4: skriver hvilken begraensning der afgjorde valget, og hvad konsekvensen maaltes til. 5: skriver det saa en fremmed kan genskabe beslutningen uden at spoerge, og saa en efterfoelger kan omgoere den paa oplyst grundlag."
+  },
+  {
+   "navn": "System design under tidspres, med forsvar af valgene",
+   "hvorfor": "Skriftlig fremstilling kan redigeres i det uendelige; mundtligt forsvar under spoergsmaal kan ikke, og derfor er det en haardere og mere aerlig test. Det er den bedst egnede komponent i kompetenceporten i maaned 9-10, fordi den er falsificerbar, gradbar udefra og ikke kan snydes igennem.",
+   "hvordan_traenes": "45 minutter, papir, ingen opslag, tal hoejt, optag. Score mod fast ni-akse-rubrik i maaned 0, 3, 6 og 9. Domaeneproblemer, ikke 'design Twitter'. Én architecture kata om maaneden fra tedneward/ArchKatas, filtreret paa dokument- og compliancetunge scenarier. Mindst én af de fire selvtests scores af en udefrakommende.",
+   "niveauskala": "1: gaar direkte til teknologivalg. 2: afklarer krav foerst, men estimerer ikke. 3: estimerer stoerrelser og tegner datamodel. 4: identificerer flaskehalse og navngiver eksplicit hvilke alternativer der blev fravalgt og hvorfor. 5: behandler fejltilstande, drift og omkostning som foersterangs designkrav, ikke som eftertanke. AKSE 4 OG 5 ER DER HVOR ARKITEKTEN ADSKILLER SIG FRA DEN DYGTIGE UDVIKLER."
+  },
+  {
+   "navn": "Teknisk skrivning der inviterer kritik",
+   "hvorfor": "Arkitekter skriver - det er en stor del af arbejdet, og en hiring manager der laeser noget uklart konkluderer at taenkningen er uklar. Vigtigere i hans situation: skrivning er den billigste maade at faa kvalificeret modspil udefra paa, naar der ingen er internt. Men KUN hvis teksten er skrevet saa den kan modsiges.",
+   "hvordan_traenes": "1-2 artikler om maaneden, ikke ugentligt. Fast struktur: problemet, den oplagte loesning, hvorfor den fejler, hvad der virker, hvad det kostede, hvad han stadig er i tvivl om. Mindst ét selvmaalt tal per artikel. Mindst ét afsnit om hvad han tog fejl af. Obligatorisk sidste skridt: send til fem navngivne personer med ét konkret spoergsmaal.",
+   "niveauskala": "1: skriver intet offentligt. 2: skriver referater af hvad han har lavet. 3: skriver med et tal og en begrundelse. 4: skriver eksplicit tvivl og fravalgte alternativer ind, saa laeseren kan modsige. 5: faar substantielle indvendinger fra folk der ved mere end ham - det er den eneste maaling der taeller."
+  },
+  {
+   "navn": "Mundtlig formidling til fremmede",
+   "hvorfor": "Spoergerunden efter et oplaeg er kvalificeret, oejeblikkelig, ufiltreret kritik - det taetteste han kommer paa et architecture review board uden at have et. Og taletid er den hurtigste vej til at blive kendt i et lille marked som Aarhus. Uden det er positioneringen udelukkende skriftlig og naar langt faerre.",
+   "hvordan_traenes": "Trappe i fire trin: internt oplaeg for de ni kolleger i maaned 2-3, lightning talk paa 10 minutter til et Aarhus-meetup inden maaned 9, fuldt oplaeg paa 30-45 minutter, derefter CFP til community-track. Oev hoejt med stopur fem gange, ikke i hovedet. Skriv samme aften ned hvilke spoergsmaal han ikke kunne svare paa - den liste er naeste pensum.",
+   "niveauskala": "1: har aldrig praesenteret. 2: kan praesentere for kolleger der kender konteksten. 3: kan holde 10 minutter for fremmede. 4: kan holde 30-45 minutter og haandtere uforberedte spoergsmaal uden at vige. 5: bliver inviteret til at tale i stedet for at skulle byde ind."
+  },
+  {
+   "navn": "Selvkalibrering - at vide hvad han ikke kan",
+   "hvorfor": "Dette er den kompetence hele planen staar og falder med. Med ingen arkitekt internt er den mest sandsynlige fejludgang ikke at han laerer for lidt, men at han laerer noget forkert i 12 maaneder med stigende selvtillid og uaendret kompetence. Evnen til at maale sig selv mod en ekstern maalestok er det eneste vaern.",
+   "hvordan_traenes": "Score sine egne selvtests OG faa mindst én scoret eksternt, og behandle afvigelsen mellem de to som et selvstaendigt og vigtigt resultat. Foere overraskelseslog. Skrive eksplicit tvivl ind i alt offentligt materiale og se hvad der bliver modsagt. Bruge betalte mock-interviews som kalibreret ekstern maaling.",
+   "niveauskala": "1: ved ikke hvad han ikke ved. 2: kan naevne omraader han er svag i. 3: kan forudsige hvor hans eget design vil braekke. 4: hans egen vurdering ligger inden for 1 point af en ekstern vurderers paa samme rubrik. 5: soeger aktivt situationer hvor han sandsynligvis tager fejl, frem for situationer hvor han sandsynligvis har ret."
+  },
+  {
+   "navn": "Netvaerksopbygning i et lille marked",
+   "hvorfor": "Aarhus er lille nok til at 30 substantielle samtaler paa et aar svarer til at kende miljoeet - det er et opnaaeligt tal. Netvaerket er samtidig kanalen til den eksterne feedback der ikke findes internt, og til den doer der skal staa aaben i aar 2-3 uden at han jager den nu.",
+   "hvordan_traenes": "Én fast meetup om maaneden - fast eet sted slaar sporadisk fem steder, fordi genkendelse er hele mekanismen. Én kaffe om maaneden med en han ikke kender, anmodet med et konkret og lavt-forpligtende oplaeg. Taktikken for en genert junior er ikke at netvaerke, men at INTERVIEWE: spoerg folk hvordan de har loest noget. Folk taler gerne om deres egne systemer og husker den der spurgte. Bed derudover stifteren om at komme med til branchearrangementer firmaet alligevel deltager i.",
+   "niveauskala": "1: kender kun kolleger. 2: deltager i arrangementer uden at tale med nogen. 3: har 5-10 faglige kontakter uden for firmaet. 4: har mindst én fast gensidig fagrelation (review-bytte eller mentor). 5: bliver kontaktet uopfordret og kan selv formidle kontakt mellem andre."
+  },
+  {
+   "navn": "Loen- og rammeforhandling",
+   "hvorfor": "Overgangen fra studentermedhjaelper til fuldtid er det stoerste og mest forudsigelige loenspring de naeste aar, og den eneste gang han har fuld forhandlingsposition. Vigtigere endnu: det er der IP- og konkurrenceklausulen afgoeres, og de to punkter kan goere hele den offentlige portefoelje juridisk vaerdiloes eller spaerre ham ude af hans egen niche.",
+   "hvordan_traenes": "Regn firmaets tal ud foerst (DKK 4,2 mio. bruttofortjeneste / 7 aarsvaerk = DKK 600.000 per aarsvaerk, hvoraf ogsaa husleje, software, salg og overskud skal betales). Hent loental hos IDA og Jobindex. Formuler egne bidrag paa INDTAEGTSSIDEN, ikke omkostningssiden. Lav en prioriteret liste over ikke-loen-krav. Faa kontrakten laest af IDA eller advokat FOER underskrift. Oev samtalen hoejt med en udenforstaaende.",
+   "niveauskala": "1: tager imod det der tilbydes. 2: kender markedsniveauet. 3: kender ogsaa arbejdsgiverens oekonomiske ramme og argumenterer inden for den. 4: forhandler ogsaa de ikke-monetaere punkter og faar dem paa skrift. 5: faar en aftalt revurdering med kriterier fastlagt paa forhaand, saa naeste forhoejelse ikke kraever en ny konfrontation."
+  }
+ ],
+ "web_verifikation": "\"KRITISK ADVARSEL TIL DEN SKRIVENDE AGENT: VERIFIKATIONEN VAR STAERKT BEGRAENSET DENNE SESSION. Laes dette afsnit foer noget herfra skrives ind i den faerdige tekst.\\n\\nTO SAMTIDIGE BEGRAENSNINGER:\\n1. WebSearch-kvoten var ALLEREDE OPBRUGT da denne opgave startede (200 af 200 kald forbrugt). Nul soegninger kunne udfoeres.\\n2. Netvaerkets egress-politik blokerede naesten alle relevante domaener. Bekraeftet blokeret ved direkte forsoeg: learn.microsoft.com, ida.dk, prosa.dk, jobindex.dk, martinfowler.com, sessionize.com, dev.to, en.wikipedia.org. Kun github.com og raw.githubusercontent.com var tilgaengelige.\\n\\nVERIFICERET LIVE VIA GITHUB API DEN 10. SEPTEMBER 2026 (disse tal kan bruges direkte og er de eneste haarde data i dette output):\\n- donnemartin/system-design-primer: 369.184 stjerner, 58.348 forks, aktivt\\n- ByteByteGoHq/system-design-101: 89.048 stjerner\\n- karanpratapsingh/system-design: 46.017 stjerner\\n- ashishps1/awesome-system-design-resources: 41.303 stjerner\\n- architecture-decision-record/architecture-decision-record: 16.877 stjerner (BEMAERK: flyttet fra joelparkerhenderson til egen organisation - brug den nye adresse)\\n- npryce/adr-tools: 5.683 stjerner, 69 aabne issues\\n- JasperFx/marten: 3.452 stjerner, MIT, pushed_at 2026-09-10 (reelt aktiv commit-aktivitet, ikke kun metadata)\\n- Finbuckle/Finbuckle.MultiTenant: 1.620 stjerner, 37 aabne issues, aktivt\\n- thomvaill/log4brains: 1.583 stjerner, 57 aabne issues\\n- team7katas/sysopsquad: 307 stjerner\\n- ldynia/archcolider: 248 stjerner\\n- tedneward/ArchKatas: 224 stjerner, opdateret 2026-09-07, 35+ katas i JSON. Verificerede kata-navne: Road Warrior, SantasWorkshop, Assassins, FitMeBitMe, GoingGreen, WorldOfWebcraft, RoomWithAView, AmISick, CheckYourWork\\n- chainloop-dev/chainloop: 584 stjerner (software supply chain, IKKE leverandoerkaede)\\n- bureado/awesome-software-supply-chain-security: 380 stjerner\\n- ddd-crew/ddd-starter-modelling-process: bekraeftet eksisterende, leverer Bounded Context Canvas, Aggregate Design Canvas, Core Domain Chart, Domain Message Flow\\n\\nVERIFICEREDE SOEGERESULTATTAL (baerende for nicheargumentet, kan citeres):\\n- 'multi-tenant SaaS architecture dotnet': 24 repositories, stort set alle 0-2 stjerner, langt de fleste oprettet i 2026, naesten alle selvbeskrevet som reference architecture / starter kit / template\\n- 'supplier due diligence supply chain compliance platform': 1 repository, 0 stjerner\\n- 'CSRD ESRS sustainability reporting compliance open source': 0 repositories\\n- 'software supply chain security SBOM attestation': etableret felt med aktive projekter\\nDette er optaellingsresultater, ikke vurderinger, og de understoetter direkte baade domaeneforankringsstrategien og advarslen mod navnekollisionen.\\n\\nEN METODISK ADVARSEL OM GITHUB-DATA: feltet updated_at aendrer sig ogsaa naar nogen giver en stjerne og er derfor IKKE bevis paa aktiv udvikling. Kun pushed_at (som jeg har for marten) beviser commit-aktivitet. Skriv ikke 'aktivt vedligeholdt' om repositories hvor kun updated_at er kendt.\\n\\nIKKE VERIFICERET - SKAL TJEKKES FOER PUBLICERING, OG MAA IKKE FREMSTILLES SOM KONTROLLERET:\\n1. AZ-305 og AZ-400: status, pensum, pris og eventuel pensionering. learn.microsoft.com var blokeret. Da AZ-204 blev pensioneret 31. juli 2026, er antagelser om de oevrige Azure-eksamener uforsvarlige. SKAL tjekkes paa Microsoft Learn foer nogen certificering anbefales.\\n2. Alle danske loental. Bandene i kernepointer (nyuddannet DKK 38-45k, mid 48-58k, senior 60-75k, architect 65-85k, alle inkl. pension) er TRAENINGSVIDEN, ikke verificeret. Tjek mod IDA loenstatistik og Jobindex loentjek. Regnestykket paa LeanLinkings egne tal (4,2 mio. / 7 aarsvaerk = 600.000 per aarsvaerk) er derimod ren aritmetik paa de tal opgaven selv angiver som verificerede - men bemaerk forbeholdet: jeg har hverken personaleomkostninger eller resultatlinje, saa det er en oevre ramme, ikke en konklusion om hvad firmaet kan betale.\\n3. Det danske IT-marked i 2026. Jeg kunne IKKE afgoere om der er afmatning eller vaekst, hverken generelt eller for juniorer og arkitektroller. Enhver paastand om markedstilstand skal enten belaegges med en frisk kilde (Jobindex' jobindeks, Danmarks Statistik, IT-Branchens rapporter) eller udelades. Det strukturelle argument om AI-vaerktoejers effekt paa juniorarbejde staar i kernepointer MED den eksplicitte forbehold at kausaliteten er omstridt og sammenblandet med rentedrevet ansaettelsesstop - behold det forbehold.\\n4. A-kasse: dimittendfrister, dimittendsatser, karensregler og priser. Aendret ved reformer inden for de seneste aar. ANGIV IKKE ET TAL ELLER EN FRIST i den faerdige tekst - send ham til a-kassens egen side.\\n5. Fagforening: IDA's og PROSA's kontingenter, studenterpriser og aktuelle medlemsydelser, herunder om kontraktgennemgang er inkluderet.\\n6. Juridiske detaljer: ansaettelsesklausullovens gaeldende krav til konkurrenceklausuler (kompensation, anciennitet, form) og funktionaerlovens opsigelsesvarsler i 2026. Skriv princippet, ikke paragraffen, og henvis til kontraktgennemgang.\\n7. Konferencer: GOTO Copenhagen, Copenhagen Developers Festival og alle danske branchekonferencer for indkoeb og logistik - eksistens, datoer, priser, CFP-frister. INTET af det er tjekket.\\n8. Sessionize' status som dominerende CFP-platform i 2026.\\n9. Meetup-grupper i Aarhus. Jeg kunne ikke tjekke EN ENESTE. DEN FAERDIGE TEKST MAA IKKE OPFINDE GRUPPENAVNE - skriv soegemetoden, ikke navnene.\\n10. Publiceringsplatformes tilstand i 2026 (Substack, Medium, Hashnode, dev.to, InfoQ). Derfor er raadet formuleret platformsuafhaengigt: eget domaene som arkiv, syndikering udad. Det raad er robust uanset platformsituationen.\\n11. Mentor- og mock-interview-platforme: eksistens, priser, kvalitet. Ingen navne opfundet; kun metoden angivet.\\n12. Boegers aktuelle udgaver: Fundamentals of Software Architecture (2. udgave?) og The Software Architect Elevator.\\n\\nGENEREL REGEL TIL DEN SKRIVENDE AGENT: alt i ressourcer-listen med verificeret=false skal enten faktatjekkes foer publicering eller praesenteres for Simon som 'tjek selv aktuel status'. Der er IKKE opfundet en eneste URL i dette output. Hvor jeg ikke havde en verificeret URL, staar der et domaenenavn eller en instruks om at verificere, aldrig et fabrikeret link.\""
+}
