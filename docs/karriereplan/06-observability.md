@@ -44,7 +44,7 @@ At kunne sige **nej til browser-OTel med en genovervejelsesbetingelse** er præc
 
 **Logging i .NET 2026:** `Microsoft.Extensions.Logging` med message templates og source-generated `LoggerMessage`, plus `Microsoft.Extensions.Telemetry` og `Microsoft.Extensions.Compliance.Redaction` (begge 10.10.0, GA). Serilog.AspNetCore 10.0.0 lever fint, men at vælge det i en ny .NET 10-service kræver nu en begrundelse, ikke en vane.
 
-**Din bedste døråbning hele året:** .NET 8 og .NET 9 går begge EOL **10. november 2026**; .NET 10 er LTS til november 2028. Er LeanLinking på .NET 8, kommer der en tvungen migration. Foreslå ikke en strategi — spørg stifteren: *"Når vi alligevel skal på .NET 10, vil I have at jeg samtidig opgraderer instrumenteringen på den service jeg arbejder i? Cirka en dags ekstra arbejde."* Det er et lille ja at give.
+**Din bedste døråbning hele året:** .NET 8 (LTS) går EOL **10. november 2026**; .NET 9 (STS) nåede allerede EOL 12. maj 2026. .NET 10 er LTS til november 2028. Er LeanLinking på .NET 8, kommer der en tvungen migration. Foreslå ikke en strategi — spørg stifteren: *"Når vi alligevel skal på .NET 10, vil I have at jeg samtidig opgraderer instrumenteringen på den service jeg arbejder i? Cirka en dags ekstra arbejde."* Det er et lille ja at give.
 
 ## Cost er et arkitekturproblem, ikke et driftsproblem
 

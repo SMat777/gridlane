@@ -21,12 +21,12 @@ Regulativerne er gratis og kortere end whitepaperne om dem. NIS2 art. 20-23 er f
 | GDPR — kun art. 4, 5, 17, 20, 25, **28**, 30(2), 32, 33, kap. V ([eur-lex.europa.eu/eli/reg/2016/679/oj](https://eur-lex.europa.eu/eli/reg/2016/679/oj)) | Kerne | 6-8 t | 0 | Art. 28 er jeres rolle som databehandler. Din vigtigste artikel |
 | Datatilsynets vejledninger ([datatilsynet.dk](https://www.datatilsynet.dk)) | Kerne | 8-10 t | 0 | Det en dansk DPO citerer. Læs også afgørelserne |
 | NIS2, art. 20-23 ([eur-lex.europa.eu/eli/dir/2022/2555/oj](https://eur-lex.europa.eu/eli/dir/2022/2555/oj)) | Kerne | 2 t | 0 | Art. 21(2)(d) skal du kunne recitere |
-| Sikker Digital / CFCS ([sikkerdigital.dk](https://www.sikkerdigital.dk)) | Kerne | 4-6 t | 0 | Dansk implementering og dansk fagsprog |
+| Sikker Digital / Digitaliseringsstyrelsen + Erhvervsstyrelsen ([sikkerdigital.dk](https://www.sikkerdigital.dk)) | Kerne | 4-6 t | 0 | Dansk implementering og dansk fagsprog. NB: CFCS's ikke-militære funktioner overgik til SAMSIK januar 2025; CFCS er nu på [cfcs.dk](https://cfcs.dk) |
 | Azure Architecture Center, multitenant ([learn.microsoft.com/.../multitenant/overview](https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/overview)) | Kerne | 10-12 t | 0 | Kernemateriale til flagskibsspiken |
 | OWASP Cheat Sheets ([cheatsheetseries.owasp.org](https://cheatsheetseries.owasp.org)) + API Security Top 10 ([owasp.org/API-Security/](https://owasp.org/API-Security/)) | Kerne | 12-15 t | 0 | Kun Authorization, Secrets Management, Logging, **File Upload**. API1 (BOLA) er bogstaveligt "tenant A henter tenant B's id" |
 | ISO/IEC 27001:2022 + 27002:2022 ([ds.dk](https://www.ds.dk)) | Kerne | 8-10 t, plus 15-20 t på SoA | Et par tusinde kr. (uverificeret) | Emnets eneste udgift der er pengene værd — men først i SoA-arbejdet |
-| CSA CAIQ v4 ([cloudsecurityalliance.org/research/cloud-controls-matrix](https://cloudsecurityalliance.org/research/cloud-controls-matrix)) + MVSP ([mvsp.dev](https://mvsp.dev)) | Kerne | 1 uge | 0 | Det spørgeskema kunder faktisk sender. MVSP først |
-| IAF CertSearch ([iafcertsearch.org](https://www.iafcertsearch.org)) | Kerne | 2 t + spike | 0 / API-vilkår ukendt | Emnets mest anvendelige opdagelse. Se spike 3 |
+| CSA CAIQ v4.1 ([cloudsecurityalliance.org/research/cloud-controls-matrix](https://cloudsecurityalliance.org/research/cloud-controls-matrix)) + MVSP ([mvsp.dev](https://mvsp.dev)) | Kerne | 1 uge | 0 | Det spørgeskema kunder faktisk sender. v4.1 udkom januar 2026. MVSP først |
+| GACI CertSearch (tidl. IAF CertSearch; IAF + ILAC fusionerede til GACI 1. jan 2026) ([iafcertsearch.org](https://www.iafcertsearch.org)) | Kerne | 2 t + spike | 0 / API-vilkår ukendt | Emnets mest anvendelige opdagelse. Se spike 3. Verificér om domænet er migreret |
 | Threat modeling-pakken: Shostack kap. 1-4 og **7-9**; Manifesto ([threatmodelingmanifesto.org](https://www.threatmodelingmanifesto.org)); Threat Dragon ([owasp.org/www-project-threat-dragon/](https://owasp.org/www-project-threat-dragon/)); Elevation of Privilege ([shostack.org/games/elevation-of-privilege](https://shostack.org/games/elevation-of-privilege)) | Kerne | 16-18 t | Bog brugt, resten 0 | Kap. 7-9 er facilitering, og dem springer alle over. Threat Dragon lægger modellen i git, så den reviewes i en PR |
 | Data Act kap. VI ([eur-lex.europa.eu/eli/reg/2023/2854/oj](https://eur-lex.europa.eu/eli/reg/2023/2854/oj)), CSDDD art. 5-11 ([eur-lex.europa.eu/eli/dir/2024/1760/oj](https://eur-lex.europa.eu/eli/dir/2024/1760/oj)), DORA art. 28-30 ([eur-lex.europa.eu/eli/reg/2022/2554/oj](https://eur-lex.europa.eu/eli/reg/2022/2554/oj)), CRA ([eur-lex.europa.eu/eli/reg/2024/2847/oj](https://eur-lex.europa.eu/eli/reg/2024/2847/oj)) | Støtte | 10 t samlet | 0 | Fuld tenant-eksport er lovkrav, ikke en pæn feature. CSDDD's due diligence-proces ER produktflowet i lovsprog. DORA bliver kerne i det sekund I har én finansiel kunde |
 
@@ -40,8 +40,8 @@ At referere ti direktiver gennemskues øjeblikkeligt. At spore ét krav fra lovt
 |---|---|---|---|---|
 | GDPR art. 32(1)(a) pseudonymisering | Behandlingssikkerhed | A.8.11 | Redaktionsprocessor i telemetripipelinen | Test: ingen e-mail når exporteren |
 | GDPR art. 17 sletning | Sletning | A.5.34 | Orkestreret sletning på tværs af SQL, Blob, DLQ, søgeindeks, logs | Sletteattest + målt p95 |
-| NIS2 art. 21(2)(d) leverandørkæde | CFCS | A.5.19-A.5.22 | Vurdering af egne underleverandører + SBOM i pipeline | Underleverandørliste + CycloneDX |
-| NIS2 art. 21(2)(b) hændelser | CFCS | A.8.15, A.8.16 | Audit-log adskilt fra diagnostisk log, append-only | Immutable blob-politik + SLO |
+| NIS2 art. 21(2)(d) leverandørkæde | Sikker Digital | A.5.19-A.5.22 | Vurdering af egne underleverandører + SBOM i pipeline | Underleverandørliste + CycloneDX |
+| NIS2 art. 21(2)(b) hændelser | Sikker Digital | A.8.15, A.8.16 | Audit-log adskilt fra diagnostisk log, append-only | Immutable blob-politik + SLO |
 | GDPR kap. V overførsler | Tredjelandsoverførsler | A.5.14 | Azure Policy der begrænser tilladte regioner til EU | Policy-fil i git + rapport |
 
 Sidste række er hele nichen på tredive sekunder: en regionspolicy er bogstaveligt talt GDPR kapitel V udtrykt som kode, og du kan pege på filen.
@@ -72,7 +72,7 @@ Et ISO-certifikat er kun noget værd hvis udstederen er akkrediteret af et IAF M
 
 ### 4. Spørgeskemaet og din Statement of Applicability (12-15 t)
 
-Besvar CAIQ v4 eller MVSP ærligt mod dit eget system. Hvert "ja" skal have et evidenslink der virker; hvert "nej" bliver et backlog-punkt med et estimat. Skriv derefter en SoA for alle 93 bilag A-kontroller, anvendelig eller ej, med begrundelse for hver udeladelse. Ingen optimisme: kan du ikke pege på evidensen, er svaret nej. Seriens mest ubehagelige uge — og samtidig det artefakt der mest overbevisende beviser at du kan operere i overlappet. Læg den efter fire tekniske spikes; en SoA for et system der ikke findes, er en skriveøvelse.
+Besvar CAIQ v4.1 eller MVSP ærligt mod dit eget system. Hvert "ja" skal have et evidenslink der virker; hvert "nej" bliver et backlog-punkt med et estimat. Skriv derefter en SoA for alle 93 bilag A-kontroller, anvendelig eller ej, med begrundelse for hver udeladelse. Ingen optimisme: kan du ikke pege på evidensen, er svaret nej. Seriens mest ubehagelige uge — og samtidig det artefakt der mest overbevisende beviser at du kan operere i overlappet. Læg den efter fire tekniske spikes; en SoA for et system der ikke findes, er en skriveøvelse.
 
 **Output:** Udfyldt CAIQ/MVSP med evidenslinks. Komplet SoA. Prioriteret mangelregister. En optælling af hvor mange kontroller du kan *dokumentere* mod hvor mange du kan *påstå*.
 

@@ -72,7 +72,7 @@ Det sidste spørgsmål er det hårdeste og det mest afslørende. "Jeg har brugt 
 
 ## Ressourcerne, med prioritet og timeforbrug
 
-Alt bygges på .NET 10 (LTS, support til 14. november 2028). .NET 8 og .NET 9 udløber begge 10. november 2026 — om to måneder. Jag ikke .NET 11; den er STS, og I bliver på LTS i årevis.
+Alt bygges på .NET 10 (LTS, support til 10. november 2028). .NET 8 (LTS) udløber 10. november 2026 — om to måneder. .NET 9 (STS) nåede end-of-support 12. maj 2026 og er allerede ude af support. Jag ikke .NET 11; den er STS, og I bliver på LTS i årevis.
 
 | Prioritet | Ressource | Timer | Hvornår | Pris | URL |
 |---|---|---|---|---|---|
@@ -100,7 +100,7 @@ Alt bygges på .NET 10 (LTS, support til 14. november 2028). .NET 8 og .NET 9 ud
 | Støtte | API-versionering plus OpenAPI i .NET 10 | 3 | Spike 7 | Gratis | https://devblogs.microsoft.com/dotnet/api-versioning-in-dotnet-10-applications/ |
 | Støtte | Validation i ASP.NET Core 10 (source generator) | 2 | Spike 7 | Gratis | https://learn.microsoft.com/en-us/aspnet/core/validation/overview?view=aspnetcore-10.0 |
 | Støtte | PactNet — forstå det, indfør det ikke hos jer | 5 | Spike 7 | Gratis | https://github.com/pact-foundation/pact-net |
-| Støtte | HybridCache (v10.9.0) | 4 | Spike 11 | Gratis | https://www.nuget.org/packages/Microsoft.Extensions.Caching.Hybrid |
+| Støtte | HybridCache (v10.10.0) | 4 | Spike 11 | Gratis | https://www.nuget.org/packages/Microsoft.Extensions.Caching.Hybrid |
 | Støtte | Your Code as a Crime Scene, 2. udg. | 6 | Spike 12 | Bog | https://pragprog.com/titles/atcrime2/your-code-as-a-crime-scene-second-edition/ |
 | Støtte | Pro .NET Memory Management, 2. udg. — opslagsværk | 8-10 | Spike 3, ikke mere | Bog | https://prodotnetmemory.com/ |
 | Støtte | dotnet/eShop som **læseøvelse**, ikke template | 6 | Måned 3 | Gratis | https://github.com/dotnet/eShop |
@@ -187,7 +187,7 @@ Ni ansatte betyder at du ikke skal bede nogen om lov til noget af det her. Du sk
 
 - **Vedhæft et tal til hver eneste performance-nær ticket.** "p95 gik fra 340 ms til 95 ms, logical reads fra 41.000 til 1.200" i PR-beskrivelsen. Ændrer inden for en måned hvordan folk læser dine PR'er.
 - **Log og læs den genererede SQL for hver EF-forespørgsel du rører.** Er den ikke-triviel, indsæt planen i PR'en. Det er den hurtigste vej til N+1-problemer ingen har opdaget, fordi ingen andre kigger.
-- **Tag ejerskab over .NET 8/9 end-of-life-uret.** Begge udløber 10. november 2026. Skriv uopfordret et to-siders assessment: hvilke projekter, hvilke NuGet-pakker der blokerer, hvilke EF Core 10 breaking changes der rammer (særligt at `UseAzureSql` genererer en migration der ændrer alle eksisterende `nvarchar(max)`-JSON-kolonner til den native json-type), estimat og risikoordnet rækkefølge. Man beder ikke om lov til at skrive et dokument.
+- **Tag ejerskab over .NET 8 end-of-life-uret.** .NET 8 LTS udløber 10. november 2026; .NET 9 STS nåede EOL 12. maj 2026. Skriv uopfordret et to-siders assessment: hvilke projekter, hvilke NuGet-pakker der blokerer, hvilke EF Core 10 breaking changes der rammer (særligt at `UseAzureSql` genererer en migration der ændrer alle eksisterende `nvarchar(max)`-JSON-kolonner til den native json-type), estimat og risikoordnet rækkefølge. Man beder ikke om lov til at skrive et dokument.
 - **Skriv retroaktive ADR'er.** Hver gang du spørger en kollega "hvorfor er det bygget sådan?", skriv svaret som en énsides ADR og send den tilbage med "ret mig hvis jeg har misforstået". Efter ti af dem ejer du kodebasens beslutningshistorik.
 - **Stil ét spørgsmål per PR-review:** "hvad sker der hvis det her kaldes to gange, eller samtidig, eller med en null tenant?" Ikke et forslag — et spørgsmål. Spørgsmål koster ingen politisk kapital.
 - **Tag de kedelige tværgående tickets ingen vil have:** støjende logging, den flaky test, langsom CI, dependency-opgraderinger. Det er arkitekturarbejde forklædt som pligtarbejde, og det giver dig legitim anledning til at røre hvert eneste modul. I et mikrofirma er det din genvej til en bredde en junior i en 500-mands virksomhed aldrig får.

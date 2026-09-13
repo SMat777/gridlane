@@ -116,7 +116,7 @@ AZ-204 blev pensioneret 31. juli 2026 og afløst af det AI-drejede AI-200, så e
 | `Azure/bicep-registry-modules` (AVM) og `Azure/Azure-Landing-Zones-Library` | Kerne | 5 t | Contribution-dokumentationen; læs én arketype til bunds, ikke hele biblioteket |
 | `Azure/azure-policy`, `Azure/Community-Policy`, EPAC-repoets layout | Støtte | 4 t | EPAC-installationen. Community-definitioner er utestede: læsestof, ikke kopikilde |
 | MADR (`adr/madr`, v4.0.0) | Kerne | 1 t | Full-skabelonen: ni sektioner får folk til at lade være |
-| AzGovViz (`JulianHayward/Azure-MG-Sub-Governance-Reporting`, v6.7.3) | Kerne | 3 t + 1 t/uge | Intet — men kør den aldrig mod produktionstenanten |
+| AzGovViz (`JulianHayward/Azure-MG-Sub-Governance-Reporting`, v6.7.4) | Kerne | 3 t + 1 t/uge | Intet — men kør den aldrig mod produktionstenanten |
 | Cloud Adoption Framework (Govern + Manage) og Well-Architected (Security, Cost, Operational Excellence) | Kerne | 12-14 t | Plan/Ready/Migrate og workload-guider. Læs WAF's trade-off-afsnit |
 | *Facilitating Software Architecture* (Harmel-Law) og *Building Evolutionary Architectures* (Ford m.fl.), udgaver uverificeret | Kerne | 7 t | Alt undtagen advice process-, ADR- og fitness function-kapitlerne |
 | `npryce/adr-tools`, `log4brains`, Purview-opsætning | Spring over | 0 | Døde værktøjer (sidste commits marts 2020 og december 2024) |
